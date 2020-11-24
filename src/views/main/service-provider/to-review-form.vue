@@ -5,38 +5,34 @@
     </Breadcrumb>
     <div class="to-review-wrapper">
       <div class="to-review-query">
-        <a-form-model layout="inline" @submit="handleSubmit" @submit.native.prevent>
-          <a-form-model-item>
-            <a-input v-model="query.username" placeholder="请输入联络人姓名" class="custom-prefix-5">
+        <a-form layout="inline" @submit="handleSubmit">
+          <a-form-item>
+            <a-input v-decorator="['username']" placeholder="请输入联络人姓名" class="custom-prefix-5">
               <template slot="prefix" >
                 <div class="query-item-prefix">联络人姓名</div>
               </template>
             </a-input>
-          </a-form-model-item>
-          <a-form-model-item label="提交日期：" style="margin-bottom:0;">
-            <a-form-model-item>
-              <a-date-picker v-model="query.startTime" style="width: 100%" placeholder="搜索范围起始日期"
-                             :disabled-date="val=>disabledDate(val,query.endTime,'start')"
-              />
-            </a-form-model-item>
+          </a-form-item>
+          <a-form-item label="提交日期：" style="margin-bottom:0;">
+            <a-form-item :style="{ display: 'inline-block'}" >
+              <a-date-picker style="width: 100%" placeholder="搜索范围起始日期"/>
+            </a-form-item>
             <span :style="{ display: 'inline-block',marginLeft:'-5px',width:'20px'}">至</span>
-            <a-form-model-item>
-              <a-date-picker v-model="query.endTime" style="width: 100%" placeholder="搜索范围截止日期"
-                             :disabled-date="val=>disabledDate(query.startTime,val)"
-              />
-            </a-form-model-item>
-          </a-form-model-item>
-          <a-form-model-item label="机构类型：">
-            <a-select v-model="query.orgType" placeholder="请选择机构类型" style="width: 150px">
+            <a-form-item :style="{ display: 'inline-block'}">
+              <a-date-picker style="width: 100%" placeholder="搜索范围截止日期"/>
+            </a-form-item>
+          </a-form-item>
+          <a-form-item label="机构类型：">
+            <a-select v-decorator="['type']" placeholder="请选择机构类型" style="width: 150px">
               <a-select-option value="1">Option 1</a-select-option>
               <a-select-option value="2">Option 2</a-select-option>
               <a-select-option value="3">Option 3</a-select-option>
             </a-select>
-          </a-form-model-item>
-          <a-form-model-item>
+          </a-form-item>
+          <a-form-item>
             <a-button type="primary" html-type="submit">查询</a-button>
-          </a-form-model-item>
-        </a-form-model>
+          </a-form-item>
+        </a-form>
       </div>
       <div class="to-review-content">
         <a-tabs @change="handleTabChange">
@@ -61,7 +57,6 @@
 <script>
 import Breadcrumb from '@/components/bread-crumb';
 import OpenAccount from './common/account';
-import { clearProto, disabledDate } from "@/tools";
 
 const columns1 = [
   {
@@ -129,12 +124,6 @@ export default {
         key:1,
         name:'临时用户',
       }],
-      query:{
-        username:"",
-        startTime:'',
-        endTime:'',
-        orgType:undefined,
-      },
       pagination:{
         current:1,
         total:1,
@@ -142,8 +131,7 @@ export default {
         showLessItems:true,
         size:'middle',
         showTotal:val=>`共${val}条信息`,
-      },
-      disabledDate,
+      }
     };
   },
   components:{
@@ -151,18 +139,20 @@ export default {
     Breadcrumb,
   },
   created() {
+    // const a = "<span>12312</span>";
   },
   methods:{
     handleSubmit(e){
       e.preventDefault();
-      console.log(clearProto(this.query));
+      console.log(this.$form);
+      console.log('handleSubmit');
     },
     handleTabChange(val){
       console.log(val);
     },
     handleTableChange(ev){
       console.log(ev);
-    },
+    }
   }
 }
 </script>
@@ -175,7 +165,7 @@ export default {
   font-size: 14px;
 }
 .content-action{
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 .content-action button{
   margin-right: 15px;
