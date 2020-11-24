@@ -11,7 +11,7 @@
           <a-icon :type="item.icon" v-if="item.icon"/>{{item.title}}
         </span>
         <a-menu-item v-for="cItem in item.child" :key="`${item.id}${cItem.id}`">
-          <router-link :to="(item.path||'')+cItem.path">{{ cItem.title }}</router-link>
+          <router-link :to="`${item.path}${cItem.path}`">{{ cItem.title }}</router-link>
         </a-menu-item>
       </a-sub-menu>
     </a-menu>
