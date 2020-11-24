@@ -3,6 +3,7 @@
     <a-menu
         mode="inline"
         :default-selected-keys="defaultKey"
+        :selectedKeys="selectedKeys"
         :default-open-keys="defaultOpenKey"
         :style="{ height: '100%', borderRight: 0 }"
     >
@@ -24,6 +25,7 @@ export default {
   data() {
     return {
       defaultKey:['11'],
+      selectedKeys:[],
       defaultOpenKey:['1','2','3','4','5'],
       source:[
         {
@@ -75,6 +77,31 @@ export default {
       ]
     };
   },
+  methods:{
+    getSelectKey(path){
+      let defaultKey = '1';
+      let childKey= '1';
+      this.source.filter(i=>i.path).forEach(i=>{
+        if(new RegExp('^'+i.path).test(path)){
+          defaultKey=i.id;
+          (i.child||[]).filter(i=>i.path).forEach(item=>{
+            if(new RegExp('^'+i.path+item.path).test(path)) childKey=item.id;
+          })
+        }
+      })
+      return [defaultKey+childKey];
+    }
+  },
+  created() {
+    const { path } = this.$route;
+    this.selectedKeys = this.getSelectKey(path);
+  },
+  watch:{
+    $route(to,from){
+      // console.log("to.path",to.path,from.path);
+      if(to.path !== from.path) this.selectedKeys = this.getSelectKey(to.path);
+    }
+  }
 }
 </script>
 

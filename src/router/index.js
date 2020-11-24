@@ -1,7 +1,8 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Layout from '../views/common/layout'
-import Login from '../views/login'
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import Layout from '../views/common/layout';
+import Login from '../views/login';
+import RouterSpace from '@/components/router-space';
 
 Vue.use(VueRouter);
 
@@ -20,7 +21,8 @@ const routes = [
       {
         path: 'provider',
         name:'service-provider',
-        component:()=>import("../views/main/service-provider"),
+        redirect: 'provider/review',
+        component: RouterSpace,
         children:[
           {
             path: 'review',

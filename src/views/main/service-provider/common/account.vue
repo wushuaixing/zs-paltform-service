@@ -1,16 +1,15 @@
 <template>
   <div>
-    这是：招商项目详情
+    <a-button type="primary" icon="search">后台开户</a-button>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'ItemDetail',
+  name: 'OpenAccount',
   data() {
     return {};
   },
-
 }
 </script>
 
