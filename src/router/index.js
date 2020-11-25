@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Layout from '../views/common/layout';
-import Login from '../views/login/index';
+import Layout from '@/views/common/layout';
+import Login from '@/views/login/index';
 import RouterSpace from '@/components/router-space';
 
 Vue.use(VueRouter);
@@ -16,7 +16,7 @@ const routes = [
       {
         path: 'overview',
         name:'overview/workbench',
-        component:()=>import("../views/main/overview/workbench/index")
+        component:()=>import("@/views/main/overview/workbench/index")
       },
       {
         path: 'provider',
@@ -27,29 +27,30 @@ const routes = [
           {
             path: 'review',
             name:'service-provider/to-review',
-            component:()=>import("../views/main/service-provider/to-review"),
+            component:()=>import("@/views/main/service-provider/to-review"),
           },
           {
             path: 'storage',
             name:'service-provider/be-storage',
-            component:()=>import("../views/main/service-provider/be-storage"),
+            component:()=>import("@/views/main/service-provider/be-storage"),
           },
         ]
       },
       {
         path: 'investment',
         name:'investment',
-        component:()=>import("../views/main/investment/index"),
+        redirect: 'investment/list',
+        component:()=>import("@/views/main/investment/index"),
         children:[
           {
             path: 'list',
             name:'investment/item-list',
-            component:()=>import("../views/main/investment/item-list"),
+            component:()=>import("@/views/main/investment/item-list"),
           },
           {
             path: 'detail',
             name:'investment/item-detail',
-            component:()=>import("../views/main/investment/item-detail"),
+            component:()=>import("@/views/main/investment/item-detail"),
           },
         ]
       }
