@@ -31,25 +31,28 @@ export default {
 }
 </script>
 
-<style scoped>
-  .bread-crumb-wrapper{
+<style scoped lang="scss">
+  .bread-crumb-wrapper {
     padding: 16px;
     position: relative;
     line-height: 20px;
     font-size: 14px;
     border-bottom: 1px solid #ddd;
-  }
-  .bread-crumb{
-    display: inline-block;
-  }
-  .bread-crumb-wrapper .bread-crumb-icon{
-    margin-right: 10px;
-    display: inline-block;
-  }
-  .bread-crumb-wrapper .bread-crumb-slot{
-    position: absolute;
-    top: 8px;
-    right: 16px;
-    z-index: 1;
+
+    .bread-crumb {
+      display: inline-block;
+
+      &-icon {
+        margin-right: 10px;
+        display: inline-block;
+      }
+
+      &-slot {
+        position: absolute;
+        top: 10px;
+        right: 16px;
+        z-index: 1;
+      }
+    }
   }
 </style>

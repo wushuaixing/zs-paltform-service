@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { eventBus } from '@/tools/event-bus';
+import { eventBus } from '@/plugin/tools/event-bus';
 export default {
   name: 'Investment',
   data() {

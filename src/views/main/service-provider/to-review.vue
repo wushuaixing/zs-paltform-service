@@ -51,7 +51,11 @@
           <a-button icon="search">名单一键导出</a-button>
         </div>
         <a-table :columns="columns" :data-source="dataSource" size="middle" :pagination="pagination" @change="handleTableChange">
-          <!--          <a slot="name" slot-scope="text">{{ text }}</a>-->
+          <template slot="auction">
+            <a-button type="link" size="small" icon="file-text" :style="{paddingLeft: 0}">详情</a-button>
+            <a-icon type="line" :style="{transform: 'rotate(90deg)',margin:'0 -5px'}"/>
+            <a-button type="link" size="small" icon="form" >标签及审核结果添加</a-button>
+          </template>
         </a-table>
       </div>
     </div>
@@ -61,7 +65,7 @@
 <script>
 import Breadcrumb from '@/components/bread-crumb';
 import OpenAccount from './common/account';
-import { clearProto, disabledDate } from "@/tools";
+import { clearProto, disabledDate } from "@/plugin/tools";
 
 const columns1 = [
   {
@@ -79,13 +83,11 @@ const columns1 = [
     title: '机构类型',
     dataIndex: 'address',
     key: 'address 1',
-    ellipsis: true,
   },
   {
     title: '机构名称',
     dataIndex: 'address',
     key: 'address 2',
-    ellipsis: true,
   },
   {
     title: '从业时长',
@@ -106,13 +108,13 @@ const columns1 = [
     title: '要素提交日期',
     dataIndex: 'address',
     key: 'address 43',
-    ellipsis: true,
   },
   {
     title: '操作',
     dataIndex: 'address',
     key: 'address 44',
-    ellipsis: true,
+    scopedSlots: { customRender: 'auction' },
+    width: 260,
   },
 ];
 
@@ -181,7 +183,7 @@ export default {
   margin-right: 15px;
 }
 </style>
-<style>
+<style lang="scss">
 .query-item-prefix{
   height: 100%;
   width: 80px;

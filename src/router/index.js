@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Layout from '../views/common/layout';
-import Login from '../views/login';
+import Login from '../views/login/index';
 import RouterSpace from '@/components/router-space';
 
 Vue.use(VueRouter);
@@ -16,7 +16,7 @@ const routes = [
       {
         path: 'overview',
         name:'overview/workbench',
-        component:()=>import("../views/main/overview/workbench")
+        component:()=>import("../views/main/overview/workbench/index")
       },
       {
         path: 'provider',
@@ -39,7 +39,7 @@ const routes = [
       {
         path: 'investment',
         name:'investment',
-        component:()=>import("../views/main/investment"),
+        component:()=>import("../views/main/investment/index"),
         children:[
           {
             path: 'list',

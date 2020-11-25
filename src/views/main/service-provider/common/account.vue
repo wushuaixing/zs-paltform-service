@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-button type="primary" icon="search">后台开户</a-button>
+    <a-button icon="search">后台开户</a-button>
   </div>
 </template>
 

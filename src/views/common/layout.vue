@@ -11,7 +11,7 @@
         </a-layout-sider>
         <a-layout style="padding: 80px 16px 16px; margin-left: 200px;">
           <div style="height: 100%">
-            <a-layout-content :style="{ background: '#fff', margin: 0, minHeight: '100%', }">
+            <a-layout-content :style="{ background: '#fff', margin: 0, height: '100%', }">
               <router-view/>
             </a-layout-content>
           </div>

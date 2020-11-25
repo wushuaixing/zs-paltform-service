@@ -1,12 +1,13 @@
 <template>
-  <div>
-    <span>这是工作台，页面</span>
+  <div class="backlog-wrapper">
+
   </div>
 </template>
 
 <script>
 export default {
-  name: 'WorkBench',
+  name: 'Backlog',
+  nameComment:"我的待办",
   data() {
     return {};
   },
@@ -14,5 +15,7 @@ export default {
 </script>
 
 <style scoped>
-
+.backlog-wrapper{
+  padding: 20px;
+}
 </style>
