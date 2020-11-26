@@ -3,7 +3,8 @@
     <a-icon :type="icon" v-if="icon" class="bread-crumb-icon"/>
     <a-breadcrumb class="bread-crumb">
       <a-breadcrumb-item v-for="item in source" :key="item.id">
-        <router-link :to="item.path">{{ item.title }}</router-link>
+        <router-link :to="item.path" v-if="item.path">{{ item.title }}</router-link>
+        <span v-else>{{ item.title }}</span>
       </a-breadcrumb-item>
     </a-breadcrumb>
     <div class="bread-crumb-slot" >

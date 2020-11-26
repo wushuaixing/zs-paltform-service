@@ -40,7 +40,7 @@ const routes = [
         path: 'investment',
         name:'investment',
         redirect: 'investment/list',
-        component:()=>import("@/views/main/investment/index"),
+        component:RouterSpace,
         children:[
           {
             path: 'list',
@@ -48,7 +48,7 @@ const routes = [
             component:()=>import("@/views/main/investment/item-list"),
           },
           {
-            path: 'detail',
+            path: 'list/detail/:id',
             name:'investment/item-detail',
             component:()=>import("@/views/main/investment/item-detail"),
           },

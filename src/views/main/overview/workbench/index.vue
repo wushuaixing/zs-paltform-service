@@ -22,21 +22,20 @@
       <div class="item-wrapper">
         <div class="item-title item-format">我的待办</div>
         <div class="item-content item-format">
-          <Charts />
+          <ECharts :loading="false" />
         </div>
       </div>
-
     </div>
   </div>
 </template>
 
 <script>
-import Charts from './charts';
+import ECharts from '@/components/echarts';
 export default {
   name: 'Workbench',
   nameComment:"工作台",
   components:{
-    Charts
+    ECharts
   },
   data() {
     return {};
