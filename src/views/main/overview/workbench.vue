@@ -2,27 +2,19 @@
   <div class="workbench-wrapper">
     <div class="workbench-item workbench-left">
       <div class="item-wrapper item-border">
-        <div class="item-title item-format">服务商注册情况</div>
-        <div class="item-content item-format">这是内容</div>
-      </div>
-      <div class="item-wrapper item-border">
-        <div class="item-title item-format">项目招商情况</div>
+        <div class="item-title item-format">待办事项</div>
         <div class="item-content item-format">这是内容</div>
       </div>
       <div class="item-wrapper">
-        <div class="item-title item-format">服务进展情况</div>
+        <div class="item-title item-format">竞标项目进度概览</div>
         <div class="item-content item-format">这是内容</div>
       </div>
     </div>
     <div class="workbench-item workbench-right">
-      <div class="item-wrapper item-border">
-        <div class="item-title item-format">每日新增注册阶段分布</div>
-        <div class="item-content item-format">这是内容</div>
-      </div>
       <div class="item-wrapper">
-        <div class="item-title item-format">我的待办</div>
+        <div class="item-title item-format">我的日程</div>
         <div class="item-content item-format">
-          <ECharts :loading="false" />
+          <ECharts :loading="false" addListener/>
         </div>
       </div>
     </div>

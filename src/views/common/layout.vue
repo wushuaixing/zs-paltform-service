@@ -3,9 +3,18 @@
     <a-layout style="min-height: 100%" v-if="!loading" class="layout-wrapper">
       <a-layout-header class="header-wrapper" :style="{ position: 'fixed', zIndex: 99, width: '100%' }">
         <a-icon class="header-icon" type="codepen"/>
-        <span class="header-title">浙商资产服务商招募管理系统-运营后台</span>
+        <span class="header-title">浙商资产服务商招募管理系统</span>
+        <a-menu theme="dark" mode="horizontal" :default-selected-keys="['1']"
+                :style="{ lineHeight: '64px',display:'inline-block',verticalAlign: 'top',height:'64px' }">
+          <a-menu-item key="1">
+            <router-link to="/">我的</router-link>
+          </a-menu-item>
+          <a-menu-item key="2">
+            <router-link to="/center">服务项目招商中心</router-link>
+          </a-menu-item>
+        </a-menu>
         <div class="header-info">
-          <a-icon type="bell" />
+          <a-icon type="bell" class="header-info-icon"/>
           <a-dropdown :trigger="['click']" placement="bottomRight" size="middle">
             <a-menu slot="overlay" >
               <a-menu-item key="1"> <a-icon type="user" />1st menu item </a-menu-item>
@@ -16,41 +25,19 @@
           </a-dropdown>
         </div>
       </a-layout-header>
-      <a-layout>
-        <a-layout-sider width="200" :style="siderStyle">
-          <Menu />
-        </a-layout-sider>
-        <a-layout style="padding: 80px 16px 16px; margin-left: 200px;">
-          <div style="height: 100%">
-            <a-layout-content :style="{ background: '#fff', margin: 0, height: '100%' }">
-              <router-view/>
-            </a-layout-content>
-          </div>
-        </a-layout>
-      </a-layout>
+      <router-view/>
     </a-layout>
     <a-spin v-if="loading" class="spin-wrapper" size="large" tip="数据加载中，请稍后..." />
   </div>
 </template>
 <script>
-import Menu from './menu'
 export default {
   data() {
     return {
-      collapsed: false,
       loading:true,
-      siderStyle:{
-        position: 'fixed',
-        left: 0,
-        top:'64px',
-        bottom:0,
-        overflow:'hidden auto',
-        background: '#fff'
-      }
     };
   },
   components: {
-    Menu
   },
   created() {
     setTimeout(()=>{
@@ -65,6 +52,9 @@ export default {
 </script>
 
 <style lang="scss">
+.root-node-wrapper{
+
+}
 .layout-wrapper {
   .header{
     &-wrapper{
@@ -78,6 +68,7 @@ export default {
     &-title{
       color: #fff;
       font-size: 16px;
+      margin-right: 15px;
     }
     &-info{
       float: right;

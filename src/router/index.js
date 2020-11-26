@@ -14,46 +14,61 @@ const routes = [
     redirect: 'overview',
     children:[
       {
-        path: 'overview',
-        name:'overview/workbench',
-        component:()=>import("@/views/main/overview/workbench/index")
-      },
-      {
-        path: 'provider',
-        name:'service-provider',
-        redirect: 'provider/review',
-        component: RouterSpace,
-        children:[
+        path: '',
+        name: 'main-default',
+        redirect: 'overview',
+        component:()=>import("@/views/main"),
+        children: [
           {
-            path: 'review',
-            name:'service-provider/to-review',
-            component:()=>import("@/views/main/service-provider/to-review"),
+            path: 'overview',
+            name:'overview/workbench',
+            component:()=>import("@/views/main/overview/workbench")
           },
           {
-            path: 'storage',
-            name:'service-provider/be-storage',
-            component:()=>import("@/views/main/service-provider/be-storage"),
-          },
-        ]
-      },
-      {
-        path: 'investment',
-        name:'investment',
-        redirect: 'investment/list',
-        component:RouterSpace,
-        children:[
-          {
-            path: 'list',
-            name:'investment/item-list',
-            component:()=>import("@/views/main/investment/item-list"),
-          },
-          {
-            path: 'list/detail/:id',
-            name:'investment/item-detail',
-            component:()=>import("@/views/main/investment/item-detail"),
+            path: 'provider',
+            name:'service-provider',
+            redirect: 'provider/review',
+            component: RouterSpace,
+            children:[
+              {
+                path: 'review',
+                name:'service-provider/to-review',
+                component:()=>import("@/views/main/service-provider/to-review"),
+              },
+              {
+                path: 'storage',
+                name:'service-provider/be-storage',
+                component:()=>import("@/views/main/service-provider/be-storage"),
+              },
+            ]
           },
         ]
-      }
+      },
+      {
+        path: 'center',
+        name: 'investment-center',
+        component:()=>import("@/views/investment-center"),
+      },
+
+
+      // {
+      //   path: 'investment',
+      //   name:'investment',
+      //   redirect: 'investment/list',
+      //   component:RouterSpace,
+      //   children:[
+      //     {
+      //       path: 'list',
+      //       name:'investment/item-list',
+      //       component:()=>import("@/views/main/investment/item-list"),
+      //     },
+      //     {
+      //       path: 'list/detail/:id',
+      //       name:'investment/item-detail',
+      //       component:()=>import("@/views/main/investment/item-detail"),
+      //     },
+      //   ]
+      // }
     ]
   },
   {

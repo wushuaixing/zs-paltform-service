@@ -39,39 +39,22 @@ export default {
         },
         {
           id:'2',
-          title:'服务商管理',
+          title:'我的项目',
           icon:'team',
-          path:'/provider',
+          path:'/project',
           child:[
-            { id:'1', title:'待审查', path:'/review' },
-            { id:'2', title:'已入库', path:'/storage' },
+            { id:'1', title:'我的竞标', path:'/biding' },
+            { id:'2', title:'我的服务', path:'/serve' },
           ]
         },
         {
           id:'3',
-          title:'招商管理',
+          title:'我的认证',
           icon:'solution',
-          path:'/investment',
+          path:'/attestation',
           child:[
-            { id:'1', title:'招商项目管理', path:'/list' }
-          ]
-        },
-        {
-          id:'4',
-          title:'服务跟踪',
-          icon:'desktop',
-          child:[
-            { id:'1', title:'服务跟进管理', path:'/' },
-            { id:'2', title:'收支审批管理', path:'/' },
-          ]
-        },
-        {
-          id:'5',
-          title:'内部权限管理',
-          icon:'key',
-          child:[
-            { id:'1', title:'机构与账户', path:'/' },
-            { id:'2', title:'登录界面', path:'/login' }
+            { id:'1', title:'资质认证', path:'/' },
+            { id:'2', title:'要素认证', path:'/' },
           ]
         },
       ]

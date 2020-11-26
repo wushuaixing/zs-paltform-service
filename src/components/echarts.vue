@@ -34,6 +34,10 @@ export default {
       type:Boolean,
       default:true,
     },
+    addListener:{
+      type:Boolean,
+      default:false,
+    },
   },
   created() {
     this.chartId = ranStr(8);
@@ -62,6 +66,12 @@ export default {
           data: [5, 20, 36, 10, 10, 20]
         }]
       });
+      if(this.addListener && this.myChart){
+        setTimeout( ()=>{
+          const _this = this;
+          window.onresize = function () { _this.myChart.resize(); }
+        },200)
+      }
     }
   },
   watch:{
