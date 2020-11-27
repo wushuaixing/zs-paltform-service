@@ -4,6 +4,7 @@
         mode="inline"
         :default-selected-keys="defaultKey"
         :selectedKeys="selectedKeys"
+        theme="dark"
         :default-open-keys="defaultOpenKey"
         :style="{ height: '100%', borderRight: 0 }"
     >
@@ -89,6 +90,10 @@ export default {
 </script>
 
 <style scoped>
+.layout-menu{
+  background-color: #001529;
+  height: 100%;
+}
 .layout-menu .ant-menu-item{
   margin: 0!important;
 }

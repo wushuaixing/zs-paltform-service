@@ -4,12 +4,12 @@
       <a-layout-header class="header-wrapper" :style="{ position: 'fixed', zIndex: 99, width: '100%' }">
         <a-icon class="header-icon" type="codepen"/>
         <span class="header-title">浙商资产服务商招募管理系统</span>
-        <a-menu theme="dark" mode="horizontal" :default-selected-keys="['1']"
+        <a-menu theme="dark" mode="horizontal" :default-selected-keys="[selectedKey]"
                 :style="{ lineHeight: '64px',display:'inline-block',verticalAlign: 'top',height:'64px' }">
-          <a-menu-item key="1">
+          <a-menu-item key="a">
             <router-link to="/">我的</router-link>
           </a-menu-item>
-          <a-menu-item key="2">
+          <a-menu-item key="b">
             <router-link to="/center">服务项目招商中心</router-link>
           </a-menu-item>
         </a-menu>
@@ -35,11 +35,14 @@ export default {
   data() {
     return {
       loading:true,
+      selectedKey:'a'
     };
   },
   components: {
   },
   created() {
+    const { pathname } = window.location;
+    if(/center/.test(pathname))this.selectedKey='b';
     setTimeout(()=>{
       this.loading = false;
     },500)

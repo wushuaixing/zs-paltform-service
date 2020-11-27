@@ -1,16 +1,18 @@
 <template>
-  <div class="bread-crumb-wrapper">
-    <a-icon :type="icon" v-if="icon" class="bread-crumb-icon"/>
-    <a-breadcrumb class="bread-crumb">
-      <a-breadcrumb-item v-for="item in source" :key="item.id">
-        <router-link :to="item.path" v-if="item.path">{{ item.title }}</router-link>
-        <span v-else>{{ item.title }}</span>
-      </a-breadcrumb-item>
-    </a-breadcrumb>
-    <div class="bread-crumb-slot" >
-      <slot name="suffix"/>
+  <a-affix :offset-top="64">
+    <div class="bread-crumb-wrapper">
+      <a-icon :type="icon" v-if="icon" class="bread-crumb-icon"/>
+      <a-breadcrumb class="bread-crumb">
+        <a-breadcrumb-item v-for="item in source" :key="item.id">
+          <router-link :to="item.path" v-if="item.path">{{ item.title }}</router-link>
+          <span v-else>{{ item.title }}</span>
+        </a-breadcrumb-item>
+      </a-breadcrumb>
+      <div class="bread-crumb-slot" >
+        <slot name="suffix"/>
+      </div>
     </div>
-  </div>
+  </a-affix>
 </template>
 
 <script>
@@ -38,7 +40,7 @@ export default {
     position: relative;
     line-height: 20px;
     font-size: 14px;
-    border-bottom: 1px solid #ddd;
+    background-color: #ffffff;
 
     .bread-crumb {
       display: inline-block;

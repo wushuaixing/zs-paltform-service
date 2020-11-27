@@ -42,6 +42,24 @@ const routes = [
               },
             ]
           },
+          {
+            path: 'project',
+            name:'my-project',
+            redirect: 'project/biding',
+            component: RouterSpace,
+            children:[
+              {
+                path: 'biding',
+                name:'my-project/biding',
+                component:()=>import("@/views/main/my-project/biding"),
+              },
+              // {
+              //   path: 'storage',
+              //   name:'service-provider/be-storage',
+              //   component:()=>import("@/views/main/service-provider/be-storage"),
+              // },
+            ]
+          },
         ]
       },
       {
