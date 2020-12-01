@@ -45,17 +45,17 @@ export default {
           path:'/project',
           child:[
             { id:'1', title:'我的竞标', path:'/biding' },
-            { id:'2', title:'我的服务', path:'/serve' },
+            // { id:'2', title:'我的服务', path:'/serve' },
           ]
         },
         {
           id:'3',
           title:'我的认证',
           icon:'solution',
-          path:'/attestation',
+          path:'/attest',
           child:[
-            { id:'1', title:'资质认证', path:'/' },
-            { id:'2', title:'要素认证', path:'/' },
+            { id:'1', title:'资质认证', path:'/qualifies' },
+            { id:'2', title:'要素认证', path:'/factor' },
           ]
         },
       ]

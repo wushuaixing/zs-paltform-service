@@ -40,9 +40,11 @@ $leftWidth:350px;
 $background:#f0f2f5;
 .workbench-wrapper{
   height: 100%;
+  padding: 16px;
   .workbench{
     &-item{
       height: 100%;
+      background-color: #ffffff;
     }
     &-left{
       float: left;

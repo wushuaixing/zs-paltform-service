@@ -60,6 +60,24 @@ const routes = [
               // },
             ]
           },
+          {
+            path: 'attest',
+            name:'my-attestation',
+            redirect: 'attest/qualifies',
+            component: ()=>import('@/views/main/my-attestation'),
+            children:[
+              {
+                path: 'qualifies',
+                name:'my-attestation/qualifies',
+                component:()=>import("@/views/main/my-attestation/qualifies"),
+              },
+              {
+                path: 'factor',
+                name:'my-attestation/factor',
+                component:()=>import("@/views/main/my-attestation/factor"),
+              },
+            ]
+          },
         ]
       },
       {
