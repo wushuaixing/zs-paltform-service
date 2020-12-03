@@ -81,7 +81,14 @@
         </div>
       </div>
     </div>
-    <FillForm></FillForm>
+    <FillForm v-if="true">
+      <div class="qualifies-item" slot="title">
+        <div class="item-title item-title_no-border">
+          <span>我的服务商身份：</span>
+          <a-icon type="trademark" :style="{fontSize:'32px'}"/>
+        </div>
+      </div>
+    </FillForm>
   </div>
 </template>
 
@@ -128,7 +135,7 @@ export default {
     .qualifies{
       &-item{
         .item-title{
-          padding: 12px 32px;
+          padding: 14px 32px;
           border-bottom: 1px solid #f1f2f5;
           span{
             font-size: 18px;
@@ -137,6 +144,9 @@ export default {
             line-height: 32px;
             vertical-align: super;
           }
+        }
+        .item-title_no-border{
+          border-bottom: none;
         }
         .item-content{
 
@@ -178,7 +188,7 @@ export default {
             display: flex;
             line-height: 20px;
             &-title{
-              width: 318px;
+              width: 33.3%;
               font-size: 14px;
               color: $text-title;
               text-align: right;
