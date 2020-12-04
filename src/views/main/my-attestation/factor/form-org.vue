@@ -31,8 +31,8 @@
       <div class="factor-form-subtitle">擅长优势</div>
       <a-form-item label="擅长业务类型" class="form-item-row">
         <a-checkbox-group v-decorator="adv.type.dec" v-bind="adv.type.other">
-          <a-row :style="{lineHeight:'40px'}">
-            <a-col v-for="item in adv.type.options" :key="item.id" :span="item.id===0?9:5">
+          <a-row>
+            <a-col v-for="item in adv.type.options" :key="item.id" v-bind="item.id!==0?{span:5}:{}">
               <a-checkbox :value="item.value">{{item.label}}</a-checkbox>
               <a-input v-if="item.id===0" style="width: 180px" placeholder="多个方向请用中文顿号隔开"/>
             </a-col>
@@ -53,7 +53,7 @@
       </a-form-item>
       <a-form-item label="组织架构" class="form-item-row">
         <a-checkbox-group v-decorator="history.type.dec" v-bind="history.type.other">
-          <a-row :style="{lineHeight:'40px'}">
+          <a-row>
             <a-col v-for="item in history.type.options" :key="item.id" :span="5">
               <a-checkbox :value="item.value">{{item.label}}</a-checkbox>
             </a-col>
@@ -74,8 +74,8 @@
       </a-form-item>
       <a-form-item label="过往合作类型" class="form-item-row">
         <a-checkbox-group v-decorator="history.coo.dec" v-bind="history.coo.other">
-          <a-row :style="{lineHeight:'40px'}">
-            <a-col v-for="item in history.coo.options" :key="item.id" :span="item.id===4?8:5">
+          <a-row>
+            <a-col v-for="item in history.coo.options" :key="item.id" v-bind="item.id!==4?{span:5}:{}">
               <a-checkbox :value="item.value">{{item.label}}</a-checkbox>
               <a-input v-if="item.id===0" style="width: 100px"/>
             </a-col>
@@ -94,8 +94,8 @@
       <div class="factor-form-subtitle">后续期望合作方向</div>
       <a-form-item label="合作意向" class="form-item-row">
         <a-checkbox-group v-decorator="dir.intent.dec" v-bind="dir.intent.other">
-          <a-row :style="{lineHeight:'40px'}">
-            <a-col v-for="item in dir.intent.options" :key="item.id" :span="item.id===0?9:5">
+          <a-row>
+            <a-col v-for="item in dir.intent.options" :key="item.id" v-bind="item.id!==0?{span:5}:{}">
               <a-checkbox :value="item.value">{{item.label}}</a-checkbox>
               <a-input v-if="item.id===0" style="width: 180px" placeholder="多个方向请用中文顿号隔开"/>
             </a-col>
@@ -110,74 +110,10 @@
 </template>
 
 <script>
-const options = [
-      {
-        value: 'zhejiang',
-        label: 'Zhejiang',
-        children: [
-          {
-            value: 'hangzhou',
-            label: 'Hangzhou',
-            children: [
-              {
-                value: 'xihu',
-                label: 'West Lake',
-              },
-            ],
-          },
-        ],
-      },
-      {
-        value: 'jiangsu',
-        label: 'Jiangsu',
-        children: [
-          {
-            value: 'nanjing',
-            label: 'Nanjing',
-            children: [
-              {
-                value: 'zhonghuamen',
-                label: 'Zhong Hua Men',
-              },
-            ],
-          },
-        ],
-      },
-    ];
-const options1 = [
-  { id: 1, label: '工业', value: 'Apple' },
-  { id: 2, label: '商业', value: 'Pear' },
-  { id: 3, label: '住宅', value: 'Orange' },
-  { id: 0, label: '其他', value: 'else' },
-];
-const options2 = [
-  { id: 1, label: '东方', value: '1' },
-  { id: 2, label: '长城', value: '2' },
-  { id: 3, label: '华融', value: '3' },
-  { id: 4, label: '信达', value: '4' },
-];
-const options3 = [
-  { id: 1, label: '配资收购', value: '1' },
-  { id: 2, label: '资产包收购', value: '2' },
-  { id: 3, label: '债权清收', value: '3' },
-  { id: 4, label: '其他（投行等）', value: '4' },
-];
-const options4 = [
-  { id: 1, label: '清收', value: '1' },
-  { id: 2, label: '跟投', value: '2' },
-  { id: 3, label: '介绍投资人', value: '3' },
-  { id: 0, label: '其他', value: '4' },
-];
 
-const baseWidth = {
-  style:{
-    width:'650px'
-  }
-}
-const textarea = {
-  ...baseWidth,
-  autoSize:{ minRows: 4 }
-}
+import { baseWidth, textarea } from "../common/style";
+import { areaOption, hisFour, hisCoo, orgAdvType, cooIntent } from "../common/source";
+
 export default {
   name: 'FormOrgInfo',
   nameComment: '要素信息表单-机构基本信息',
@@ -207,7 +143,7 @@ export default {
         local:{
           dec:['local',{ rules: [{ required: true, message: '请选择公司总部所在地!' }] }],
           other:{
-            options,
+            options:areaOption,
             placeholder:'请选择公司总部所在地',
             ...baseWidth,
           }
@@ -239,7 +175,7 @@ export default {
       adv:{
         type:{
           dec:['exp', { rules: [{ required: true, message: '请选择从业不良时间经验!' }] }],
-          options:options1,
+          options:orgAdvType,
           other:{
             ...baseWidth,
           }
@@ -261,21 +197,20 @@ export default {
         },
         type:{
           dec:['typeName', { rules: [{ required: true, message: '至少勾选一项历史合作四大' }] }],
-          options:options2,
+          options:hisFour,
           other:{
             ...baseWidth,
           }
         },
         once:{
           dec:['once', { rules: [{ required: true, message: '请选择合作情况' }] }],
-          options:options3,
           other:{
             ...baseWidth,
           }
         },
         coo:{
           dec:['coo', { rules: [{ required: true, message: '请勾选合作类型' }] }],
-          options:options3,
+          options:hisCoo,
           other:{
             ...baseWidth,
           }
@@ -305,7 +240,7 @@ export default {
       dir:{
         intent:{
           dec:['intent', { rules: [{ required: true, message: '请勾选合作意向' }] }],
-          options:options4,
+          options:cooIntent,
           other:{
             ...baseWidth,
           }
@@ -332,31 +267,5 @@ export default {
 <style scoped lang='scss'>
 .form-org{
 
-}
-</style>
-<style lang='scss'>
-.factor-form-wrapper{
-  padding: 20px;
-  .factor-form-subtitle{
-    padding-left: 10px;
-    font-size: 16px;
-    line-height: 20px;
-    height: 20px;
-    border-left: 4px solid $common-base;
-    text-align: left;
-    margin: 10px 0;
-  }
-  .form-item-row{
-    .ant-form-item-children{
-      display: block;
-      .ant-radio-group,.ant-checkbox-group{
-        display: block;
-      }
-    }
-    .ant-row{
-      line-height: 40px;
-
-    }
-  }
 }
 </style>

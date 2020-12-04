@@ -16,17 +16,20 @@
       </div>
     </div>
     <!--  机构表单信息  -->
-    <FormOrg></FormOrg>
+    <FormOrg v-if="false"></FormOrg>
+    <FormLaw></FormLaw>
   </div>
 </template>
 
 <script>
-import FormOrg from './form-org'
+import FormOrg from './form-org';
+import FormLaw from './form-law';
 export default {
   name: 'factor',
   nameComment: '要素认证',
   components:{
-    FormOrg
+    FormOrg,
+    FormLaw
   },
   data() {
     return {
@@ -46,13 +49,11 @@ export default {
 .factor-wrapper {
   height: 100%;
   background-color: #fff;
-
   .spin-wrapper {
     width: 100%;
     height: 40%;
     line-height: 3;
   }
-
   .factor-status{
     padding: 20px;
     line-height: 32px;
@@ -71,6 +72,31 @@ export default {
     }
     .status-content{
       text-align: center;
+    }
+  }
+}
+</style>
+<style lang='scss'>
+.factor-form-wrapper{
+  padding: 20px;
+  .factor-form-subtitle{
+    padding-left: 10px;
+    font-size: 16px;
+    line-height: 20px;
+    height: 20px;
+    border-left: 4px solid $common-base;
+    text-align: left;
+    margin: 10px 0;
+  }
+  .form-item-row{
+    .ant-form-item-children{
+      display: block;
+      .ant-radio-group,.ant-checkbox-group{
+        display: block;
+      }
+    }
+    .ant-row{
+      line-height: 40px;
     }
   }
 }
