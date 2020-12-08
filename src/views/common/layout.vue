@@ -15,11 +15,12 @@
         </a-menu>
         <div class="header-info">
           <a-icon type="bell" class="header-info-icon"/>
-          <a-dropdown :trigger="['click']" placement="bottomRight" size="middle">
+          <a-dropdown :trigger="['click']" placement="bottomRight" size="large"
+                      :getPopupContainer="e=>e.parentElement" >
             <a-menu slot="overlay" >
-              <a-menu-item key="1"> <a-icon type="user" />1st menu item </a-menu-item>
-              <a-menu-item key="2"> <a-icon type="user" />2nd menu item </a-menu-item>
-              <a-menu-item key="3"> <a-icon type="user" />3rd item </a-menu-item>
+              <a-menu-item key="1"> <a-icon type="user" />修改绑定手机号 </a-menu-item>
+              <a-menu-item key="2"> <a-icon type="user" />修改登录密码 </a-menu-item>
+              <a-menu-item key="3"> <a-icon type="user" />退出登录 </a-menu-item>
             </a-menu>
             <a-button type="link" icon="down">Hi，访问者</a-button>
           </a-dropdown>

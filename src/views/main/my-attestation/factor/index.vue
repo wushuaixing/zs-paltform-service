@@ -80,13 +80,33 @@ export default {
 .factor-form-wrapper{
   padding: 20px;
   .factor-form-subtitle{
-    padding-left: 10px;
-    font-size: 16px;
-    line-height: 20px;
-    height: 20px;
-    border-left: 4px solid $common-base;
     text-align: left;
-    margin: 10px 0;
+    padding: 10px 0;
+    span{
+      display: block;
+      padding-left: 10px;
+      border-left: 4px solid $common-base;
+      font-size: 16px;
+      line-height: 20px;
+      height: 20px;
+    }
+  }
+  .factor-form-classTitle-wrapper{
+
+  }
+  .factor-form-classTitle{
+    display: flex;
+    justify-content: space-between;
+    padding: 5px;
+    border-bottom: 1px solid $border-base;
+    margin-bottom: 14px;
+    .classTitle_subtitle{
+      font-size: 16px;
+      line-height: 32px;
+      span{
+        margin-left: 10px;
+      }
+    }
   }
   .form-item-row{
     .ant-form-item-children{
@@ -96,7 +116,12 @@ export default {
       }
     }
     .ant-row{
-      line-height: 40px;
+      line-height: 32px;
+    }
+  }
+  .form-item-no-title{
+    .ant-form-item-label label:after{
+      content:' '
     }
   }
 }

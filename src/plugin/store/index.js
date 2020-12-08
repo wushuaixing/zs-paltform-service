@@ -5,6 +5,11 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    isCertification:true,
+    isSubmitElements:true,
+  },
+  getters:{
+
   },
   mutations: {
   },
