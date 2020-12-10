@@ -3,7 +3,13 @@ import App from './App.vue'
 import Antd,{Form} from 'ant-design-vue';
 import router from './router'
 import store from './plugin/store'
+import ElementUI from 'element-ui';
 import 'ant-design-vue/dist/antd.css';
+import './plugin/element.js'
+import 'element-ui/lib/theme-chalk/index.css';
+
+Vue.use(ElementUI);
+
 
 Vue.config.productionTip = false;
 Vue.use(Antd);

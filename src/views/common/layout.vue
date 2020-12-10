@@ -20,13 +20,13 @@
             <a-menu slot="overlay" >
               <a-menu-item key="1"> <a-icon type="user" />修改绑定手机号 </a-menu-item>
               <a-menu-item key="2"> <a-icon type="user" />修改登录密码 </a-menu-item>
-              <a-menu-item key="3"> <a-icon type="user" />退出登录 </a-menu-item>
+              <a-menu-item key="3" @click="$router.push('/login')"> <a-icon type="user" />退出登录 </a-menu-item>
             </a-menu>
             <a-button type="link" icon="down">Hi，访问者</a-button>
           </a-dropdown>
         </div>
       </a-layout-header>
-      <router-view/>
+      <router-view />
     </a-layout>
     <a-spin v-if="loading" class="spin-wrapper" size="large" tip="数据加载中，请稍后..." />
   </div>
