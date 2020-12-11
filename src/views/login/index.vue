@@ -5,7 +5,7 @@
           </div>
              <!-- 表单区域 -->
             <div class="login-content">
-              <div class="title" :class="{titleClass}">浙商资产服务商招募管理系统</div>
+              <div class="title">浙商资产服务商招募管理系统</div>
                 <el-tabs v-model="activeName" @tab-click="handleClick" class="tabs" >
                   <el-tab-pane class="q-login" label="快捷登录" name="first">
                     <el-form ref="reform" :model="form" class="login-form" :rules="rules">
@@ -19,8 +19,8 @@
                                   </template>
                                 </el-input>
                             </el-form-item>
-                            <el-form-item class="btns">
-                                <el-button class="login-text" type="info" @click="login">登 录</el-button>
+                            <el-form-item class="btns" :class="{titleClass}">
+                                <el-button  class="login-text" type="info" @click="login">登 录</el-button>
                             </el-form-item>
                             <!-- 注册成为浙商资产服务商 -->
                           <div class="login-service"><u>注册成为浙商资产服务商</u></div>
@@ -34,10 +34,12 @@
                           <el-form-item prop="password">
                               <el-input v-model="form.password" type="password"  prefix-icon="el-icon-user" placeholder="请输入密码"></el-input>
                           </el-form-item>
-                          <el-form-item v-if="this.num >= 3" prop="verificationCode">
-                              <el-input v-model="form.verification" id="verification-code" placeholder="请输入验证码"></el-input>
+                          <el-form-item prop="verificationCode" v-if="this.num >= 3"  class="verification-item" >
+                              <el-input v-model="form.verification" id="verification-code" placeholder="请输入验证码">
+                              </el-input>
+                                  <span class="verification-get">验证码图片</span>
                           </el-form-item>
-                          <el-form-item class="btns">
+                          <el-form-item class="btns" :class="{titleClass}">
                               <el-button 
                               v-if="this.isNum===0 ? disabled : disabled='false'"
                               class="login-text" 
@@ -65,14 +67,14 @@ export default {
       if (reg.test(value)) {
         return callback()
       }
-      return callback(new Error('请输入十一位手机号'))
+      return callback(new Error('手机号格式不正确'))
     }
     return {
       activeName: 'first',
       form: {
         mobile: '15639782785',
         password: '123456',
-        // verification: '111',
+        verification: '1111',
       },
       // 控制title的位置
         titleClass: false,
@@ -86,10 +88,10 @@ export default {
           { required: true, message: '请输入密码', trigger: 'blur' },
           { min: 3, max: 8, message: '长度在 3 到 8 个字符', trigger: 'blur' }
         ],
-        // verificationCode: [
-        //   { required: true, message: '请输入验证码', trigger: 'blur' },
-        //   { min: 3, max: 4, message: '长度在 3 到 4个字符', trigger: 'blur' }
-        // ],
+        verificationCode: [
+          { required: true, message: '请输入验证码', trigger: 'blur' },
+          { min: 3, max: 4, message: '长度在 3 到 4个字符', trigger: 'blur' }
+        ],
       },
       // 计算登陆错误的次数
       num: 0,
@@ -124,11 +126,18 @@ export default {
               this.$message.error('您的账号已被冻结，一小时后再尝试')
             }
         }
+        // 校验手机号和密码
         const check = this.$refs.reform.model.mobile !== '15639782785' || this.$refs.reform.model.password !== '123456'
         if (check) {
           parseInt(this.num++)
           return
         }
+        // 验证码校验 
+        const checkVerification = this.$refs.reform.model.verification !== '1111'
+        if (checkVerification) {
+          return this.$message.error('验证码错误')
+        }
+
         this.$message.success('登陆验证成功')
         this.$router.push('/overview')
       })
@@ -206,7 +215,7 @@ export default {
                 position: relative;
               }
               .title {
-                margin-top: 44px;
+                margin-top: 42px;
                 width: 368px;
                 height: 28px;
                 font-size: 28px;
@@ -216,7 +225,7 @@ export default {
                 line-height: 28px;
               }
               .titleClass {
-                margin-top: 10px!important;
+                margin-top: 30px!important;
               }
               /deep/#inp {
                 padding: 0px 12px!important;
@@ -256,7 +265,7 @@ export default {
               border-radius: 2px;
               color: #ccc;
               text-align: center;
-              margin-top: 53px;
+              margin-top: 52px;
               .login-text {
               width: 100%;
               height: 24px;
@@ -275,16 +284,41 @@ export default {
             .el-button {
               width: 100%;
             }
-            // 验证码框
+            // 验证码框外层
+            .verification-item {
+              position: relative!important;
+              .verification-get {
+                position: absolute;
+                top: 8px;
+                right: 0;
+                text-align: center;
+                width: 128px;
+                height: 40px;
+                background: #FFFFFF;
+                border-radius: 2px;
+                border: 1px solid #D9D9D9;
+              }
+            }
+            // 验证码左侧框
             /deep/#verification-code {
-              width: 254px;
+              position: relative;
+              width: 184px;
               height: 40px;
               background: #FFFFFF;
               border-radius: 2px;
               border: 1px solid #D9D9D9;
-            }
+            }  
        }
     }
+    // input外层组件包裹样式清除
+    // /deep/.el-form-item {
+    //   width: 368px;
+    //   height: 40px;
+    //   background: #FFFFFF;
+    //   border-radius: 2px;
+    //   margin-top: 8px;
+    //   position: relative;
+    // }
     .login-service {
       width: 154px;
       height: 14px;
