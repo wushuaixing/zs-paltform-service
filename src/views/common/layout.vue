@@ -20,7 +20,9 @@
             <a-menu slot="overlay" >
               <a-menu-item key="1"> <a-icon type="user" />修改绑定手机号 </a-menu-item>
               <a-menu-item key="2"> <a-icon type="user" />修改登录密码 </a-menu-item>
-              <a-menu-item key="3"> <a-icon type="user" />退出登录 </a-menu-item>
+              <a-menu-item key="3">
+                <router-link to="/login"><a-icon type="user" />退出登录 </router-link>
+              </a-menu-item>
             </a-menu>
             <a-button type="link" icon="down">Hi，访问者</a-button>
           </a-dropdown>
