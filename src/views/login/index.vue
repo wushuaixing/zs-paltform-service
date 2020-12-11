@@ -34,11 +34,17 @@
                           <el-form-item prop="password">
                               <el-input v-model="form.password" type="password"  prefix-icon="el-icon-user" placeholder="请输入密码"></el-input>
                           </el-form-item>
-                          <el-form-item v-if="this.num === 3" prop="verificationCode">
+                          <el-form-item v-if="this.num >= 3" prop="verificationCode">
                               <el-input v-model="form.verification" id="verification-code" placeholder="请输入验证码"></el-input>
                           </el-form-item>
                           <el-form-item class="btns">
-                              <el-button class="login-text" type="info" @click="login">登 录</el-button>
+                              <el-button 
+                              v-if="this.isNum===0 ? disabled : disabled='false'"
+                              class="login-text" 
+                              type="info" 
+                              @click="login"
+                              plain
+                              >登 录</el-button>
                           </el-form-item>
                           <!-- 注册成为浙商资产服务商 -->
                           <div class="login-service"><u>注册成为浙商资产服务商</u></div>
@@ -66,7 +72,7 @@ export default {
       form: {
         mobile: '15639782785',
         password: '123456',
-        verification: '',
+        // verification: '111',
       },
       // 控制title的位置
         titleClass: false,
@@ -80,19 +86,20 @@ export default {
           { required: true, message: '请输入密码', trigger: 'blur' },
           { min: 3, max: 8, message: '长度在 3 到 8 个字符', trigger: 'blur' }
         ],
-        verificationCode: [
-          { required: true, message: '请输入验证码', trigger: 'blur' }
-        ],
+        // verificationCode: [
+        //   { required: true, message: '请输入验证码', trigger: 'blur' },
+        //   { min: 3, max: 4, message: '长度在 3 到 4个字符', trigger: 'blur' }
+        // ],
       },
       // 计算登陆错误的次数
-      num: 0
+      num: 0,
+      isNum:5
     }
   },
 
   created () {
 
   },
-
   methods: {
     resetForm () {
       this.$refs.reform.resetFields()
@@ -103,17 +110,25 @@ export default {
         if (!flag) return
         console.log('提交表单数据')
         console.log(this.$refs)
-        //var compute = 0
-        if (this.num == 2) {
+        if (this.num >=0&&this.num<=3) {
+          this.$message.error('账号或者密码错误')
+        }
+        if (this.num >= 2) {
             console.log('输入3次了');
             this.titleClass = true
+            if (this.num>=4&&this.num<9) {
+              this.$message.error(`账号或者密码错误，您还可以尝试${this.isNum}次`)
+              parseInt(this.isNum--)
+            }
+            if (this.num>=9) {
+              this.$message.error('您的账号已被冻结，一小时后再尝试')
+            }
         }
-        if (this.$refs.reform.model.mobile !== '15639782785' || this.$refs.reform.model.password !== '123456') {
+        const check = this.$refs.reform.model.mobile !== '15639782785' || this.$refs.reform.model.password !== '123456'
+        if (check) {
           parseInt(this.num++)
-          this.$message.error('账号或者密码错误')
           return
         }
-        
         this.$message.success('登陆验证成功')
         this.$router.push('/overview')
       })
