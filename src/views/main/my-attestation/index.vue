@@ -13,6 +13,7 @@
 
 <script>
 import Breadcrumb from '@/components/bread-crumb';
+const reg = new RegExp('/attest/qualifies');
 export default {
   name: 'myAttestation',
   nameComment: '我的认证',
@@ -28,7 +29,7 @@ export default {
   },
   created() {
     const { path } =this.$route;
-    this.routeState = new RegExp('/attestation/qualifies').test(path)?1:2;
+    this.routeState = reg.test(path)?1:2;
   },
   components:{
     Breadcrumb
@@ -36,7 +37,7 @@ export default {
   watch:{
     $route(to,from){
       // console.log("to.path",to.path,from.path);
-      if(to.path !== from.path) this.routeState = new RegExp('/attestation/qualification').test(this.$route.path)?1:2;
+      if(to.path !== from.path) this.routeState = reg.test(this.$route.path)?1:2;
     }
   }
 }
@@ -47,8 +48,8 @@ export default {
   height: 100%;
   display: flex;
   flex-direction: column;
+  padding: 16px;
   .attest-content{
-    padding: 16px;
     flex: 1;
   }
 }

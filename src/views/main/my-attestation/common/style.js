@@ -1,6 +1,6 @@
 export const baseWidth = {
 	style:{
-		width:'650px'
+		width:'677px'
 	}
 }
 export const textarea = {
@@ -9,6 +9,6 @@ export const textarea = {
 }
 
 export const formItemLayout =  {
-	labelCol: { span: 6 },
-	wrapperCol: { span: 18 },
+	labelCol: { span: 5 },
+	wrapperCol: { span: 19 },
 };

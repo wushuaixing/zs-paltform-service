@@ -1,6 +1,20 @@
 <template>
-  <a-affix :offset-top="64">
-    <div class="bread-crumb-wrapper">
+  <div>
+    <a-affix :offset-top="64" v-if="fixed">
+      <div class="bread-crumb-wrapper">
+        <a-icon :type="icon" v-if="icon" class="bread-crumb-icon"/>
+        <a-breadcrumb class="bread-crumb">
+          <a-breadcrumb-item v-for="item in source" :key="item.id">
+            <router-link :to="item.path" v-if="item.path">{{ item.title }}</router-link>
+            <span v-else>{{ item.title }}</span>
+          </a-breadcrumb-item>
+        </a-breadcrumb>
+        <div class="bread-crumb-slot" >
+          <slot name="suffix"/>
+        </div>
+      </div>
+    </a-affix>
+    <div class="bread-crumb-wrapper" v-if="!fixed">
       <a-icon :type="icon" v-if="icon" class="bread-crumb-icon"/>
       <a-breadcrumb class="bread-crumb">
         <a-breadcrumb-item v-for="item in source" :key="item.id">
@@ -12,7 +26,8 @@
         <slot name="suffix"/>
       </div>
     </div>
-  </a-affix>
+  </div>
+
 </template>
 
 <script>
@@ -30,6 +45,10 @@ export default {
       type:String,
       default:'environment',
     },
+    fixed:{
+      type: Boolean,
+      default: false,
+    }
   }
 }
 </script>

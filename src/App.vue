@@ -26,5 +26,10 @@ export default {
   height: 100vh;
   min-width: 1200px;
 }
+input::placeholder {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  color: #BFBFBF !important;
+}
 </style>
 

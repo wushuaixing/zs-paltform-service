@@ -8,8 +8,12 @@ export const areaOption = [
 				label: 'Hangzhou',
 				children: [
 					{
-						value: 'xihu',
-						label: 'West Lake',
+						value: 'xihu1',
+						label: 'West Lake1',
+					},
+					{
+						value: 'xihu2',
+						label: 'West Lake2',
 					},
 				],
 			},

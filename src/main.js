@@ -4,9 +4,12 @@ import Antd,{Form} from 'ant-design-vue';
 import router from './router'
 import store from './plugin/store'
 import 'ant-design-vue/dist/antd.css';
+import { Cascader } from 'element-ui'
+// import 'element-ui/lib/theme-chalk/index.css';
 
 Vue.config.productionTip = false;
 Vue.use(Antd);
+Vue.use(Cascader);
 Vue.prototype.$form = Form
 
 const Version = 'v1.0.0';
