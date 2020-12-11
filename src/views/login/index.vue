@@ -67,10 +67,9 @@ export default {
         mobile: '15639782785',
         password: '123456',
         verification: '',
-        // 控制title的位置
-        titleClass: false
-
       },
+      // 控制title的位置
+        titleClass: false,
       // 定义校验规则
       rules: {
         mobile: [
@@ -106,7 +105,7 @@ export default {
         console.log(this.$refs)
         //var compute = 0
         if (this.num == 2) {
-            console.log('3次了');
+            console.log('输入3次了');
             this.titleClass = true
         }
         if (this.$refs.reform.model.mobile !== '15639782785' || this.$refs.reform.model.password !== '123456') {
@@ -202,7 +201,7 @@ export default {
                 line-height: 28px;
               }
               .titleClass {
-                margin-top: 1px!important;
+                margin-top: 10px!important;
               }
               /deep/#inp {
                 padding: 0px 12px!important;
