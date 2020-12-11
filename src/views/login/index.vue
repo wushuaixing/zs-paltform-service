@@ -5,7 +5,7 @@
           </div>
              <!-- 表单区域 -->
             <div class="login-content">
-              <div class="title">浙商资产服务商招募管理系统</div>
+              <div class="title" :class="{titleClass}">浙商资产服务商招募管理系统</div>
                 <el-tabs v-model="activeName" @tab-click="handleClick" class="tabs" >
                   <el-tab-pane class="q-login" label="快捷登录" name="first">
                     <el-form ref="reform" :model="form" class="login-form" :rules="rules">
@@ -35,7 +35,7 @@
                               <el-input v-model="form.password" type="password"  prefix-icon="el-icon-user" placeholder="请输入密码"></el-input>
                           </el-form-item>
                           <el-form-item v-if="this.num === 3" prop="verificationCode">
-                              <el-input v-model="form.sure" class="verification-code" placeholder="请输入验证码"></el-input>
+                              <el-input v-model="form.verification" id="verification-code" placeholder="请输入验证码"></el-input>
                           </el-form-item>
                           <el-form-item class="btns">
                               <el-button class="login-text" type="info" @click="login">登 录</el-button>
@@ -59,14 +59,16 @@ export default {
       if (reg.test(value)) {
         return callback()
       }
-      return callback(new Error('手机号为11位数值'))
+      return callback(new Error('请输入十一位手机号'))
     }
     return {
       activeName: 'first',
       form: {
         mobile: '15639782785',
         password: '123456',
-        verificationCode: ''
+        verification: '',
+        // 控制title的位置
+        titleClass: false
 
       },
       // 定义校验规则
@@ -84,8 +86,7 @@ export default {
         ],
       },
       // 计算登陆错误的次数
-      num: 0,
-      disabled: false
+      num: 0
     }
   },
 
@@ -106,6 +107,7 @@ export default {
         //var compute = 0
         if (this.num == 2) {
             console.log('3次了');
+            this.titleClass = true
         }
         if (this.$refs.reform.model.mobile !== '15639782785' || this.$refs.reform.model.password !== '123456') {
           parseInt(this.num++)
@@ -127,10 +129,6 @@ export default {
 </script>
 
 <style scoped lang='scss'>
-
-    .is-top{
-      width: 100px;
-    }
     .login-container {
         position: relative;
         height: 100%;
@@ -203,6 +201,9 @@ export default {
                 color: #086DD9;
                 line-height: 28px;
               }
+              .titleClass {
+                margin-top: 1px!important;
+              }
               /deep/#inp {
                 padding: 0px 12px!important;
               }
@@ -261,8 +262,12 @@ export default {
               width: 100%;
             }
             // 验证码框
-            /deep/.verification-code {
-              width: 100px;
+            /deep/#verification-code {
+              width: 254px;
+              height: 40px;
+              background: #FFFFFF;
+              border-radius: 2px;
+              border: 1px solid #D9D9D9;
             }
        }
     }
