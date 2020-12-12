@@ -88,10 +88,10 @@ export default {
           { required: true, message: '请输入密码', trigger: 'blur' },
           { min: 3, max: 8, message: '长度在 3 到 8 个字符', trigger: 'blur' }
         ],
-        verificationCode: [
-          { required: true, message: '请输入验证码', trigger: 'blur' },
-          { min: 3, max: 4, message: '长度在 3 到 4个字符', trigger: 'blur' }
-        ],
+        // verificationCode: [
+        //   { required: true, message: '请输入验证码', trigger: 'blur' },
+        //   { min: 3, max: 4, message: '长度在 3 到 4个字符', trigger: 'blur' }
+        // ],
       },
       // 计算登陆错误的次数
       num: 0,
