@@ -13,7 +13,7 @@
                               <el-input v-model="form.mobile" class="input" placeholder="请输入手机号" prefix-icon="el-icon-user"></el-input>
                             </el-form-item>
                             <el-form-item prop="verificationCode">
-                                <el-input placeholder="请输入验证码" id="inp" >
+                                <el-input placeholder="请输入验证码" id="inp" v-model="form.verificationCode" >
                                   <template slot="suffix" width="200px">
                                     <div class="checking" @click="test">获取验证码</div>
                                   </template>
@@ -26,7 +26,7 @@
                           <div class="login-service"><u>注册成为浙商资产服务商</u></div>
                         </el-form>
                     </el-tab-pane>
-                    <el-tab-pane label="密码登录" name="second">
+                    <el-tab-pane label="密码登录" name="second" >
                         <el-form ref="reform" :model="form" class="login-form" :rules="rules">
                           <el-form-item prop="mobile">
                               <el-input v-model="form.mobile" prefix-icon="el-icon-user" placeholder="请输入手机号"></el-input>
@@ -34,8 +34,8 @@
                           <el-form-item prop="password">
                               <el-input v-model="form.password" type="password"  prefix-icon="el-icon-user" placeholder="请输入密码"></el-input>
                           </el-form-item>
-                          <el-form-item prop="verificationCode" v-if="this.num >= 3"  class="verification-item" >
-                              <el-input v-model="form.verification" id="verification-code" placeholder="请输入验证码">
+                          <el-form-item prop="verificationCode" v-if="num >= 3"  class="verification-item" >
+                              <el-input v-model="form.verificationCode" id="verification-code" placeholder="请输入验证码">
                               </el-input>
                                   <span class="verification-get">验证码图片</span>
                           </el-form-item>
@@ -70,11 +70,11 @@ export default {
       return callback(new Error('手机号格式不正确'))
     }
     return {
-      activeName: 'first',
+      activeName: 'second',
       form: {
         mobile: '15639782785',
         password: '123456',
-        verification: '1111',
+        verificationCode: '1111',
       },
       // 控制title的位置
         titleClass: false,
@@ -88,10 +88,10 @@ export default {
           { required: true, message: '请输入密码', trigger: 'blur' },
           { min: 3, max: 8, message: '长度在 3 到 8 个字符', trigger: 'blur' }
         ],
-        // verificationCode: [
-        //   { required: true, message: '请输入验证码', trigger: 'blur' },
-        //   { min: 3, max: 4, message: '长度在 3 到 4个字符', trigger: 'blur' }
-        // ],
+        verificationCode: [
+          { required: true, message: '请输入验证码', trigger: 'blur' },
+          { min: 3, max: 4, message: '长度在 3 到 4个字符', trigger: 'blur' }
+        ],
       },
       // 计算登陆错误的次数
       num: 0,
@@ -112,7 +112,7 @@ export default {
         if (!flag) return
         console.log('提交表单数据')
         console.log(this.$refs)
-        if (this.num >=0&&this.num<=3) {
+        if (this.num >0&&this.num<=2) {
           this.$message.error('账号或者密码错误')
         }
         if (this.num >= 2) {
@@ -124,16 +124,22 @@ export default {
             }
             if (this.num>=9) {
               this.$message.error('您的账号已被冻结，一小时后再尝试')
+              return false
             }
         }
+        
         // 校验手机号和密码
         const check = this.$refs.reform.model.mobile !== '15639782785' || this.$refs.reform.model.password !== '123456'
         if (check) {
+          if (this.num === 0) {
+            this.$message.error('账号或者密码错误')
+          }
           parseInt(this.num++)
           return
-        }
+        } 
+        console.log(23);
         // 验证码校验 
-        const checkVerification = this.$refs.reform.model.verification !== '1111'
+        const checkVerification = this.form.verificationCode !== '1111'
         if (checkVerification) {
           return this.$message.error('验证码错误')
         }
@@ -143,7 +149,9 @@ export default {
       })
     },
     // 点击tab触发
-    handleClick () {},
+    handleClick () {
+      // this.form.password= ''
+    },
     test () {
       console.log("点击");
     }
