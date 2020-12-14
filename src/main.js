@@ -5,22 +5,15 @@ import router from './router'
 import store from './plugin/store'
 import 'ant-design-vue/dist/antd.css';
 import { Cascader } from 'element-ui';
-import request from "@/plugin/tools/request";
+import { install, filter } from "./plugin/library";
+import './version';
 // import 'element-ui/lib/theme-chalk/index.css';
 
-Vue.config.productionTip = false;
 Vue.use(Antd);
 Vue.use(Cascader);
+Vue.use(install, filter);
 Vue.prototype.$form = Form;
-Vue.prototype.$req = request;
-
-const Version = 'v1.0.0';
-const BetaNumber = '.1';
-const info = `Version：${Version}${BetaNumber ? `-beta${BetaNumber}` : ''}`;
-window.CurrentVersions = info;
-if (window.location.protocol === 'http:') {
-  console.info(info);
-}
+Vue.config.productionTip = false;
 
 new Vue({
   router,
