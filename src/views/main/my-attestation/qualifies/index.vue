@@ -64,7 +64,7 @@
           <ul class="item-list">
             <li>个人身份信息及联系方式</li>
             <li>从业资格证</li>
-            <li>保密承诺函(需下载打印并盖公章)</li>
+            <li>保密承诺函(需下载打印并盖签字)</li>
           </ul>
           <a-button type="primary">点击进入</a-button>
         </div>

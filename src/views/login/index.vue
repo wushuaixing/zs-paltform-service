@@ -119,8 +119,11 @@ export default {
         }
         else if (this.num >= 2) {
             // console.log('输入3次了');
+            if(this.num>=3&&this.num<4){
+              this.$message.error('账号或者密码错误')
+            }
             this.titleClass = true
-            if (this.num>=4&&this.num<=9) {
+            if (this.num>=4&&this.num<9) {
               if(normal) {
                 this.$message.success('登陆验证成功')
                 this.$router.push('/overview')
