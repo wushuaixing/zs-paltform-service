@@ -4,7 +4,6 @@ const basCol={
 	normal:[
 		{
 			title: '债务人名称',
-			dataIndex: 'name',
 			key: 'debtor',
 			scopedSlots: { customRender: 'debtor' },
 		},
@@ -56,6 +55,7 @@ export const columns ={
 			sorter: true,
 			dataIndex: 'updateTime',
 			key: 'updateTime',
+			scopedSlots: { customRender: 'datetime' },
 		},
 		basCol.auction,
 	],
@@ -66,6 +66,7 @@ export const columns ={
 			dataIndex: 'signDate',
 			key: 'signDate',
 			sorter: true,
+			scopedSlots: { customRender: 'datetime' },
 		},
 		{
 			title:'服务期限',
@@ -92,6 +93,7 @@ export const columns ={
 			dataIndex: 'abaDate',
 			key: 'abaDate',
 			sorter: true,
+			scopedSlots: { customRender: 'datetime' },
 		},
 		basCol.auction,
 	],
@@ -103,6 +105,7 @@ export const columns ={
 			dataIndex: 'failDate',
 			key: 'failDate',
 			sorter: true,
+			scopedSlots: { customRender: 'datetime' },
 		},
 		basCol.auction
 	]

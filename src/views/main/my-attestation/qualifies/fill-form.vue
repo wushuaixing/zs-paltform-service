@@ -1,7 +1,7 @@
 <template>
-  <div class="qualifies-form-wrapper">
+  <div class="qualifies-form-wrapper attest-form">
     <slot name="title"/>
-    <a-form v-bind="formItemLayout" :form="form" autocomplete="off" v-if="false">
+    <a-form v-bind="formItemLayout" :form="form" autocomplete="off" v-if="userType ==='org'">
       <a-form-item :label="org.name.label">
         <a-input v-decorator="org.name.dec" v-bind="org.name.other"/>
       </a-form-item>
@@ -13,7 +13,7 @@
       </a-form-item>
       <a-form-item :label="org.license.label">
         <div class="fill-form-upload-wrapper">
-          <a-upload v-decorator="law.license.dec" v-bind="law.letter.other" class="upload-wrapper">
+          <a-upload v-decorator="org.license.dec" v-bind="org.letter.other" class="upload-wrapper">
             <div class="upload-container">
               <a-icon type="plus" />
             </div>
@@ -25,7 +25,7 @@
       </a-form-item>
       <a-form-item :label="org.letter.label">
         <div class="fill-form-upload-wrapper">
-          <a-upload v-decorator="law.letter.dec" v-bind="law.letter.other" class="upload-wrapper">
+          <a-upload v-decorator="org.letter.dec" v-bind="org.letter.other" class="upload-wrapper">
             <div class="upload-container">
               <a-icon type="plus" />
             </div>
@@ -37,7 +37,7 @@
         </div>
       </a-form-item>
     </a-form>
-    <a-form v-bind="formItemLayout" :form="form" autocomplete="off">
+    <a-form v-bind="formItemLayout" :form="form" autocomplete="off" v-if="userType ==='lawyer'">
       <a-form-item :label="law.name.label">
         <a-input v-decorator="law.name.dec" v-bind="law.name.other"/>
       </a-form-item>
@@ -122,10 +122,10 @@
           </div>
         </div>
       </a-form-item>
-    </a-form>
-    <a-form-item label=" " v-bind="formItemLayout">
+    </a-form >
+    <a-form-item label=" " v-bind="formItemLayout" class="form-item-no-title">
       <a-space>
-        <a-button type="primary" @click="getFieldFiles('license')">确认无误并提交</a-button>
+        <a-button type="primary" @click="handleSubmit">确认无误并提交</a-button>
         <a-button type="primary" >保存</a-button>
         <a-button >取消</a-button>
       </a-space>
@@ -387,6 +387,7 @@ export default {
   },
   created() {
     this.form = this.$form.createForm(this);
+    console.log(this.userType);
   },
   methods:{
     validateToNextPassword(rule, value, callback) {
@@ -411,6 +412,14 @@ export default {
       const { getFieldValue } = this.form;
       this.fileLists= getFieldValue(field).fileList.length;
       console.log(this.fileLists);
+    },
+    handleSubmit(e) {
+      e.preventDefault();
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          console.log('Received values of form: ', values);
+        }
+      });
     },
   },
 }

@@ -34,24 +34,25 @@
           </a-tabs>
           <div class="biding-content-table">
             <a-table :columns="columns" v-bind="tabConfig" @change="handleTableChange">
+              <template slot="debtor" slot-scope="{name}">
+                <span>{{name}}</span>
+              </template>
               <template slot="amount" slot-scope="amount">{{amount|amountTh}}</template>
               <template slot="advance" slot-scope="{advance,advanceLast}">
                 <a-avatar :size="6" :style="{backgroundColor: advance===2?'#f5222d':'#1890ff',marginRight:'5px'}"/>
                 {{advance|evolveType}}<br>
                 <a-tag color="#f50" v-if="advanceLast">方案提交即将截止</a-tag>
               </template>
-              <template slot="auction" slot-scope="item">
-                <span>{{item.user}}</span>
-              </template>
+              <template slot="datetime" slot-scope="time">{{time}}</template>
               <template slot="auction" slot-scope="item">
                 <a-button type="link" size="small" icon="file-text" @click="handleAuction(item,'view')">查看详情</a-button>
                 <template v-if="query.tabStatus === 1">
-                  <a-divider type="vertical" />
+                  <a-divider type="vertical" style="margin:0"/>
                   <a-tooltip title="方案提交已截止" v-if="!item.behind">
                     <a-button type="link" size="small" icon="file-text" disabled class="common-table-disabled">方案报送</a-button>
                   </a-tooltip>
                   <a-button type="link" size="small" icon="file-text" v-else @click="handleAuction(item,'sub')" >方案报送</a-button>
-                  <a-divider type="vertical" />
+                  <a-divider type="vertical" style="margin:0"/>
                   <a-button type="link" size="small" icon="file-text" @click="handleAuction(item,'fail')">放弃竞标</a-button>
                 </template>
               </template>
@@ -60,7 +61,6 @@
         </div>
       </div>
     </div>
-    <div style="height: 90vh;"></div>
   </div>
 </template>
 

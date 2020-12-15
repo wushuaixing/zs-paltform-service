@@ -1,94 +1,103 @@
 <template>
   <div class="qualifies-wrapper">
     <a-spin :spinning="spinning" class="spin-wrapper" tip="Loading......"/>
-    <div class="qualifies-item qualifies-status" v-if="false">
-      <div class="item-title">
-        <span>我的服务商身份：</span>
-        <a-icon type="trademark" :style="{fontSize:'32px'}"/>
-      </div>
-      <div class="status-content">
-        <div>您尚未完成要素认证，继续完成要素认证，即可查看浙商资产招商项目！</div>
-        <a-button type="primary">立即前往要素认证</a-button>
-      </div>
-    </div>
-    <div class="qualifies-info" v-if="false">
-      <div class="info-button">
-        <a-button>编辑我的资质信息</a-button>
-      </div>
-      <div class="info-item">
-        <div class="info-item_title">我的资质认证信息</div>
-        <div class="info-item_list">
-          <div class="info-item_list-title ele-important">机构名称</div>
-          <div class="info-item_list-content">鸿达资产管理有限公司</div>
+    <template v-if="!spinning">
+      <!--  选择身份：  -->
+      <div class="qualifies-item qualifies-choose" v-if="attestStatus === 'not'">
+        <div class="item-title">
+          <span>请选择您的服务商身份：</span>
         </div>
-        <div class="info-item_list">
-          <div class="info-item_list-title ele-important">邮箱地址</div>
-          <div class="info-item_list-content">17137246841@hd.com</div>
-        </div>
-        <div class="info-item_list">
-          <div class="info-item_list-title ele-important">备用邮箱</div>
-          <div class="info-item_list-content">-</div>
-        </div>
-        <div class="info-item_list">
-          <div class="info-item_list-title ele-important">营业执照</div>
-          <div class="info-item_list-content">-</div>
-        </div>
-        <div class="info-item_list">
-          <div class="info-item_list-title ele-important">保密承诺函</div>
-          <div class="info-item_list-content">-</div>
-        </div>
-      </div>
-      <div class="info-item">
-        <div class="info-item_title">当前联络人信息</div>
-        <div class="info-item_list">
-          <div class="info-item_list-title ele-important">联络人姓名</div>
-          <div class="info-item_list-content">鸿达资产管理有限公司</div>
-        </div>
-        <div class="info-item_list">
-          <div class="info-item_list-title ele-important">手机号码</div>
-          <div class="info-item_list-content">17137246841
-            <span class="remark">*若需要更改联络人手机号码请至个人中心更改绑定手机号</span>
+        <div class="choose-content">
+          <div class="choose-item" @click="handleChoose('lawyer')">
+            <a-icon type="trademark" :style="{fontSize:'145px'}"/>
+            <div class="item-name">律师</div>
+            <div class="item-remark"></div>
+            <ul class="item-list">
+              <li>个人身份信息及联系方式</li>
+              <li>从业资格证</li>
+              <li>保密承诺函(需下载打印并盖公章)</li>
+            </ul>
+            <a-button type="primary">点击进入</a-button>
+          </div>
+          <div class="choose-item" @click="handleChoose('org')">
+            <a-icon type="trademark" :style="{fontSize:'145px'}"/>
+            <div class="item-name">机构</div>
+            <div class="item-remark">*个人若为机构员工，请以机构名义报名</div>
+            <ul class="item-list">
+              <li>机构信息及联系方式</li>
+              <li>营业执照</li>
+              <li>保密承诺函(需下载打印并盖公章)</li>
+            </ul>
+            <a-button type="primary">点击进入</a-button>
           </div>
         </div>
       </div>
-    </div>
-    <div class="qualifies-item qualifies-choose" v-if="false">
-      <div class="item-title">
-        <span>请选择您的服务商身份：</span>
-      </div>
-      <div class="choose-content">
-        <div class="choose-item">
-          <a-icon type="trademark" :style="{fontSize:'145px'}"/>
-          <div class="item-name">律师</div>
-          <div class="item-remark"></div>
-          <ul class="item-list">
-            <li>个人身份信息及联系方式</li>
-            <li>从业资格证</li>
-            <li>保密承诺函(需下载打印并盖公章)</li>
-          </ul>
-          <a-button type="primary">点击进入</a-button>
+      <!--  填写信息：  -->
+      <FillForm v-if="attestStatus === 'wait'" :userType="identity">
+        <div class="qualifies-item" slot="title">
+          <div class="item-title item-title_no-border">
+            <span>您当前选择的服务商身份为：</span>
+            <a-icon type="trademark" :style="{fontSize:'32px'}"/>
+            <span style="margin-left: 10px">{{identity}}</span>
+            <a-button style="float:right" @click="stepBack">上一步</a-button>
+          </div>
         </div>
-        <div class="choose-item">
-          <a-icon type="trademark" :style="{fontSize:'145px'}"/>
-          <div class="item-name">机构</div>
-          <div class="item-remark">*个人若为机构员工，请以机构名义报名</div>
-          <ul class="item-list">
-            <li>机构信息及联系方式</li>
-            <li>营业执照</li>
-            <li>保密承诺函(需下载打印并盖公章)</li>
-          </ul>
-          <a-button type="primary">点击进入</a-button>
+      </FillForm>
+      <!--  信息展示：含提示  -->
+      <template v-if="attestStatus === 'yet'">
+        <div class="qualifies-item qualifies-status">
+          <div class="item-title">
+            <span>我的服务商身份：</span>
+            <a-icon type="trademark" :style="{fontSize:'32px'}"/>
+          </div>
+          <div class="status-content">
+            <div>您尚未完成要素认证，继续完成要素认证，即可查看浙商资产招商项目！</div>
+            <a-button type="primary">立即前往要素认证</a-button>
+          </div>
         </div>
-      </div>
-    </div>
-    <FillForm v-if="true">
-      <div class="qualifies-item" slot="title">
-        <div class="item-title item-title_no-border">
-          <span>我的服务商身份：</span>
-          <a-icon type="trademark" :style="{fontSize:'32px'}"/>
+        <div class="qualifies-info">
+          <div class="info-button">
+            <a-button>编辑我的资质信息</a-button>
+          </div>
+          <div class="info-item">
+            <div class="info-item_title">我的资质认证信息</div>
+            <div class="info-item_list">
+              <div class="info-item_list-title ele-important">机构名称</div>
+              <div class="info-item_list-content">鸿达资产管理有限公司</div>
+            </div>
+            <div class="info-item_list">
+              <div class="info-item_list-title ele-important">邮箱地址</div>
+              <div class="info-item_list-content">17137246841@hd.com</div>
+            </div>
+            <div class="info-item_list">
+              <div class="info-item_list-title ele-important">备用邮箱</div>
+              <div class="info-item_list-content">-</div>
+            </div>
+            <div class="info-item_list">
+              <div class="info-item_list-title ele-important">营业执照</div>
+              <div class="info-item_list-content">-</div>
+            </div>
+            <div class="info-item_list">
+              <div class="info-item_list-title ele-important">保密承诺函</div>
+              <div class="info-item_list-content">-</div>
+            </div>
+          </div>
+          <div class="info-item">
+            <div class="info-item_title">当前联络人信息</div>
+            <div class="info-item_list">
+              <div class="info-item_list-title ele-important">联络人姓名</div>
+              <div class="info-item_list-content">鸿达资产管理有限公司</div>
+            </div>
+            <div class="info-item_list">
+              <div class="info-item_list-title ele-important">手机号码</div>
+              <div class="info-item_list-content">17137246841
+                <span class="remark">*若需要更改联络人手机号码请至个人中心更改绑定手机号</span>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </FillForm>
+      </template>
+    </template>
   </div>
 </template>
 
@@ -99,7 +108,9 @@ export default {
   nameComment: '资质认证',
   data() {
     return {
+      // not 未认证 wait 认证中 yet 已填写
       attestStatus:'not',
+      identity:'',
       spinning:true,
     };
   },
@@ -107,10 +118,27 @@ export default {
     FillForm
   },
   methods:{
+    handleChoose(val){
+      this.attestStatus = 'wait';
+      this.identity = val;
+    },
+    stepBack(){
+      const _this = this;
+      this.$confirm({
+        title: '确定返回服务商身份选择吗？',
+        content: '返回后，将清空当前填写的所有内容。',
+        onOk() {
+          _this.attestStatus = 'not';
+          _this.identity = '';
+        },
+        onCancel() {},
+      });
+    }
 
   },
   mounted() {
     console.log('当前未认证！=== not ');
+    console.log(this.$store.state);
     setTimeout(()=>{
       this.spinning = false;
     },300)

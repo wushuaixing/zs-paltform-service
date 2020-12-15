@@ -67,5 +67,10 @@ export default {
     margin-top: 0;
     min-height: 25px;
   }
+  .form-item-no-title{
+    .ant-form-item-label label:after{
+      content:' '
+    }
+  }
 }
 </style>
