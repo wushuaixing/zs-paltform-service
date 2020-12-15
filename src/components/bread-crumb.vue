@@ -60,7 +60,7 @@ export default {
     line-height: 20px;
     font-size: 14px;
     background-color: #ffffff;
-
+    border-bottom: 1px solid $border-base;
     .bread-crumb {
       display: inline-block;
 
