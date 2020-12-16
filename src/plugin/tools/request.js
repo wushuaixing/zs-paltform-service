@@ -1,5 +1,4 @@
 import axios from 'axios';
-// const BASE_URL = 'http://172.18.255.170:10002';
 
 /* =========  常规请求   ========= */
 const request = axios.create({

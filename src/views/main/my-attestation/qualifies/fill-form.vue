@@ -137,7 +137,6 @@
 
 <script>
 
-// const uploadType =['application/pdf','image/*']
 export default {
   name: 'FillForm',
   nameComment: '机构或律师（表单填写）',
@@ -397,7 +396,6 @@ export default {
   },
   created() {
     this.form = this.$form.createForm(this);
-    console.log(this.append);
   },
   methods:{
     validateToNextPassword(rule, value, callback) {
