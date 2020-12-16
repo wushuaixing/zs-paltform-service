@@ -18,13 +18,13 @@
           <a-dropdown :trigger="['click']" placement="bottomRight" size="large"
                       :getPopupContainer="e=>e.parentElement" >
             <a-menu slot="overlay" >
-              <a-menu-item key="1"> <a-icon type="user" />修改绑定手机号 </a-menu-item>
-              <a-menu-item key="2"> <a-icon type="user" />修改登录密码 </a-menu-item>
+              <a-menu-item key="1"><a-icon type="user" />修改绑定手机号 </a-menu-item>
+              <a-menu-item key="2"><a-icon type="user" />修改登录密码 </a-menu-item>
               <a-menu-item key="3">
                 <router-link to="/login"><a-icon type="user" />退出登录 </router-link>
               </a-menu-item>
             </a-menu>
-            <a-button type="link" icon="down">Hi，访问者</a-button>
+            <a-button type="link" icon="down">Hi，{{username}}</a-button>
           </a-dropdown>
         </div>
       </a-layout-header>
@@ -34,18 +34,21 @@
   </div>
 </template>
 <script>
+import { getInfo} from "@/plugin/api/base";
+
 export default {
   data() {
     return {
       loading:true,
-      selectedKey:'a'
+      selectedKey:'a',
+      info:{},
     };
   },
   components: {
   },
   created() {
     const { pathname } = window.location;
-    if(/center/.test(pathname))this.selectedKey='b';
+    if(/center/.test(pathname))this.selectedKey = 'b';
     setTimeout(()=>{
       this.loading = false;
     },500)
@@ -53,6 +56,15 @@ export default {
   mounted() {
     console.log('默认页面：首次加载！');
     console.log('检查校验：判断及检查相关token信息！');
+    getInfo().then(res=>{
+      this.$store.commit('updateInfo', res.data);
+    }).catch(err=>{console.log(err)})
+  },
+  computed:{
+    username(){
+      return this.$store.getters.getInfo.username;
+    }
+
   }
 };
 </script>
