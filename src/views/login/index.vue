@@ -27,7 +27,7 @@
 
 <script>
 import {login} from "@/plugin/api/login";
-
+import { encryptInfo } from "@/plugin/tools/encrypt";
 export default {
   name: 'LoginView',
   data() {
@@ -47,6 +47,9 @@ export default {
   },
   methods: {
     handleSubmit() {
+      console.log(encryptInfo({
+        password:'123456'
+      }));
       login(this.login).then(res=>{
         console.log(res);
       })

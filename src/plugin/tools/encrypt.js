@@ -1,4 +1,4 @@
-import {JSEncrypt} from 'jsencrypt';
+import CryptoJS from 'crypto-js';
 
 /**
  * 加密字符串
@@ -6,13 +6,11 @@ import {JSEncrypt} from 'jsencrypt';
  * @returns {PromiseLike<ArrayBuffer>}
  */
 const rsaEncrypt = (str) => {
-	const publicKey = `MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDle/hFqi80v633AqkjnkZPzVu2
-waST+cNVe1gEcDNq6tifFpjjyfXXAEtXD8pAAv6zl0nuFFT9CSOPuAq0kdUc70vT
-1jxTMkK0H9iZ74pN4zTu1gsG+RrIcMHKjFFsBrF/D2dI4TJ4ZjMhcxcXuTsNHJ0q
-H5e2bLq6VSELhY5PzQIDAQAB`;
-	const encrypt = new JSEncrypt();
-	encrypt.setPublicKey(publicKey);
-	return encrypt.encrypt(str);
+	const key = CryptoJS.enc.Utf8.parse("462F8DC4324C7641");
+	const encrypted = CryptoJS.AES.encrypt(str, key, {
+		mode:CryptoJS.mode.ECB,
+		padding: CryptoJS.pad.Pkcs7});
+	return encrypted.toString();
 };
 
 /**
@@ -20,7 +18,6 @@ H5e2bLq6VSELhY5PzQIDAQAB`;
  * @param info
  * @returns {{password: (PromiseLike<ArrayBuffer>|string)}}
  */
-const encryptInfo = (info = {}) => Object.assign({},info,{
+export const encryptInfo = (info = {}) => Object.assign({},info,{
 	password:info.password ? rsaEncrypt(info.password) : '',
-})
-export default encryptInfo;
+});
