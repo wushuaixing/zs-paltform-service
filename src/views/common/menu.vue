@@ -64,16 +64,16 @@ export default {
   methods:{
     getSelectKey(path){
       let defaultKey = '1';
-      let childKey= '1';
+      let childKey = '1';
       this.source.filter(i=>i.path).forEach(i=>{
-        if(new RegExp('^'+i.path).test(path)){
-          defaultKey=i.id;
-          (i.child||[]).filter(i=>i.path).forEach(item=>{
-            if(new RegExp('^'+i.path+item.path).test(path)) childKey=item.id;
+        if(new RegExp('^' + i.path).test(path)){
+          defaultKey = i.id;
+          (i.child || []).filter(i=>i.path).forEach(item=>{
+            if(new RegExp('^' + i.path + item.path).test(path)) childKey = item.id;
           })
         }
       })
-      return [defaultKey+childKey];
+      return [defaultKey + childKey];
     }
   },
   created() {

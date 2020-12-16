@@ -76,9 +76,9 @@ export default {
   },
   watch:{
     loading:(oldVal,newVal)=>{
-      if(oldVal!== newVal){
+      if(oldVal !== newVal){
         if(!this.myChart) this.drawInit();
-        newVal ? this.myChart.clear(): this.drawLine();
+        newVal ? this.myChart.clear() : this.drawLine();
       }
     },
   },

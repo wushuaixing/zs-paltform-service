@@ -28,8 +28,8 @@ export default {
     };
   },
   created() {
-    const { path } =this.$route;
-    this.routeState = reg.test(path)?1:2;
+    const { path } = this.$route;
+    this.routeState = reg.test(path) ? 1 : 2;
   },
   components:{
     Breadcrumb
@@ -37,7 +37,7 @@ export default {
   watch:{
     $route(to,from){
       // console.log("to.path",to.path,from.path);
-      if(to.path !== from.path) this.routeState = reg.test(this.$route.path)?1:2;
+      if(to.path !== from.path) this.routeState = reg.test(this.$route.path) ? 1 : 2;
     }
   }
 }

@@ -1,6 +1,6 @@
 
 // table 的表格头
-const basCol={
+const basCol = {
 	normal:[
 		{
 			title: '债务人名称',
@@ -36,7 +36,7 @@ const basCol={
 		key: 'auction',
 	},
 };
-export const columns ={
+export const columns = {
 	'ing':[
 		...basCol.normal,
 		basCol.guaranty,

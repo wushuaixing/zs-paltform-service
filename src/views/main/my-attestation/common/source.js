@@ -44,7 +44,7 @@ export const orgAdvType = [
 	{ id: 0, label: '其他', value: 'else' },
 ];
 // 从业不良时间经验
-export const expOption =[
+export const expOption = [
 	{ id: 2, label: '1年以内', value: '2' },
 	{ id: 3, label: '1-3年', value: '3' },
 	{ id: 1, label: '3年以上', value: '4' },

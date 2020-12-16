@@ -150,7 +150,7 @@ export default {
     },
     handleUpdate(){
       if(!this.contacts_name) return this.$message.error('联系名称不能为空！');
-      this.contacts.name=this.contacts_name;
+      this.contacts.name = this.contacts_name;
       this.editStatus = false;
     }
 

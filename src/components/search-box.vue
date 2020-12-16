@@ -44,20 +44,20 @@ export default {
   },
   methods:{
     changeActive(val,list){
-      let temp=list;
-      for(let i=0;i<temp.length;i++){
+      let temp = list;
+      for(let i = 0;i < temp.length;i++){
         temp[i].active = temp[i].value === val.value;
       }
-      this.showList.selectList=temp
+      this.showList.selectList = temp
       this.$emit('selectChange',this.getChangeParams())
     },
     getChangeParams(){
-      let temp=this.showList;
-      let data={};
+      let temp = this.showList;
+      let data = {};
       temp.forEach(item=>{
         item.selectList.forEach(i=>{
           if(i.active){
-            data[item.paramName]=i.value
+            data[item.paramName] = i.value
           }
         })
       })

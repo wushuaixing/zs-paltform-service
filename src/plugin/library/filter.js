@@ -8,7 +8,7 @@ Vue.filter('capitalize', function (value) {
 
 Vue.filter('evolveType', (val)=>{
 	if (!val) return '';
-	return val === 1?'方案已提交':'方案待提交';
+	return val === 1 ? '方案已提交' : '方案待提交';
 })
 
 Vue.filter('amountTh', (val)=>{

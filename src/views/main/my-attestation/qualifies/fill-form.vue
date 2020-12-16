@@ -420,7 +420,7 @@ export default {
     getFieldFiles(field){
       if(!field) return 0;
       const { getFieldValue } = this.form;
-      this.fileLists= getFieldValue(field).fileList.length;
+      this.fileLists = getFieldValue(field).fileList.length;
       console.log(this.fileLists);
     },
     handleSubmit(e) {

@@ -13,39 +13,46 @@ const request = axios.create({
 	},
 });
 
-// /* 请求拦截前的处理 */
-// const requestMethods = {
-// 	onFulfilled: (config) => {
-// 		// 在请求发出之前做拦截工作
-// 		// 这块需要做一些用户验证的工作，需要带上用户凭证
-// 		const _params = Object.assign({}, config.params);
-// 		// eslint-disable-next-line radix
-// 		if (_params.page)_params.page = parseInt(_params.page);
-// 		const configNew = Object.assign({}, config, { params: _params });
-// 		// 在发送请求设置cancel token
-// 		configNew.cancelToken = new axios.CancelToken((cancel) => {
-// 			axiosPromiseArr.push({ cancel });
-// 		});
-// 		if (config.cancelToken) {
-// 			configNew.cancelToken = config.cancelToken;
-// 		}
-//
-// 		const path = configNew.url.split('jms')[1];
-// 		const _token = cookies.get('token') || '';
-// 		if (configNew.url.match(/\?/)) {
-// 			configNew.url = `${configNew.url}${_token ? `&token=${_token}` : ''}`;
-// 		} else if (path !== '/open/login') {
-// 			configNew.url = `${config.url}${_token ? `?token=${_token}` : ''}`;
-// 		}
-// 		// configNew.headers['Access-Control-Allow-Origin'] = '*';
-// 		return configNew;
-// 	},
-// 	onRejected: (error) => {
-// 		// 请求错误之后可以统一处理
-// 		console.debug(`request error :${error}`);
-// 		// return Promise.reject(error);
-// 	},
-// };
+/* 请求拦截前的处理 */
+const requestMethods = {
+	onFulfilled: (config) => {
+		config.headers = Object.assign({},config.headers,{
+			token:'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMTEyMjIiLCJzdWIiOiIxNzYzMDgyOTkwMiIsImlzcyI6ImFkbWluIiwiaWF0IjoxNjA4MDkwNjIxLCJleHAiOjE2MDgxNzcwMjF9.e0i8SWnTg_vO5XrjFJ-ec6CYzkqbJTqG9s4lEXpukD4'
+		})
+		return config;
+		// 在请求发出之前做拦截工作
+		// // 这块需要做一些用户验证的工作，需要带上用户凭证
+		// const _params = Object.assign({}, config.params);
+		// // eslint-disable-next-line radix
+		// if (_params.page)_params.page = parseInt(_params.page);
+		// const configNew = Object.assign({}, config, { params: _params });
+		// // 在发送请求设置cancel token
+		// configNew.cancelToken = new axios.CancelToken((cancel) => {
+		// 	axiosPromiseArr.push({ cancel });
+		// });
+		// if (config.cancelToken) {
+		// 	configNew.cancelToken = config.cancelToken;
+		// }
+		//
+		// const path = configNew.url.split('jms')[1];
+		// const _token = cookies.get('token') || '';
+		// if (configNew.url.match(/\?/)) {
+		// 	configNew.url = `${configNew.url}${_token ? `&token=${_token}` : ''}`;
+		// } else if (path !== '/open/login') {
+		// 	configNew.url = `${config.url}${_token ? `?token=${_token}` : ''}`;
+		// }
+		// configNew.headers['Access-Control-Allow-Origin'] = '*';
+		// return Object.assign({}, config, {
+		// 	'Content-Type': 'application/x-www-form-urlencoded',
+		// 	'token': 'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMTEyMjIiLCJzdWIiOiIxNzYzMDgyOTkwMiIsImlzcyI6ImFkbWluIiwiaWF0IjoxNjA4MDkwNjIxLCJleHAiOjE2MDgxNzcwMjF9.e0i8SWnTg_vO5XrjFJ-ec6CYzkqbJTqG9s4lEXpukD4'
+		// });
+	},
+	onRejected: (error) => {
+		// 请求错误之后可以统一处理
+		console.debug(`request error :${error}`);
+		// return Promise.reject(error);
+	},
+};
 /* 请求返回后的处理 */
 const responseMethods = {
 	onFulfilled:(response) => {
@@ -111,6 +118,8 @@ const responseMethods = {
 		// }
 	},
 };
+
+request.interceptors.request.use(requestMethods.onFulfilled, requestMethods.onRejected);
 request.interceptors.response.use(responseMethods.onFulfilled, responseMethods.onRejected);
 
 

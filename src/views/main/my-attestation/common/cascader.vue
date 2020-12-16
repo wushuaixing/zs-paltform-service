@@ -17,7 +17,7 @@ export default {
   },
   methods:{
     visibleChange(val){
-      this.visible=val;
+      this.visible = val;
     },
     handleEleCasBlur(){
       const dec = this.field.dec;
@@ -34,7 +34,7 @@ export default {
         })
       }
     },
-    handleEleCas(val=[]){
+    handleEleCas(val = []){
       console.log(val,val.toString());
       const dec = this.field.dec;
       this.form.setFieldsValue({

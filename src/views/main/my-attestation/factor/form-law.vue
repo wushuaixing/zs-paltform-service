@@ -471,9 +471,9 @@ export default {
       }
     },
     visibleChange(val){
-      this.visible=val;
+      this.visible = val;
     },
-    handleEleCas(val=[]){
+    handleEleCas(val = []){
       const dec = this.field.involve.dec;
       const { setFieldsValue ,setFields } = this.form;
       if(!this.visible && !val.length){
@@ -507,11 +507,11 @@ export default {
     },
     handleChange(e,field){
       const value = e.target.value;
-      const _temp ={};
-      if(field ==='avo') _temp.isAvo = value;
-      if(field ==='coo') _temp.isCoo = value;
-      if(field ==='once') _temp.isOnce = value === 1;
-      this.relation={
+      const _temp = {};
+      if(field === 'avo') _temp.isAvo = value;
+      if(field === 'coo') _temp.isCoo = value;
+      if(field === 'once') _temp.isOnce = value === 1;
+      this.relation = {
         ...this.relation,
         ..._temp
       }
