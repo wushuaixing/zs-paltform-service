@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import App from './App.vue'
-import Antd,{Form} from 'ant-design-vue';
+import Antd,{Form,message} from 'ant-design-vue';
 import router from './router'
 import store from './plugin/store'
 import { Cascader } from 'element-ui';
@@ -14,6 +14,11 @@ Vue.use(Cascader);
 Vue.use(install, filter);
 Vue.prototype.$form = Form;
 Vue.config.productionTip = false;
+message.config({
+  top: `47vh`,
+  duration: 2,
+  maxCount: 3,
+});
 
 new Vue({
   router,

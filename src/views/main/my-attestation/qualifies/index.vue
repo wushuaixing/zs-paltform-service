@@ -17,7 +17,6 @@
               <li>从业资格证</li>
               <li>保密承诺函(需下载打印并盖公章)</li>
             </ul>
-            <a-button type="primary">点击进入</a-button>
           </div>
           <div class="choose-item" @click="handleChoose('org')">
             <a-icon type="trademark" :style="{fontSize:'145px'}"/>
@@ -28,7 +27,6 @@
               <li>营业执照</li>
               <li>保密承诺函(需下载打印并盖公章)</li>
             </ul>
-            <a-button type="primary">点击进入</a-button>
           </div>
         </div>
       </div>
@@ -46,7 +44,7 @@
       <!--  信息展示：含提示  -->
       <template v-if="attestStatus === 'yet'">
         <div class="qualifies-item qualifies-status">
-          <div class="item-title">
+          <div class="item-title status-title">
             <span>我的服务商身份：</span>
             <a-icon type="trademark" :style="{fontSize:'32px'}"/>
           </div>
@@ -62,35 +60,45 @@
           <div class="info-item">
             <div class="info-item_title">我的资质认证信息</div>
             <div class="info-item_list">
-              <div class="info-item_list-title ele-important">机构名称</div>
+              <div class="info-item_list-title">机构名称</div>
               <div class="info-item_list-content">鸿达资产管理有限公司</div>
             </div>
             <div class="info-item_list">
-              <div class="info-item_list-title ele-important">邮箱地址</div>
+              <div class="info-item_list-title">邮箱地址</div>
               <div class="info-item_list-content">17137246841@hd.com</div>
             </div>
             <div class="info-item_list">
-              <div class="info-item_list-title ele-important">备用邮箱</div>
+              <div class="info-item_list-title">备用邮箱</div>
               <div class="info-item_list-content">-</div>
             </div>
             <div class="info-item_list">
-              <div class="info-item_list-title ele-important">营业执照</div>
+              <div class="info-item_list-title">营业执照</div>
               <div class="info-item_list-content">-</div>
             </div>
             <div class="info-item_list">
-              <div class="info-item_list-title ele-important">保密承诺函</div>
+              <div class="info-item_list-title">保密承诺函</div>
               <div class="info-item_list-content">-</div>
             </div>
           </div>
           <div class="info-item">
             <div class="info-item_title">当前联络人信息</div>
-            <div class="info-item_list">
+            <div class="info-item_list info-item_edit">
               <div class="info-item_list-title ele-important">联络人姓名</div>
-              <div class="info-item_list-content">鸿达资产管理有限公司</div>
+              <div class="info-item_list-content">
+                <template v-if="!editStatus">
+                  <span>{{contacts.name}}</span>
+                  <a-button size="small" type="link" icon="edit" @click="editStatus=true"></a-button>
+                </template>
+                <a-space v-else>
+                  <a-input placeholder="请输入联络人姓名"  style="width: 150px;" v-model="contacts_name"/>
+                  <a-button size="small" type="primary" @click="handleUpdate"><a-icon type="check" /></a-button>
+                  <a-button size="small" @click="editStatus=false"><a-icon type="close" /></a-button>
+                </a-space>
+              </div>
             </div>
-            <div class="info-item_list">
-              <div class="info-item_list-title ele-important">手机号码</div>
-              <div class="info-item_list-content">17137246841
+            <div class="info-item_list" style="margin-top: 0">
+              <div class="info-item_list-title">手机号码</div>
+              <div class="info-item_list-content">{{contacts.phone}}
                 <span class="remark">*若需要更改联络人手机号码请至个人中心更改绑定手机号</span>
               </div>
             </div>
@@ -109,9 +117,15 @@ export default {
   data() {
     return {
       // not 未认证 wait 认证中 yet 已填写
-      attestStatus:'not',
+      attestStatus:'yet',
       identity:'',
       spinning:true,
+      editStatus:false,
+      contacts:{
+        name:'言殁岚',
+        phone:'17137246841'
+      },
+      contacts_name:'言殁岚'
     };
   },
   components:{
@@ -133,6 +147,11 @@ export default {
         },
         onCancel() {},
       });
+    },
+    handleUpdate(){
+      if(!this.contacts_name) return this.$message.error('联系名称不能为空！');
+      this.contacts.name=this.contacts_name;
+      this.editStatus = false;
     }
 
   },
@@ -177,14 +196,18 @@ export default {
           border-bottom: none;
         }
         .item-content{
-
         }
       }
       &-status{
-        border-bottom: 16px solid #f1f2f5;
+        .status-title{
+          border-bottom: none;
+        }
         .status-content{
-          padding: 27px 0 16px 0;
+          margin: 0 26px;
+          padding-top: 23px;
           text-align: center;
+          background-color: rgba(8, 109, 217, 0.05);
+          height: 112px;
           div{
             font-size: 14px;
             line-height: 20px;
@@ -236,6 +259,10 @@ export default {
             }
           }
         }
+        .info-item_edit{
+          line-height: 32px;
+          margin:18px 0;
+        }
       }
       &-choose{
         .choose-content{
@@ -247,9 +274,13 @@ export default {
             padding: 36px 40px 31px;
             width: 292px;
             height: 454px;
-            background: #FFFFFF;
+            background: #ffffff;
             box-shadow: 1px 1px 6px 1px #D9D9D9;
             text-align: center;
+            &:hover{
+              background: rgba(222,222,222,0.2);
+              cursor: pointer;
+            }
             .item-name{
               font-size: 20px;
               line-height: 28px;
@@ -262,6 +293,7 @@ export default {
               font-size: 12px;
               color: #999999;
               line-height: 20px;
+              margin-bottom: 45px;
             }
             .item-list{
               list-style: none;

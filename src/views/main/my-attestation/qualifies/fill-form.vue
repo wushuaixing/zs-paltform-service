@@ -1,6 +1,7 @@
 <template>
   <div class="qualifies-form-wrapper attest-form">
     <slot name="title"/>
+    <div style="height: 10px"/>
     <a-form v-bind="formItemLayout" :form="form" autocomplete="off" v-if="userType ==='org'">
       <a-form-item :label="org.name.label">
         <a-input v-decorator="org.name.dec" v-bind="org.name.other"/>
@@ -25,7 +26,7 @@
       </a-form-item>
       <a-form-item :label="org.letter.label">
         <div class="fill-form-upload-wrapper">
-          <a-upload v-decorator="org.letter.dec" v-bind="org.letter.other" class="upload-wrapper">
+          <a-upload v-decorator="org.letter.dec" v-bind="org.letter.other" class="upload-wrapper" disabled="">
             <div class="upload-container">
               <a-icon type="plus" />
             </div>
@@ -67,7 +68,6 @@
         <a-input v-decorator="law.office.dec" v-bind="law.office.other"/>
         <span class="form-item-remark">*请在签约前完善律所信息</span>
       </a-form-item>
-
       <a-form-item :label="law.email.label">
         <a-input v-decorator="law.email.dec" v-bind="law.email.other"/>
       </a-form-item>
@@ -125,9 +125,11 @@
     </a-form >
     <a-form-item label=" " v-bind="formItemLayout" class="form-item-no-title">
       <a-space>
-        <a-button type="primary" @click="handleSubmit">确认无误并提交</a-button>
-        <a-button type="primary" >保存</a-button>
-        <a-button >取消</a-button>
+        <a-button type="primary" @click="handleSubmit" v-if="append">确认无误并提交</a-button>
+        <template v-else>
+          <a-button type="primary">保存</a-button>
+          <a-button >取消</a-button>
+        </template>
       </a-space>
     </a-form-item>
   </div>
@@ -135,6 +137,7 @@
 
 <script>
 
+// const uploadType =['application/pdf','image/*']
 export default {
   name: 'FillForm',
   nameComment: '机构或律师（表单填写）',
@@ -142,7 +145,12 @@ export default {
     userType:{
       type:String,
       default:'lawyer'
-    }
+    },
+    append:{
+      type:Boolean,
+      default:true
+    },
+    source:Object,
   },
   data() {
     return {
@@ -212,6 +220,7 @@ export default {
           other:{
             beforeUpload:()=>false,
             listType:"picture-card",
+            accept:'application/pdf,image/*',
           }
         },
         letter:{
@@ -227,6 +236,7 @@ export default {
           other:{
             beforeUpload:()=>false,
             listType:"picture-card",
+            accept:'application/pdf,image/*',
           }
         },
       },
@@ -387,7 +397,7 @@ export default {
   },
   created() {
     this.form = this.$form.createForm(this);
-    console.log(this.userType);
+    console.log(this.append);
   },
   methods:{
     validateToNextPassword(rule, value, callback) {
