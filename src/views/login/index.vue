@@ -115,7 +115,7 @@ export default {
         const normal = this.$refs.reform.model.mobile === '15639782785' && this.$refs.reform.model.password === '123456' && this.form.verificationCode === '1111'
         // console.log('提交表单数据')
         // console.log(this.$refs)
-        if (this.num >0&&this.num<=3) {
+        if (this.num > 0 && this.num <= 3) {
           if (this.num >= 2) {
             // console.log('输入3次了');
             this.titleClass = true
@@ -124,7 +124,7 @@ export default {
           this.$message.error('账号或者密码错误')
         }
 
-            if (this.num>=4&&this.num<9) {
+            if (this.num >= 4 && this.num < 9) {
               if(normal) {
                 this.$message.success('登陆验证成功')
                 this.$router.push('/overview')
@@ -133,7 +133,7 @@ export default {
               this.$message.error(`账号或者密码错误，您还可以尝试${this.isNum}次`)
               parseInt(this.isNum--)
             }
-            if (this.num>=9) {
+            if (this.num >= 9) {
               this.$message.error('您的账号已被冻结，一小时后再尝试')
               return false
             }
