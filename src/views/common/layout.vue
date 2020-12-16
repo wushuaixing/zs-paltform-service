@@ -56,9 +56,11 @@ export default {
   mounted() {
     console.log('默认页面：首次加载！');
     console.log('检查校验：判断及检查相关token信息！');
-    getInfo().then(res=>{
-      this.$store.commit('updateInfo', res.data);
-    }).catch(err=>{console.log(err)})
+    if(!this.$store.state.isLogin){
+      getInfo().then(res=>{
+        this.$store.commit('updateInfo', res.data);
+      }).catch(err=>{console.log(err)})
+    }
   },
   computed:{
     username(){

@@ -48,6 +48,14 @@
                               plain
                               >登 录</el-button>
                           </el-form-item>
+                          <el-form-item>
+                            <el-button
+                                class="login-text"
+                                type="info"
+                                @click="handleSubmit"
+                                plain
+                            >模 拟 登 录</el-button>
+                          </el-form-item>
                           <!-- 注册成为浙商资产服务商 -->
                           <div class="login-service"><u>注册成为浙商资产服务商</u></div>
                         </el-form>
@@ -59,8 +67,8 @@
 </template>
 
 <script>
-// import {login} from "@/plugin/api/login";
-// import { encryptInfo } from "@/plugin/tools/encrypt";
+import { authLogin } from "@/plugin/api/login";
+import { encryptInfo } from "@/plugin/tools/encrypt";
 export default {
   data () {
     // 手机号校验规则
@@ -99,10 +107,6 @@ export default {
       num: 0,
       isNum:5
     }
-  },
-
-  created () {
-
   },
   methods: {
     resetForm () {
@@ -164,11 +168,207 @@ export default {
     },
     test () {
       console.log("点击");
-    }
+    },
+    handleSubmit() {
+      authLogin(encryptInfo({
+        "loginType": 1,
+        "password": "123456",
+        "phone": "17630829902",
+        "phoneCode": "",
+        "pictureCode": ""
+      })).then(({data,code})=>{
+        if(code === 20000){
+          console.log(data);
+          this.$store.dispatch('login',data)
+          this.$info({
+            title: 'This is a notification message',
+            content: '登录成功！确认后跳转',
+            onOk:()=> {
+              this.$router.push('/');
+            },
+          })
+        }
+      })
+    },
+  },
+  mounted() {
+
   }
 }
 </script>
 
-<style scoped>
-
+<style scoped lang='scss'>
+    .login-container {
+        position: relative;
+        height: 100%;
+        width: 100%;
+        background-color: #2b4b6b;
+        /deep/.el-tabs__nav-wrap::after {
+          width: 0;
+        }
+        .login-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform:translate(-50%,-50%);
+            width: 1200px;
+            height: 598px;
+            background: #FFFFFF;
+            box-shadow: 4px 6px 15px 0 rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            box-sizing: border-box;
+            display: flex;
+            .login-img {
+              width: 678px;
+              height: 456px;
+              margin: 71px 0 71px 50px;
+              background-color: #ccc;
+            }
+            .login-content {
+              position: relative;
+              width: 472px;
+              height: 456px;
+              margin: 71px 0 71px 50px;
+              background-color: #fff;
+              .tabs {
+                width: 368px;
+                /deep/.el-tabs__nav-scroll {
+                  width: 368px;
+                  display: flex;
+                  margin-top: 50px;
+                  justify-content: space-around;
+                }
+              }
+              //输入框
+              /deep/.input-code {
+                padding: 0!important;
+              }
+              .el-tabs__nav-scroll {
+                position: relative;
+              }
+              /deep/.el-tabs__item  {
+                width: 112px;
+                font-size: 16px;
+                text-align: center;
+                box-sizing: content-box;
+              }
+              /deep/.el-tabs__active-bar {
+                width: 112px;
+                height: 2px;
+                background: #086DD9;
+              }
+              .el-tabs__item {
+                position: relative;
+              }
+              .title {
+                margin-top: 42px;
+                width: 368px;
+                height: 28px;
+                font-size: 28px;
+                font-weight: 500;
+                color: #086DD9;
+                line-height: 28px;
+              }
+              .titleClass {
+                margin-top: 30px!important;
+              }
+              /deep/#inp {
+                padding: 0 12px!important;
+              }
+              .el-input {
+                width: 368px;
+                height: 40px;
+                background: #FFFFFF;
+                border-radius: 2px;
+                margin-top: 8px;
+                position: relative;
+                .checking {
+                  position: absolute;
+                  top: 12px;
+                  right: 16px;
+                  width: 80px;
+                  height: 16px;
+                  font-size: 16px;
+                  font-weight: 400;
+                  color: #086DD9;
+                  line-height: 16px;
+                }
+              }
+              /deep/.el-tabs__active-bar {
+                width: 112px;
+                height: 2px;
+                background: #086DD9;
+              }
+            }
+            // 按钮
+            .btns {
+              width: 368px;
+              height: 40px;
+              line-height: 40px;
+              background: #CCCCCC;
+              border-radius: 2px;
+              color: #ccc;
+              text-align: center;
+              margin-top: 52px;
+              .login-text {
+              width: 100%;
+              height: 24px;
+              font-size: 16px;
+              font-weight: 400;
+              color: #FFFFFF;
+              line-height: 24px;
+              }
+              .el-button {
+                padding: unset;
+                background: unset;
+                border: unset;
+              }
+            }
+            .el-button {
+              width: 100%;
+            }
+            // 验证码框外层
+            .verification-item {
+              position: relative!important;
+              .verification-get {
+                position: absolute;
+                top: 8px;
+                right: 0;
+                text-align: center;
+                width: 128px;
+                height: 40px;
+                background: #FFFFFF;
+                border-radius: 2px;
+                border: 1px solid #D9D9D9;
+              }
+            }
+            // 验证码左侧框
+            /deep/#verification-code {
+              position: relative;
+              width: 184px;
+              height: 40px;
+              background: #FFFFFF;
+              border-radius: 2px;
+              border: 1px solid #D9D9D9;
+            }
+       }
+    }
+    // input外层组件包裹样式清除
+    // /deep/.el-form-item {
+    //   width: 368px;
+    //   height: 40px;
+    //   background: #FFFFFF;
+    //   border-radius: 2px;
+    //   margin-top: 8px;
+    //   position: relative;
+    // }
+    .login-service {
+      width: 154px;
+      height: 14px;
+      font-size: 14px;
+      font-weight: 400;
+      color: #086DD9;
+      line-height: 14px;
+      float: right;
+    }
 </style>
