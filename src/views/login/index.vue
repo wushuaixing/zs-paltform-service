@@ -19,7 +19,7 @@
                                   </template>
                                 </el-input>
                             </el-form-item>
-                            <el-form-item class="btns" :class="{titleClass}">
+                            <el-form-item class="btns">
                                 <el-button  class="login-text" type="info" @click="login">登 录</el-button>
                             </el-form-item>
                             <!-- 注册成为浙商资产服务商 -->

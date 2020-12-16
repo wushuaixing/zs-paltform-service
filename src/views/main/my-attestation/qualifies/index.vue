@@ -1,9 +1,43 @@
 <template>
-  <div class="qualifies-wrapper">
+  <div class="qualifies-wrapper" >
     <a-spin :spinning="spinning" class="spin-wrapper" tip="Loading......"/>
-    <div class="qualifies-item qualifies-status" v-if="false">
+    <!-- 两个个卡片按钮 -->
+    <div class="qualifies-item qualifies-choose" v-if="isActive=== 0">
+    <!-- <div class="qualifies-item qualifies-choose" v-if="isActive === 0"> -->
       <div class="item-title">
-        <span>我的服务商身份：</span>
+        <span>请选择您的服务商身份：</span>
+      </div>
+      <div class="choose-content" >
+        <button class="choose-lawyer" @click="handleClick">
+        <div class="choose-item" >
+          <a-icon type="trademark" :style="{fontSize:'145px'}"/>
+          <div class="item-name">律师</div>
+          <div class="item-remark"></div>
+          <ul class="item-list">
+            <li>个人身份信息及联系方式</li>
+            <li>从业资格证</li>
+            <li>保密承诺函(需下载打印并盖签字)</li>
+          </ul>
+        </div>
+        </button>
+        <div class="choose-item">
+          <a-icon type="trademark" :style="{fontSize:'145px'}"/>
+          <div class="item-name">机构</div>
+          <div class="item-remark">*个人若为机构员工，请以机构名义报名</div>
+          <ul class="item-list">
+            <li>机构信息及联系方式</li>
+            <li>营业执照</li>
+            <li>保密承诺函(需下载打印并盖公章)</li>
+          </ul>
+          <!-- <a-button type="primary">点击进入</a-button> -->
+        </div>
+      </div>
+    </div>
+
+    <!-- 最终编辑信息1 -->
+    <div class="qualifies-item qualifies-status" v-if="isActive===3">
+      <div class="item-title">
+        <span>我的服务商身份：{{isActive===3?'机构':'律师'}}</span>
         <a-icon type="trademark" :style="{fontSize:'32px'}"/>
       </div>
       <div class="status-content">
@@ -11,7 +45,8 @@
         <a-button type="primary">立即前往要素认证</a-button>
       </div>
     </div>
-    <div class="qualifies-info" v-if="false">
+    <!-- 最终编辑信息1 -->
+    <div class="qualifies-info" v-if="isActive ===3">
       <div class="info-button">
         <a-button>编辑我的资质信息</a-button>
       </div>
@@ -52,36 +87,9 @@
         </div>
       </div>
     </div>
-    <div class="qualifies-item qualifies-choose" v-if="false">
-      <div class="item-title">
-        <span>请选择您的服务商身份：</span>
-      </div>
-      <div class="choose-content">
-        <div class="choose-item">
-          <a-icon type="trademark" :style="{fontSize:'145px'}"/>
-          <div class="item-name">律师</div>
-          <div class="item-remark"></div>
-          <ul class="item-list">
-            <li>个人身份信息及联系方式</li>
-            <li>从业资格证</li>
-            <li>保密承诺函(需下载打印并盖签字)</li>
-          </ul>
-          <a-button type="primary">点击进入</a-button>
-        </div>
-        <div class="choose-item">
-          <a-icon type="trademark" :style="{fontSize:'145px'}"/>
-          <div class="item-name">机构</div>
-          <div class="item-remark">*个人若为机构员工，请以机构名义报名</div>
-          <ul class="item-list">
-            <li>机构信息及联系方式</li>
-            <li>营业执照</li>
-            <li>保密承诺函(需下载打印并盖公章)</li>
-          </ul>
-          <a-button type="primary">点击进入</a-button>
-        </div>
-      </div>
-    </div>
-    <FillForm v-if="true">
+    
+    <!-- 服务商身份复用组件 -->
+    <FillForm v-show="isActive ===1" >
       <div class="qualifies-item" slot="title">
         <div class="item-title item-title_no-border">
           <span>我的服务商身份：</span>
@@ -89,6 +97,7 @@
         </div>
       </div>
     </FillForm>
+    <!-- <FillList v-show="isActive===1">212323</FillList> -->
   </div>
 </template>
 
@@ -101,13 +110,21 @@ export default {
     return {
       attestStatus:'not',
       spinning:true,
+      // 控制显示页面的数据
+      isActive: 0,
     };
   },
   components:{
-    FillForm
+    FillForm,
+    // FillList
+  },
+  computed: {
   },
   methods:{
-
+    handleClick (){
+      this.isActive = 1
+      // console.log(this.isActive);
+    }
   },
   mounted() {
     console.log('当前未认证！=== not ');
@@ -148,9 +165,9 @@ export default {
         .item-title_no-border{
           border-bottom: none;
         }
-        .item-content{
+        // .item-content{
 
-        }
+        // }
       }
       &-status{
         border-bottom: 16px solid #f1f2f5;
@@ -212,9 +229,15 @@ export default {
       &-choose{
         .choose-content{
           width: 100%;
-          padding: 82px 18%;
+          padding: 82px 25%;
           display: flex;
           justify-content: space-between;
+          // 按钮的尺寸
+          .choose-lawyer {
+            width: 292px;
+            height: 454px;
+            // background: #FFFFFF;
+          }
           .choose-item{
             padding: 36px 40px 31px;
             width: 292px;
@@ -238,6 +261,7 @@ export default {
             .item-list{
               list-style: none;
               padding: 0;
+              margin-top: 88px;
               margin-bottom: 33px;
               li{
                 text-align: left;

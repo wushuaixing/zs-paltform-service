@@ -1,7 +1,7 @@
 <template>
   <div class="qualifies-form-wrapper">
     <slot name="title"/>
-    <a-form v-bind="formItemLayout" :form="form" autocomplete="off" v-if="false">
+    <a-form v-bind="formItemLayout" :form="form" autocomplete="off" v-if="isActive ===1">
       <a-form-item :label="org.name.label">
         <a-input v-decorator="org.name.dec" v-bind="org.name.other"/>
       </a-form-item>
@@ -126,8 +126,8 @@
     <a-form-item label=" " v-bind="formItemLayout">
       <a-space>
         <a-button type="primary" @click="getFieldFiles('license')">确认无误并提交</a-button>
-        <a-button type="primary" >保存</a-button>
-        <a-button >取消</a-button>
+        <!-- <a-button type="primary" >保存</a-button>
+        <a-button >取消</a-button> -->
       </a-space>
     </a-form-item>
   </div>
@@ -142,7 +142,11 @@ export default {
     userType:{
       type:String,
       default:'lawyer'
-    }
+    },
+    // isActive:{
+    //   type:String,
+    //   default:'lawyer'
+    // },
   },
   data() {
     return {

@@ -28,15 +28,15 @@ export default {
   },
   created() {
     const { path } =this.$route;
-    this.routeState = new RegExp('/attestation/qualifies').test(path)?1:2;
+    this.routeState = new RegExp('/attest/qualifies').test(path)?1:2;
   },
   components:{
     Breadcrumb
   },
   watch:{
     $route(to,from){
-      // console.log("to.path",to.path,from.path);
-      if(to.path !== from.path) this.routeState = new RegExp('/attestation/qualification').test(this.$route.path)?1:2;
+      console.log("to.path",to.path,from.path);
+      if(to.path !== from.path) this.routeState = new RegExp('/attest/qualifies').test(this.$route.path)?1:2;
     }
   }
 }
