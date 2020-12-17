@@ -16,8 +16,8 @@ const request = axios.create({
 const requestMethods = {
 	onFulfilled: (config) => {
 		config.headers = Object.assign({},config.headers,{
-			token:'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMTEyMjIiLCJzdWIiOiIxNzYzMDgyOTkwMiIsImlzcyI6ImFkbWluIiwiaWF0IjoxNjA4MDkwNjIxLCJleHAiOjE2MDgxNzcwMjF9.e0i8SWnTg_vO5XrjFJ-ec6CYzkqbJTqG9s4lEXpukD4'
-		})
+			token: window.localStorage.token,
+		});
 		return config;
 		// 在请求发出之前做拦截工作
 		// // 这块需要做一些用户验证的工作，需要带上用户凭证
