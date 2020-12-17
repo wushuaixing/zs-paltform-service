@@ -10,9 +10,19 @@ module.exports = {
 	},
 	css: {
 		loaderOptions: {
+			less: {
+				lessOptions: {
+					modifyVars: {
+						'primary-color': '#008CB0', // 全局主色
+						'link-color': 'rgba(0, 140, 176, 0.73)', // 链接色
+					},
+					javascriptEnabled: true,
+				},
+			},
 			scss: {
 				additionalData: `@import "~@/assets/css/configuration.scss";`
 			},
+
 		}
 	},
 	devServer:{
