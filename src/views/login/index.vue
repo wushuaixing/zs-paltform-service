@@ -5,34 +5,34 @@
           </div>
              <!-- 表单区域 -->
             <div class="login-content">
-              <div class="title">浙商资产服务商招募管理系统</div>
+              <div class="title">服务商招募管理系统</div>
                 <el-tabs v-model="activeName" @tab-click="handleClick" class="tabs" >
                   <el-tab-pane class="q-login" label="快捷登录" name="first">
-                    <el-form ref="reform" :model="form" class="login-form" :rules="rules">
+                    <el-form ref="reform1" :model="form1" class="login-form" :rules="dynamincRules">
                           <el-form-item prop="mobile">
-                              <el-input v-model="form.mobile" class="input" placeholder="请输入手机号" prefix-icon="el-icon-user"></el-input>
+                              <el-input v-model="form1.mobile" class="input" placeholder="请输入手机号" prefix-icon="el-icon-user"></el-input>
                             </el-form-item>
                             <el-form-item prop="verificationCode">
-                                <el-input placeholder="请输入验证码" id="inp" v-model="form.verificationCode" >
+                                <el-input placeholder="请输入验证码" id="inp" v-model="form1.verificationCode" >
                                   <template slot="suffix" width="200px">
                                     <div class="checking" @click="test">获取验证码</div>
                                   </template>
                                 </el-input>
                             </el-form-item>
                             <el-form-item class="btns">
-                                <el-button  class="login-text" type="info" @click="login">登 录</el-button>
+                                <el-button  class="login-text" type="info" @click="login1">登 录</el-button>
                             </el-form-item>
                             <!-- 注册成为浙商资产服务商 -->
                           <div class="login-service"><u>注册成为浙商资产服务商</u></div>
                         </el-form>
                     </el-tab-pane>
                     <el-tab-pane label="密码登录" name="second" >
-                        <el-form ref="reform" :model="form" class="login-form" :rules="rules">
+                        <el-form ref="reform" :model="form" class="login-form" :rules="dynamincRules">
                           <el-form-item prop="mobile">
                               <el-input v-model="form.mobile" prefix-icon="el-icon-user" placeholder="请输入手机号"></el-input>
                           </el-form-item>
                           <el-form-item prop="password">
-                              <el-input v-model="form.password" type="password"  prefix-icon="el-icon-user" placeholder="请输入密码"></el-input>
+                              <el-input v-model="form.password" type="password" v-if="loginType ===2" prefix-icon="el-icon-user" placeholder="请输入密码"></el-input>
                           </el-form-item>
                           <el-form-item prop="verificationCode" v-if="num >= 3"  class="verification-item" >
                               <el-input v-model="form.verificationCode" id="verification-code" placeholder="请输入验证码">
@@ -48,14 +48,14 @@
                               plain
                               >登 录</el-button>
                           </el-form-item>
-                          <el-form-item>
+                          <!-- <el-form-item>
                             <el-button
                                 class="login-text"
                                 type="info"
                                 @click="handleSubmit"
                                 plain
                             >模 拟 登 录</el-button>
-                          </el-form-item>
+                          </el-form-item> -->
                           <!-- 注册成为浙商资产服务商 -->
                           <div class="login-service"><u>注册成为浙商资产服务商</u></div>
                         </el-form>
@@ -81,9 +81,14 @@ export default {
     }
     return {
       activeName: 'second',
+      loginType: 2,
       form: {
         mobile: '15639782785',
         password: '123456',
+        verificationCode: '1111',
+      },
+      form1: {
+        mobile: '15981858092',
         verificationCode: '1111',
       },
       // 控制title的位置
@@ -96,15 +101,24 @@ export default {
         ],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
-          { min: 3, max: 8, message: '长度在 3 到 8 个字符', trigger: 'blur' }
         ],
         verificationCode: [
           { required: true, message: '请输入验证码', trigger: 'blur' },
-          { min: 3, max: 4, message: '长度在 3 到 4个字符', trigger: 'blur' }
+        ],
+      },
+      rules1: {
+        mobile: [
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { validator: checkMobile, trigger: 'blur' }
+        ],
+        verificationCode: [
+          { required: true, message: '请输入验证码', trigger: 'blur' },
         ],
       },
       // 计算登陆错误的次数
       num: 0,
+      // 快捷登录的次数
+      queryNum: 0,
       isNum:5
     }
   },
@@ -113,22 +127,25 @@ export default {
       this.$refs.reform.resetFields()
     },
     login () {
+      // console.log(this.$refs.reform.rules);
       this.$refs.reform.validate(flag => {
         console.log(flag)
         if (!flag) return
+        const correct = this.$refs.reform.model.mobile === '15639782785' && this.$refs.reform.model.password === '123456'
+        if(correct) {
+          this.$message.success('登陆验证成功')
+          this.$router.push('/overview')
+          return
+        }
         const normal = this.$refs.reform.model.mobile === '15639782785' && this.$refs.reform.model.password === '123456' && this.form.verificationCode === '1111'
-        // console.log('提交表单数据')
-        // console.log(this.$refs)
         if (this.num > 0 && this.num <= 3) {
-          if (this.num >= 2) {
+          if (this.num >= 2 && this.num < 4) {
             // console.log('输入3次了');
             this.titleClass = true
-            }
-          // if(!check&&!checkVerification) return
-          this.$message.error('账号或者密码错误')
-        }
-
-            if (this.num >= 4 && this.num < 9) {
+          }
+          this.$message.error('账号或者密码错误,请重新登录') 
+        } 
+        if (this.num >= 4 && this.num < 9) {
               if(normal) {
                 this.$message.success('登陆验证成功')
                 this.$router.push('/overview')
@@ -139,32 +156,68 @@ export default {
             }
             if (this.num >= 9) {
               this.$message.error('您的账号已被冻结，一小时后再尝试')
-              return false
+              return
             }
-            // return
         // 校验手机号和密码
-        // const normal = this.$refs.reform.model.mobile === '15639782785' && this.$refs.reform.model.password === '123456' && this.form.verificationCode === '1111'
         const check = this.$refs.reform.model.mobile !== '15639782785' || this.$refs.reform.model.password !== '123456'
         if (check) {
+          console.log(check);
           if (this.num === 0) {
-            this.$message.error('账号或者密码错误')
+            this.$message.error('账号或者密码错误,请重新登录')
           }
           parseInt(this.num++)
           return
         }
-        // 验证码校验
-        const checkVerification = this.form.verificationCode !== '1111'
-        if (checkVerification) {
-          return this.$message.error('验证码错误')
+        // // 验证码校验
+        // const checkVerification = this.form.verificationCode !== '1111'
+        // if (checkVerification) {
+        //   return this.$message.error('验证码错误')
+        // }
+        this.$message.success('登陆验证成功')
+        this.$router.push('/overview')
+      })
+    },
+    // 点击快捷登录按钮
+    login1 () {
+      this.$refs.reform1.validate(flag => {
+        // console.log(flag)
+        if (!flag) return
+        const current = this.$refs.reform1.model.mobile === '15981858092' && this.form1.verificationCode === '1111'
+        if (current) {
+          this.$message.success('登陆验证成功')
+          this.$router.push('/overview')
+          return
         }
-
+        if (this.queryNum > 0 && this.queryNum < 4 ) {
+          this.$message.error('账号或者验证码错误,请重新登录') 
+        } 
+        if (this.queryNum >= 4 && this.queryNum < 9) {
+          this.$message.error(`账号或者验证码错误，您还可以尝试${this.isNum}次`)
+          parseInt(this.isNum--)
+        }
+        if (this.queryNum >= 9) {
+          this.$message.error('您的账号已被冻结，一小时后再尝试')
+          return
+        }
+        // 校验手机号和密码
+        const queryCheck = this.$refs.reform1.model.mobile !== '15981858092' || this.form1.verificationCode !== '1111'
+          if (queryCheck) {
+            if (this.queryNum === 0) {
+              this.$message.error('账号或者验证码错误,请重新登录')
+            }
+            parseInt(this.queryNum++)
+            return
+          }
         this.$message.success('登陆验证成功')
         this.$router.push('/overview')
       })
     },
     // 点击tab触发
     handleClick () {
-      // this.form.password= ''
+      // 触发tab标签清空校验规则
+      // this.$refs.reform.resetFields()
+      // this.$refs.reform1.resetFields()
+      this.password = ''
     },
     test () {
       console.log("点击");
@@ -193,6 +246,13 @@ export default {
   },
   mounted() {
 
+  },
+  computed :{
+    // 动态切换校验规则
+    dynamincRules () {
+      console.log(1);
+      return this.activeName === 'second' ? this.rules : this.rules1
+    }
   }
 }
 </script>
@@ -226,16 +286,22 @@ export default {
             }
             .login-content {
               position: relative;
-              width: 472px;
-              height: 456px;
+              width: 402px;
+              height: 480px;
               margin: 71px 0 71px 50px;
               background-color: #fff;
               .tabs {
                 width: 368px;
+                 color: #008CB0;
                 /deep/.el-tabs__nav-scroll {
                   width: 368px;
                   display: flex;
-                  margin-top: 50px;
+                  font-size: 16px;
+                  font-family: PingFangSC-Regular, PingFang SC;
+                  font-weight: 400;
+                  color: #008CB0;
+                  
+                  // margin-top: 50px;
                   justify-content: space-around;
                 }
               }
@@ -245,28 +311,35 @@ export default {
               }
               .el-tabs__nav-scroll {
                 position: relative;
+                // color: pink;
               }
               /deep/.el-tabs__item  {
+                position: relative;
                 width: 112px;
                 font-size: 16px;
                 text-align: center;
+                color: #666;
                 box-sizing: content-box;
               }
               /deep/.el-tabs__active-bar {
                 width: 112px;
                 height: 2px;
-                background: #086DD9;
+                background: #008CB0;
               }
-              .el-tabs__item {
-                position: relative;
+              /deep/.is-active {
+                color: #008CB0;
               }
+              // /deep/.el-tabs__item {
+              //   position: relative;
+              // }
               .title {
-                margin-top: 42px;
-                width: 368px;
+                margin: 42px 55px 50px;
+                width: 254px;
                 height: 28px;
                 font-size: 28px;
+                font-family: PingFangSC-Medium, PingFang SC;
                 font-weight: 500;
-                color: #086DD9;
+                color: #008CB0;
                 line-height: 28px;
               }
               .titleClass {
@@ -276,42 +349,47 @@ export default {
                 padding: 0 12px!important;
               }
               .el-input {
-                width: 368px;
+                width: 338px;
                 height: 40px;
                 background: #FFFFFF;
                 border-radius: 2px;
-                margin-top: 8px;
+                // border: 1px solid #D9D9D9;
+                margin: 0 30px;
+                // margin-top: 8px;
                 position: relative;
+                // 验证码
                 .checking {
                   position: absolute;
                   top: 12px;
                   right: 16px;
-                  width: 80px;
-                  height: 16px;
+                  width: 128px;
+                  height: 40px;
                   font-size: 16px;
                   font-weight: 400;
-                  color: #086DD9;
+                  color: #008CB0;
                   line-height: 16px;
                 }
               }
-              /deep/.el-tabs__active-bar {
-                width: 112px;
-                height: 2px;
-                background: #086DD9;
+              /deep/.el-form-item__error {
+                padding-left: 30px;
               }
             }
             // 按钮
             .btns {
-              width: 368px;
+              margin: 0 30px;
+              margin-top: 70px;
+              width: 338px;
               height: 40px;
               line-height: 40px;
-              background: #CCCCCC;
+              background: #008CB0;
               border-radius: 2px;
               color: #ccc;
               text-align: center;
-              margin-top: 52px;
               .login-text {
               width: 100%;
+              height: 40px;
+              background: #008CB0;
+              border-radius: 2px;
               height: 24px;
               font-size: 16px;
               font-weight: 400;
@@ -330,9 +408,10 @@ export default {
             // 验证码框外层
             .verification-item {
               position: relative!important;
+              border: none;
               .verification-get {
                 position: absolute;
-                top: 8px;
+                top: 0;
                 right: 0;
                 text-align: center;
                 width: 128px;
@@ -345,7 +424,7 @@ export default {
             // 验证码左侧框
             /deep/#verification-code {
               position: relative;
-              width: 184px;
+              width: 200px;
               height: 40px;
               background: #FFFFFF;
               border-radius: 2px;
@@ -354,20 +433,22 @@ export default {
        }
     }
     // input外层组件包裹样式清除
-    // /deep/.el-form-item {
-    //   width: 368px;
-    //   height: 40px;
-    //   background: #FFFFFF;
-    //   border-radius: 2px;
-    //   margin-top: 8px;
-    //   position: relative;
-    // }
+    /deep/.el-form-item {
+      width: 368px;
+      height: 40px;
+      background: #FFFFFF;
+      border-radius: 2px;
+      margin-top: 8px;
+      position: relative;
+    }
     .login-service {
+      margin-top: 24px;
       width: 154px;
       height: 14px;
       font-size: 14px;
+      font-family: PingFangSC-Regular, PingFang SC;
       font-weight: 400;
-      color: #086DD9;
+      color: #008CB0;
       line-height: 14px;
       float: right;
     }
