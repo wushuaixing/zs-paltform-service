@@ -14,6 +14,8 @@
       <div class="item-wrapper">
         <div class="item-title item-format">我的日程</div>
         <div class="item-content item-format">
+          <DragVerify></DragVerify>
+          <!--<img src="https://qiniu.yczcjk.com/123.png" alt="">-->
           <a-calendar>
             <ul slot="dateCellRender" slot-scope="value" class="events">
               <li v-for="item in getListData(value)" :key="item.content">
@@ -34,11 +36,12 @@
 </template>
 
 <script>
-// import ECharts from '@/components/echarts';
+import DragVerify from '../../login/drag-verify';
 export default {
   name: 'Workbench',
   nameComment:"工作台",
   components:{
+    DragVerify
   },
   data() {
     return {};
@@ -81,6 +84,8 @@ export default {
       }
     },
   },
+  mounted(){
+  }
 }
 </script>
 
