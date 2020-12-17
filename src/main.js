@@ -1,21 +1,24 @@
 import Vue from 'vue'
 import App from './App.vue'
-import Antd,{Form} from 'ant-design-vue';
+import Antd, { Form, message } from 'ant-design-vue';
 import router from './router'
 import store from './plugin/store'
+import { install, filter } from "./plugin/library";
 import 'ant-design-vue/dist/antd.css';
+import 'element-ui/lib/theme-chalk/index.css';
+import './version';
+import './plugin/element';
 
-Vue.config.productionTip = false;
 Vue.use(Antd);
-Vue.prototype.$form = Form
+Vue.use(install, filter);
+Vue.prototype.$form = Form;
+Vue.config.productionTip = false;
 
-const Version = 'v1.0.0';
-const BetaNumber = '.1';
-const info = `Version：${Version}${BetaNumber ? `-beta${BetaNumber}` : ''}`;
-window.CurrentVersions = info;
-if (window.location.protocol === 'http:') {
-  console.info(info);
-}
+message.config({
+  top: `47vh`,
+  duration: 2,
+  maxCount: 3,
+});
 
 new Vue({
   router,

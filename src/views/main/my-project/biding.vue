@@ -6,30 +6,16 @@
         <div class="biding-query">
           <a-form-model layout="inline" @submit="handleSubmit" @submit.native.prevent>
             <a-form-model-item>
-              <a-input v-model="query.username" placeholder="请输入联络人姓名" class="custom-prefix-5">
+              <a-input v-model="query.username" placeholder="请输入债务人名称" class="custom-prefix-6" style="width: 500px">
                 <template slot="prefix" >
-                  <div class="query-item-prefix">联络人姓名</div>
+                  <div class="query-item-prefix">债务人名称</div>
                 </template>
               </a-input>
             </a-form-model-item>
-            <a-form-model-item label="提交日期：" style="margin-bottom:0;">
-              <a-form-model-item>
-                <a-date-picker v-model="query.startTime" style="width: 100%" placeholder="搜索范围起始日期"
-                               :disabled-date="val=>disabledDate(val,query.endTime,'start')"
-                />
-              </a-form-model-item>
-              <span :style="{ display: 'inline-block',marginLeft:'-5px',width:'20px'}">至</span>
-              <a-form-model-item>
-                <a-date-picker v-model="query.endTime" style="width: 100%" placeholder="搜索范围截止日期"
-                               :disabled-date="val=>disabledDate(query.startTime,val)"
-                />
-              </a-form-model-item>
-            </a-form-model-item>
-            <a-form-model-item label="机构类型：">
-              <a-select v-model="query.orgType" placeholder="请选择机构类型" style="width: 150px">
-                <a-select-option value="1">Option 1</a-select-option>
-                <a-select-option value="2">Option 2</a-select-option>
-                <a-select-option value="3">Option 3</a-select-option>
+            <a-form-model-item label="当前进展：" v-if="query.tabStatus === 1">
+              <a-select v-model="query.orgType" placeholder="请选择当前竞标进展" style="width: 180px" allowClear>
+                <a-select-option value="1">方案待提交</a-select-option>
+                <a-select-option value="2">方案已提交</a-select-option>
               </a-select>
             </a-form-model-item>
             <a-form-model-item>
@@ -40,80 +26,48 @@
         <div class="biding-hr"/>
         <div class="biding-content">
           <a-tabs @change="handleTabChange">
-            <a-tab-pane key="1" tab="已提交要素表"/>
-            <a-tab-pane key="2" tab="未提交要素表"/>
-            <a-tab-pane key="3" tab="仅认证手机号"/>
+            <a-tab-pane v-for="i in tabType" :key="i.id">
+              <template slot="tab">
+                <a-badge :dot="i.dot"  :numberStyle="{width:'8px',height:'8px'}">{{i.title}}</a-badge>
+              </template>
+            </a-tab-pane>
           </a-tabs>
           <div class="biding-content-table">
-            <a-table :columns="columns" :data-source="dataSource" size="middle" :pagination="pagination" @change="handleTableChange">
-              <template slot="auction">
-                <a-button type="link" size="small" icon="file-text" :style="{paddingLeft: 0}">详情</a-button>
-                <a-divider type="vertical" />
-                <a-button type="link" size="small" icon="form" >标签及审核结果添加</a-button>
+            <a-table :columns="columns" v-bind="tabConfig" @change="handleTableChange">
+              <template slot="debtor" slot-scope="{name}">
+                <span>{{name}}</span>
+              </template>
+              <template slot="amount" slot-scope="amount">{{amount|amountTh}}</template>
+              <template slot="advance" slot-scope="{advance,advanceLast}">
+                <a-avatar :size="6" :style="{backgroundColor: advance===2?'#f5222d':'#1890ff',marginRight:'5px'}"/>
+                {{advance|evolveType}}<br>
+                <a-tag color="#f50" v-if="advanceLast">方案提交即将截止</a-tag>
+              </template>
+              <template slot="datetime" slot-scope="time">{{time}}</template>
+              <template slot="auction" slot-scope="item">
+                <a-button type="link" size="small" icon="file-text" @click="handleAuction(item,'view')">查看详情</a-button>
+                <template v-if="query.tabStatus === 1">
+                  <a-divider type="vertical" style="margin:0"/>
+                  <a-tooltip title="方案提交已截止" v-if="!item.behind">
+                    <a-button type="link" size="small" icon="file-text" disabled class="common-table-disabled">方案报送</a-button>
+                  </a-tooltip>
+                  <a-button type="link" size="small" icon="file-text" v-else @click="handleAuction(item,'sub')" >方案报送</a-button>
+                  <a-divider type="vertical" style="margin:0"/>
+                  <a-button type="link" size="small" icon="file-text" @click="handleAuction(item,'fail')">放弃竞标</a-button>
+                </template>
               </template>
             </a-table>
           </div>
         </div>
       </div>
     </div>
-    <div style="height: 90vh;"></div>
   </div>
 </template>
 
 <script>
 import Breadcrumb from '@/components/bread-crumb';
 import { clearProto, disabledDate } from "@/plugin/tools";
-
-const columns1 = [
-  {
-    title: '联络人姓名',
-    dataIndex: 'name',
-    key: 'name',
-  },
-  {
-    title: '联系方式',
-    dataIndex: 'age',
-    key: 'age',
-    width: 80,
-  },
-  {
-    title: '机构类型',
-    dataIndex: 'address',
-    key: 'address 1',
-  },
-  {
-    title: '机构名称',
-    dataIndex: 'address',
-    key: 'address 2',
-  },
-  {
-    title: '从业时长',
-    dataIndex: 'address',
-    key: 'address 3',
-  },
-  {
-    title: '涉业地区',
-    dataIndex: 'address',
-    key: 'address 41',
-  },
-  {
-    title: '团队规模',
-    dataIndex: 'address',
-    key: 'address 42',
-  },
-  {
-    title: '要素提交日期',
-    dataIndex: 'address',
-    key: 'address 43',
-  },
-  {
-    title: '操作',
-    dataIndex: 'address',
-    key: 'address 44',
-    scopedSlots: { customRender: 'auction' },
-    width: 260,
-  },
-];
+import { columns, colType } from "@/views/main/my-project/source";
 
 export default {
   name: 'ToReview',
@@ -123,24 +77,46 @@ export default {
         {id:1,title:'服务商管理',path:'/provider/review'},
         {id:2,title:'待审查',path:'/provider/review'},
       ],
-      columns:columns1,
-      dataSource:[{
-        key:1,
-        name:'临时用户',
-      }],
+      tabType:[
+        { id:1, title:'进行中' ,dot:false},
+        { id:2, title:'已中标' ,dot:false},
+        { id:3, title:'已放弃' ,dot:false},
+        { id:4, title:'已失效' ,dot:false},
+      ],
+      tabStatus:1,
       query:{
         username:"",
         startTime:'',
         endTime:'',
-        orgType:undefined,
+        tabStatus:1,
+        orderType:'',
+        orderField:'',
       },
-      pagination:{
-        current:1,
-        total:1,
-        showQuickJumper:true,
-        showLessItems:true,
+      tabConfig:{
+        dataSource:[{
+          key:1,
+          name:'临时用户1',
+          money1:12321.123123,
+          money2:4187545,
+          advance:1,
+          behind:true,
+        },{
+          key:2,
+          name:'临时用户2',
+          money1:333333.123123,
+          money2:32543,
+          advance:2,
+          advanceLast:true,
+          behind:123123,
+        }],
         size:'middle',
-        showTotal:val=>`共${val}条信息`,
+        pagination:{
+          current:1,
+          total:1,
+          showQuickJumper:true,
+          showLessItems:true,
+          showTotal:val=>`共${val}条信息`,
+        },
       },
       disabledDate,
     };
@@ -156,11 +132,19 @@ export default {
       console.log(clearProto(this.query));
     },
     handleTabChange(val){
-      console.log(val);
+      this.query.tabStatus = val;
     },
-    handleTableChange(ev){
-      console.log(ev);
+    handleTableChange(pagination, filters, sorter){
+      console.log(sorter);
     },
+    handleAuction(item,type){
+      console.log(type);
+    },
+  },
+  computed:{
+    columns:function (){
+      return columns[colType[this.query.tabStatus]]
+    }
   }
 }
 </script>
@@ -198,11 +182,14 @@ export default {
 <style lang="scss">
 .query-item-prefix{
   height: 100%;
-  width: 80px;
-  text-align:left;
+  width: 90px;
+  text-align:center;
   border-right: 1px solid #ddd;
 }
-.custom-prefix-5 input{
-  padding-left: 100px!important;
+.custom-prefix-6 input{
+  padding-left: 113px!important;
+}
+.common-table-disabled{
+  cursor: pointer!important;
 }
 </style>

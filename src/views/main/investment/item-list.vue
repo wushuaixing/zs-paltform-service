@@ -139,7 +139,7 @@ export default {
       console.log(ev);
     },
     toDetail(row){
-      this.$router.push('/investment/list/detail/'+row.id)
+      this.$router.push('/investment/list/detail/' + row.id)
     }
   }
 }

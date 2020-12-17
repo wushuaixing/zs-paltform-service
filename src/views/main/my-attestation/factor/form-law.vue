@@ -21,21 +21,22 @@
         <a-cascader v-decorator="field.local.dec" v-bind="field.local.other" />
       </a-form-item>
       <a-form-item label="主要涉业地区">
-        <a-cascader v-decorator="field.involve.dec" v-bind="field.involve.other" />
+        <el-cascader v-bind="field.involve.other"  @change="handleEleCas" @visible-change="visibleChange"/>
+        <a-input v-decorator="field.involve.dec" style="display: none"/>
       </a-form-item>
       <a-form-item label="是否有公检法等工作经历" class="form-item-row">
         <a-radio-group v-decorator="field.isPub.dec" v-bind="field.isPub.other">
           <a-row>
-            <a-col :span="5"><a-radio :value="true">是</a-radio></a-col>
-            <a-col :span="5"><a-radio :value="false">否</a-radio></a-col>
+            <a-col :span="6"><a-radio :value="true">是</a-radio></a-col>
+            <a-col :span="6"><a-radio :value="false">否</a-radio></a-col>
           </a-row>
         </a-radio-group>
       </a-form-item>
       <a-form-item label="当前是否存在其他兼职/任职" class="form-item-row">
         <a-radio-group v-decorator="field.avo.dec" v-bind="field.avo.other">
           <a-row>
-            <a-col :span="5"><a-radio :value="true">是</a-radio></a-col>
-            <a-col :span="5"><a-radio :value="false">否</a-radio></a-col>
+            <a-col :span="6"><a-radio :value="true">是</a-radio></a-col>
+            <a-col :span="6"><a-radio :value="false">否</a-radio></a-col>
           </a-row>
         </a-radio-group>
       </a-form-item>
@@ -52,9 +53,9 @@
       <a-form-item label="擅长业务类型" class="form-item-row">
         <a-checkbox-group v-decorator="adv.type.dec" v-bind="adv.type.other">
           <a-row>
-            <a-col v-for="item in adv.type.options" :key="item.id" v-bind="item.id!==0?{span:5}:{}">
+            <a-col v-for="item in adv.type.options" :key="item.id" v-bind="item.id===0?{span:24}:{span:6}">
               <a-checkbox :value="item.value">{{item.label}}</a-checkbox>
-              <a-input v-if="item.id===0" style="width: 180px" placeholder="多个方向请用中文顿号隔开"/>
+              <a-input v-if="item.id===0" style="width: 616px" placeholder="多个方向请用中文顿号隔开"/>
             </a-col>
           </a-row>
         </a-checkbox-group>
@@ -67,15 +68,15 @@
       <a-form-item label="是否曾与四大合作" class="form-item-row">
         <a-radio-group v-decorator="history.is.dec" v-bind="history.is.other">
           <a-row>
-            <a-col :span="5"><a-radio :value="true">是</a-radio></a-col>
-            <a-col :span="5"><a-radio :value="false">否</a-radio></a-col>
+            <a-col :span="6"><a-radio :value="true">是</a-radio></a-col>
+            <a-col :span="6"><a-radio :value="false">否</a-radio></a-col>
           </a-row>
         </a-radio-group>
       </a-form-item>
       <a-form-item label="历史合作四大" class="form-item-row" v-if="relation.isCoo">
         <a-checkbox-group v-decorator="history.type.dec" v-bind="history.type.other">
           <a-row>
-            <a-col v-for="item in history.type.options" :key="item.id" :span="5">
+            <a-col v-for="item in history.type.options" :key="item.id" :span="6">
               <a-checkbox :value="item.value">{{item.label}}</a-checkbox>
             </a-col>
           </a-row>
@@ -84,11 +85,11 @@
       <a-form-item label="是否曾与浙商合作" class="form-item-row" >
         <a-radio-group v-decorator="history.once.dec" v-bind="history.once.other" >
           <a-row>
-            <a-col :span="5"><a-radio :value="1">是</a-radio></a-col>
-            <a-col :span="5"><a-radio :value="2">否</a-radio></a-col>
-            <a-col :span="10">
+            <a-col :span="6"><a-radio :value="1">是</a-radio></a-col>
+            <a-col :span="6"><a-radio :value="2">否</a-radio></a-col>
+            <a-col :span="24">
               <a-radio value="c">其他</a-radio>
-              <a-input style="width: 180px" placeholder="请说明情况"/>
+              <a-input style="width: 606px;margin-left: 3px" placeholder="请说明情况"/>
             </a-col>
           </a-row>
         </a-radio-group>
@@ -97,7 +98,7 @@
         <a-form-item label="过往合作类型" class="form-item-row" >
           <a-checkbox-group v-decorator="history.coo.dec" v-bind="history.coo.other">
             <a-row>
-              <a-col v-for="item in history.coo.options" :key="item.id" v-bind="item.id!==4?{span:5}:{}">
+              <a-col v-for="item in history.coo.options" :key="item.id" v-bind="item.id===0?{span:24}:{span:6}">
                 <a-checkbox :value="item.value">{{item.label}}</a-checkbox>
                 <a-input v-if="item.id===0" style="width: 100px"/>
               </a-col>
@@ -119,9 +120,9 @@
       <a-form-item label="合作意向" class="form-item-row">
         <a-checkbox-group v-decorator="dir.intent.dec" v-bind="dir.intent.other">
           <a-row>
-            <a-col v-for="item in dir.intent.options" :key="item.id" v-bind="item.id!==0?{span:5}:{}">
+            <a-col v-for="item in dir.intent.options" :key="item.id" v-bind="item.id===0?{span:24}:{span:6}">
               <a-checkbox :value="item.value">{{item.label}}</a-checkbox>
-              <a-input v-if="item.id===0" style="width: 180px" placeholder="多个方向请用中文顿号隔开"/>
+              <a-input v-if="item.id===0" style="width: 606px;margin-left: 10px" placeholder="多个方向请用中文顿号隔开"/>
             </a-col>
           </a-row>
         </a-checkbox-group>
@@ -153,9 +154,9 @@
         <a-form-item label="律所类型" class="form-item-row">
           <a-checkbox-group v-decorator="firms.type.dec" v-bind="firms.type.other">
             <a-row>
-              <a-col v-for="item in firms.type.options" :key="item.id" v-bind="item.id!==0?{span:5}:{}">
+              <a-col v-for="item in firms.type.options" :key="item.id" v-bind="item.id===0?{span:24}:{span:6}">
                 <a-checkbox :value="item.value">{{item.label}}</a-checkbox>
-                <!--<a-input v-if="item.id===0" style="width: 180px" placeholder="多个方向请用中文顿号隔开"/>-->
+                <!--<a-input v-if="item.id===0" style="width: 616px" placeholder="多个方向请用中文顿号隔开"/>-->
               </a-col>
             </a-row>
           </a-checkbox-group>
@@ -163,8 +164,8 @@
         <a-form-item label="律所是否持续经营3年以上" class="form-item-row">
           <a-checkbox-group v-decorator="firms.year.dec" v-bind="firms.year.other">
             <a-row>
-              <a-col :span="5"><a-radio :value="true">是</a-radio></a-col>
-              <a-col :span="5"><a-radio :value="false">否</a-radio></a-col>
+              <a-col :span="6"><a-radio :value="true">是</a-radio></a-col>
+              <a-col :span="6"><a-radio :value="false">否</a-radio></a-col>
             </a-row>
           </a-checkbox-group>
         </a-form-item>
@@ -174,7 +175,7 @@
         <a-form-item label="本人在律所担任职务" class="form-item-row">
           <a-checkbox-group v-decorator="firms.duty.dec" v-bind="firms.duty.other">
             <a-row>
-              <a-col v-for="item in firms.duty.options" :key="item.id" v-bind="item.id!==0?{span:5}:{}">
+              <a-col v-for="item in firms.duty.options" :key="item.id" v-bind="item.id===0?{span:24}:{span:6}">
                 <a-checkbox :value="item.value">{{item.label}}</a-checkbox>
               </a-col>
             </a-row>
@@ -200,6 +201,7 @@ import {
   areaOption,expOption, hisFour, hisCoo, orgAdvType, cooIntent,
   lawDuty, lawType
 } from "../common/source";
+// import cascader from "../common/cascader";
 
 export default {
   name: 'FormLawyerInfo',
@@ -209,6 +211,8 @@ export default {
       type:String,
       default:'lawyer'
     }
+  },
+  components:{
   },
   data() {
     return {
@@ -251,7 +255,13 @@ export default {
         involve:{
           dec:['involve',{ rules: [{ required: true, message: '主要涉业地区不能为空' }] }],
           other:{
+            clearable:true,
             options:areaOption,
+            size:"small",
+            props: {
+              multiple: true,
+              checkStrictly:true,
+            },
             placeholder:'请选择主要涉业地区',
             ...baseWidth,
           }
@@ -438,7 +448,7 @@ export default {
         isOnce:false,
       },
       officeInfo:false,
-
+      visible:false,
     };
   },
   beforeCreate() {
@@ -447,6 +457,37 @@ export default {
   methods:{
     getValue(){
       console.log(this.form.getFieldsValue());
+    },
+    handleEleCasBlur(){
+      const dec = this.field.involve.dec;
+      const { setFields, getFieldValue } = this.form;
+      if(!getFieldValue(dec[0])){
+        setFields({
+          [dec[0]]:{
+            value:undefined,
+            errors:[new Error('主要涉业地区不能为空')]
+          }
+        })
+      }
+    },
+    visibleChange(val){
+      this.visible = val;
+    },
+    handleEleCas(val = []){
+      const dec = this.field.involve.dec;
+      const { setFieldsValue ,setFields } = this.form;
+      if(!this.visible && !val.length){
+        setTimeout(()=>{
+          setFields({
+            [dec[0]]:{
+              value:undefined,
+              errors:[new Error('主要涉业地区不能为空')]
+            }
+          })
+        })
+      }else {
+        setFieldsValue({ [dec[0]]:val.toString() });
+      }
     },
     DeleteLawInfo() {
       const _this = this;
@@ -466,11 +507,11 @@ export default {
     },
     handleChange(e,field){
       const value = e.target.value;
-      const _temp ={};
-      if(field ==='avo') _temp.isAvo = value;
-      if(field ==='coo') _temp.isCoo = value;
-      if(field ==='once') _temp.isOnce = value === 1;
-      this.relation={
+      const _temp = {};
+      if(field === 'avo') _temp.isAvo = value;
+      if(field === 'coo') _temp.isCoo = value;
+      if(field === 'once') _temp.isOnce = value === 1;
+      this.relation = {
         ...this.relation,
         ..._temp
       }
@@ -490,6 +531,26 @@ export default {
 }
 </script>
 
-<style scoped lang='scss'>
+<style lang='scss'>
+.factor-form-wrapper{
+  .el-input__icon{
+    font-weight: bold;
+  }
+  .el-input__inner{
+    padding-left: 12px;
+  }
+  .has-error {
+    .el-input__inner,.el-input__inner:hover{
+      background-color: #fff;
+      border-color: #f5222d;
+    }
+    .el-input__icon{
+      color: #f5222d;
+    }
+  }
+}
+.el-popper[x-placement^=bottom]{
+  margin-top: 5px;
+}
 
 </style>
