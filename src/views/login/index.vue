@@ -143,7 +143,7 @@ export default {
             // console.log('输入3次了');
             this.titleClass = true
           }
-          this.$message.error('账号或者密码错误') 
+          this.$message.error('账号或者密码错误,请重新登录') 
         } 
         if (this.num >= 4 && this.num < 9) {
               if(normal) {
@@ -163,7 +163,7 @@ export default {
         if (check) {
           console.log(check);
           if (this.num === 0) {
-            this.$message.error('账号或者密码错误')
+            this.$message.error('账号或者密码错误,请重新登录')
           }
           parseInt(this.num++)
           return
@@ -189,10 +189,10 @@ export default {
           return
         }
         if (this.queryNum > 0 && this.queryNum < 4 ) {
-          this.$message.error('账号或者密码错误') 
+          this.$message.error('账号或者验证码错误,请重新登录') 
         } 
         if (this.queryNum >= 4 && this.queryNum < 9) {
-          this.$message.error(`账号或者密码错误，您还可以尝试${this.isNum}次`)
+          this.$message.error(`账号或者验证码错误，您还可以尝试${this.isNum}次`)
           parseInt(this.isNum--)
         }
         if (this.queryNum >= 9) {
@@ -203,7 +203,7 @@ export default {
         const queryCheck = this.$refs.reform1.model.mobile !== '15981858092' || this.form1.verificationCode !== '1111'
           if (queryCheck) {
             if (this.queryNum === 0) {
-              this.$message.error('账号或者验证码错误')
+              this.$message.error('账号或者验证码错误,请重新登录')
             }
             parseInt(this.queryNum++)
             return
