@@ -16,7 +16,7 @@ const request = axios.create({
 const requestMethods = {
 	onFulfilled: (config) => {
 		config.headers = Object.assign({},config.headers,{
-			token: window.localStorage.token,
+			// token: window.localStorage.token,
 		});
 		return config;
 		// 在请求发出之前做拦截工作
