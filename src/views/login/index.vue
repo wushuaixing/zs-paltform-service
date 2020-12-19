@@ -177,7 +177,7 @@ export default {
         this.$router.push('/overview')
       })
     },
-    // 点击快捷登录按钮
+    //点击快捷登录按钮
     login1 () {
       this.$refs.reform1.validate(flag => {
         // console.log(flag)
