@@ -25,6 +25,7 @@ export default {
   name: 'Menu',
   data() {
     return {
+      collapsed:false,
       defaultKey:['11'],
       selectedKeys:[],
       defaultOpenKey:['1','2','3','4','5'],
@@ -58,7 +59,7 @@ export default {
             { id:'2', title:'要素认证', path:'/factor' },
           ]
         },
-      ]
+      ],
     };
   },
   methods:{
@@ -72,9 +73,12 @@ export default {
             if(new RegExp('^' + i.path + item.path).test(path)) childKey = item.id;
           })
         }
-      })
+      });
       return [defaultKey + childKey];
-    }
+    },
+    toggleCollapsed(){
+
+    },
   },
   created() {
     const { path } = this.$route;
@@ -93,6 +97,7 @@ export default {
 .layout-menu{
   background-color: #001529;
   height: 100%;
+  padding-bottom: 40px;
 }
 .layout-menu .ant-menu-item{
   margin: 0!important;

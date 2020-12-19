@@ -1,7 +1,7 @@
 <template>
   <a-layout>
-    <a-layout-sider width="200" :style="siderStyle"><Menu /></a-layout-sider>
-    <a-layout style="padding: 64px 0 0; margin-left: 200px;">
+    <a-layout-sider :width="width" :style="siderStyle"><Menu @change="toggleCollapsed"/></a-layout-sider>
+    <a-layout :style="layoutStyle">
       <a-layout-content :style="{ margin: 0, height: '100%' }">
         <router-view/>
       </a-layout-content>
@@ -13,6 +13,7 @@ import Menu from '../common/menu'
 export default {
   data() {
     return {
+      width:200,
       siderStyle:{
         position: 'fixed',
         left: 0,
@@ -24,8 +25,21 @@ export default {
       }
     };
   },
+  methods:{
+    toggleCollapsed(status){
+      this.width = status ? 80 : 200;
+    }
+  },
   components: {
     Menu
   },
+  computed:{
+    layoutStyle:function () {
+      return {
+        padding:'64px 0 0',
+        marginLeft:`${this.width}px`
+      }
+    }
+  }
 };
 </script>
