@@ -14,7 +14,7 @@
       <div class="item-wrapper">
         <div class="item-title item-format">我的日程</div>
         <div class="item-content item-format">
-          <DragVerify></DragVerify>
+          <DragVerify v-if="false"></DragVerify>
           <!--<img src="https://qiniu.yczcjk.com/123.png" alt="">-->
           <a-calendar>
             <ul slot="dateCellRender" slot-scope="value" class="events">
