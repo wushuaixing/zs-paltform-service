@@ -14,17 +14,18 @@
           </a-menu-item>
         </a-menu>
         <div class="header-info">
-          <a-icon type="bell" class="header-info-icon"/>
           <a-dropdown :trigger="['click']" placement="bottomRight" size="large"
                       :getPopupContainer="e=>e.parentElement" >
             <a-menu slot="overlay" >
-              <a-menu-item key="1"><a-icon type="user" />修改绑定手机号 </a-menu-item>
-              <a-menu-item key="2"><a-icon type="user" />修改登录密码 </a-menu-item>
+              <a-menu-item key="1">
+                <a-icon type="user" />修改绑定手机号</a-menu-item>
+              <a-menu-item key="2">
+                <a-icon type="user" />修改登录密码 </a-menu-item>
               <a-menu-item key="3">
-                <router-link to="/login"><a-icon type="user" />退出登录 </router-link>
+                <router-link to="/login"><a-icon type="user" />退出登录</router-link>
               </a-menu-item>
             </a-menu>
-            <a-button type="link" icon="down">Hi，{{username}}</a-button>
+            <a-button type="link" icon="down" style="color:#fff;">Hi，{{username}}</a-button>
           </a-dropdown>
         </div>
       </a-layout-header>
@@ -92,6 +93,16 @@ export default {
     }
     &-info{
       float: right;
+      &-text{
+        color: #FFFFFF;
+        height: 100%;
+        padding: 0 12px;
+        line-height: 65px;
+        &:hover{
+          background-color: $common-base-active;
+          cursor:pointer;
+        }
+      }
     }
   }
 }
