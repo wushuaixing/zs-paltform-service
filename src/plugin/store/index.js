@@ -24,7 +24,7 @@ export default new Vuex.Store({
     resetInfo:(state)=>{
       state.info = {};
       state.isLogin = false;
-      window.localStorage.token = null;
+      window.localStorage.token = '';
 
     }
   },
