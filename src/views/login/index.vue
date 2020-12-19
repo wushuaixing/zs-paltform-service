@@ -11,16 +11,17 @@
               <div class="title">服务商招募管理系统</div>
                 <el-tabs v-model="activeName" @tab-click="handleClick" class="tabs" >
                   <el-tab-pane class="q-login" label="快捷登录" name="first">
-                    <el-form ref="reform1" :model="form1" class="login-form" :rules="dynamincRules">
-                          <el-form-item prop="mobile">
-                              <el-input v-model="form1.mobile" class="input" placeholder="请输入手机号" prefix-icon="el-icon-user"></el-input>
+                    <el-form ref="reform1" :model="form" class="login-form" :rules="dynamincRules">
+                          <el-form-item prop="phone">
+                              <el-input v-model="form.phone" class="input" placeholder="请输入手机号" maxlength="11" prefix-icon="el-icon-user"></el-input>
                             </el-form-item>
-                            <el-form-item prop="verificationCode">
-                                <el-input placeholder="请输入验证码" id="inp" v-model="form1.verificationCode" >
-                                  <template slot="suffix" width="200px">
-                                    <div class="checking" @click="test">获取验证码</div>
-                                  </template>
+                            <el-form-item prop="phoneCode" class="pr">
+                                <el-input placeholder="请输入验证码" id="inp" v-model="form.phoneCode" prefix-icon="el-icon-user" >
                                 </el-input>
+                                <el-button @click="getCode" class="code-btn" :disabled="!show">
+                                    <span v-show="show">发送验证码</span>
+                                    <span v-show="!show" class="count">获取验证码({{countCode}} s)</span>
+                                </el-button>
                             </el-form-item>
                             <el-form-item class="btns">
                                 <el-button  class="login-text" type="info" @click="login1">登 录</el-button>
@@ -31,20 +32,20 @@
                     </el-tab-pane>
                     <el-tab-pane label="密码登录" name="second" >
                         <el-form ref="reform" :model="form" class="login-form" :rules="dynamincRules">
-                          <el-form-item prop="mobile">
-                              <el-input v-model="form.mobile" prefix-icon="el-icon-user" placeholder="请输入手机号"></el-input>
+                          <el-form-item prop="phone" type="number">
+                              <el-input v-model="form.phone" prefix-icon="el-icon-user" placeholder="请输入手机号" maxlength="11"></el-input>
                           </el-form-item>
                           <el-form-item prop="password">
-                              <el-input v-model="form.password" type="password" v-if="loginType ===2" prefix-icon="el-icon-user" placeholder="请输入密码"></el-input>
+                              <el-input v-model="form.password" type="password"  prefix-icon="el-icon-user" placeholder="请输入密码"></el-input>
                           </el-form-item>
-                          <el-form-item prop="verificationCode" v-if="num >= 3"  class="verification-item" >
-                              <el-input v-model="form.verificationCode" id="verification-code" placeholder="请输入验证码">
+                          <el-form-item prop="pictureCode" v-if="count >= 3 ? this.titleClass: false"  class="verification-item" >
+                              <el-input v-model="form.pictureCode" id="verification-code" placeholder="请输入图片验证码">
                               </el-input>
                                   <span class="verification-get">验证码图片</span>
                           </el-form-item>
                           <el-form-item class="btns" :class="{titleClass}">
+                              <!-- v-if="this.isNum===0 ? disabled : !disabled" -->
                               <el-button
-                              v-if="this.isNum===0 ? disabled : disabled='false'"
                               class="login-text"
                               type="info"
                               @click="login"
@@ -58,8 +59,8 @@
                                 @click="handleSubmit"
                                 plain
                             >模 拟 登 录</el-button>
-                          </el-form-item> -->
-                          <!-- 注册成为浙商资产服务商 -->
+                          </el-form-item> 
+                          注册成为浙商资产服务商 -->
                           <div class="login-service"><u>注册成为浙商资产服务商</u></div>
                         </el-form>
                   </el-tab-pane>
@@ -70,9 +71,11 @@
 </template>
 
 <script>
-import { authLogin } from "@/plugin/api/login";
+import { authLogin, authCode } from "@/plugin/api/login";
 import { encryptInfo } from "@/plugin/tools/encrypt";
+const timeCount = 5 //倒计时时间
 export default {
+  name:'login',
   data () {
     // 手机号校验规则
     const checkMobile = (rule, value, callback) => {
@@ -83,170 +86,221 @@ export default {
       return callback(new Error('手机号格式不正确'))
     }
     return {
+      // 后台统计错误的次数
+      count: 0,
       activeName: 'second',
-      loginType: 2,
+      // 控制验证码的显示与隐藏
+      // isCountShow: false,
+      // loginType: 2,
       form: {
-        mobile: '15639782785',
-        password: '123456',
-        verificationCode: '1111',
-      },
-      form1: {
-        mobile: '15981858092',
-        verificationCode: '1111',
+        // {
+        loginType: "",
+        password: "123456",
+        phone: "17630829902",
+        phoneCode: "958260",
+        pictureCode: ""
       },
       // 控制title的位置
         titleClass: false,
-      // 定义校验规则
+      // 定义校验规则phone
       rules: {
-        mobile: [
-          { required: true, message: '请输入手机号', trigger: 'blur' },
+        phone: [
+          { required: true, message: '请输入正确手机号', trigger: 'blur' },
           { validator: checkMobile, trigger: 'blur' }
         ],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
         ],
-        verificationCode: [
-          { required: true, message: '请输入验证码', trigger: 'blur' },
+        pictureCode: [
+          { required: true, message: '请输入图片验证码', trigger: 'blur' },
         ],
       },
       rules1: {
-        mobile: [
+        phone: [
           { required: true, message: '请输入手机号', trigger: 'blur' },
           { validator: checkMobile, trigger: 'blur' }
         ],
-        verificationCode: [
+        phoneCode: [
           { required: true, message: '请输入验证码', trigger: 'blur' },
         ],
       },
       // 计算登陆错误的次数
       num: 0,
       // 快捷登录的次数
-      queryNum: 0,
-      isNum:5
+      // queryNum: 0,
+      isNum:5,
+      show: true,
+      countCode: '',
+      timer: null
     }
   },
   methods: {
     resetForm () {
       this.$refs.reform.resetFields()
     },
+    // 密码登录
     login () {
-      // console.log(this.$refs.reform.rules);
       this.$refs.reform.validate(flag => {
-        console.log(flag)
-        if (!flag) return
-        const correct = this.$refs.reform.model.mobile === '15639782785' && this.$refs.reform.model.password === '123456'
-        if(correct) {
-          this.$message.success('登陆验证成功')
-          this.$router.push('/overview')
-          return
-        }
-        const normal = this.$refs.reform.model.mobile === '15639782785' && this.$refs.reform.model.password === '123456' && this.form.verificationCode === '1111'
-        if (this.num > 0 && this.num <= 3) {
-          if (this.num >= 2 && this.num < 4) {
-            // console.log('输入3次了');
+        if (!flag) return;
+        authLogin(encryptInfo({
+        "loginType": 1,
+        "password": this.form.password,
+        "phone": this.form.phone,
+        // "phoneCode": this.form.phoneCode,
+        "pictureCode": this.form.pictureCode
+        // "pictureCode": ""
+        })).then(({data,code})=>{
+          // console.log(code);
+          // console.log(code.count);
+            console.log(data.count);
+          if (data.count >= 3) {
+            this.count = data.count
             this.titleClass = true
+            return
           }
-          this.$message.error('账号或者密码错误,请重新登录') 
-        } 
-        if (this.num >= 4 && this.num < 9) {
-              if(normal) {
-                this.$message.success('登陆验证成功')
-                this.$router.push('/overview')
-                return
-              }
-              this.$message.error(`账号或者密码错误，您还可以尝试${this.isNum}次`)
-              parseInt(this.isNum--)
-            }
-            if (this.num >= 9) {
-              this.$message.error('您的账号已被冻结，一小时后再尝试')
-              return
-            }
-        // 校验手机号和密码
-        const check = this.$refs.reform.model.mobile !== '15639782785' || this.$refs.reform.model.password !== '123456'
-        if (check) {
-          console.log(check);
-          if (this.num === 0) {
-            this.$message.error('账号或者密码错误,请重新登录')
-          }
-          parseInt(this.num++)
-          return
-        }
+          if (code === 30001) {
+           return this.$message.error('手机号或密码错误')
+          }  
+        })
+        // console.log(code.count);     
+      })
+        // console.log(this.$refs.reform);
+        // const correct = this.$refs.reform.model.phone === this.data.phone && this.$refs.reform.model.password === this.data.password
+        // if(correct) {
+        //   this.$message.success('登陆验证成功')
+        //   this.$router.push('/overview')
+        //   return
+        // }
+        // const normal = this.$refs.reform.model.phone === '15639782785' && this.$refs.reform.model.password === '123456' && this.form.phoneCode === '1111'
+        // if (this.num > 0 && this.num <= 3) {
+        //   if (this.num >= 2 && this.num < 4) {
+        //     // console.log('输入3次了');
+        //     this.titleClass = true
+        //   }
+        //   this.$message.error('账号或者密码错误,请重新登录') 
+        // } 
+        // if (this.num >= 4 && this.num < 9) {
+        //       if(normal) {
+        //         this.$message.success('登陆验证成功')
+        //         this.$router.push('/overview')
+        //         return
+        //       }
+        //       this.$message.error(`账号或者密码错误，您还可以尝试${this.isNum}次`)
+        //       parseInt(this.isNum--)
+        //     }
+        //     if (this.num >= 9) {
+        //       this.$message.error('您的账号已被冻结，一小时后再尝试')
+        //       return false
+        //     }
+        // // 校验手机号和密码
+        // const check = this.$refs.reform.model.phone !== '15639782785' || this.$refs.reform.model.password !== '123456'
+        // if (check) {
+        //   console.log(check);
+        //   if (this.num === 0) {
+        //     this.$message.error('账号或者密码错误,请重新登录')
+        //   }
+        //   parseInt(this.num++)
+        //   return
+        // }
         // // 验证码校验
-        // const checkVerification = this.form.verificationCode !== '1111'
+        // const checkVerification = this.form.phoneCode !== '1111'
         // if (checkVerification) {
         //   return this.$message.error('验证码错误')
         // }
-        this.$message.success('登陆验证成功')
-        this.$router.push('/overview')
-      })
+        // this.$message.success('登陆验证成功')
+        // this.$router.push('/overview')
     },
     // 点击快捷登录按钮
     login1 () {
       this.$refs.reform1.validate(flag => {
-        // console.log(flag)
-        if (!flag) return
-        const current = this.$refs.reform1.model.mobile === '15981858092' && this.form1.verificationCode === '1111'
-        if (current) {
-          this.$message.success('登陆验证成功')
-          this.$router.push('/overview')
-          return
-        }
-        if (this.queryNum > 0 && this.queryNum < 4 ) {
-          this.$message.error('账号或者验证码错误,请重新登录') 
-        } 
-        if (this.queryNum >= 4 && this.queryNum < 9) {
-          this.$message.error(`账号或者验证码错误，您还可以尝试${this.isNum}次`)
-          parseInt(this.isNum--)
-        }
-        if (this.queryNum >= 9) {
-          this.$message.error('您的账号已被冻结，一小时后再尝试')
-          return
-        }
-        // 校验手机号和密码
-        const queryCheck = this.$refs.reform1.model.mobile !== '15981858092' || this.form1.verificationCode !== '1111'
-          if (queryCheck) {
-            if (this.queryNum === 0) {
-              this.$message.error('账号或者验证码错误,请重新登录')
-            }
-            parseInt(this.queryNum++)
-            return
+        if (!flag) return;
+        authLogin(encryptInfo({
+        "loginType": 0,
+        "password": '',
+        "phone": this.form.phone,
+        "phoneCode": this.form.phoneCode,
+        // "pictureCode": ""
+        })).then(({data,code})=>{
+          // console.log(res.data.count);
+          console.log(code);
+          console.log(data);
+          if(code === 20000) {
+            this.$store.dispatch('login',data)
+            this.$info({
+              title: 'This is a notification message',
+              content: '登录成功！确认后跳转',
+              onOk:()=> {
+                this.$router.push('/');
+              },
+            })
+            // return
           }
-        this.$message.success('登陆验证成功')
-        this.$router.push('/overview')
+          if(code === 30003) return this.$message.error('验证码错误')
+          // 手机号是不是被锁定待完善
+        })     
       })
     },
     // 点击tab触发
     handleClick () {
       // 触发tab标签清空校验规则
+      // this.activeName === 'second' ? this.$refs.reform.resetFields() : this.$refs.reform1.resetFields()
       // this.$refs.reform.resetFields()
       // this.$refs.reform1.resetFields()
       this.password = ''
     },
-    test () {
-      console.log("点击");
-    },
-    handleSubmit() {
-      authLogin(encryptInfo({
-        "loginType": 1,
-        "password": "123456",
-        "phone": "17630829902",
-        "phoneCode": "",
-        "pictureCode": ""
-      })).then(({data,code})=>{
-        if(code === 20000){
-          console.log(data);
-          this.$store.dispatch('login',data)
-          this.$info({
-            title: 'This is a notification message',
-            content: '登录成功！确认后跳转',
-            onOk:()=> {
-              this.$router.push('/');
-            },
-          })
+    // 点击发送验证码触发函数
+    getCode () {
+      // 验证手机号是否合法
+        this.$refs.reform1.validateField('phone', async valid =>{
+          if (valid) {
+            return false
+          } else {
+            this.show = false
+            const res = await authCode(encryptInfo({
+              "boo": true,
+              "datas": [2,7,9],
+              "phone": this.form.phone
+            }))
+            console.log(res);
+            this.$message.successs('请在一分钟内获取验证码登录') 
+          }
+        })
+        // 验证码倒计时
+        if(!this.timer) {
+              this.countCode = timeCount
+              this.timer = setInterval(() => {
+                if (this.countCode > 0 && this.countCode <= timeCount) {
+                  this.countCode--
+                  } else {
+                  this.show = true
+                  clearInterval(this.timer)
+                  this.timer = null
+                  }
+                }, 1000)
+              }
         }
-      })
     },
-  },
+    // handleSubmit() {
+    //   authLogin(encryptInfo({
+    //     "loginType": 1,
+    //     "password": "123456",
+    //     "phone": "17630829902",
+    //     "phoneCode": "",
+    //     "pictureCode": ""
+    //   })).then(({data,code})=>{
+    //     if(code === 20000){
+    //       console.log(data);
+    //       this.$store.dispatch('login',data)
+    //       this.$info({
+    //         title: 'This is a notification message',
+    //         content: '登录成功！确认后跳转',
+    //         onOk:()=> {
+    //           this.$router.push('/');
+    //         },
+    //       })
+    //     }
+    //   })
+    // },
   mounted() {
 
   },
@@ -356,9 +410,9 @@ export default {
               .titleClass {
                 margin-top: 30px!important;
               }
-              /deep/#inp {
-                padding: 0 12px!important;
-              }
+              // /deep/#inp {
+                
+              // }
               .el-input {
                 width: 338px;
                 height: 40px;
@@ -408,14 +462,15 @@ export default {
               line-height: 24px;
               }
               .el-button {
+                width: 100%;
                 padding: unset;
                 background: unset;
                 border: unset;
               }
             }
-            .el-button {
-              width: 100%;
-            }
+            // .el-button {
+            //   // width: 100%;
+            // }
             // 验证码框外层
             .verification-item {
               position: relative!important;
@@ -462,5 +517,23 @@ export default {
       color: #008CB0;
       line-height: 14px;
       float: right;
+    }
+    // 倒计时效果
+    .pr {
+      position: relative;
+    }
+    .code-btn {
+      width: 100px;
+      height: 34px;
+      position: absolute;
+      top: 3px;
+      right: 25px;
+      z-index: 222;
+      color: #333;
+      font-size: 14px;
+      border: none;
+      // border-left: 1px solid #bababa;
+      // padding-right: 16px;
+      background-color: #fff;
     }
 </style>
