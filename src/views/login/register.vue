@@ -36,7 +36,7 @@
                     {
                       required: true,
                       message: '请输入11位数字',
-                      len: 11
+                      len: 11,
                     },
                   ],
                 },
@@ -109,9 +109,9 @@ export default {
         ["username", "phone", "code"],
         (errors, values) => {
           console.log(errors, values);
-          if(errors){
-            this.$message.error('请输入手机号码');
-            return ;
+          if (errors) {
+            this.$message.error("请输入正确的手机号码");
+            return;
           }
           authRegister({
             code: "111111",
@@ -119,15 +119,15 @@ export default {
             username: "ww",
           }).then((res) => {
             console.log(res);
-            if(res.code === 20000){
+            if (res.code === 20000) {
               this.$$message.success("注册成功");
-              this.next = false
+              this.next = false;
             }
+            
           });
         }
       );
       // this.next = false;
-      
     },
     //点击发送验证码
     sendVerifyCode() {
