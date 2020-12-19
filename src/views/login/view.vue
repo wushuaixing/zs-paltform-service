@@ -7,36 +7,39 @@
           <div class="login-title">服务商招募管理系统</div>
           <a-form-model layout="inline" :model="params"  @submit.native.prevent :rules="rules" ref="ruleForm" class="login-form-wrapper" autoComplete="off">
             <a-tabs v-model="params.loginType" class="login-tab-theme" @change="handleTabChange" size="large">
-              <a-tab-pane :key="1" tab="快捷登录"> </a-tab-pane>
-              <a-tab-pane :key="2" tab="密码登录"> </a-tab-pane>
+              <a-tab-pane :key="0" tab="快捷登录"> </a-tab-pane>
+              <a-tab-pane :key="1" tab="密码登录"> </a-tab-pane>
             </a-tabs>
             <div style="height: 196px">
-              <a-form-model-item prop="user">
-                <a-input v-model="params.user" placeholder="请输入您的手机号码" v-bind="styleProps" :maxLength="11">
+              <a-form-model-item prop="phone">
+                <a-input v-model="params.phone" placeholder="请输入您的手机号码" v-bind="styleProps" :maxLength="11">
                   <a-icon slot="prefix" type="user" style="color:#BFBFBF" />
                 </a-input>
               </a-form-model-item>
-              <template v-if="params.loginType===2">
+              <template v-if="params.loginType===1">
                 <a-form-model-item prop="password">
-                  <a-input v-model="params.password" type="password"  v-bind="styleProps"
+                  <a-input v-model="params.password" type="password"  v-bind="styleProps" @pressEnter="handleSubmit"
                            placeholder="请输入登录密码" autoComplete="new-password">
                     <a-icon slot="prefix" type="lock" style="color:#BFBFBF" />
                   </a-input>
                 </a-form-model-item>
-                <a-form-model-item prop="pictureCode">
-                  <a-input v-model="params.pictureCode" placeholder="请输入图形验证码" v-bind="styleProps" :maxLength="4">
+                <a-form-model-item prop="pictureCode" v-if="imgCode.status">
+                  <a-input v-model="params.pictureCode" placeholder="请输入图形验证码" v-bind="styleProps" :maxLength="4"
+                           @pressEnter="handleSubmit">
                     <a-icon slot="prefix" type="safety" style="color:#BFBFBF"  />
                     <template slot="suffix">
-                      <div style="height: 34px;overflow: hidden;width: 110px;">
-                        <img :src="imgUrl" alt="" style="height: 39px;width:117px;margin: -3px 0 0 -4px;">
-                      </div>
+                      <a-spin :spinning="imgCode.loading">
+                        <div style="height: 34px;overflow: hidden;width: 110px;">
+                          <img :src="imgCode.url" alt="" style="height: 39px;width:117px;margin: -3px 0 0 -4px;">
+                        </div>
+                      </a-spin>
                     </template>
                   </a-input>
                 </a-form-model-item>
               </template>
-              <a-form-model-item prop="phoneCode" v-show="params.loginType===1">
+              <a-form-model-item prop="phoneCode" v-if="params.loginType===0">
                 <a-input v-model="params.phoneCode" placeholder="请输入短信验证码" v-bind="styleProps" :maxLength="6"
-                         autoComplete="new-password">
+                         autoComplete="new-password" @pressEnter="handleSubmit">
                   <a-icon slot="prefix" type="lock" style="color:#BFBFBF" />
                   <template slot="suffix">
                     <a-button type="link" @click="handleCode">{{code.text}}</a-button>
@@ -57,15 +60,18 @@
 </template>
 
 <script>
-  const imgUrl = 'data:image/jpeg;base64,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';
+
+import * as api from "@/plugin/api/login";
+import { encryptInfo } from "@/plugin/tools/encrypt";
+
 export default {
   name: 'RegisterView',
   nameComment: '注册页面',
   data() {
     return {
       params: {
-        loginType:1,
-        user: '',
+        loginType:0,
+        phone: '',
         password: '',
         phoneCode:'',
         pictureCode:''
@@ -74,7 +80,11 @@ export default {
         text:'获取验证码',
         disabled:false,
       },
-      imgUrl,
+      imgCode:{
+        status:false,
+        loading:false,
+        url:'',
+      },
       styleProps:{
         autoComplete:'off',
         size:'large',
@@ -83,7 +93,7 @@ export default {
         }
       },
       rules:{
-        user: [
+        phone: [
           { required: true, message: '请输入正确的手机号码', trigger: 'change' },
         ],
         password: [
@@ -108,34 +118,98 @@ export default {
         this.params.loginType = val;
       })
     },
+    // 获取图片验证码
+    toGetImageCode(){
+      if(this.imgCode.loading)return;
+      this.imgCode.loading = true;
+      api.authGetCaptcha(this.params.phone).then(res=>{
+        if(res.code === 20000){
+          this.imgCode.url = res.data.captcha;
+        }else{
+          this.$message.error(res.message);
+        }
+      }).finally(()=>{
+        this.imgCode.loading = false;
+      })
+    },
+    toLogin(){
+      api.accountStatus(this.params.phone)
+        .then(res=>{
+          if(res.code === 20000){
+            const { needPicCode } = res.data;
+            const { status } = this.imgCode;
+            if(needPicCode){
+              if(status){
+                return api.authLogin(encryptInfo(this.params));
+              }else{
+                this.imgCode.status = true;
+                this.toGetImageCode();
+              }
+            }else{
+              return api.authLogin(encryptInfo(this.params));
+            }
+          }
+        })
+        .then(res=>{
+          if(res.code === 20000){
+            this.$store.dispatch('login',res.data);
+            this.$router.push('/');
+          }else if(/300\d\d/.test(res.code)){
+            this.params.pictureCode = '';
+            if(res.code === 30010){
+              this.toGetImageCode();
+              this.$message.error('验证码输入错误！');
+            }else{
+              if(this.imgCode.status) this.toGetImageCode();
+              this.$message.error(res.message);
+            }
+          }else{
+            this.$message.error(res.message);
+          }
+        })
+    },
+    // 点击登录操作
     handleSubmit() {
       this.form.validate(valid => {
         if (valid) {
-          alert('submit!');
+          this.toLogin();
         } else {
           console.log('error submit!!');
           return false;
         }
       });
     },
+    // 获取手机验证码
     handleCode(){
+      if(!this.params.phone) return this.$message.error('手机号不能为空！');
       if(this.code.disabled) return;
-      let countdown = 10;
-      this.code = {
-        disabled: true,
-        text:`重新发送（${countdown}s）`,
-      };
-      this.interval = setInterval(()=>{
-        countdown -= 1;
-        this.code.text = `重新发送（${countdown}s）`;
-        if(countdown === 0){
-          this.code = {
-            disabled:false,
-            text:'获取验证码'
-          };
-          clearInterval(this.interval);
+      let countdown = 60;
+      this.code.disabled = true;
+      api.authLoginCode({
+        "boo": true,
+        "datas": [1,2],
+        "phone": this.params.phone
+      }).then(res=>{
+        if(res.code === 20000) {
+          this.code.text = `重新发送（${countdown}s）`;
+          this.interval = setInterval(()=>{
+            countdown -= 1;
+            this.code.text = `重新发送（${countdown}s）`;
+            if(countdown === 0){
+              this.code = {
+                disabled:false,
+                text:'获取验证码'
+              };
+              clearInterval(this.interval);
+            }
+          },1000)
+
+        } else{
+          this.$message.error(res.message);
+          this.code.disabled = false;
         }
-      },1000)
+      });
+
     },
   },
   beforeDestroy() {
