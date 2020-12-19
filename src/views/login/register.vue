@@ -3,7 +3,7 @@
     <div class="register-container">
       <!-- logo图片 -->
       <div class="logo">
-        <img class="logo-pic" src="" alt="" />
+        <img class="logo-pic" src="../../assets/image/logo.jpg" alt="" />
       </div>
       <!-- 注册表单 -->
       <div class="register-block" v-if="next">
@@ -78,7 +78,11 @@
       <!-- 注册成功 -->
       <div class="register-success-block" v-else>
         <div class="success">
-          <img class="success-pic" src="" alt="" />
+          <img
+            class="success-pic"
+            src="../../assets/image/success.png"
+            alt=""
+          />
           <div class="success-prompt">您已成功注册成为浙商资产服务商！</div>
           <div class="verify-prompt">
             为了更精准地给您推送优质项目，请您尽快进行服务商要素认证
@@ -100,6 +104,11 @@ export default {
     return {
       next: true,
       countdown: null,
+      formInfo:{
+        code:'',
+        phone:'',
+        username:''
+      }
     };
   },
   methods: {
@@ -113,21 +122,17 @@ export default {
             this.$message.error("请输入正确的手机号码");
             return;
           }
-          authRegister({
-            code: "111111",
-            phone: "13767401613",
-            username: "ww",
-          }).then((res) => {
+          authRegister(values).then((res) => {
             console.log(res);
             if (res.code === 20000) {
-              this.$$message.success("注册成功");
+              this.$message.success("注册成功");
               this.next = false;
             }
-            
+            if (res.code === 20001) this.$message.error("注册失败");
+            this.$message.error(res.message);
           });
         }
       );
-      // this.next = false;
     },
     //点击发送验证码
     sendVerifyCode() {
@@ -137,7 +142,7 @@ export default {
         this.countdown--;
         if (this.countdown === 0) clearInterval(timer);
       }, 1000);
-      registerCode("13767401613").then((res) => {
+      registerCode("17309405147").then((res) => {
         console.log(res);
       });
     },
@@ -264,6 +269,14 @@ export default {
             line-height: 40px;
           }
         }
+      }
+      /deep/.ant-form-explain {
+        text-align: left;     
+        font-size: 12px;    
+        font-weight: 400;
+        color: #F5222D;
+        line-height: 12px;
+        margin-top: 4px;
       }
       .login {
         font-size: 14px;
