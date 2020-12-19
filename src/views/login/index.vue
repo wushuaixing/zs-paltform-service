@@ -161,8 +161,7 @@ export default {
           if (code === 30001) {
            return this.$message.error('手机号或密码错误')
           }  
-        })
-        // console.log(code.count);     
+        })  
       })
         // console.log(this.$refs.reform);
         // const correct = this.$refs.reform.model.phone === this.data.phone && this.$refs.reform.model.password === this.data.password
@@ -262,7 +261,7 @@ export default {
               "phone": this.form.phone
             }))
             console.log(res);
-            this.$message.successs('请在一分钟内获取验证码登录') 
+            // this.$message.successs('请在一分钟内获取验证码登录') 
           }
         })
         // 验证码倒计时
