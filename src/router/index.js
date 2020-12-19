@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Layout from '@/views/common/layout';
-import Login from '@/views/login/index';
+import Login from '@/views/login/view';
 import Register from '@/views/login/register';
 import RouterSpace from '@/components/router-space';
 

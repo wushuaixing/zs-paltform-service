@@ -19,7 +19,8 @@ export default {
         top:'64px',
         bottom:0,
         overflow:'hidden auto',
-        background: '#fff'
+        background: '#fff',
+        zIndex:99,
       }
     };
   },

@@ -1,7 +1,10 @@
 <template>
   <div class="login-container">
       <div class="login-box">
-          <div class="login-img">
+          <div class="logo">
+            <img src="../../assets/image/logo.jpg" alt="logo">
+          </div>
+          <div class="login-video">
           </div>
              <!-- 表单区域 -->
             <div class="login-content">
@@ -271,25 +274,37 @@ export default {
             top: 50%;
             left: 50%;
             transform:translate(-50%,-50%);
-            width: 1200px;
-            height: 598px;
-            background: #FFFFFF;
+            width: 1306px;
+            height: 480px;
+            // background: #FFFFFF;
             box-shadow: 4px 6px 15px 0 rgba(0, 0, 0, 0.2);
             border-radius: 10px;
             box-sizing: border-box;
             display: flex;
-            .login-img {
-              width: 678px;
-              height: 456px;
-              margin: 71px 0 71px 50px;
-              background-color: #ccc;
+            .logo {
+              position: absolute;
+              width: 223px;
+              height: 72px;
+              top: -96px;
+              left: 0;
+              img {
+                width: 100%;
+                height: 100%;
+              }
+            }
+            .login-video {
+            width: 879px;
+            height: 480px;
+            background-color: #ccc;
             }
             .login-content {
-              position: relative;
+              // position: relative;
+              margin-left: 25px;
               width: 402px;
               height: 480px;
-              margin: 71px 0 71px 50px;
-              background-color: #fff;
+              background: #FFFFFF;
+              box-shadow: 4px 6px 15px 0px rgba(0, 0, 0, 0.2);
+              border-radius: 2px;
               .tabs {
                 width: 368px;
                  color: #008CB0;
@@ -300,7 +315,6 @@ export default {
                   font-family: PingFangSC-Regular, PingFang SC;
                   font-weight: 400;
                   color: #008CB0;
-                  
                   // margin-top: 50px;
                   justify-content: space-around;
                 }
@@ -329,9 +343,6 @@ export default {
               /deep/.is-active {
                 color: #008CB0;
               }
-              // /deep/.el-tabs__item {
-              //   position: relative;
-              // }
               .title {
                 margin: 42px 55px 50px;
                 width: 254px;
