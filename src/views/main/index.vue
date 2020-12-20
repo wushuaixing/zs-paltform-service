@@ -1,6 +1,8 @@
 <template>
   <a-layout>
-    <a-layout-sider :width="width" :style="siderStyle"><Menu @change="toggleCollapsed"/></a-layout-sider>
+    <a-layout-sider :width="width" :style="siderStyle">
+      <Menu @change="toggleCollapsed"/>
+    </a-layout-sider>
     <a-layout :style="layoutStyle">
       <a-layout-content :style="{ margin: 0, height: '100%' }">
         <router-view/>
@@ -9,7 +11,7 @@
   </a-layout>
 </template>
 <script>
-import Menu from '../common/menu'
+import Menu from '../common/menu';
 export default {
   data() {
     return {
@@ -19,7 +21,7 @@ export default {
         left: 0,
         top:'64px',
         bottom:0,
-        overflow:'hidden auto',
+        // overflow:'hidden auto',
         background: '#fff',
         zIndex:99,
       }

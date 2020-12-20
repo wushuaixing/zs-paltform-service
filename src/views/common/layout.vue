@@ -50,18 +50,18 @@ export default {
   created() {
     const { pathname } = window.location;
     if(/center/.test(pathname))this.selectedKey = 'b';
-    setTimeout(()=>{
-      this.loading = false;
-    },500)
+		if(!this.$store.state.isLogin){
+			getInfo().then(res=>{
+				this.loading = false;
+				this.$store.commit('updateInfo', res.data);
+			}).catch(err=>{console.log(err)}).finally(()=>this.loading = false)
+		}else{
+			this.loading = false;
+		}
   },
   mounted() {
     console.log('默认页面：首次加载！');
     console.log('检查校验：判断及检查相关token信息！');
-    if(!this.$store.state.isLogin){
-      getInfo().then(res=>{
-        this.$store.commit('updateInfo', res.data);
-      }).catch(err=>{console.log(err)})
-    }
   },
   computed:{
     username(){
