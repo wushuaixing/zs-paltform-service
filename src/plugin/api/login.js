@@ -14,3 +14,4 @@ export const authGetCaptcha = params => request.post('/service/auth/getCaptcha?p
 
 // 登录前判断当前账号状态
 export const accountStatus = params => request.get('/service/auth/loginPreCheckAccountStatus?phone=' + params);
+//test
