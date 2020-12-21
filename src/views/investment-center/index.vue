@@ -5,55 +5,58 @@
         <img src="@/assets/img/logo.png" alt="">
         <span>浙商资产服务项目招商</span>
       </div>
-      <div class="query-wrapper">
-        <div class="content">
-          <div class="part">
-            <div class="label">资产地域</div>
-            <a-radio-group v-model="queryParams.area" @change="onChange" button-style="solid">
-              <a-radio-button v-for="item in areaOptions" :value="item.value" :key="item.value">
-                {{ item.label }}
-              </a-radio-button>
-            </a-radio-group>
-          </div>
-          <div class="part">
-            <div class="label">抵押物类型</div>
-            <a-radio-group v-model="queryParams.type" @change="onChange" button-style="solid">
-              <a-radio-button v-for="item in typeOptions" :value="item.value" :key="item.value">
-                {{ item.label }}
-              </a-radio-button>
-            </a-radio-group>
-          </div>
-          <div class="part">
-            <div class="label">资产规模</div>
-            <a-radio-group v-model="queryParams.grade" @change="onChange" button-style="solid">
-              <a-radio-button v-for="item in gradeOptions" :value="item.value" :key="item.value">
-                {{ item.label }}
-              </a-radio-button>
-            </a-radio-group>
+      <templete v-if="!isAttestationOmission">
+        <div class="query-wrapper">
+          <div class="content">
+            <div class="part">
+              <div class="label">资产地域</div>
+              <a-radio-group v-model="queryParams.area" @change="onChange" button-style="solid">
+                <a-radio-button v-for="item in areaOptions" :value="item.value" :key="item.value">
+                  {{ item.label }}
+                </a-radio-button>
+              </a-radio-group>
+            </div>
+            <div class="part">
+              <div class="label">抵押物类型</div>
+              <a-radio-group v-model="queryParams.type" @change="onChange" button-style="solid">
+                <a-radio-button v-for="item in typeOptions" :value="item.value" :key="item.value">
+                  {{ item.label }}
+                </a-radio-button>
+              </a-radio-group>
+            </div>
+            <div class="part">
+              <div class="label">资产规模</div>
+              <a-radio-group v-model="queryParams.grade" @change="onChange" button-style="solid">
+                <a-radio-button v-for="item in gradeOptions" :value="item.value" :key="item.value">
+                  {{ item.label }}
+                </a-radio-button>
+              </a-radio-group>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="table-wrapper">
-        <div class="total-tips">
-          *当前条件下共有 {{ total }} 条正在招商的项目
+        <div class="table-wrapper">
+          <div class="total-tips">
+            *当前条件下共有 {{ total }} 条正在招商的项目
+          </div>
+          <a-table :columns="columns" :data-source="amcProjectInfo">
+            <template slot="amount" slot-scope="amount">{{ amount|amountTh }}</template>
+            <template slot="type" slot-scope="{type}">
+              <span v-for="item in type" :key="item" :style="{marginRight:'5px'}">{{ MSGS_TYPE[item] }}</span>
+            </template>
+            <template slot="area" slot-scope="{area}">
+              <p v-for="item in area" :key="item" :style="{margin:'0px'}">{{ item }}</p>
+            </template>
+            <template slot="auction" slot-scope="item">
+              <a-button type="link" size="small" @click="handleAuction(item,'view')">查看抵押物清单</a-button>
+              <a-divider type="vertical" style="margin:0"/>
+              <a-button type="link" size="small" v-if="item.signUpStatus" @click="handleAuction(item,'signUp')">竞标报名
+              </a-button>
+              <a-button type="link" size="small" v-else style="cursor: Default">已报名</a-button>
+            </template>
+          </a-table>
         </div>
-        <a-table :columns="columns" :data-source="amcProjectInfo">
-          <template slot="amount" slot-scope="amount">{{ amount|amountTh }}</template>
-          <template slot="type" slot-scope="{type}">
-            <span v-for="item in type" :key="item" :style="{marginRight:'5px'}">{{ MSGS_TYPE[item] }}</span>
-          </template>
-          <template slot="area" slot-scope="{area}">
-            <p v-for="item in area" :key="item" :style="{margin:'0px'}">{{ item }}</p>
-          </template>
-          <template slot="auction" slot-scope="item">
-            <a-button type="link" size="small" @click="handleAuction(item,'view')">查看抵押物清单</a-button>
-            <a-divider type="vertical" style="margin:0"/>
-            <a-button type="link" size="small" v-if="item.signUpStatus" @click="handleAuction(item,'signUp')">竞标报名
-            </a-button>
-            <a-button type="link" size="small" v-else style="cursor: Default">已报名</a-button>
-          </template>
-        </a-table>
-      </div>
+      </templete>
+      <AttestationOmission v-else :attestation="isAttestationOmission===1?'资质认证':'要素认证'"/>
       <ProjectModal :projectInfo="projectInfo" :sign="'signUp'" ref="signUpModal"/>
       <MsgInfoModal ref="msgInfoModal"/>
     </div>
@@ -64,6 +67,7 @@
 import {columns, MSGS_TYPE} from "./source";
 import ProjectModal from '@/components/modal/project-modal';
 import MsgInfoModal from './msgsInfo-modal';
+import AttestationOmission from '@/components/authentication-omission';
 import {clearProto} from "@/plugin/tools";
 
 const areaOptions = [
@@ -129,6 +133,7 @@ export default {
       typeOptions,
       gradeOptions,
       MSGS_TYPE, //抵质押物类型
+      isAttestationOmission: 0,
       total: 156,
       viewModalVisible: false, //查看抵质押物清单弹窗
       queryParams: {
@@ -173,6 +178,7 @@ export default {
   components: {
     ProjectModal,
     MsgInfoModal,
+    AttestationOmission,
   },
   methods: {
     handleAuction(params, sign) {
