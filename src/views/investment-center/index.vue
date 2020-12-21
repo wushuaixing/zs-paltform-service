@@ -5,7 +5,7 @@
         <img src="@/assets/img/logo.png" alt="">
         <span>浙商资产服务项目招商</span>
       </div>
-      <templete v-if="!isAttestationOmission">
+      <div v-if="!isAttestationOmission">
         <div class="query-wrapper">
           <div class="content">
             <div class="part">
@@ -55,7 +55,7 @@
             </template>
           </a-table>
         </div>
-      </templete>
+      </div>
       <AttestationOmission v-else :attestation="isAttestationOmission===1?'资质认证':'要素认证'"/>
       <ProjectModal :projectInfo="projectInfo" :sign="'signUp'" ref="signUpModal"/>
       <MsgInfoModal ref="msgInfoModal"/>
