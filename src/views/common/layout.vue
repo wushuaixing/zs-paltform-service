@@ -18,9 +18,11 @@
                       :getPopupContainer="e=>e.parentElement" >
             <a-menu slot="overlay" >
               <a-menu-item key="1">
-                <a-icon type="user" />修改绑定手机号</a-menu-item>
+                <div @click="handleModifyPhone"><a-icon type="user" />修改绑定手机号</div>
+              </a-menu-item>
               <a-menu-item key="2">
-                <a-icon type="user" />修改登录密码 </a-menu-item>
+                <div @click="handleModifyPwd"><a-icon type="user" />修改登录密码</div>
+              </a-menu-item>
               <a-menu-item key="3">
                 <router-link to="/login"><a-icon type="user" />退出登录</router-link>
               </a-menu-item>
@@ -32,11 +34,14 @@
       <router-view/>
     </a-layout>
     <a-spin v-if="loading" class="spin-wrapper" size="large" tip="数据加载中，请稍后..." />
+    <ModifyPhoneModal ref="modifyPhone"></ModifyPhoneModal>
+    <ModifyPwdModal ref="modifyPwd"></ModifyPwdModal>
   </div>
 </template>
 <script>
 import { getInfo} from "@/plugin/api/base";
-
+import ModifyPhoneModal from "@/views/main/personal/modify-phone"
+import ModifyPwdModal from "@/views/main/personal/modify-password"
 export default {
   data() {
     return {
@@ -46,6 +51,16 @@ export default {
     };
   },
   components: {
+    ModifyPwdModal,
+    ModifyPhoneModal
+  },
+  methods:{
+    handleModifyPhone(){
+      this.$refs.modifyPhone.showModal()
+    },
+    handleModifyPwd(){
+      this.$refs.modifyPwd.showModal()
+    }
   },
   created() {
     const { pathname } = window.location;

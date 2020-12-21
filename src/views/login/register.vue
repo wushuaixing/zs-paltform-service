@@ -35,10 +35,11 @@
                 {
                   rules: [
                     {
+                      validator: phoneCheck,
                       required: true,
                       len: 11,
                       message: '请输入11位数字',
-                    }
+                    },
                   ],
                   trigger: 'blur',
                 },
@@ -121,6 +122,7 @@ export default {
             this.$message.error("必填信息不能为空");
             return;
           }
+          this.loading = true;
           authRegister(values)
             .then((res) => {
               console.log(res);
@@ -128,11 +130,10 @@ export default {
                 this.$message.success("注册成功");
                 this.next = false;
               }
-              if (res.code === 20001) {
-                this.$message.error("注册失败");
-              } else {
-                this.$message.error(res.message);
-              }
+              if (res.code === 20001) this.$message.error("注册失败");
+              if (res.code === 30003) this.$message.error("验证码错误");
+              if (res.code === 30006) this.$message.error("账号被锁定");
+              if (res.code === 30008) this.$message.error("该手机号已被注册");
             })
             .catch((err) => {
               console.log(err);
@@ -141,7 +142,7 @@ export default {
       );
     },
     //点击发送验证码
-    async sendVerifyCode() {
+    sendVerifyCode() {
       this.form.validateFields(["phone"], (err, value) => {
         if (err) {
           return;
@@ -158,7 +159,14 @@ export default {
           });
         }
       });
-    }
+    },
+    phoneCheck(rule, value, callback) {
+      const reg = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
+      if (!reg.test(value)) {
+        callback("请输入正确的手机号码");
+      }
+      callback();
+    },
   },
   beforeCreate() {
     this.form = this.$form.createForm(this, { name: "normal_login" });
@@ -301,6 +309,10 @@ export default {
         margin-top: 24px;
         text-align: center;
         cursor: pointer;
+      }
+      .spin-wrapper {
+        width: 100%;
+        padding-top: 10vh !important;
       }
     }
   }
