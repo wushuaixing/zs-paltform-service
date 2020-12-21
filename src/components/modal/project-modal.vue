@@ -1,6 +1,6 @@
 <template>
   <a-modal
-      title="放弃竞标"
+      :title="!isSignUpSuccess ? sign === 'fail' ? '放弃竞标' : '竞标报名' : '竞标报名-报名成功'"
       v-model="visible"
       :destroyOnClose="true"
       dialogClass="fail-modal"
@@ -8,13 +8,13 @@
   >
     <template slot="footer">
       <a-button key="submit" type="primary" @click="handleModify(sign)">
-        确认{{ sign === 'fail' ? '放弃' : '报名' }}
+        {{ !isSignUpSuccess ? sign === 'fail' ? '确认放弃' : '确认报名' : '前往查看竞标项目' }}
       </a-button>
       <a-button key="back" @click="handleCancel">
-        取消
+        {{ isSignUpSuccess ? '继续浏览招商项目' : '取消' }}
       </a-button>
     </template>
-    <div class="fail-modal-wrapper">
+    <div class="fail-modal-wrapper" v-if="!isSignUpSuccess">
       <div class="header">
         <a-icon type="exclamation-circle" :style="{color:'orange',marginRight:'5px'}"/>
         <span v-if="sign==='fail'">确认要放弃以下项目的服务 竞标吗？放弃后，对该项目的竞标不可恢复!</span>
@@ -53,6 +53,12 @@
         </ul>
       </div>
     </div>
+    <div class="signup-success-wrapper" v-else>
+      <img src="@/assets/img/logo.png" alt="">
+      <p>报名成功！项目已进入您的竞标项目管理列表，您可前往列表查看项目详情和进行方案提交</p>
+      <p>本项目的项目经理为：xxx，联系方式：17764851245</p>
+      <p>请您尽快联系项目经理，完成尽调并提交服务方案</p>
+    </div>
   </a-modal>
 </template>
 
@@ -63,6 +69,7 @@ export default {
   data() {
     return {
       visible: false,
+      isSignUpSuccess: false,
     }
   },
   props: {
@@ -81,15 +88,22 @@ export default {
       this.visible = true;
     },
     handleModify() {
-      if (this.sign === 'signUp') {
-        console.log('竞标报名');
+      if (this.isSignUpSuccess) {
+        this.visible = false;
+        this.$router.push('/project/biding');
       } else {
-        console.log('放弃竞标');
+        if (this.sign === 'signUp') {
+          console.log('竞标报名');
+          this.isSignUpSuccess = true;
+        } else {
+          this.visible = false;
+        }
       }
-      this.visible = false;
+
     },
     handleCancel() {
       this.visible = false;
+      this.isSignUpSuccess = false;
     },
   }
 }
@@ -151,6 +165,20 @@ export default {
             }
           }
         }
+      }
+    }
+
+    .signup-success-wrapper {
+      text-align: center;
+      padding-top: 32px;
+
+      img {
+        height: 68px;
+        margin-bottom: 24px;
+      }
+
+      p {
+        margin-bottom: 8px;
       }
     }
   }
