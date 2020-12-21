@@ -200,10 +200,10 @@ export default {
       &-item{
         .item-title{
           padding: 14px 32px;
-          border-bottom: 1px solid #f1f2f5;
+          border-bottom: 1px solid $border-base;
+          font-weight: bold;
           span{
             font-size: 18px;
-            font-weight: 500;
             color: #262626;
             line-height: 32px;
             vertical-align: super;
@@ -282,11 +282,15 @@ export default {
         }
       }
       &-choose{
+        .item-title{
+          font-weight: bold;
+          border-bottom: none;
+        }
         .choose-content{
           width: 100%;
-          padding: 82px 18%;
+          padding: 82px 0;
           display: flex;
-          justify-content: space-between;
+          justify-content: center;
           .choose-item{
             padding: 36px 40px 31px;
             width: 292px;
@@ -294,6 +298,9 @@ export default {
             background: #ffffff;
             box-shadow: 1px 1px 6px 1px #D9D9D9;
             text-align: center;
+            &:first-child{
+              margin-right: 20%;
+            }
             &:hover{
               background: rgba(222,222,222,0.2);
               cursor: pointer;
