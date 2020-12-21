@@ -14,7 +14,7 @@
       <div class="item-wrapper">
         <div class="item-title item-format">我的日程</div>
         <div class="item-content item-format">
-          <DragVerify v-if="false"></DragVerify>
+          <!-- <DragVerify v-if="false"></DragVerify> -->
           <!--<img src="https://qiniu.yczcjk.com/123.png" alt="">-->
           <a-calendar>
             <ul slot="dateCellRender" slot-scope="value" class="events">
@@ -36,12 +36,12 @@
 </template>
 
 <script>
-import DragVerify from '../../login/drag-verify';
+// import DragVerify from '../../login/drag-verify';
 export default {
   name: 'Workbench',
   nameComment:"工作台",
   components:{
-    DragVerify
+    // DragVerify
   },
   data() {
     return {};
@@ -111,7 +111,7 @@ $background:#f0f2f5;
   }
   .item{
     &-format{
-      padding: 15px;
+      padding: 16px;
       font-size: 14px;
       line-height: 1;
     }
@@ -124,8 +124,13 @@ $background:#f0f2f5;
     }
     &-content{
       min-height: 150px;
+      max-width: 880px;
     }
   }
+  // /deep/.ant-fullcalendar-calendar-body {
+  //   width: 100%;
+  //   height: 100%;
+  // }
   // 日历样式
   .events {
     list-style: none;
