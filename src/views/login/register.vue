@@ -15,6 +15,7 @@
                 'username',
                 {
                   rules: [{ required: true, message: '请输入您的名字' }],
+                  trigger: 'blur',
                 },
               ]"
               placeholder="请输入您的姓名"
@@ -35,10 +36,11 @@
                   rules: [
                     {
                       required: true,
-                      message: '请输入11位数字',
                       len: 11,
-                    },
+                      message: '请输入11位数字',
+                    }
                   ],
+                  trigger: 'blur',
                 },
               ]"
               placeholder="请输入您本人实名登记的手机号码"
@@ -56,11 +58,12 @@
                 'code',
                 {
                   rules: [{ required: true, message: '请输入验证码' }],
+                  trigger: 'blur',
                 },
               ]"
               placeholder="请输入验证码"
             >
-              <div slot="suffix" @click="sendVerifyCode" class="code">
+              <div slot="suffix" @click="sendVerifyCode" class="phonecode">
                 发送验证码 <span v-if="countdown">({{ countdown }}s)</span>
               </div>
             </a-input>
@@ -96,6 +99,7 @@
 </template>
 
 <script>
+/*eslint-disable*/
 import { registerCode, authRegister } from "@/plugin/api/register";
 export default {
   name: "RegisterView",
@@ -104,11 +108,6 @@ export default {
     return {
       next: true,
       countdown: null,
-      formInfo:{
-        code:'',
-        phone:'',
-        username:''
-      }
     };
   },
   methods: {
@@ -119,33 +118,47 @@ export default {
         (errors, values) => {
           console.log(errors, values);
           if (errors) {
-            this.$message.error("请输入正确的手机号码");
+            this.$message.error("必填信息不能为空");
             return;
           }
-          authRegister(values).then((res) => {
-            console.log(res);
-            if (res.code === 20000) {
-              this.$message.success("注册成功");
-              this.next = false;
-            }
-            if (res.code === 20001) this.$message.error("注册失败");
-            this.$message.error(res.message);
-          });
+          authRegister(values)
+            .then((res) => {
+              console.log(res);
+              if (res.code === 20000) {
+                this.$message.success("注册成功");
+                this.next = false;
+              }
+              if (res.code === 20001) {
+                this.$message.error("注册失败");
+              } else {
+                this.$message.error(res.message);
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
         }
       );
     },
     //点击发送验证码
-    sendVerifyCode() {
-      if (this.countdown) return;
-      this.countdown = 60;
-      var timer = setInterval(() => {
-        this.countdown--;
-        if (this.countdown === 0) clearInterval(timer);
-      }, 1000);
-      registerCode("17309405147").then((res) => {
-        console.log(res);
+    async sendVerifyCode() {
+      this.form.validateFields(["phone"], (err, value) => {
+        if (err) {
+          return;
+        } else {
+          //60秒倒计时阶段不可发送验证码
+          if (this.countdown) return;
+          this.countdown = 60;
+          const timer = setInterval(() => {
+            this.countdown--;
+            if (this.countdown === 0) clearInterval(timer);
+          }, 1000);
+          registerCode(value.phone).then((res) => {
+            console.log(res);
+          });
+        }
       });
-    },
+    }
   },
   beforeCreate() {
     this.form = this.$form.createForm(this, { name: "normal_login" });
@@ -217,7 +230,7 @@ export default {
         }
         .verify-item {
           margin-top: 24px;
-          .code {
+          .phonecode {
             height: 16px;
             font-size: 16px;
             font-weight: 400;
@@ -267,14 +280,16 @@ export default {
             font-weight: 500;
             color: #ffffff;
             line-height: 40px;
+            cursor: pointer;
           }
         }
       }
+      // 表单校验提示信息样式
       /deep/.ant-form-explain {
-        text-align: left;     
-        font-size: 12px;    
+        text-align: left;
+        font-size: 12px;
         font-weight: 400;
-        color: #F5222D;
+        color: #f5222d;
         line-height: 12px;
         margin-top: 4px;
       }
