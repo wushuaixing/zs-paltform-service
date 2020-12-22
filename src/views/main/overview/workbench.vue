@@ -4,28 +4,23 @@
       <div class="item-wrapper item-border">
         <div class="item-title item-format item-toDo">待办事项</div>
         <div class="item-content item-format item-thing">
-          <a-list item-layout="horizontal" :data-source="data">
+          <!-- 未认证的服务商 -->
+          <a-list v-if="false" item-layout="horizontal" :data-source="data">
             <a-list-item slot="renderItem" slot-scope="item">
-              <a-list-item-meta
-                description
-                :title="item.title"
-              >
-                <a slot="description" href="javascript:;">{{ item.description }}</a>
-                <!-- <a-avatar
-                  slot="avatar"
-                  src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                /> -->
+              <a-list-item-meta description :title="item.title">
+                <a slot="description" href="javascript:;">{{
+                  item.description
+                }}</a>
               </a-list-item-meta>
             </a-list-item>
           </a-list>
-            <!-- 认证过的服务商 -->
-          <a-list v-if="false" item-layout="horizontal" :data-source="list">
+          <!-- 认证过的服务商 -->
+          <a-list v-if="true" item-layout="horizontal" :data-source="list">
             <a-list-item slot="renderItem" slot-scope="item">
-              <a-list-item-meta
-                description
-                :title="item.title"
-              >
-               <a slot="description" href="javascript:;">{{ item.description}}</a>
+              <a-list-item-meta description :title="item.title">
+                <a slot="description" href="javascript:;">{{
+                  item.description
+                }}</a>
               </a-list-item-meta>
             </a-list-item>
           </a-list>
@@ -35,21 +30,24 @@
         <div class="item-project item-format">竞标项目进度概览</div>
         <!-- 没有添加项目之前 -->
         <div v-if="false" class="empty">
-           <a-empty :image="simpleImage"  description>
-             <slot name="description">您还没有已开始的项目，去<a href="javascript:;">服务商项目招商中心</a>添加第一个项目</slot>
-           </a-empty>
+          <a-empty :image="simpleImage" description>
+            <slot name="description"
+              >您还没有已开始的项目，去<a href="javascript:;"
+                >服务商项目招商中心</a
+              >添加第一个项目</slot
+            >
+          </a-empty>
         </div>
-        <div  class="item-content item-format">
+        <div class="item-content item-format">
           <div class="total">我的项目总数：</div>
           <div class="data-display">
             <!-- 饼形图 -->
             <div class="chart">
-            
+              <div id="main"></div>
             </div>
             <div class="schemeProcess">
-              <a-badge  status="pink" text="方案待提交">
-              </a-badge>
-              <span>7</span>
+              <a-badge status="pink" text="方案未提交"></a-badge>
+              <span>6</span>
               <br />
               <a-badge status="warning" text="方案已提交" />
               <span>7</span>
@@ -79,17 +77,25 @@
           <!-- <DragVerify v-if="false"></DragVerify> -->
           <!--<img src="https://qiniu.yczcjk.com/123.png" alt="">-->
           <a-calendar>
-            <ul slot="dateCellRender" slot-scope="value" class="events" :mode="false">
-              <li v-for="item in getListData(value)" :key="item.content">
-                <a-badge :status="item.type" :text="item.content" />
-              </li>
-            </ul>
-            <template slot="monthCellRender" slot-scope="value">
-              <div v-if="getMonthData(value)" class="notes-month">
-                <section>{{ getMonthData(value) }}</section>
-                <span>Backlog number</span>
-              </div>
-            </template>
+               <a-date-picker  @change="onChange"/>
+              <ul slot="dateCellRender" slot-scope="value" class="events">
+                <li v-for="item in getListData(value)" :key="item.content">
+                  <a-badge :status="item.type" :text="item.content" />
+                </li>
+              </ul>
+              <template slot="monthCellRender" slot-scope="value">
+                <div v-if="getMonthData(value)" class="notes-month">
+                  <section>{{ getMonthData(value) }}</section>
+                  <span>Backlog number</span>
+                </div>
+              </template>
+            <slot>
+              <a-month-picker placeholder="Select month" @change="onChange" />
+              <br />
+              <a-range-picker @change="onChange" />
+              <br />
+              <a-week-picker placeholder="Select week" @change="onChange" />
+            </slot>
           </a-calendar>
         </div>
       </div>
@@ -98,84 +104,89 @@
 </template>
 
 <script>
-// import DragVerify from '../../login/drag-verify';
-// 模拟数据
-// data 资质都未认证的数据  
+import echarts from "echarts";
+// data 资质都未认证的数据
 const data = [
-   {
-    description:"立即前往",
+  {
+    description: "立即前往",
     title: `【资质及要素认证】: 您已成功注册成为浙商资产服务商，为了更精准地给您推送优质项目，请您尽快进行服务商资质及要素认证！`,
   },
   {
-    description:"立即前往",
-    title: '【认证未通过】: 很抱歉，您提交的资质信息未通过审核，请进行编辑和重新提交！',
+    description: "立即前往",
+    title:
+      "【认证未通过】: 很抱歉，您提交的资质信息未通过审核，请进行编辑和重新提交！",
   },
   {
-    description:"立即前往",
-    title: '【认证未通过】: 很抱歉，您提交的要素信息未通过审核，请进行编辑和重新提交！',
+    description: "立即前往",
+    title:
+      "【认证未通过】: 很抱歉，您提交的要素信息未通过审核，请进行编辑和重新提交！",
   },
-]
+];
 // list表数据
 const list = [
-   {
-    description:"点击前往",
+  {
+    id: 1,
+    description: "点击前往",
     title: `【资质审核通过】: 您已通过资质审核，您可在“服务项目招商中心”对您有意向的项目进行报名！`,
   },
   {
-    description:"点击前往",
-    title: '【竞标成功】: 您提交的关于债务人xxx的服务方案已通过，请至“我的项目-我的竞标-已中标”列表中查看相关项目',
+    id: 2,
+    description: "点击前往",
+    title:
+      "【竞标成功】: 您提交的关于债务人xxx的服务方案已通过，请至“我的项目-我的竞标-已中标”列表中查看相关项目",
   },
   {
-    description:"点击前往",
-    title: '【方案提交即将截止】: 您已成功注册成为浙商资产服务商，为了更精准地给您推送优质项目，请您尽快进行服务商资质及要素认证！',
+    id: 3,
+    description: "点击前往",
+    title:
+      "【方案提交即将截止】: 您已成功注册成为浙商资产服务商，为了更精准地给您推送优质项目，请您尽快进行服务商资质及要素认证！",
   },
   {
-    description:"点击前往",
+    id: 4,
+    description: "点击前往",
     title: `【资质审核通过】: 您已通过资质审核，您可在“服务项目招商中心”对您有意向的项目进行报名！`,
   },
-  {
-    description:"点击前往",
-    title: '【竞标成功】: 您提交的关于债务人xxx的服务方案已通过，请至“我的项目-我的竞标-已中标”列表中查看相关项目',
-  },
-  
-]
+];
 export default {
-  name: 'Workbench',
-  nameComment:"工作台",
-  components:{
+  name: "Workbench",
+  nameComment: "工作台",
+  components: {
     // DragVerify
   },
   data() {
     return {
       list,
-      data
+      data,
     };
   },
-  methods : {
+  methods: {
     getListData(value) {
       let listData;
       switch (value.date()) {
         case 8:
           listData = [
-            { type: 'warning', content: 'This is warning event.' },
-            { type: 'success', content: 'This is usual event.' },
+            { type: "warning", content: "腾房完毕" },
+            { type: "success", content: "完成评估" },
           ];
           break;
         case 10:
           listData = [
-            { type: 'warning', content: 'This is warning event.' },
-            { type: 'success', content: 'This is usual event.' },
-            { type: 'error', content: 'This is error event.' },
+            { type: "warning", content: "This is warning event." },
+            { type: "success", content: "This is usual event." },
+            { type: "error", content: "This is error event." },
           ];
           break;
         case 15:
           listData = [
-            { type: 'warning', content: 'This is warning event' },
-            { type: 'success', content: 'This is very long usual event。。....' },
-            { type: 'error', content: 'This is error event 1.' },
-            { type: 'error', content: 'This is error event 2.' },
-            { type: 'error', content: 'This is error event 3.' },
-            { type: 'error', content: 'This is error event 4.' },
+            { type: "warning", content: "This is warning event" },
+            {
+              type: "success",
+              content: "This is very long usual event。。....",
+            },
+            { type: "error", content: "This is error event 1." },
+            { type: "error", content: "This is error event 2." },
+            { type: "error", content: "This is error event 3." },
+            { type: "error", content: "This is error event 4." },
           ];
           break;
         default:
@@ -188,54 +199,101 @@ export default {
         return 1394;
       }
     },
+    // 日期修改
+    onChange(date, dateString) {
+      console.log(date, dateString);
+    },
   },
-  mounted(){
-  }
-}
+  mounted() {
+    var myChart = echarts.init(document.getElementById("main"));
+    var option = {
+      // tooltip: {
+      //   trigger: "item",
+      //   formatter: "{a} <br/>{b}: {c} ({d}%)",
+      // },
+      // legend: {
+      //   // orient: "vertical",
+      //   // left: 100,
+      //   // data: ["直接访问", "邮件营销", "联盟广告", "视频广告", "搜索引擎"],
+      // },
+      series: [
+        {
+          name: "访问来源",
+          type: "pie",
+          radius: ["50%", "70%"],
+          // avoidLabelOverlap: false,
+          // label: {
+          //   show: false,
+          //   position: "center",
+          // },
+          // emphasis: {
+          //   // label: {
+          //   //   show: true,
+          //   //   fontSize: "30",
+          //   //   fontWeight: "bold",
+          //   // },
+          // },
+          labelLine: {
+            show: false,
+          },
+          data: [
+            { value: 335, name: "直接访问" },
+            { value: 310, name: "邮件营销" },
+            { value: 234, name: "联盟广告" },
+            { value: 135, name: "视频广告" },
+            { value: 1548, name: "搜索引擎" },
+          ],
+        },
+      ],
+    };
+
+    myChart.setOption(option);
+  },
+};
 </script>
 
 <style scoped lang="scss">
-$leftWidth:460px;
-$background:#E9E9E9;;
-.workbench-wrapper{
+$leftWidth: 460px;
+$background: #e9e9e9;
+.workbench-wrapper {
   height: 100%;
   padding: 16px;
-  .workbench{
-    &-item{
+  .workbench {
+    &-item {
       height: 100%;
       background-color: #ffffff;
     }
-    &-left{
+    &-left {
       float: left;
       width: $leftWidth;
       border-right: 10px solid $background;
     }
-    &-right{
+    &-right {
       margin-left: $leftWidth;
     }
   }
-  .item{
-    &-format{
+  .item {
+    &-format {
       padding: 16px;
       font-size: 14px;
       line-height: 1;
     }
-    &-border{
+    &-border {
       border-bottom: 10px solid $background;
     }
-    &-title{
+    &-title {
       border-bottom: 1px solid $background;
       line-height: 1.5;
       font-size: 16px;
       font-family: PingFangSC-Medium, PingFang SC;
-      font-weight: 500;
+      font-weight: 900;
       color: #262626;
     }
-    &-content{
+    &-content {
       min-height: 150px;
       max-height: 880px;
     }
-    &-thing{
+    &-thing {
       min-height: 500px;
       max-height: 600px;
     }
@@ -248,7 +306,7 @@ $background:#E9E9E9;;
     height: 16px;
     font-size: 16px;
     font-family: PingFangSC-Medium, PingFang SC;
-    font-weight: 500;
+    font-weight: 900;
     color: #262626;
     line-height: 16px;
   }
@@ -259,18 +317,18 @@ $background:#E9E9E9;;
     width: 100%;
     height: 200px;
     // background-color: #333;
+    .ant-badge {
+      margin: 10px 10px;
+    }
   }
   .chart {
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    background-color: pink;
+    // background-color: pink;
   }
   .schemeProcess {
     width: 30%;
-  }
-  .ant-badge {
-    margin: 10px 10px;
   }
   .schemeStatus {
     width: 30%;
@@ -306,7 +364,7 @@ $background:#E9E9E9;;
   // 日历头样式
   /deep/.ant-fullcalendar-header {
     text-align: center;
-  } 
+  }
   // .ant-fullcalendar-fullscreen {
   //   text-align: center;
   // }
@@ -314,10 +372,18 @@ $background:#E9E9E9;;
     text-align: center;
   }
   /deep/.ant-fullcalendar-date {
-    border-top: 4px solid #E8E8E8;
+    border-top: 4px solid #e8e8e8;
   }
   /deep/.ant-fullcalendar-today .ant-fullcalendar-date {
-    border-top: 6px solid #008CB0!important;
+    border-top: 6px solid #008cb0 !important;
   }
+}
+/deep/element.style {
+  top: -20px;
+  left: -25px;
+}
+#main{
+  width: 100px;
+  height: 100px;
 }
 </style>
