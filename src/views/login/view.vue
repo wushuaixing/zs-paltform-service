@@ -16,6 +16,15 @@
                   <a-icon slot="prefix" type="user" style="color:#BFBFBF" />
                 </a-input>
               </a-form-model-item>
+              <a-form-model-item prop="phoneCode" v-if="params.loginType===0">
+                <a-input v-model="params.phoneCode" placeholder="请输入短信验证码" v-bind="styleProps" :maxLength="6"
+                         autoComplete="new-password" @pressEnter="handleSubmit">
+                  <a-icon slot="prefix" type="lock" style="color:#BFBFBF" />
+                  <template slot="suffix">
+                    <a-button type="link" @click="handleCode" :style="code.disabled && {color:'#999'}">{{code.text}}</a-button>
+                  </template>
+                </a-input>
+              </a-form-model-item>
               <template v-if="params.loginType===1">
                 <a-form-model-item prop="password">
                   <a-input v-model="params.password" type="password"  v-bind="styleProps" @pressEnter="handleSubmit"
@@ -37,15 +46,7 @@
                   </a-input>
                 </a-form-model-item>
               </template>
-              <a-form-model-item prop="phoneCode" v-if="params.loginType===0">
-                <a-input v-model="params.phoneCode" placeholder="请输入短信验证码" v-bind="styleProps" :maxLength="6"
-                         autoComplete="new-password" @pressEnter="handleSubmit">
-                  <a-icon slot="prefix" type="lock" style="color:#BFBFBF" />
-                  <template slot="suffix">
-                    <a-button type="link" @click="handleCode">{{code.text}}</a-button>
-                  </template>
-                </a-input>
-              </a-form-model-item>
+
             </div>
 
           </a-form-model>
@@ -122,7 +123,8 @@ export default {
     toGetImageCode(){
       if(this.imgCode.loading)return;
       this.imgCode.loading = true;
-      api.authGetCaptcha(this.params.phone).then(res=>{
+      const phone = this.params.phone;
+      api.getCaptcha({phone}).then(res=>{
         if(res.code === 20000){
           this.imgCode.url = res.data.captcha;
         }else{
@@ -133,20 +135,21 @@ export default {
       })
     },
     toLogin(){
-      api.accountStatus(this.params.phone)
+      const phone = this.params.phone;
+      api.accountStatus({phone})
         .then(res=>{
           if(res.code === 20000){
             const { needPicCode } = res.data;
             const { status } = this.imgCode;
             if(needPicCode){
               if(status){
-                return api.authLogin(encryptInfo(this.params));
+                return api.login(encryptInfo(this.params));
               }else{
                 this.imgCode.status = true;
                 this.toGetImageCode();
               }
             }else{
-              return api.authLogin(encryptInfo(this.params));
+              return api.login(encryptInfo(this.params));
             }
           }
         })
@@ -185,11 +188,7 @@ export default {
       if(this.code.disabled) return;
       let countdown = 60;
       this.code.disabled = true;
-      api.authLoginCode({
-        "boo": true,
-        "datas": [1,2],
-        "phone": this.params.phone
-      }).then(res=>{
+      api.loginCode({ phone: this.params.phone }).then(res=>{
         if(res.code === 20000) {
           this.code.text = `重新发送（${countdown}s）`;
           this.interval = setInterval(()=>{

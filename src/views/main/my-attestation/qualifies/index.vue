@@ -9,7 +9,7 @@
         </div>
         <div class="choose-content">
           <div class="choose-item" @click="handleChoose('lawyer')">
-            <a-icon type="trademark" :style="{fontSize:'145px'}"/>
+            <img :src="icon.law" alt="" style="width: 145px;margin:0 auto;">
             <div class="item-name">律师</div>
             <div class="item-remark"></div>
             <ul class="item-list">
@@ -19,7 +19,7 @@
             </ul>
           </div>
           <div class="choose-item" @click="handleChoose('org')">
-            <a-icon type="trademark" :style="{fontSize:'145px'}"/>
+            <img :src="icon.org" alt="" style="width: 145px;margin:0 auto;">
             <div class="item-name">机构</div>
             <div class="item-remark">*个人若为机构员工，请以机构名义报名</div>
             <ul class="item-list">
@@ -35,8 +35,14 @@
         <div class="qualifies-item" slot="title">
           <div class="item-title item-title_no-border">
             <span>您当前选择的服务商身份为：</span>
-            <a-icon type="trademark" :style="{fontSize:'32px'}"/>
-            <span style="margin-left: 10px">{{identity}}</span>
+            <template v-if="identity ==='lawyer'">
+              <img :src="icon.law" alt="" style="height: 32px;vertical-align: top;">
+              <span style="margin-left: 10px">律师</span>
+            </template>
+            <template v-else>
+              <img :src="icon.org" alt="" style="height: 32px;vertical-align: top;">
+              <span style="margin-left: 10px">律师</span>
+            </template>
             <a-button style="float:right" @click="stepBack">上一步</a-button>
           </div>
         </div>
@@ -111,6 +117,9 @@
 
 <script>
 import FillForm from './fill-form';
+import IconLaw from '@/assets/img/lawyer.png';
+import IconOrg from '@/assets/img/org.png';
+
 export default {
   name: 'qualifies',
   nameComment: '资质认证',
@@ -125,8 +134,17 @@ export default {
         name:'言殁岚',
         phone:'17137246841'
       },
-      contacts_name:'言殁岚'
+      contacts_name:'言殁岚',
+      icon:{
+        law:IconLaw,
+        org:IconOrg,
+
+      }
     };
+  },
+  created(){
+    const { isCertification } = this.$store.getters.getInfo;
+    this.attestStatus = isCertification === 0 ? 'not' : 'yet';
   },
   components:{
     FillForm
@@ -156,8 +174,7 @@ export default {
 
   },
   mounted() {
-    console.log('当前未认证！=== not ');
-    console.log(this.$store.state);
+    // console.log('当前未认证！=== not ');
     setTimeout(()=>{
       this.spinning = false;
     },300)
@@ -183,10 +200,10 @@ export default {
       &-item{
         .item-title{
           padding: 14px 32px;
-          border-bottom: 1px solid #f1f2f5;
+          border-bottom: 1px solid $border-base;
+          font-weight: bold;
           span{
             font-size: 18px;
-            font-weight: 500;
             color: #262626;
             line-height: 32px;
             vertical-align: super;
@@ -265,11 +282,15 @@ export default {
         }
       }
       &-choose{
+        .item-title{
+          font-weight: bold;
+          border-bottom: none;
+        }
         .choose-content{
           width: 100%;
-          padding: 82px 18%;
+          padding: 82px 0;
           display: flex;
-          justify-content: space-between;
+          justify-content: center;
           .choose-item{
             padding: 36px 40px 31px;
             width: 292px;
@@ -277,6 +298,9 @@ export default {
             background: #ffffff;
             box-shadow: 1px 1px 6px 1px #D9D9D9;
             text-align: center;
+            &:first-child{
+              margin-right: 20%;
+            }
             &:hover{
               background: rgba(222,222,222,0.2);
               cursor: pointer;

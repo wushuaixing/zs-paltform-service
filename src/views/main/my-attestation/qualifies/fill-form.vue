@@ -6,6 +6,13 @@
       <a-form-item :label="org.name.label">
         <a-input v-decorator="org.name.dec" v-bind="org.name.other"/>
       </a-form-item>
+      <a-form-item :label="org.code.label">
+        <a-input v-decorator="org.code.dec" v-bind="org.name.other" style="display: none"/>
+        <span :class="codeClass">{{ relation.codeText }}</span>
+      </a-form-item>
+      <a-form-item :label="org.identity.label">
+        <a-textarea v-decorator="org.identity.dec" v-bind="org.identity.other"/>
+      </a-form-item>
       <a-form-item :label="org.email.label">
         <a-input v-decorator="org.email.dec" v-bind="org.email.other"/>
       </a-form-item>
@@ -26,7 +33,7 @@
       </a-form-item>
       <a-form-item :label="org.letter.label">
         <div class="fill-form-upload-wrapper">
-          <a-upload v-decorator="org.letter.dec" v-bind="org.letter.other" class="upload-wrapper" disabled="">
+          <a-upload v-decorator="org.letter.dec" v-bind="org.letter.other" class="upload-wrapper">
             <div class="upload-container">
               <a-icon type="plus" />
             </div>
@@ -136,6 +143,14 @@
 </template>
 
 <script>
+const formItemLayout = {
+  labelCol: { span: 8 },
+  wrapperCol: { span: 16 },
+};
+
+// const baseWidth = {
+//   style:{ width:'442px' }
+// };
 
 export default {
   name: 'FillForm',
@@ -152,16 +167,16 @@ export default {
     source:Object,
   },
   data() {
+
+
+
     return {
-      formItemLayout: {
-        labelCol: { span: 8 },
-        wrapperCol: { span: 16 },
-      },
+      formItemLayout,
       org:{
         name:{
           label:'机构名称',
           dec:[
-            'org',{
+            'name',{
               rules: [
                 { required: true, message: '机构名称不能为空！',},
               ],
@@ -173,6 +188,29 @@ export default {
             style:{
               width:'442px'
             }
+          }
+        },
+        code:{
+          label:'统一社会信用代码',
+          dec:['orgSocialCreditCode'],
+          other:{
+            autoComplete:'off',
+            placeholder:'若为合伙企业请明确执行事务合伙人身份',
+            style:{
+              width:'442px'
+            }
+          }
+        },
+        identity:{
+          label:'合伙人身份',
+          dec:['orgSocialCreditCode'],
+          other:{
+            autoComplete:'off',
+            placeholder:'请输入机构名称',
+            style:{
+              width:'442px'
+            },
+            autoSize:{ minRows: 4 }
           }
         },
         email:{
@@ -392,6 +430,11 @@ export default {
 
       },
       fileLists:0,
+      // 联动字段属性
+      relation:{
+        codeStatus:'hint',
+        codeText:' 自动匹配所选机构的统一社会信用代码 ',
+      },
     };
   },
   created() {
@@ -430,6 +473,13 @@ export default {
       });
     },
   },
+  computed:{
+    codeClass:function () {
+      if(this.relation.codeStatus === 'hint') return 'text-remark';
+      if(this.relation.codeStatus === 'error') return 'text-error';
+      else return '';
+    },
+  }
 }
 </script>
 
@@ -488,6 +538,12 @@ export default {
     margin-left: 10px;
     font-size: 12px;
     color: $text-remark;
+  }
+  .text-remark{
+    color: $text-remark;
+  }
+  .text-error{
+    color: $common-error;
   }
 }
 </style>
