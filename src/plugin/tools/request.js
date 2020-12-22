@@ -1,8 +1,10 @@
 import axios from 'axios';
 
+const ENV = process.env.NODE_ENV;
+
 /* =========  常规请求   ========= */
 const request = axios.create({
-	baseURL:'/proxy-api',
+	baseURL:ENV === 'development' ? '/proxy-api' : '',
 	timeout: 1000 * 30,
 	withCredentials: true,
 	credentials: 'include',
