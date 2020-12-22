@@ -2,11 +2,11 @@
   <div class="layout-menu">
     <a-menu
         mode="inline"
+        theme="dark"
         :default-selected-keys="defaultKey"
         :selectedKeys="selectedKeys"
-        theme="dark"
+        :inlineCollapsed="collapsed"
         :default-open-keys="defaultOpenKey"
-        :style="{ height: '100%', borderRight: 0 }"
     >
       <a-sub-menu v-for="item in source" :key="item.id">
         <span slot="title" v-if="item.title">
@@ -17,6 +17,11 @@
         </a-menu-item>
       </a-sub-menu>
     </a-menu>
+    <div class="layout-menu-button" v-if="openCollapsed">
+      <a-button type="link" block size="large" @click="toggleCollapsed">
+        <a-icon type="swap" />
+      </a-button>
+    </div>
   </div>
 </template>
 
@@ -25,6 +30,8 @@ export default {
   name: 'Menu',
   data() {
     return {
+      openCollapsed:true,
+      collapsed:false,
       defaultKey:['11'],
       selectedKeys:[],
       defaultOpenKey:['1','2','3','4','5'],
@@ -58,7 +65,7 @@ export default {
             { id:'2', title:'要素认证', path:'/factor' },
           ]
         },
-      ]
+      ],
     };
   },
   methods:{
@@ -72,13 +79,19 @@ export default {
             if(new RegExp('^' + i.path + item.path).test(path)) childKey = item.id;
           })
         }
-      })
+      });
       return [defaultKey + childKey];
-    }
+    },
+    toggleCollapsed(){
+      this.collapsed = !this.collapsed;
+    },
   },
   created() {
     const { path } = this.$route;
     this.selectedKeys = this.getSelectKey(path);
+
+  },
+  mounted(){
   },
   watch:{
     $route(to,from){
@@ -93,6 +106,15 @@ export default {
 .layout-menu{
   background-color: #001529;
   height: 100%;
+  padding-bottom: 40px;
+  position: relative;
+}
+.layout-menu .layout-menu-button{
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  left: 0;
+  z-index: 1;
 }
 .layout-menu .ant-menu-item{
   margin: 0!important;

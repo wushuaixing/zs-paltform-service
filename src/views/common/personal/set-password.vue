@@ -1,7 +1,13 @@
 <template>
   <div class="personal-main">
     <div class="container">
-      <a-modal :bodyStyle="{display:'flex',justifyContent:'center'}" :centered="true" :maskStyle="{background: 'rgba(0, 0, 0, 0.5)'}" v-model="visible" title="修改登录密码" @ok="handleOk">
+      <a-modal
+        :bodyStyle="{ display: 'flex', justifyContent: 'center' }"
+        :centered="true"
+        :maskStyle="{ background: 'rgba(0, 0, 0, 0.5)' }"
+        v-model="visible"
+        title="设置登录密码"
+      >
         <a-form-model
           ref="ruleForm"
           :model="form"
@@ -9,14 +15,11 @@
           :label-col="labelCol"
           :wrapper-col="wrapperCol"
         >
-          <a-form-model-item ref="name" label="原密码" prop="name">
-            <a-input placeholder="请输入原密码" v-model="form.oldPwd" />
+          <a-form-model-item ref="name" label="登录密码" prop="phone">
+            <a-input placeholder="请输入长度6-20位，同时包含数字和字母密码" v-model="form.oldAccount" />
           </a-form-model-item>
-          <a-form-model-item ref="name" label="新密码" prop="name">
-            <a-input placeholder="请输入长度6-20位,同事包含数字和字母密码" v-model="form.newPwd" />
-          </a-form-model-item>
-          <a-form-model-item ref="name" label="确认密码" prop="name">
-            <a-input placeholder="请再次输入登录密码" v-model="form.confirmPwd" />
+          <a-form-model-item ref="name" label="确认密码" prop="code">
+            <a-input placeholder="请再次输入登录密码" v-model="form.verifyCode" />
           </a-form-model-item>
         </a-form-model>
         <button slot="footer" class="save-btn">保存</button>
@@ -32,15 +35,16 @@ export default {
     return {
       visible: false,
       form: {
-        oldPwd: "",
-        newPwd: "",
-        confirmPwd: ""
+        oldAccount: "",
+        newAccount: "",
+        verifyCode: "",
       },
+      countdown: null,
       rules: {
-        name: [
+        code: [
           {
             required: true,
-            message: "Please input Activity name",
+            message: "请输入验证码",
             trigger: "blur",
           },
           {
@@ -50,24 +54,28 @@ export default {
             trigger: "blur",
           },
         ],
+        phone: [
+          {
+            required: true,
+            message: "请输入正确的手机号",
+            trigger: "blur",
+          },
+        ],
       },
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
     };
   },
-  methods: {
+  methods:{
     showModal() {
       this.visible = true;
-    },
-    handleOk(e) {
-      console.log(e);
-      this.visible = false;
-    },
-  },
+    },  
+  }
 };
 </script>
+
 <style lang="scss" scoped>
-    .save-btn{
+.save-btn{
         width: 60px;
         height: 32px;
         background: #CCCCCC;

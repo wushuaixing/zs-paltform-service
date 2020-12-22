@@ -7,18 +7,19 @@
       </div>
       <!-- 注册表单 -->
       <div class="register-block" v-if="next">
-        <a-form :form="form" class="register-form" @submit="handleSubmit">
-          <a-form-item class="user-name-item">
+        <a-form-model
+          ref="ruleForm"
+          :model="form"
+          :rules="rules"
+          :form="form"
+          class="register-form"
+          @submit="handleSubmit"
+        >
+          <a-form-model-item class="user-name-item" prop="name">
             <a-input
               class="form-userName-input"
-              v-decorator="[
-                'username',
-                {
-                  rules: [{ required: true, message: '请输入您的名字' }],
-                  trigger: 'blur',
-                },
-              ]"
               placeholder="请输入您的姓名"
+              v-model.trim="form.username"
             >
               <a-icon
                 slot="prefix"
@@ -26,24 +27,13 @@
                 style="color: rgba(0, 0, 0, 0.25)"
               />
             </a-input>
-          </a-form-item>
-          <a-form-item class="tel-item">
+          </a-form-model-item>
+          <a-form-model-item class="tel-item" prop="phone">
             <a-input
+              autocomplete="off"
               class="form-tel-input"
-              v-decorator="[
-                'phone',
-                {
-                  rules: [
-                    {
-                      validator: phoneCheck,
-                      required: true,
-                      len: 11,
-                      message: '请输入11位数字',
-                    },
-                  ],
-                  trigger: 'blur',
-                },
-              ]"
+              maxlength="11"
+              v-model.trim="form.phone"
               placeholder="请输入您本人实名登记的手机号码"
             >
               <a-icon
@@ -52,32 +42,28 @@
                 style="color: rgba(0, 0, 0, 0.25)"
               />
             </a-input>
-          </a-form-item>
-          <a-form-item class="verify-item">
+          </a-form-model-item>
+          <a-form-model-item class="verify-item" prop="code">
             <a-input
-              v-decorator="[
-                'code',
-                {
-                  rules: [{ required: true, message: '请输入验证码' }],
-                  trigger: 'blur',
-                },
-              ]"
+              autocomplete="off"
+              maxlength="6"
+              v-model.trim="form.code"
               placeholder="请输入验证码"
             >
               <div slot="suffix" @click="sendVerifyCode" class="phonecode">
-                发送验证码 <span v-if="countdown">({{ countdown }}s)</span>
+                获取验证码 <span v-if="countdown">({{ countdown }}s)</span>
               </div>
             </a-input>
-          </a-form-item>
-          <a-form-item>
+          </a-form-model-item>
+          <a-form-model-item>
             <a-button
               type="primary"
               html-type="submit"
               class="register-form-button"
               >下一步</a-button
             >
-          </a-form-item>
-        </a-form>
+          </a-form-model-item>
+        </a-form-model>
       </div>
       <!-- 注册成功 -->
       <div class="register-success-block" v-else>
@@ -94,7 +80,7 @@
           <div class="login-attestation">登陆并前往资质认证</div>
         </div>
       </div>
-      <div class="login">使用已有账号登录</div>
+      <div class="login" @click="goLogin">使用已有账号登录</div>
     </div>
   </div>
 </template>
@@ -106,9 +92,39 @@ export default {
   name: "RegisterView",
   nameComment: "注册页面",
   data() {
+    const phoneCheck = (rule, value, callback) => {
+      const reg = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
+      if (!reg.test(value)) {
+        callback("请输入正确的手机号码");
+      }
+      callback();
+    };
     return {
       next: true,
       countdown: null,
+      form: {
+        username: "",
+        phone: "",
+        code: "",
+      },
+      rules: {
+        name: [{ required: true, message: "请输入您的名字", trigger: "blur" }],
+        code: [
+          {
+            required: true,
+            message: "请输入验证码",
+            trigger: "blur",
+          },
+        ],
+        phone: [
+          {
+            required: true,
+            message: "请输入正确的手机号",
+            validator: phoneCheck,
+            trigger: "blur",
+          },
+        ],
+      },
     };
   },
   methods: {
@@ -122,7 +138,6 @@ export default {
             this.$message.error("必填信息不能为空");
             return;
           }
-          this.loading = true;
           authRegister(values)
             .then((res) => {
               console.log(res);
@@ -143,8 +158,8 @@ export default {
     },
     //点击发送验证码
     sendVerifyCode() {
-      this.form.validateFields(["phone"], (err, value) => {
-        if (err) {
+      this.$refs.ruleForm.validateField("phone", (validate) => {
+        if (validate) {
           return;
         } else {
           //60秒倒计时阶段不可发送验证码
@@ -156,20 +171,15 @@ export default {
           }, 1000);
           registerCode(value.phone).then((res) => {
             console.log(res);
+            if (res.code === 20000) this.$message.success("验证码发送成功");
+            if (res.code !== 20000) this.$message.error("验证码发送失败");
           });
         }
       });
     },
-    phoneCheck(rule, value, callback) {
-      const reg = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
-      if (!reg.test(value)) {
-        callback("请输入正确的手机号码");
-      }
-      callback();
+    goLogin() {
+      this.$router.push("/login");
     },
-  },
-  beforeCreate() {
-    this.form = this.$form.createForm(this, { name: "normal_login" });
   },
 };
 </script>
