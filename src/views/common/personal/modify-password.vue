@@ -1,7 +1,14 @@
 <template>
   <div class="personal-main">
     <div class="container">
-      <a-modal :bodyStyle="{display:'flex',justifyContent:'center'}" :centered="true" :maskStyle="{background: 'rgba(0, 0, 0, 0.5)'}" v-model="visible" title="修改登录密码" @ok="handleOk">
+      <a-modal
+        :bodyStyle="{ display: 'flex', justifyContent: 'center' }"
+        :centered="true"
+        :maskStyle="{ background: 'rgba(0, 0, 0, 0.5)' }"
+        v-model="visible"
+        title="修改登录密码"
+        @ok="handleOk"
+      >
         <a-form-model
           ref="ruleForm"
           :model="form"
@@ -9,14 +16,20 @@
           :label-col="labelCol"
           :wrapper-col="wrapperCol"
         >
-          <a-form-model-item ref="name" label="原密码" prop="name">
-            <a-input placeholder="请输入原密码" v-model="form.oldPwd" />
+          <a-form-model-item label="原密码" prop="oldPwd">
+            <a-input placeholder="请输入原密码" v-model.trim="form.oldPwd" />
           </a-form-model-item>
-          <a-form-model-item ref="name" label="新密码" prop="name">
-            <a-input placeholder="请输入长度6-20位，同时包含数字和字母密码" v-model="form.newPwd" />
+          <a-form-model-item label="新密码" prop="newPwd">
+            <a-input
+              placeholder="请输入长度6-20位，同时包含数字和字母密码"
+              v-model.trim="form.newPwd"
+            />
           </a-form-model-item>
-          <a-form-model-item ref="name" label="确认密码" prop="name">
-            <a-input placeholder="请再次输入登录密码" v-model="form.confirmPwd" />
+          <a-form-model-item label="确认密码" prop="confirmPwd">
+            <a-input
+              placeholder="请再次输入登录密码"
+              v-model.trim="form.confirmPwd"
+            />
           </a-form-model-item>
         </a-form-model>
         <button slot="footer" class="save-btn">保存</button>
@@ -34,19 +47,27 @@ export default {
       form: {
         oldPwd: "",
         newPwd: "",
-        confirmPwd: ""
+        confirmPwd: "",
       },
       rules: {
-        name: [
+        oldPwd: [
           {
             required: true,
             message: "Please input Activity name",
             trigger: "blur",
           },
+        ],
+        newPwd: [
           {
-            min: 3,
-            max: 5,
-            message: "Length should be 3 to 5",
+            required: true,
+            message: "Please input Activity name",
+            trigger: "blur",
+          },
+        ],
+        confirmPwd: [
+          {
+            required: true,
+            message: "Please input Activity name",
             trigger: "blur",
           },
         ],
@@ -67,29 +88,29 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-    .save-btn{
-        width: 60px;
-        height: 32px;
-        background: #CCCCCC;
-        border-radius: 2px;
-        font-size: 14px;
-        font-family: PingFangSC-Regular, PingFang SC;
-        font-weight: 400;
-        color: #FFFFFF;
-        line-height: 20px;
-        border: none;
-    }
-    .cancel-btn{
-        width: 60px;
-        height: 32px;
-        background: #FFFFFF;
-        border-radius: 2px;
-        border: 1px solid #D9D9D9;
-        font-size: 14px;
-        font-family: PingFangSC-Regular, PingFang SC;
-        font-weight: 400;
-        color: #666666;
-        line-height: 20px;
-        margin-left: 10px;
-    }
+.save-btn {
+  width: 60px;
+  height: 32px;
+  background: #cccccc;
+  border-radius: 2px;
+  font-size: 14px;
+  font-family: PingFangSC-Regular, PingFang SC;
+  font-weight: 400;
+  color: #ffffff;
+  line-height: 20px;
+  border: none;
+}
+.cancel-btn {
+  width: 60px;
+  height: 32px;
+  background: #ffffff;
+  border-radius: 2px;
+  border: 1px solid #d9d9d9;
+  font-size: 14px;
+  font-family: PingFangSC-Regular, PingFang SC;
+  font-weight: 400;
+  color: #666666;
+  line-height: 20px;
+  margin-left: 10px;
+}
 </style>

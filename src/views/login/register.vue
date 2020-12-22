@@ -13,9 +13,8 @@
           :rules="rules"
           :form="form"
           class="register-form"
-          @submit="handleSubmit"
         >
-          <a-form-model-item class="user-name-item" prop="name">
+          <a-form-model-item class="user-name-item" prop="username">
             <a-input
               class="form-userName-input"
               placeholder="请输入您的姓名"
@@ -58,8 +57,8 @@
           <a-form-model-item>
             <a-button
               type="primary"
-              html-type="submit"
               class="register-form-button"
+              @click="doRegister"
               >下一步</a-button
             >
           </a-form-model-item>
@@ -92,6 +91,7 @@ export default {
   name: "RegisterView",
   nameComment: "注册页面",
   data() {
+    //自定义手机号校验规则
     const phoneCheck = (rule, value, callback) => {
       const reg = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
       if (!reg.test(value)) {
@@ -108,7 +108,9 @@ export default {
         code: "",
       },
       rules: {
-        name: [{ required: true, message: "请输入您的名字", trigger: "blur" }],
+        username: [
+          { required: true, message: "请输入您的名字", trigger: "blur" },
+        ],
         code: [
           {
             required: true,
@@ -129,32 +131,29 @@ export default {
   },
   methods: {
     //点击下一步注册
-    handleSubmit() {
-      this.form.validateFields(
-        ["username", "phone", "code"],
-        (errors, values) => {
-          console.log(errors, values);
-          if (errors) {
-            this.$message.error("必填信息不能为空");
-            return;
-          }
-          authRegister(values)
-            .then((res) => {
-              console.log(res);
-              if (res.code === 20000) {
-                this.$message.success("注册成功");
-                this.next = false;
-              }
-              if (res.code === 20001) this.$message.error("注册失败");
-              if (res.code === 30003) this.$message.error("验证码错误");
-              if (res.code === 30006) this.$message.error("账号被锁定");
-              if (res.code === 30008) this.$message.error("该手机号已被注册");
-            })
-            .catch((err) => {
-              console.log(err);
-            });
+    doRegister() {
+      this.$refs.ruleForm.validate((validate) => {
+        console.log(validate);
+        if (!validate) {
+          this.$message.error("必填信息不能为空");
+          return;
         }
-      );
+        authRegister(this.form)
+          .then((res) => {
+            console.log(res);
+            if (res.code === 20000) {
+              this.$message.success("注册成功");
+              this.next = false;
+            }
+            if (res.code === 20001) this.$message.error("注册失败");
+            if (res.code === 30003) this.$message.error("验证码错误");
+            if (res.code === 30006) this.$message.error("账号被锁定");
+            if (res.code === 30008) this.$message.error("该手机号已被注册");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      });
     },
     //点击发送验证码
     sendVerifyCode() {
@@ -169,7 +168,7 @@ export default {
             this.countdown--;
             if (this.countdown === 0) clearInterval(timer);
           }, 1000);
-          registerCode(value.phone).then((res) => {
+          registerCode(this.form.phone).then((res) => {
             console.log(res);
             if (res.code === 20000) this.$message.success("验证码发送成功");
             if (res.code !== 20000) this.$message.error("验证码发送失败");

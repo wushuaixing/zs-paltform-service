@@ -10,23 +10,29 @@
       >
         <a-form-model
           ref="ruleForm"
-          :model="form"
           :rules="rules"
+          :model="form"
           :label-col="labelCol"
           :wrapper-col="wrapperCol"
-          v-if="step!==3"
+          v-if="step !== 3"
         >
-          <a-form-model-item v-if="step===1" label="原账号111" prop="region">
-            <a-input placeholder="请输入原账号" v-model.trim="form.oldAccount" />
+          <a-form-model-item v-if="step === 1" label="原账号" prop="phone">
+            <a-input
+              placeholder="请输入原账号"
+              v-model.trim="form.phone"
+            />
           </a-form-model-item>
-          <!-- <a-form-model-item v-else label="新账号" prop="phone">
+          <a-form-model-item v-else label="新账号" prop="phone">
             <a-input
               placeholder="请输入需要绑定的新手机号"
-              v-model.trim="form.newAccount"
+              v-model.trim="form.phone"
             />
-          </a-form-model-item> -->
+          </a-form-model-item>
           <a-form-model-item label="验证码" prop="code">
-            <a-input placeholder="请输入短信验证码" v-model.trim="form.verifyCode">
+            <a-input
+              placeholder="请输入短信验证码"
+              v-model.trim="form.code"
+            >
               <div slot="suffix" class="verify-code" @click="sendVerifyCode">
                 获取验证码<span v-if="countdown">({{ countdown }}s)</span>
               </div>
@@ -34,7 +40,11 @@
           </a-form-model-item>
         </a-form-model>
         <div class="success" v-else>
-          <img class="success-pic" src="../../../assets/image/success.png" alt="">
+          <img
+            class="success-pic"
+            src="../../../assets/image/success.png"
+            alt=""
+          />
           <div class="success-info">
             手机号修改成功，已自动为您切换到最新手机号登陆
           </div>
@@ -69,23 +79,24 @@
 </template>
 
 <script>
-import { oldPhoneCode,newPhoneCode } from '@/plugin/api/personal'
+/*eslint-disable*/
+import { oldPhoneCode, newPhoneCode } from "@/plugin/api/personal";
 export default {
   data() {
-    // const phoneCheck = (rule, value, callback) => {
-    //   const reg = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/
-    //   if (reg.test(value)) {
-    //     callback("请输入正确的手机号")
-    //   }
-    //   callback()
-    // }
+    //自定义手机号校验规则
+    const phoneCheck = (rule, value, callback) => {
+      const reg = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
+      if (!reg.test(value)) {
+        callback("请输入正确的手机号码");
+      }
+      callback();
+    };
     return {
       visible: false,
       step: 1,
       form: {
-        oldAccount: "",
-        newAccount: "",
-        verifyCode: "",
+        phone: "",
+        code: "",
       },
       countdown: null,
       rules: {
@@ -94,21 +105,16 @@ export default {
             required: true,
             message: "请输入验证码",
             trigger: "blur",
-          },
+          }
+        ],
+        phone: [
           {
-            min: 3,
-            max: 5,
-            message: "Length should be 3 to 5",
+            required: true,
+            message: "请输入正确的手机号",
+            validator: phoneCheck,
             trigger: "blur",
           },
         ],
-        region: [{ required: true, message: 'Please select Activity zone', trigger: 'change' }],
-        phone: 
-          [{
-            required:true,
-            message: "请输入正确的手机号",
-            // validator:phoneCheck,
-          }]
       },
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
@@ -119,7 +125,7 @@ export default {
       this.visible = true;
     },
     sendVerifyCode() {
-      this.$refs.ruleForm.validateField("phone", validate => {
+      this.$refs.ruleForm.validateField("phone", (validate) => {
         if (validate) {
           return;
         } else {
@@ -131,19 +137,19 @@ export default {
             if (this.countdown === 0) clearInterval(timer);
           }, 1000);
           //step==1,验证原账号
-          if(this.step === 1){
-            oldPhoneCode(this.form.oldAccount).then((res) => {
+          if (this.step === 1) {
+            oldPhoneCode(this.form.phone).then((res) => {
               console.log(res);
-              if(res.code === 20000) this.$message.success("验证码发送成功");
-              if(res.code !== 20000) this.$message.error("验证码发送失败");
+              if (res.code === 20000) this.$message.success("验证码发送成功");
+              if (res.code !== 20000) this.$message.error("验证码发送失败");
             });
           }
           //step==2,绑定新账号
-          if(this.step === 2){
+          if (this.step === 2) {
             newPhoneCode(this.form.newAccount).then((res) => {
               console.log(res);
-              if(res.code === 20000) this.$message.success("验证码发送成功");
-              if(res.code !== 20000) this.$message.error("验证码发送失败");
+              if (res.code === 20000) this.$message.success("验证码发送成功");
+              if (res.code !== 20000) this.$message.error("验证码发送失败");
             });
           }
         }
@@ -152,10 +158,9 @@ export default {
     goNext() {
       if (this.step === 3) {
         this.visible = false;
-        this.step = 0
+        this.step = 0;
       }
       this.step++;
-      // console.log(this.form)
     },
   },
 };
@@ -236,14 +241,14 @@ export default {
     }
   }
 }
-.success{
+.success {
   text-align: center;
-  &-pic{
+  &-pic {
     width: 54px;
     height: 54px;
     margin-top: 24px;
   }
-  &-info{
+  &-info {
     font-size: 14px;
     font-family: PingFangSC-Regular, PingFang SC;
     font-weight: 400;

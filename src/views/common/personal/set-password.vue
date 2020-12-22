@@ -15,11 +15,17 @@
           :label-col="labelCol"
           :wrapper-col="wrapperCol"
         >
-          <a-form-model-item ref="name" label="登录密码" prop="phone">
-            <a-input placeholder="请输入长度6-20位，同时包含数字和字母密码" v-model="form.oldAccount" />
+          <a-form-model-item label="登录密码" prop="setPwd">
+            <a-input
+              placeholder="请输入长度6-20位，同时包含数字和字母密码"
+              v-model="form.setPwd"
+            />
           </a-form-model-item>
-          <a-form-model-item ref="name" label="确认密码" prop="code">
-            <a-input placeholder="请再次输入登录密码" v-model="form.verifyCode" />
+          <a-form-model-item label="确认密码" prop="confirmPwd">
+            <a-input
+              placeholder="请再次输入登录密码"
+              v-model="form.confirmPwd"
+            />
           </a-form-model-item>
         </a-form-model>
         <button slot="footer" class="save-btn">保存</button>
@@ -30,31 +36,44 @@
 </template>
 
 <script>
+/*eslint-disable*/
 export default {
   data() {
+    //自定义密码设置是否有空格校验
+    const blankSpaceCheck = (rule, value, callback) => {
+      const reg = /^[^ ]+$/;
+      if (!reg.test(value)) {
+        callback("• 不支持空格");
+      }
+      callback();
+    };
     return {
       visible: false,
       form: {
-        oldAccount: "",
-        newAccount: "",
-        verifyCode: "",
+        setPwd: "",
+        confirmPwd: "",
       },
       countdown: null,
       rules: {
-        code: [
+        setPwd: [
           {
-            required: true,
-            message: "请输入验证码",
-            trigger: "blur",
+            required:true,
+            validator: "",
+            message: "• 长度6-20位",
+            trigger: "change",
           },
           {
-            min: 3,
-            max: 5,
-            message: "Length should be 3 to 5",
-            trigger: "blur",
+            validator: "",
+            message: "• 同时包含字母和数字",
+            trigger: "change",
+          },
+          {
+            validator: blankSpaceCheck,
+            message: "• 不支持空格",
+            trigger: "change",
           },
         ],
-        phone: [
+        confirmPwd: [
           {
             required: true,
             message: "请输入正确的手机号",
@@ -66,38 +85,38 @@ export default {
       wrapperCol: { span: 14 },
     };
   },
-  methods:{
+  methods: {
     showModal() {
       this.visible = true;
-    },  
-  }
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
-.save-btn{
-        width: 60px;
-        height: 32px;
-        background: #CCCCCC;
-        border-radius: 2px;
-        font-size: 14px;
-        font-family: PingFangSC-Regular, PingFang SC;
-        font-weight: 400;
-        color: #FFFFFF;
-        line-height: 20px;
-        border: none;
-    }
-    .cancel-btn{
-        width: 60px;
-        height: 32px;
-        background: #FFFFFF;
-        border-radius: 2px;
-        border: 1px solid #D9D9D9;
-        font-size: 14px;
-        font-family: PingFangSC-Regular, PingFang SC;
-        font-weight: 400;
-        color: #666666;
-        line-height: 20px;
-        margin-left: 10px;
-    }
+.save-btn {
+  width: 60px;
+  height: 32px;
+  background: #cccccc;
+  border-radius: 2px;
+  font-size: 14px;
+  font-family: PingFangSC-Regular, PingFang SC;
+  font-weight: 400;
+  color: #ffffff;
+  line-height: 20px;
+  border: none;
+}
+.cancel-btn {
+  width: 60px;
+  height: 32px;
+  background: #ffffff;
+  border-radius: 2px;
+  border: 1px solid #d9d9d9;
+  font-size: 14px;
+  font-family: PingFangSC-Regular, PingFang SC;
+  font-weight: 400;
+  color: #666666;
+  line-height: 20px;
+  margin-left: 10px;
+}
 </style>
