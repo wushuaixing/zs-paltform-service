@@ -303,8 +303,21 @@ $background:#E9E9E9;;
   .notes-month section {
     font-size: 28px;
   }
+  // 日历头样式
   /deep/.ant-fullcalendar-header {
     text-align: center;
+  } 
+  // .ant-fullcalendar-fullscreen {
+  //   text-align: center;
+  // }
+  /deep/.ant-fullcalendar-column-header-inner {
+    text-align: center;
+  }
+  /deep/.ant-fullcalendar-date {
+    border-top: 4px solid #E8E8E8;
+  }
+  /deep/.ant-fullcalendar-today .ant-fullcalendar-date {
+    border-top: 6px solid #008CB0!important;
   }
 }
 </style>
