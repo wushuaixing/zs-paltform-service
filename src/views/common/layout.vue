@@ -18,9 +18,12 @@
                       :getPopupContainer="e=>e.parentElement" >
             <a-menu slot="overlay" >
               <a-menu-item key="1">
-                <a-icon type="user" />修改绑定手机号</a-menu-item>
+                <div @click="handleModifyPhone"><a-icon type="user" />修改绑定手机号</div>
+              </a-menu-item>
               <a-menu-item key="2">
-                <a-icon type="user" />修改登录密码 </a-menu-item>
+                <div @click="handleSetPwd"><a-icon type="user" />设置登录密码</div>
+                <div @click="handleModifyPwd"><a-icon type="user" />修改登录密码</div>
+              </a-menu-item>
               <a-menu-item key="3">
                 <router-link to="/login"><a-icon type="user" />退出登录</router-link>
               </a-menu-item>
@@ -32,11 +35,16 @@
       <router-view/>
     </a-layout>
     <a-spin v-if="loading" class="spin-wrapper" size="large" tip="数据加载中，请稍后..." />
+    <ModifyPhoneModal ref="modifyPhone"></ModifyPhoneModal>
+    <ModifyPwdModal ref="modifyPwd"></ModifyPwdModal>
+    <SetPwdModal ref="setPwd"></SetPwdModal>
   </div>
 </template>
 <script>
 import { getInfo} from "@/plugin/api/base";
-
+import ModifyPhoneModal from "./personal/modify-phone"
+import ModifyPwdModal from "./personal/modify-password"
+import SetPwdModal from "./personal/set-password"
 export default {
   data() {
     return {
@@ -46,12 +54,27 @@ export default {
     };
   },
   components: {
+    ModifyPwdModal,
+    ModifyPhoneModal,
+    SetPwdModal
+  },
+  methods:{
+    handleModifyPhone(){
+      this.$refs.modifyPhone.showModal()
+    },
+    handleModifyPwd(){
+      this.$refs.modifyPwd.showModal()
+    },
+    handleSetPwd(){
+      this.$refs.setPwd.showModal()
+    }
   },
   created() {
     const { pathname } = window.location;
     if(/center/.test(pathname))this.selectedKey = 'b';
 		if(!this.$store.state.isLogin){
 			getInfo().then(res=>{
+        console.log(res)
 				this.loading = false;
 				this.$store.commit('updateInfo', res.data);
 			}).catch(err=>{console.log(err)}).finally(()=>this.loading = false)
@@ -66,8 +89,10 @@ export default {
   computed:{
     username(){
       return this.$store.getters.getInfo.username;
+    },
+    isSetPassword(){
+      return this.$store.getters.getInfo.isSetPassword
     }
-
   }
 };
 </script>

@@ -41,7 +41,7 @@
             </template>
             <template v-else>
               <img :src="icon.org" alt="" style="height: 32px;vertical-align: top;">
-              <span style="margin-left: 10px">律师</span>
+              <span style="margin-left: 10px">机构</span>
             </template>
             <a-button style="float:right" @click="stepBack">上一步</a-button>
           </div>
