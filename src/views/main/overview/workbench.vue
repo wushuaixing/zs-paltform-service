@@ -15,17 +15,15 @@
             </a-list-item>
           </a-list>
           <!-- 认证过的服务商 -->
-          <ul>
-            <li>
-            <strong>【资质审核通过】:</strong><div class="through">您已通过资质审核，您可在“服务项目招商中心”对您有意向的项目进行报名!</div>
-            <a href="javascript:;">点击前往</a>
-            </li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-          </ul>
+          <a-list v-if="true" item-layout="horizontal" :data-source="list">
+            <a-list-item slot="renderItem" slot-scope="item">
+              <a-list-item-meta description :title="item.title">
+                <a slot="description" href="javascript:;">{{
+                  item.description
+                }}</a>
+              </a-list-item-meta>
+            </a-list-item>
+          </a-list>
         </div>
       </div>
       <div class="item-wrapper">
@@ -49,23 +47,23 @@
             </div>
             <div class="schemeProcess">
               <a-badge status="pink" text="方案未提交"></a-badge>
-              <span>6</span>
+              <span>9</span>
               <br />
-              <a-badge status="warning" text="方案已提交" />
+              <a-badge status="warning" text="方案已提交"/>
               <span>7</span>
               <br />
-              <a-badge status="success" text="方案审批中" />
+              <a-badge status="success" text="方案审批中" dot />
               <span>8</span>
               <br />
             </div>
             <div class="schemeStatus">
-              <a-badge status="success" text="中标" />
+              <a-badge status="success" text="中标" dot/>
               <span>5</span>
               <br />
-              <a-badge status="warning" text="失效" />
+              <a-badge status="warning" text="失效" dot/>
               <span>8</span>
               <br />
-              <a-badge status="error" text="放弃" />
+              <a-badge status="error" text="放弃" dot/>
               <span>6</span>
             </div>
           </div>
@@ -106,6 +104,7 @@
 </template>
 
 <script>
+import { getEcharts } from "@/plugin/api/echarts";
 import echarts from "echarts";
 // data 资质都未认证的数据
 const data = [
@@ -148,6 +147,11 @@ const list = [
     description: "点击前往",
     title: `【资质审核通过】: 您已通过资质审核，您可在“服务项目招商中心”对您有意向的项目进行报名！`,
   },
+  {
+    id: 4,
+    description: "点击前往",
+    title: `【资质审核通过】: 您已通过资质审核，您可在“服务项目招商中心”对您有意向的项目进行报名！`,
+  }
 ];
 export default {
   name: "Workbench",
@@ -206,18 +210,23 @@ export default {
       console.log(date, dateString);
     },
   },
-  mounted() {
+  async mounted() {
     var myChart = echarts.init(document.getElementById("main"));
+    const res = await getEcharts(data)
+    console.log(res);
     var option = {
       // tooltip: {
       //   trigger: "item",
       //   formatter: "{a} <br/>{b}: {c} ({d}%)",
       // },
-      // legend: {
-      //   // orient: "vertical",
-      //   // left: 100,
-      //   // data: ["直接访问", "邮件营销", "联盟广告", "视频广告", "搜索引擎"],
-      // },
+      label: {
+        color:this.color
+      },
+      legend: {
+        // orient: "vertical",
+        left: 100,
+        data: ["直接访问", "邮件营销", "联盟广告", "视频广告", "搜索引擎"],
+      },
       series: [
         {
           name: "访问来源",
@@ -239,12 +248,12 @@ export default {
             show: false,
           },
           data: [
-            { value: 335, name: "方案未提交" },
-            { value: 310, name: "方案已提交" },
-            { value: 234, name: "方案审批中" },
-            { value: 135, name: "中标" },
-            { value: 1548, name: "失效" },
-            { value: 1548, name: "放弃" },
+            { value: 335 },
+            { value: 310 },
+            { value: 234 },
+            { value: 135 },
+            { value: 1548 },
+            { value: 1548 },
           ],
         },
       ],
@@ -303,6 +312,7 @@ $background: #e9e9e9;
   li {
     strong {
       display: inline;
+
     }
     .through {
       display: inline;
@@ -332,8 +342,9 @@ $background: #e9e9e9;
     }
   }
   .chart {
-    width: 100px;
-    height: 100px;
+    position: relative;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
     // background-color: pink;
   }
@@ -388,12 +399,16 @@ $background: #e9e9e9;
     border-top: 6px solid #008cb0 !important;
   }
 }
-/deep/element.style {
-  top: -20px;
-  left: -25px;
-}
+// element.style {
+//   position: absolute;
+//   top: -20px;
+//   left: -25px;
+// }
 #main{
-  width: 100px;
-  height: 100px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 150px;
+  height: 150px;
 }
 </style>
