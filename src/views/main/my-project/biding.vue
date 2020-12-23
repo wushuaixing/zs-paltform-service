@@ -44,6 +44,29 @@
                 <a-tag color="#f50" v-if="advanceLast">方案提交即将截止</a-tag>
               </template>
               <template slot="datetime" slot-scope="time">{{time}}</template>
+              <template slot="contactWay" slot-scope="{contactWay}">
+                <div class="contactWay">
+                  <p>{{ contactWay.orgName }}
+                  <p/>
+                  <p><span>{{ contactWay.name }}</span><span>{{ contactWay.phone }}</span>
+                  <p/>
+                </div>
+              </template>
+              <template slot="deadline" slot-scope="{deadline}">
+                <div class="deadline">
+                  <p>{{ deadline.monthNum }}个月</p>
+                  <p>({{ deadline.endTime }}到期)</p>
+                </div>
+              </template>
+              <template slot="plan" slot-scope="{plan}">
+                <div class="plan">
+                  <div v-if="plan.flag">
+                    <p>{{ plan.time }}前</p>
+                    <p>({{ plan.content }})</p>
+                  </div>
+                  <p v-else>服务到期</p>
+                </div>
+              </template>
               <template slot="auction" slot-scope="item">
                 <a-button type="link" size="small" icon="file-text" @click="handleAuction(item,'view')">查看详情</a-button>
                 <template v-if="query.tabStatus === 1">
@@ -60,12 +83,14 @@
           </div>
         </div>
       </div>
+      <ProjectModal :projectInfo="projectInfo" :sign="'fail'" ref="failModal"/>
     </div>
   </div>
 </template>
 
 <script>
 import Breadcrumb from '@/components/bread-crumb';
+import ProjectModal from '@/components/modal/project-modal';
 import { clearProto, disabledDate } from "@/plugin/tools";
 import { columns, colType } from "@/views/main/my-project/source";
 
@@ -94,20 +119,65 @@ export default {
       },
       tabConfig:{
         dataSource:[{
-          key:1,
-          name:'临时用户1',
-          money1:12321.123123,
-          money2:4187545,
-          advance:1,
-          behind:true,
-        },{
-          key:2,
-          name:'临时用户2',
-          money1:333333.123123,
-          money2:32543,
-          advance:2,
-          advanceLast:true,
-          behind:123123,
+          key: 1,
+          name: '临时用户1', //债务人名称
+          money1: 12321.123123, //债权本金
+          money2: 4187545, //债权利息
+          money3: 765765.999, //目标回款金额
+          advance: 1, //当前进展
+          advanceLast: false,//当前进展--方案提交即将截止
+          guaranty: '抵押+担保', //担保方式
+          contactWay: {  //对接团队及联系方式
+            orgName: '浙萧资产',
+            name: '李经理',
+            phone: '15236163212',
+          },
+          updateTime: '2020-09-25', //更新日期
+          signDate: '2020-12-25', //合同签订日期
+          abaDate: '2023-12-25', //放弃日期
+          failDate: '2021-12-22', //失效日期
+          deadline: { //服务期限
+            monthNum: 24,
+            endTime: '2022-09-15',
+          },
+          plan: { //本阶段计划
+            time: '2020-09-25',
+            content: '诉讼完结',
+            flag: true,
+          },
+          behind: true,
+          guarantorsList: ['浙江天策生态科技有限公司，张三，李四'],//保证人清单
+          msgsInfoList: ['兴业银行杭州分行关于玉环县雅迪水暖器材有限不良债权转让公告', '惠州大亚湾霞涌霞光西路3号海韵雅苑2栋24层03号房屋']//抵押物清单
+        }, {
+          key: 2,
+          name: '临时用户2', //债务人名称
+          money1: 14321.123123, //债权本金
+          money2: 1435, //债权利息
+          money3: 4343.999, //目标回款金额
+          advance: 2, //当前进展
+          advanceLast: true,//当前进展--方案提交即将截止
+          guaranty: '抵押+担保', //担保方式
+          contactWay: {  //对接团队及联系方式
+            orgName: '源城资产',
+            name: '王经理',
+            phone: '18537729667',
+          },
+          updateTime: '2033-09-25', //更新日期
+          signDate: '2021-01-05', //合同签订日期
+          abaDate: '2025-02-25', //放弃日期
+          failDate: '2023-11-02', //失效日期
+          deadline: { //服务期限
+            monthNum: 68,
+            endTime: '2028-02-05',
+          },
+          plan: { //本阶段计划
+            time: '2010-09-25',
+            content: '诉讼完结',
+            flag: false,
+          },
+          behind: false,
+          guarantorsList: ['上海市奉贤区南奉公路999弄370号1层，张艰苦，李奋斗'],
+          msgsInfoList: ['贵州省遵义市播州区鸭溪镇黎明路溪城鸣苑2栋1层1-11号商业用房', '惠州大亚湾霞涌霞光西路3号海韵雅苑2栋24层03号房屋']
         }],
         size:'middle',
         pagination:{
@@ -119,10 +189,12 @@ export default {
         },
       },
       disabledDate,
+      projectInfo:{},
     };
   },
   components:{
     Breadcrumb,
+    ProjectModal
   },
   created() {
   },
@@ -139,6 +211,10 @@ export default {
     },
     handleAuction(item,type){
       console.log(type);
+      if (type === 'fail') {
+        this.projectInfo = clearProto(item);
+        this.$refs.failModal.handleOpenModal();
+      }
     },
   },
   computed:{

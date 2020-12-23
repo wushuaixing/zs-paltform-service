@@ -77,11 +77,13 @@ export const columns = {
 			title: '目标回款金额（万元）',
 			dataIndex: 'money3',
 			key: 'money3',
+			scopedSlots: { customRender: 'amount' },
+			align:'right',
 		},
 		{
 			title: '本阶段计划',
-			dataIndex: 'plan',
 			key: 'plan',
+			scopedSlots: { customRender: 'plan' },
 		},
 		basCol.auction,
 	],
@@ -115,4 +117,4 @@ export const colType = {
 	2:'ed',
 	3:'aba',
 	4:'fail',
-}
+};

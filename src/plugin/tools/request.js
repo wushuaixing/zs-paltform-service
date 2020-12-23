@@ -1,8 +1,10 @@
 import axios from 'axios';
 
+const ENV = process.env.NODE_ENV;
+
 /* =========  常规请求   ========= */
 const request = axios.create({
-	baseURL:'/proxy-api',
+	baseURL:ENV === 'development' ? '/proxy-api' : '',
 	timeout: 1000 * 30,
 	withCredentials: true,
 	credentials: 'include',
@@ -15,9 +17,8 @@ const request = axios.create({
 /* 请求拦截前的处理 */
 const requestMethods = {
 	onFulfilled: (config) => {
-		config.headers = Object.assign({},config.headers,{
-			token: window.localStorage.token,
-		});
+		const token = window.localStorage.token !== undefined ? window.localStorage.token : null;
+		config.headers = Object.assign({},config.headers,token ? {token} : {});
 		return config;
 		// 在请求发出之前做拦截工作
 		// // 这块需要做一些用户验证的工作，需要带上用户凭证
