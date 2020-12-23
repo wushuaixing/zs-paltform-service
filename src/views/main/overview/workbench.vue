@@ -15,15 +15,17 @@
             </a-list-item>
           </a-list>
           <!-- 认证过的服务商 -->
-          <a-list v-if="true" item-layout="horizontal" :data-source="list">
-            <a-list-item slot="renderItem" slot-scope="item">
-              <a-list-item-meta description :title="item.title">
-                <a slot="description" href="javascript:;">{{
-                  item.description
-                }}</a>
-              </a-list-item-meta>
-            </a-list-item>
-          </a-list>
+          <ul>
+            <li>
+            <strong>【资质审核通过】:</strong><div class="through">您已通过资质审核，您可在“服务项目招商中心”对您有意向的项目进行报名!</div>
+            <a href="javascript:;">点击前往</a>
+            </li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+          </ul>
         </div>
       </div>
       <div class="item-wrapper">
@@ -237,16 +239,16 @@ export default {
             show: false,
           },
           data: [
-            { value: 335, name: "直接访问" },
-            { value: 310, name: "邮件营销" },
-            { value: 234, name: "联盟广告" },
-            { value: 135, name: "视频广告" },
-            { value: 1548, name: "搜索引擎" },
+            { value: 335, name: "方案未提交" },
+            { value: 310, name: "方案已提交" },
+            { value: 234, name: "方案审批中" },
+            { value: 135, name: "中标" },
+            { value: 1548, name: "失效" },
+            { value: 1548, name: "放弃" },
           ],
         },
       ],
     };
-
     myChart.setOption(option);
   },
 };
@@ -296,6 +298,14 @@ $background: #e9e9e9;
     &-thing {
       min-height: 500px;
       max-height: 600px;
+    }
+  }
+  li {
+    strong {
+      display: inline;
+    }
+    .through {
+      display: inline;
     }
   }
   .item-toDo {
