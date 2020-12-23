@@ -14,16 +14,32 @@
               </a-list-item-meta>
             </a-list-item>
           </a-list>
+          <!-- 新写法待修改 -->
           <!-- 认证过的服务商 -->
-          <a-list v-if="true" item-layout="horizontal" :data-source="list">
-            <a-list-item slot="renderItem" slot-scope="item">
-              <a-list-item-meta description :title="item.title">
-                <a slot="description" href="javascript:;">{{
-                  item.description
-                }}</a>
-              </a-list-item-meta>
-            </a-list-item>
-          </a-list>
+            <div v-if="true">
+              <ul>
+                <li>
+                  <a-badge status="success" />
+                  <span>[资质审核通过]：</span> {{test}}
+                  <a href="javascript:;">立即前往</a>
+                </li>
+                <li>
+                  <a-badge status="success" />
+                  <span>[竞标成功]：</span>
+                   <a href="javascript:;">立即前往</a>
+                </li>
+                <li>
+                  <a-badge status="warning" />
+                  <span>[方案提交即将截止]：</span>
+                   <a href="javascript:;">立即前往</a>
+                </li>
+                <li>
+                  <a-badge status="error" />
+                  <span>[竞标失败]：</span>
+                   <a href="javascript:;">立即前往</a>
+                </li>
+              </ul>
+            </div>
         </div>
       </div>
       <div class="item-wrapper">
@@ -39,32 +55,33 @@
           </a-empty>
         </div>
         <div class="item-content item-format">
-          <div class="total">我的项目总数：</div>
+          <div class="total">我的项目总数：{{echarts.myProjectAbandon}}</div>
           <div class="data-display">
             <!-- 饼形图 -->
             <div class="chart">
               <div id="main"></div>
             </div>
             <div class="schemeProcess">
-              <a-badge status="pink" text="方案未提交"></a-badge>
-              <span>9</span>
+              <a-badge color="#c23531" text="方案待提交" />
+
+              <span>{{echarts.myProjectCaseUnSubmit}}</span>
               <br />
-              <a-badge status="warning" text="方案已提交"/>
-              <span>7</span>
+              <a-badge text="方案已提交" color="#2f4554"/>
+              <span>{{echarts.myProjectCaseSubmitted}}</span>
               <br />
-              <a-badge status="success" text="方案审批中" dot />
-              <span>8</span>
+              <a-badge text="方案审批中" color="#61a0a8" />
+              <span>{{echarts.myProjectsReview}}</span>
               <br />
             </div>
             <div class="schemeStatus">
-              <a-badge status="success" text="中标" dot/>
-              <span>5</span>
+              <a-badge text="中标" color="#d48265"/>
+              <span>{{echarts.myProjectsAimed}}</span>
               <br />
-              <a-badge status="warning" text="失效" dot/>
-              <span>8</span>
+              <a-badge text="失效" color="#91c7ae"/>
+              <span>{{echarts.myProjectsInvalid}}</span>
               <br />
-              <a-badge status="error" text="放弃" dot/>
-              <span>6</span>
+              <a-badge text="放弃" color="#749f83"/>
+              <span>{{echarts.myProjectAbandon}}</span>
             </div>
           </div>
         </div>
@@ -106,7 +123,7 @@
 <script>
 import { getEcharts } from "@/plugin/api/echarts";
 import echarts from "echarts";
-// data 资质都未认证的数据
+// 模拟的数据 
 const data = [
   {
     description: "立即前往",
@@ -163,7 +180,15 @@ export default {
     return {
       list,
       data,
+      // 后台图表的数据
+      echarts:[
+      ]
     };
+  },
+  computed: {
+    test () {
+      return '[资质认证未确认]' + this.echarts + "试试看拼接"
+    }
   },
   methods: {
     getListData(value) {
@@ -213,7 +238,9 @@ export default {
   async mounted() {
     var myChart = echarts.init(document.getElementById("main"));
     const res = await getEcharts(data)
+    if (res.code !== 20000) return
     console.log(res);
+    this.echarts = res.data
     var option = {
       // tooltip: {
       //   trigger: "item",
@@ -222,11 +249,11 @@ export default {
       label: {
         color:this.color
       },
-      legend: {
-        // orient: "vertical",
-        left: 100,
-        data: ["直接访问", "邮件营销", "联盟广告", "视频广告", "搜索引擎"],
-      },
+      // legend: {
+      //   // orient: "vertical",
+      //   left: 100,
+      //   data: ["直接访问", "邮件营销", "联盟广告", "视频广告", "搜索引擎"],
+      // },
       series: [
         {
           name: "访问来源",
@@ -238,26 +265,34 @@ export default {
           //   position: "center",
           // },
           // emphasis: {
-          //   // label: {
-          //   //   show: true,
-          //   //   fontSize: "30",
-          //   //   fontWeight: "bold",
-          //   // },
+          //   label: {
+          //     show: true,
+          //     fontSize: "30",
+          //     fontWeight: "bold",
+          //   },
           // },
           labelLine: {
             show: false,
           },
           data: [
-            { value: 335 },
-            { value: 310 },
-            { value: 234 },
-            { value: 135 },
-            { value: 1548 },
-            { value: 1548 },
+            { value: 30},
+            { value: this.echarts.myProjectCaseSubmitted},
+            { value: 70},
+            { value: 10},
+            { value: 30},
+            { value: 50},
+            console.log(this.echarts.myProjectCaseSubmitted),
+            // { value: this.echarts.myProjectCaseUnSubmit},
+            // { value: this.echarts.myProjectCaseSubmitted},
+            // { value: this.echarts.myProjectsReview},
+            // { value: this.echarts.myProjectsAimed},
+            // { value: this.echarts.myProjectsInvalid},
+            // { value: this.echarts.myProjectAbandon},
           ],
         },
       ],
     };
+    // console.log(option);
     myChart.setOption(option);
   },
 };
@@ -309,14 +344,15 @@ $background: #e9e9e9;
       max-height: 600px;
     }
   }
+  ul {
+    margin: 0;
+    padding: 0;
+  }
   li {
-    strong {
-      display: inline;
-
-    }
-    .through {
-      display: inline;
-    }
+    list-style: none;
+    border-bottom: 1px solid #E9E9E9;
+    margin: 0;
+    padding: 10px 0;
   }
   .item-toDo {
     margin: 0 20px;
@@ -399,10 +435,23 @@ $background: #e9e9e9;
     border-top: 6px solid #008cb0 !important;
   }
 }
-// element.style {
-//   position: absolute;
-//   top: -20px;
-//   left: -25px;
+span {
+  font-weight: 800;
+  font-size: 16px;
+  padding: 3px 0;
+}
+// .identification {
+//   margin-bottom: 20px;
+//   padding-bottom: 20px;
+//   border-bottom: 1px solid #E9E9E9;
+// }
+// strong {
+//   font-size: 16px;
+//   font-weight: 600;
+  
+// }
+// .authentication {
+//   display: inline;
 // }
 #main{
   position: absolute;
