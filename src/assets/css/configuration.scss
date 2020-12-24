@@ -10,6 +10,8 @@ $common-base-hover: #43529C;
 $common-base-active: #008CB0;
 //警告、价格色
 $common-error: #f5222d;
+//严重示警
+$common-dangerous: #B4222D;
 //通过、开启、成功提示色
 $common-success: #3DBD7D;
 //收藏、按钮背景色
@@ -17,7 +19,7 @@ $common-warning: #FB8E3C;
 
 ///* 文字色 */
 //一级标题、按钮文字、一级tab、二级tab
-$text-title: #20242E;
+$text-title: #333333;
 //链接文字色
 $text-link: #1C80E1;
 // 按钮经过颜色
@@ -25,9 +27,9 @@ $text-btn-hover: #1E8CFA;
 //链接文字经过色
 $text-link-hover: #186FC7;
 //列表标题文字色
-$text-content: #4E5566;
+$text-content: #666666;
 //其他辅助信息色
-$text-remark: #7D8699;
+$text-remark: #999999;
 //输入框提示文字颜色
 $text-placeholder: #B2B8C9;
 $text-placeholder2: #919191;

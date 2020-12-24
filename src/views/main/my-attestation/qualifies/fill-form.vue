@@ -50,14 +50,15 @@
     <a-form v-bind="formItemLayout" :form="form" autocomplete="off" v-if="userType ==='lawyer'">
       <a-form-item :label="law.name.label">
         <a-input v-decorator="law.name.dec" v-bind="law.name.other"/>
+        <span class="normal">{{ lawyerName }}</span>
       </a-form-item>
       <a-form-item :label="law.idNumber.label">
         <a-input v-decorator="law.idNumber.dec" v-bind="law.idNumber.other"/>
       </a-form-item>
       <a-form-item :label="law.sex.label">
         <a-radio-group v-decorator="law.sex.dec">
-          <a-radio value="a">男</a-radio>
-          <a-radio value="b">女</a-radio>
+          <a-radio :value="0">男</a-radio>
+          <a-radio :value="1">女</a-radio>
         </a-radio-group>
       </a-form-item>
       <a-form-item :label="law.cardNo.label">
@@ -65,15 +66,10 @@
       </a-form-item>
       <a-form-item :label="law.year.label">
         <a-select v-decorator="law.year.dec" v-bind="law.year.other">
-          <a-select-option value="china">
-            China
-          </a-select-option>
-          <a-select-option value="usa">
-            U.S.A
-          </a-select-option>
+          <a-select-option v-for="i in yearOption" :value="i.value" :key="i.value">{{i.value}}年</a-select-option>
         </a-select>
       </a-form-item>
-      <a-form-item :label="law.office.label">
+      <a-form-item :label="law.office.label" >
         <a-input v-decorator="law.office.dec" v-bind="law.office.other"/>
         <span class="form-item-remark">*请在签约前完善律所信息</span>
       </a-form-item>
@@ -127,7 +123,7 @@
           </a-upload>
           <div class="upload-text">
             <div>*请下载保密承诺函模板，签字、用印后扫描或拍照上传；支持jpg、pdf格式</div>
-            <a href="#">承诺函模板下载</a>
+            <a href="#" style="text-decoration: underline">承诺函模板下载</a>
           </div>
         </div>
       </a-form-item>
@@ -145,20 +141,27 @@
 </template>
 
 <script>
+import { qualifies } from "@/plugin/api/attest";
+
 const formItemLayout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },
 };
 
-// const baseWidth = {
-//   style:{ width:'442px' }
-// };
+const baseWidth = { style:{width:'442px'}};
 
 const nameOption = [
   { id :1, name:'杭州杭州湾建筑劳务有限公司',creditCode:'91330104747171289M'},
   { id :2, name:'安然数据科技有限公司1',creditCode:'91110112MA01AGNJ8Y'},
   { id :3, name:'安然数据科技有限公司2',creditCode:''},
 ];
+
+const yearOption = (()=>{
+  const minYear = 1980;
+  const maxYear = new Date().getFullYear() + 5;
+  const length = maxYear - minYear < 0 ? 50 : maxYear - minYear;
+  return new Array(length).fill(1).map((i,index)=>({value:minYear + length - index}))
+})();
 
 export default {
   name: 'FillForm',
@@ -172,17 +175,28 @@ export default {
       type:Boolean,
       default:true
     },
-    source:Object,
+    source: Object,
   },
   data() {
+    const validateCard = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('身份证号码不能为空'));
+      } else {
+        const reg = new RegExp(
+          /^[1-9]\d{5}(18|19|20|(3\d))\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/);
+        if(!reg.test(value)) callback('请输入有效的身份号码');
+        callback();
+      }
+    };
     return {
       formItemLayout,
       nameOption,
+      yearOption,
       org:{
         name:{
           label:'机构名称',
-          dec:[
-            'name',{
+          dec:['name',{
+              initialValue:'',
               rules: [ { required: true, message: '机构名称不能为空！' } ],
               change: this.handleOrgChange,
             },
@@ -196,9 +210,7 @@ export default {
             filterOption: (input, option) => option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0,
             autoComplete:'off',
             placeholder:'请输入机构名称',
-            style:{
-              width:'442px'
-            }
+            ...baseWidth,
           }
         },
         code:{
@@ -211,46 +223,37 @@ export default {
           other:{
             autoComplete:'off',
             placeholder:'若为合伙企业请明确执行事务合伙人身份',
-            style:{
-              width:'442px'
-            },
-            autoSize:{ minRows: 4 }
+            autoSize:{ minRows: 4 },
+            ...baseWidth,
           }
         },
         email:{
           label:'邮箱地址',
-          dec:['email', { rules: [
+          dec:['email', {
+            rules: [
                 { type: 'email',message: '请输入正确的邮箱地址！'},
                 { required: true, message: '邮箱地址不能为空!' },
-              ]
-            },
+            ]},
           ],
           other:{
             placeholder:'请输入邮箱地址',
-            style:{
-              width:'442px'
-            }
+            ...baseWidth,
           }
         },
         buEmail:{
           label:'备用邮箱',
-          dec:[
-            'buEmail', {
-              rules: [
-                { type: 'email',message: '请输入正确的邮箱地址！' },
-              ],
+          dec:[ 'backupEmail', {
+              rules: [{ type: 'email',message: '请输入正确的邮箱地址！' }],
             },
           ],
           other:{
             placeholder:'请输入备用的邮箱地址',
-            style:{
-              width:'442px'
-            }
+            ...baseWidth,
           }
         },
         license:{
           label:'营业执照',
-          dec:[ 'license', {
+          dec:[ 'businessLicense', {
             valuePropName: 'fileList',
             getValueFromEvent: this.normFile,
             rules: [
@@ -266,7 +269,7 @@ export default {
         },
         letter:{
           label:'保密承诺函',
-          dec:[ 'letter', {
+          dec:[ 'confidentialityCommitmentLetter', {
             valuePropName: 'fileList',
             getValueFromEvent: this.normFile,
             rules: [ { required: true, message: '请上传保密承诺函!' },
@@ -282,26 +285,24 @@ export default {
       law:{
         name:{
           label:'律师姓名',
-          dec:[ 'username'],
+          dec:[ 'lawyerName'],
           other:{
-            disabled:true,
             style:{
+              display:'none',
               width:'442px'
             }
           }
         },
         idNumber:{
           label:'身份证号码',
-          dec:[ 'idNumber', {
-            rules: [
-              { required: true, message: '身份证号码不能为空！' },
-            ]
+          dec:[ 'cardNumber', {
+            trigger:'blur',
+            rules: [ { validator: validateCard }]
           }],
           other:{
             placeholder:'请输入身份证号码',
-            style:{
-              width:'442px'
-            }
+            maxLength:18,
+            ...baseWidth
           }
         },
         sex:{
@@ -314,84 +315,74 @@ export default {
         },
         cardNo:{
           label:'执业证号',
-          dec:[ 'cardNo', {
+          dec:[ 'licenseNumber', {
             rules: [
               { required: true, message: '执业证号不能为空!' },
             ]
           }],
           other:{
             placeholder:'请输入执业证号',
-            style:{
-              width:'442px'
-            }
+            ...baseWidth
           }
         },
         year:{
           label:'执业开始年份',
-          dec:[ 'startYear',{
+          dec:[ 'licenseStart',{
             rules: [
-              { required: true, message: '身份证号码不能为空！' },
+              { required: true, message: '执业开始年份不能为空！' },
             ]
           }],
           other:{
+            allowClear:true,
             placeholder:'请选择年份',
             style:{
               width:'152px'
             }
           }
         },
-
         office:{
           label:'挂靠律所',
-          dec:[ 'office'],
+          dec:[ 'lawOffice'],
           other:{
             placeholder:'请输入挂靠律所',
-            style:{
-              width:'442px'
-            }
+            ...baseWidth,
           }
         },
         email:{
           label:'邮箱地址',
-          dec:['email', { rules: [
+          dec:['email', {
+            rules: [
               { type: 'email',message: '请输入正确的邮箱地址！' },
               { required: true, message: '邮箱地址不能为空!' },
             ],
-          },
-          ],
+          }],
           other:{
             placeholder:'请输入邮箱地址',
-            style:{
-              width:'442px'
-            }
+            ...baseWidth,
           }
         },
         buEmail:{
           label:'备用邮箱',
-          dec:[
-            'buEmail', {
-              rules: [
-                { type: 'email',message: '请输入正确的邮箱地址！' },
-              ],
-            },
+          dec:['backupEmail', {
+            rules: [
+              { type: 'email',message: '请输入正确的邮箱地址！' },
+            ]},
           ],
           other:{
             placeholder:'请输入备用的邮箱地址',
-            style:{
-              width:'442px'
-            }
+            ...baseWidth,
           }
         },
         card:{
           label:'身份证照片',
-          decA:[ 'idCardA', {
+          decA:[ 'frontOfCard', {
             valuePropName: 'fileList',
             getValueFromEvent: this.normFile,
             rules: [
               { required: true, message: '请上传身份证照片!' },
             ]
           }],
-          decB:[ 'idCardB', {
+          decB:[ 'backOfCard', {
             valuePropName: 'fileList',
             getValueFromEvent: this.normFile,
           }],
@@ -402,7 +393,7 @@ export default {
         },
         cert:{
           label:'从业资格证',
-          dec:[ 'license', {
+          dec:[ 'qualificationCertificate', {
             valuePropName: 'fileList',
             getValueFromEvent: this.normFile,
             rules: [
@@ -416,7 +407,7 @@ export default {
         },
         letter:{
           label:'保密承诺函',
-          dec:[ 'letter', {
+          dec:[ 'confidentialityCommitmentLetter', {
             valuePropName: 'fileList',
             getValueFromEvent: this.normFile,
             rules: [
@@ -463,41 +454,49 @@ export default {
       this.form.setFieldsValue({ orgSocialCreditCode });
       // if(option.key)
     },
-    // validateToNextPassword(rule, value, callback) {
-    //   console.log(111111);
-    //   const form = this.form;
-    //   if (value && this.confirmDirty) {
-    //     form.validateFields(['confirm'], { force: true });
-    //   }
-    //   callback();
-    // },
     normFile(e) {
       console.log('Upload event:', e);
-      if (Array.isArray(e)) {
-        return e;
-      }
+      if (Array.isArray(e)) { return e }
       this.fileLists = e.fileList.length;
       return e && e.fileList;
     },
-
+    // 确认无误并提交
     handleSubmit(e) {
       e.preventDefault();
       this.form.validateFields((err, values) => {
         if (!err) {
           console.log('Received values of form: ', values);
+          this.toUpdateInfo(values)
         }
       });
     },
+    // 变更认证信息
+    toUpdateInfo(source){
+      const _source = this.processData(source);
+      const addApi = this.userType === 'lawyer' ? qualifies.lawyerAdd : qualifies.orgAdd;
+      addApi(_source).then(res=>{
+        if(res.code === 20000 ){
+          console.log(res);
+        }
+      })
+    },
     // 处理当前数据
     processData(source = {}){
-      const _source = this.userType === 'lawyer' ? {
-        letter:'https://qiniu.yczcjk.com/123.png',
-        license:'https://qiniu.yczcjk.com/123.png',
-        name:(source.name || {}).label
-      } : {
-
-      };
-      return Object.assign({},source,_source)
+      if(this.userType === 'org') {
+        return Object.assign({},source,{
+          confidentialityCommitmentLetter:'https://qiniu.yczcjk.com/123.png',
+          businessLicense:'https://qiniu.yczcjk.com/123.png',
+          name:(source.name || {}).label
+        })
+      }else{
+        const _source = Object.assign({},source,{
+          frontOfCard:'',
+          backOfCard:'',
+          confidentialityCommitmentLetter:'https://qiniu.yczcjk.com/123.png',
+          businessLicense:'https://qiniu.yczcjk.com/123.png',
+        });
+        return {lawyerQualify:{..._source}}
+      }
     },
   },
   computed:{
@@ -506,6 +505,16 @@ export default {
       if(this.relation.codeStatus === 'error') return 'text-error';
       else return 'normal';
     },
+    lawyerName(){
+      return this.$store.getters.getInfo.username;
+    },
+  },
+  mounted(){
+    // console.log(this.$store.getters.getInfo.username);
+    const lawyerName = this.$store.getters.getInfo.username;
+    if(this.form && this.userType === 'lawyer'){
+      this.form.setFieldsValue({ lawyerName })
+    }
   }
 }
 </script>
@@ -556,21 +565,15 @@ export default {
       margin-bottom: 0;
       .ant-form-item-control{
         position: absolute;
-        top: -165px;
+        top: -162px;
         left:33.333%;
       }
     }
   }
   .form-item-remark{
     margin-left: 10px;
-    font-size: 12px;
     color: $text-remark;
   }
-  .text-remark{
-    color: $text-remark;
-  }
-  .text-error{
-    color: $common-error;
-  }
+
 }
 </style>

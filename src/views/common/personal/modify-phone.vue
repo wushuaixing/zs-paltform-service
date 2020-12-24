@@ -6,6 +6,7 @@
         :centered="true"
         :maskStyle="{ background: 'rgba(0, 0, 0, 0.5)' }"
         v-model="visible"
+        className="modify-phone-modal"
         title="修改绑定手机号"
       >
         <a-form-model
@@ -168,7 +169,6 @@ export default {
 <style lang="scss">
 .verify-code {
   font-size: 14px;
-  font-family: PingFangSC-Regular, PingFang SC;
   font-weight: 400;
   color: #008cb0;
   line-height: 20px;
@@ -179,7 +179,6 @@ export default {
   background: #cccccc;
   border-radius: 2px;
   font-size: 14px;
-  font-family: PingFangSC-Regular, PingFang SC;
   font-weight: 400;
   color: #ffffff;
   line-height: 20px;
@@ -187,75 +186,74 @@ export default {
 }
 </style>
 <style lang="scss">
-.ant-modal-root {
-  .ant-modal-content {
-    width: 600px;
-    .ant-modal-title {
-      font-size: 16px;
-      font-family: PingFangSC-Medium, PingFang SC;
-      font-weight: 500;
-      color: #262626;
-      line-height: 16px;
-    }
-    .ant-modal-body {
-      padding: 0;
-      .ant-form-item {
-        margin-top: 24px;
-        .ant-form-item-control-wrapper {
-          .ant-form-item-control {
-            width: 388px;
-          }
-          margin-left: 20px;
+  .modify-phone-modal{
+    .ant-modal-root {
+      .ant-modal-content {
+        width: 600px;
+        .ant-modal-title {
+          font-size: 16px;
+          font-weight: 500;
+          color: #262626;
+          line-height: 16px;
         }
-        .ant-input {
-          height: 32px;
-          background: #ffffff;
-          border-radius: 2px;
-          border: 1px solid #d9d9d9;
-          &::placeholder {
-            font-size: 14px;
-            font-family: PingFangSC-Regular, PingFang SC;
-            font-weight: 400;
-            color: #bfbfbf;
-            line-height: 20px;
+        .ant-modal-body {
+          padding: 0;
+          .ant-form-item {
+            margin-top: 24px;
+            .ant-form-item-control-wrapper {
+              .ant-form-item-control {
+                width: 388px;
+              }
+              margin-left: 20px;
+            }
+            .ant-input {
+              height: 32px;
+              background: #ffffff;
+              border-radius: 2px;
+              border: 1px solid #d9d9d9;
+              &::placeholder {
+                font-size: 14px;
+                font-weight: 400;
+                color: #bfbfbf;
+                line-height: 20px;
+              }
+            }
+            .ant-form-item-required {
+              font-size: 14px;
+              font-weight: 400;
+              line-height: 20px;
+            }
           }
         }
-        .ant-form-item-required {
-          font-size: 14px;
-          font-family: PingFangSC-Regular, PingFang SC;
+        .ant-modal-footer {
+          text-align: center;
+        }
+        //表单校验提示信息样式
+        .ant-form-explain {
+          font-size: 12px;
           font-weight: 400;
-          line-height: 20px;
+          color: #f5222d;
+          line-height: 12px;
+          margin-top: 4px;
         }
       }
     }
-    .ant-modal-footer {
+    .success {
       text-align: center;
+      &-pic {
+        width: 54px;
+        height: 54px;
+        margin-top: 24px;
+      }
+      &-info {
+        font-size: 14px;
+        font-weight: 400;
+        color: #666666;
+        line-height: 20px;
+        margin-top: 14px;
+        margin-bottom: 32px;
+      }
     }
-    //表单校验提示信息样式
-    .ant-form-explain {
-      font-size: 12px;
-      font-weight: 400;
-      color: #f5222d;
-      line-height: 12px;
-      margin-top: 4px;
-    }
   }
-}
-.success {
-  text-align: center;
-  &-pic {
-    width: 54px;
-    height: 54px;
-    margin-top: 24px;
-  }
-  &-info {
-    font-size: 14px;
-    font-family: PingFangSC-Regular, PingFang SC;
-    font-weight: 400;
-    color: #666666;
-    line-height: 20px;
-    margin-top: 14px;
-    margin-bottom: 32px;
-  }
-}
+
 </style>

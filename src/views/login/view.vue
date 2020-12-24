@@ -2,7 +2,9 @@
   <div class="register-wrapper">
     <div class="register-container">
       <div class="register-content">
-        <div class="video-wrapper">111</div>
+        <div class="video-wrapper">
+          {{123}}
+        </div>
         <div class="login-wrapper">
           <div class="login-title">服务商招募管理系统</div>
           <a-form-model layout="inline" :model="params"  @submit.native.prevent :rules="rules" ref="ruleForm" class="login-form-wrapper" autoComplete="off">
@@ -70,6 +72,7 @@ export default {
   nameComment: '注册页面',
   data() {
     return {
+      test:5,
       params: {
         loginType:0,
         phone: '',
