@@ -63,7 +63,6 @@
             </div>
             <div class="schemeProcess">
               <a-badge color="#c23531" text="方案待提交" />
-
               <span>{{echarts.myProjectCaseUnSubmit}}</span>
               <br />
               <a-badge text="方案已提交" color="#2f4554"/>
