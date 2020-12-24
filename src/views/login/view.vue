@@ -69,6 +69,14 @@ export default {
   name: 'RegisterView',
   nameComment: '注册页面',
   data() {
+    //自定义手机号校验规则
+    const phoneCheck = (rule, value, callback) => {
+      const reg = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
+      if (!reg.test(value)) {
+        callback("请输入正确的手机号码");
+      }
+      callback();
+    };
     return {
       params: {
         loginType:0,
@@ -95,7 +103,7 @@ export default {
       },
       rules:{
         phone: [
-          { required: true, message: '请输入正确的手机号码', trigger: 'change' },
+          { required: true, message: '请输入正确的手机号码', trigger: 'change',validator: phoneCheck },
         ],
         password: [
           { required: true, message: '请输入密码', trigger: 'change' },
@@ -138,6 +146,7 @@ export default {
       const phone = this.params.phone;
       api.accountStatus({phone})
         .then(res=>{
+          console.log(res)
           if(res.code === 20000){
             const { needPicCode } = res.data;
             const { status } = this.imgCode;

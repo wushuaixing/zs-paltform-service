@@ -31,6 +31,7 @@
             <a-input
               autocomplete="off"
               class="form-tel-input"
+              :maxLength="11"
               v-model.trim="form.phone"
               placeholder="请输入您本人实名登记的手机号码"
             >
@@ -45,6 +46,7 @@
             <a-input
               autocomplete="off"
               v-model.trim="form.code"
+              :maxLength="6"
               placeholder="请输入验证码"
             >
               <div slot="suffix" @click="sendVerifyCode" class="phonecode">
@@ -132,10 +134,7 @@ export default {
     doRegister() {
       this.$refs.ruleForm.validate((validate) => {
         console.log(validate);
-        if (!validate) {
-          this.$message.error("必填信息不能为空");
-          return;
-        }
+        if (!validate) return this.$message.error("必填信息不能为空");
         authRegister(this.form)
           .then((res) => {
             console.log(res);

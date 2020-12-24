@@ -18,16 +18,17 @@
           v-if="step !== 3"
         >
           <a-form-model-item v-if="step === 1" label="原账号" prop="phone">
-            <a-input placeholder="请输入原账号" v-model.trim="form.phone" />
+            <a-input placeholder="请输入原账号" :maxLength="11" v-model.trim="form.phone" />
           </a-form-model-item>
           <a-form-model-item v-else label="新账号" prop="phone">
             <a-input
               placeholder="请输入需要绑定的新手机号"
+              :maxLength="11"
               v-model.trim="form.phone"
             />
           </a-form-model-item>
           <a-form-model-item label="验证码" prop="code">
-            <a-input placeholder="请输入短信验证码" v-model.trim="form.code">
+            <a-input placeholder="请输入短信验证码" :maxLength="6" v-model.trim="form.code">
               <div slot="suffix" class="verify-code" @click="sendVerifyCode">
                 获取验证码<span v-if="countdown">({{ countdown }}s)</span>
               </div>
@@ -132,9 +133,9 @@ export default {
           //60秒倒计时阶段不可发送验证码
           if (this.countdown) return;
           this.countdown = 60;
-          const timer = setInterval(() => {
+          this.timer = setInterval(() => {
             this.countdown--;
-            if (this.countdown === 0) clearInterval(timer);
+            if (this.countdown === 0) clearInterval(this.timer);
           }, 1000);
           //step==1,原账号发送验证码
           if (this.step === 1) {
@@ -160,6 +161,10 @@ export default {
         this.visible = false;
         this.step = 1;
       }
+      this.$refs.ruleForm.validate((validate) => {
+        console.log(validate);
+        if (!validate) return;
+      })
       //step==1,验证原手机号
       if (this.step === 1) {
         verifyOldPhone(this.form.code, this.form.phone).then((res) => {
@@ -168,6 +173,7 @@ export default {
             this.$message.success("验证通过");
             this.form.phone = "";
             this.form.code = "";
+            clearInterval(this.timer)
             this.countdown = null;
             this.step++;
           }
@@ -185,6 +191,7 @@ export default {
             this.$message.success("绑定新手机号成功");
             this.form.phone = "";
             this.form.code = "";
+            clearInterval(this.timer)
             this.countdown = null;
             this.step++;
           }

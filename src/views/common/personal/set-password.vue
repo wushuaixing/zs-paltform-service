@@ -57,7 +57,6 @@ export default {
     return {
       visible: false,
       form: {
-        editType: 0,
         newPassword: "",
         confirmPwd: "",
       },
@@ -111,9 +110,7 @@ export default {
       //校验是否有空格
       const blankSpaceCheck = /^[^ ]+$/;
       this.passwordCheck[0] = lengthCheck(this.form.newPassword);
-      this.passwordCheck[1] =
-        letterCheck.test(this.form.newPassword) &&
-        numberCheck.test(this.form.newPassword);
+      this.passwordCheck[1] = letterCheck.test(this.form.newPassword) && numberCheck.test(this.form.newPassword);
       this.passwordCheck[2] = blankSpaceCheck.test(this.form.newPassword);
     },
     cancel() {
@@ -124,14 +121,14 @@ export default {
         this.$message.error("请输入密码");
         return;
       }
-      if (this.passwordCheck.some((item) => item)) {
+      if (this.passwordCheck.every((item) => item === true)) {
         this.$refs.ruleForm.validate((validate) => {
           if (!validate) {
             return;
           } else {
             editPassword(
               encryptEditPwd({
-                editType: this.form.editType,
+                editType: 0,
                 newPassword: this.form.newPassword,
               })
             ).then((res) => {
