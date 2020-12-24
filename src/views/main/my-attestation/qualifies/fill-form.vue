@@ -50,7 +50,7 @@
     <a-form v-bind="formItemLayout" :form="form" autocomplete="off" v-if="userType ==='lawyer'">
       <a-form-item :label="law.name.label">
         <a-input v-decorator="law.name.dec" v-bind="law.name.other"/>
-        <span class="normal">{{ lawyerName }}</span>
+        <span class="normal">{{ username }}</span>
       </a-form-item>
       <a-form-item :label="law.idNumber.label">
         <a-input v-decorator="law.idNumber.dec" v-bind="law.idNumber.other"/>
@@ -142,6 +142,7 @@
 
 <script>
 import { qualifies } from "@/plugin/api/attest";
+import { fileListRule } from "@/plugin/tools";
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -160,7 +161,7 @@ const yearOption = (()=>{
   const minYear = 1980;
   const maxYear = new Date().getFullYear() + 5;
   const length = maxYear - minYear < 0 ? 50 : maxYear - minYear;
-  return new Array(length).fill(1).map((i,index)=>({value:minYear + length - index}))
+  return new Array(length).fill(1).map((i,index)=>({value:(minYear + length - index).toString()}))
 })();
 
 export default {
@@ -179,8 +180,7 @@ export default {
     noAuction:{
       type:Boolean,
       default:false
-    }
-
+    },
   },
   data() {
     const validateCard = (rule, value, callback) => {
@@ -488,6 +488,9 @@ export default {
       addApi(_source).then(res=>{
         if(res.code === 20000 ){
           console.log(res);
+          if(this.toTellRes){
+            this.$emit.toTellRes(res)
+          }
         }
       })
     },
@@ -516,7 +519,7 @@ export default {
       if(this.relation.codeStatus === 'error') return 'text-error';
       else return 'normal';
     },
-    lawyerName(){
+    username(){
       return this.$store.getters.getInfo.username;
     },
   },
@@ -526,14 +529,27 @@ export default {
     if(this.form && this.userType === 'lawyer'){
       this.form.setFieldsValue({ lawyerName })
     }
+
     if(Object.keys(this.source).length){
       const {
-        backOfCard,frontOfCard,confidentialityCommitmentLetter,qualificationCertificate,..._source
+        backOfCard:bc, frontOfCard:fc, confidentialityCommitmentLetter:cc, qualificationCertificate:qc, ..._source
       } = this.source;
-      console.log(backOfCard,frontOfCard,confidentialityCommitmentLetter,qualificationCertificate);
-      this.form.setFieldsValue({
+      const fieldValues = {
         ..._source,
-      })
+        backOfCard:fileListRule(bc),
+        frontOfCard:fileListRule(fc),
+        confidentialityCommitmentLetter:fileListRule(cc),
+        qualificationCertificate:fileListRule(qc),
+      };
+      delete fieldValues.contact;
+      delete fieldValues.logId;
+      delete fieldValues.createTime;
+      delete fieldValues.phone;
+      this.fileLists = {
+        cardFront:fileListRule(fc).length,
+        cardBack:fileListRule(bc).length,
+      };
+      this.form.setFieldsValue({...fieldValues})
     }
   }
 }

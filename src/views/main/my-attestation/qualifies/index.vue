@@ -125,7 +125,8 @@
     </template>
     <a-modal v-model="visible" :title="modalTitle" :maskClosable="false" :width="1000">
       <QualifyInfo :source="sourceLog" :is-lawyer="identity === 1" no-title no-date v-if="modalStep===0"/>
-      <FillForm :userType="identity === 1?'lawyer':'org'" v-if="modalStep===1" :source="sourceLog" />
+      <FillForm :userType="identity === 1?'lawyer':'org'" v-if="modalStep===1"
+                :source="sourceLog" @toTellRes="handleSubmit" ref="fillFromRef"/>
       <template slot="footer">
         <div style="text-align: center" v-if="modalStep===0">
           <a-space>
@@ -139,7 +140,7 @@
         </div>
         <div style="text-align: center" v-if="modalStep===1">
           <a-space>
-            <a-button key="submit" type="primary" @click="editVisible = true">
+            <a-button key="submit" type="primary" @click="handleEditInfo">
               确认修改并提交
             </a-button>
             <a-button key="back" @click="modalStep=0">
@@ -273,6 +274,17 @@ export default {
       this.$nextTick(()=>{
         this.modalStep = 0;
       });
+    },
+    //
+    handleSubmit(val){
+      console.log(val);
+    },
+    //
+    handleEditInfo(e){
+      const { fillFromRef } = this.$refs;
+      console.log(this.$refs.fillFromRef);
+      fillFromRef.handleSubmit(e);
+
     }
   },
   computed:{

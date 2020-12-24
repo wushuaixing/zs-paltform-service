@@ -39,3 +39,18 @@ export const ranStr = (l = 4) => {
 	}
 	return `_${pwd}`;
 };
+
+/**
+ * 获取fileList
+ * @param str
+ */
+export const fileListRule = (str)=>{
+	if(!str) return [];
+	const source = str.split(';');
+	if(source.length) return source.map(i=>({
+		uid: ranStr(8),
+		status: 'done',
+		name:i,
+		url: i,
+	}))
+};

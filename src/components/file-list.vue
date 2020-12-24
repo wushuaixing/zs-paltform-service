@@ -6,7 +6,7 @@
 </template>
 
 <script>
-	import { ranStr} from "@/plugin/tools";
+	import { fileListRule } from "@/plugin/tools";
 
 	export default {
 		name:'FileList',
@@ -23,15 +23,7 @@
 		},
 		computed:{
 			defaultFileList(){
-				console.log(this.fileList);
-				const list = this.fileList.split(';');
-				if(!list.length) return [];
-				return list.map(i=>({
-					uid: ranStr(8),
-					status: 'done',
-					name:i,
-					url: i,
-				}))
+				return fileListRule(this.fileList);
 			}
 		},
 	}
