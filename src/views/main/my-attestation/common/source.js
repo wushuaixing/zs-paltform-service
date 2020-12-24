@@ -1,41 +1,5 @@
-export const areaOption = [
-	{
-		value: 'zhejiang',
-		label: 'Zhejiang',
-		children: [
-			{
-				value: 'hangzhou',
-				label: 'Hangzhou',
-				children: [
-					{
-						value: 'xihu1',
-						label: 'West Lake1',
-					},
-					{
-						value: 'xihu2',
-						label: 'West Lake2',
-					},
-				],
-			},
-		],
-	},
-	{
-		value: 'jiangsu',
-		label: 'Jiangsu',
-		children: [
-			{
-				value: 'nanjing',
-				label: 'Nanjing',
-				children: [
-					{
-						value: 'zhonghuamen',
-						label: 'Zhong Hua Men',
-					},
-				],
-			},
-		],
-	},
-];
+import areaSource  from '@/assets/js/address';
+export const areaOption = areaSource;
 // 擅长业务类型
 export const orgAdvType = [
 	{ id: 1, label: '工业', value: 'Apple' },

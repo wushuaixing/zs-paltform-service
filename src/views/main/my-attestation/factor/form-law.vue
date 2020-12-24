@@ -202,7 +202,6 @@ import {
   lawDuty, lawType
 } from "../common/source";
 // import cascader from "../common/cascader";
-
 export default {
   name: 'FormLawyerInfo',
   nameComment: '要素信息表单-律师基本信息',
@@ -248,6 +247,12 @@ export default {
           dec:['local',{ rules: [{ required: true, message: '所在地区不能为空' }] }],
           other:{
             options:areaOption,
+            getPopupContainer:e=>e.parentElement,
+            fieldNames:{
+              value:'id',
+              label:'name',
+              children:'children'
+            },
             placeholder:'请选择所在地区',
             ...baseWidth,
           }
@@ -259,8 +264,10 @@ export default {
             options:areaOption,
             size:"small",
             props: {
+              value:'id',
+              label:'name',
               multiple: true,
-              checkStrictly:true,
+              checkStrictly:false,
             },
             placeholder:'请选择主要涉业地区',
             ...baseWidth,
