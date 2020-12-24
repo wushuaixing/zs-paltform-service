@@ -57,8 +57,8 @@
       </a-form-item>
       <a-form-item :label="law.sex.label">
         <a-radio-group v-decorator="law.sex.dec">
-          <a-radio :value="0">男</a-radio>
-          <a-radio :value="1">女</a-radio>
+          <a-radio value="0">男</a-radio>
+          <a-radio value="1">女</a-radio>
         </a-radio-group>
       </a-form-item>
       <a-form-item :label="law.cardNo.label">
@@ -69,7 +69,7 @@
           <a-select-option v-for="i in yearOption" :value="i.value" :key="i.value">{{i.value}}年</a-select-option>
         </a-select>
       </a-form-item>
-      <a-form-item :label="law.office.label" >
+      <a-form-item :label="law.office.label">
         <a-input v-decorator="law.office.dec" v-bind="law.office.other"/>
         <span class="form-item-remark">*请在签约前完善律所信息</span>
       </a-form-item>
@@ -82,7 +82,7 @@
       <a-form-item :label="law.card.label" >
         <div class="fill-form-upload-wrapper fill-form-upload__block" style="padding-left: 200px">
           <a-upload v-decorator="law.card.decA" v-bind="law.card.other" class="upload-wrapper">
-            <div class="upload-container">
+            <div class="upload-container"  v-if="!fileLists.cardFront">
               <a-icon type="plus" />
             </div>
           </a-upload>
@@ -95,7 +95,7 @@
       <a-form-item class="fill-form-upload__card" :wrapperCol="{span:24}">
         <div class="fill-form-upload-wrapper fill-form-upload__block">
           <a-upload v-decorator="law.card.decB" v-bind="law.card.other" class="upload-wrapper">
-            <div class="upload-container">
+            <div class="upload-container"  v-if="!fileLists.cardBack">
               <a-icon type="plus" />
             </div>
           </a-upload>
@@ -128,8 +128,8 @@
         </div>
       </a-form-item>
     </a-form >
-    <a-form-item label=" " v-bind="formItemLayout" class="form-item-no-title">
-      <a-space>
+    <a-form-item label=" " v-bind="formItemLayout" class="form-item-no-title" v-if="noAuction">
+      <a-space >
         <a-button type="primary" @click="handleSubmit" v-if="append">确认无误并提交</a-button>
         <template v-else>
           <a-button type="primary">保存</a-button>
@@ -176,6 +176,11 @@ export default {
       default:true
     },
     source: Object,
+    noAuction:{
+      type:Boolean,
+      default:false
+    }
+
   },
   data() {
     const validateCard = (rule, value, callback) => {
@@ -377,14 +382,14 @@ export default {
           label:'身份证照片',
           decA:[ 'frontOfCard', {
             valuePropName: 'fileList',
-            getValueFromEvent: this.normFile,
+            getValueFromEvent: e=>this.normFile(e,'cardFront'),
             rules: [
               { required: true, message: '请上传身份证照片!' },
             ]
           }],
           decB:[ 'backOfCard', {
             valuePropName: 'fileList',
-            getValueFromEvent: this.normFile,
+            getValueFromEvent: e=>this.normFile(e,'cardBack'),
           }],
           other:{
             beforeUpload:()=>false,
@@ -422,7 +427,10 @@ export default {
         },
 
       },
-      fileLists:0,
+      fileLists:{
+        cardFront:0,
+        cardBack:0,
+      },
       // 联动字段属性
       relation:{
         codeStatus:'hint',
@@ -454,10 +462,13 @@ export default {
       this.form.setFieldsValue({ orgSocialCreditCode });
       // if(option.key)
     },
-    normFile(e) {
+    normFile(e,field) {
       console.log('Upload event:', e);
       if (Array.isArray(e)) { return e }
-      this.fileLists = e.fileList.length;
+      this.fileLists = {
+        ...this.fileLists,
+        [field]:e.fileList.length,
+      };
       return e && e.fileList;
     },
     // 确认无误并提交
@@ -490,10 +501,10 @@ export default {
         })
       }else{
         const _source = Object.assign({},source,{
-          frontOfCard:'',
-          backOfCard:'',
+          frontOfCard:'https://qiniu.yczcjk.com/123.png',
+          backOfCard:'https://qiniu.yczcjk.com/123.png',
+          qualificationCertificate:'https://qiniu.yczcjk.com/123.png',
           confidentialityCommitmentLetter:'https://qiniu.yczcjk.com/123.png',
-          businessLicense:'https://qiniu.yczcjk.com/123.png',
         });
         return {lawyerQualify:{..._source}}
       }
@@ -514,6 +525,15 @@ export default {
     const lawyerName = this.$store.getters.getInfo.username;
     if(this.form && this.userType === 'lawyer'){
       this.form.setFieldsValue({ lawyerName })
+    }
+    if(Object.keys(this.source).length){
+      const {
+        backOfCard,frontOfCard,confidentialityCommitmentLetter,qualificationCertificate,..._source
+      } = this.source;
+      console.log(backOfCard,frontOfCard,confidentialityCommitmentLetter,qualificationCertificate);
+      this.form.setFieldsValue({
+        ..._source,
+      })
     }
   }
 }

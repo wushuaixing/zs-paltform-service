@@ -3,7 +3,7 @@
     <a-spin :spinning="spinning" class="spin-wrapper" tip="Loading......"/>
     <template v-if="!spinning">
       <!--  选择身份：  -->
-      <div class="qualifies-item qualifies-choose" v-if="status(0)">
+      <div class="qualifies-item qualifies-choose" v-if="status(0) && !nextStep">
         <div class="item-title">
           <span>请选择您的服务商身份：</span>
         </div>
@@ -48,12 +48,13 @@
         </div>
       </FillForm>
       <!--  信息展示：含提示  -->
-      <template v-if="status">
+      <template v-if="status(123456)">
+        <!-- 资质认证信息 -->
         <div class="qualifies-item qualifies-status">
           <div class="item-title status-title">
             <div class="status-title-identity">
               <span>我的服务商身份：</span>
-              <template v-if="identity ==='lawyer'">
+              <template v-if="identity ===1">
                 <img :src="icon.law" alt="" style="height: 32px;vertical-align: top;">
                 <span style="margin-left: 10px">律师</span>
               </template>
@@ -71,7 +72,7 @@
           </div>
         </div>
         <!-- 资质认证状态 -->
-        <div class="qualifies-item qualifies-status" v-if="status(1245)">
+        <div class="qualifies-item qualifies-status" v-if="status(245)">
           <div class="status-content">
             <div>{{info.text}}</div>
             <a-button type="primary" v-if="status(1)">立即前往要素认证</a-button>
@@ -83,89 +84,19 @@
             </a-space>
           </div>
         </div>
-        <!-- 资质审核状态 -->
-        <div class="qualifies-info" v-if="status(456)">
+        <!-- 资质认证信息 -->
+        <div class="qualifies-info" v-if="status(3456)">
           <div class="info-button">
-            <a-button>编辑我的资质信息</a-button>
+            <a-button >编辑我的资质信息</a-button>
           </div>
-          <div class="info-item" data-label="我的资质认证信息-律师" v-if="identity === 1">
-            <div class="info-item_title">我的资质认证信息</div>
-            <div class="info-item_list">
-              <div class="info-item_list-title">律师名称</div>
-              <div class="info-item_list-content">鸿达资</div>
-            </div>
-            <div class="info-item_list">
-              <div class="info-item_list-title">身份证号码</div>
-              <div class="info-item_list-content">鸿达资产管理有限公司</div>
-            </div>
-            <div class="info-item_list">
-              <div class="info-item_list-title">性别</div>
-              <div class="info-item_list-content">17137246841@hd.com</div>
-            </div>
-            <div class="info-item_list">
-              <div class="info-item_list-title">执业证号</div>
-              <div class="info-item_list-content">-</div>
-            </div>
-            <div class="info-item_list">
-              <div class="info-item_list-title">执业开始年份</div>
-              <div class="info-item_list-content">-</div>
-            </div>
-            <div class="info-item_list">
-              <div class="info-item_list-title">挂靠律所</div>
-              <div class="info-item_list-content">-</div>
-            </div>
-            <div class="info-item_list">
-              <div class="info-item_list-title">邮箱地址</div>
-              <div class="info-item_list-content">-</div>
-            </div>
-            <div class="info-item_list">
-              <div class="info-item_list-title">身份证照片</div>
-              <div class="info-item_list-content">-</div>
-            </div>
-            <div class="info-item_list">
-              <div class="info-item_list-title">从业资格证</div>
-              <div class="info-item_list-content">-</div>
-            </div>
-            <div class="info-item_list">
-              <div class="info-item_list-title">保密承诺函</div>
-              <div class="info-item_list-content">-</div>
-            </div>
-          </div>
-          <template v-if="identity === 2">
-            <div class="info-item" data-label="我的资质认证信息-机构">
-              <div class="info-item_title">我的资质认证信息</div>
-              <div class="info-item_list">
-                <div class="info-item_list-title">机构名称</div>
-                <div class="info-item_list-content">鸿达资产管理有限公司</div>
-              </div>
-              <div class="info-item_list">
-                <div class="info-item_list-title">统一社会信用代码</div>
-                <div class="info-item_list-content">鸿达资产管理有限公司</div>
-              </div>
-              <div class="info-item_list">
-                <div class="info-item_list-title">邮箱地址</div>
-                <div class="info-item_list-content">17137246841@hd.com</div>
-              </div>
-              <div class="info-item_list">
-                <div class="info-item_list-title">备用邮箱</div>
-                <div class="info-item_list-content">-</div>
-              </div>
-              <div class="info-item_list">
-                <div class="info-item_list-title">营业执照</div>
-                <div class="info-item_list-content">-</div>
-              </div>
-              <div class="info-item_list">
-                <div class="info-item_list-title">保密承诺函</div>
-                <div class="info-item_list-content">-</div>
-              </div>
-            </div>
-            <div class="info-item" data-label="当前联络人信息">
+          <QualifyInfo :source="source" :is-lawyer="identity === 1"/>
+          <div class="info-item" data-label="当前联络人信息" v-if="identity === 2">
               <div class="info-item_title">当前联络人信息</div>
               <div class="info-item_list info-item_edit">
                 <div class="info-item_list-title ele-important">联络人姓名</div>
                 <div class="info-item_list-content">
                   <template v-if="!editStatus">
-                    <span>{{contacts.name}}</span>
+                    <span>{{source.contact}}</span>
                     <a-button size="small" type="link" icon="edit" @click="toEditContacts(1)"></a-button>
                   </template>
                   <a-space v-else>
@@ -177,41 +108,68 @@
               </div>
               <div class="info-item_list" style="margin-top: 0">
                 <div class="info-item_list-title">手机号码</div>
-                <div class="info-item_list-content">{{contacts.phone}}
-                  <span class="remark">*若需要更改联络人手机号码请至个人中心更改绑定手机号</span>
+                <div class="info-item_list-content">{{source.phone}}
+                  <span class="remark">若需要更改联络人手机号码请至个人中心更改绑定手机号</span>
                 </div>
               </div>
             </div>
-          </template>
         </div>
-        <div class="qualifies-info">
+        <div class="qualifies-info" v-if="status(1)">
           <div class="info-image-status">
             <img src="../../../../assets/img/blank_nodata.png" alt="">
             <p class="image-status-remark">您要提交的资质认证信息正在审核中 ，请您耐心等待</p>
-            <a-button @click="checkQualifies" type="primary">查看我提交的资质认证</a-button>
+            <a-button @click="checkQualifies" type="primary" :loading="visibleLoading">查看我提交的资质认证</a-button>
           </div>
         </div>
       </template>
     </template>
+    <a-modal v-model="visible" :title="modalTitle" :maskClosable="false" :width="1000">
+      <QualifyInfo :source="sourceLog" :is-lawyer="identity === 1" no-title no-date v-if="modalStep===0"/>
+      <FillForm :userType="identity === 1?'lawyer':'org'" v-if="modalStep===1" :source="sourceLog" />
+      <template slot="footer">
+        <div style="text-align: center" v-if="modalStep===0">
+          <a-space>
+            <a-button key="back" @click="handleModalClose">
+              关闭
+            </a-button>
+            <a-button key="submit" type="primary" @click="modalStep = 1">
+              修改并重新提交
+            </a-button>
+          </a-space>
+        </div>
+        <div style="text-align: center" v-if="modalStep===1">
+          <a-space>
+            <a-button key="submit" type="primary" @click="editVisible = true">
+              确认修改并提交
+            </a-button>
+            <a-button key="back" @click="modalStep=0">
+              取消
+            </a-button>
+          </a-space>
+        </div>
+      </template>
+    </a-modal>
   </div>
 </template>
 
 <script>
-import FillForm from './fill-form';
-import { qualifies } from "@/plugin/api/attest";
-import IconLaw from '@/assets/img/lawyer.png';
-import IconOrg from '@/assets/img/org.png';
 
-// 资质审核相关状态
-const qualifyStatus = {
-  0:{ desc:"未认证", text:""},
-  1:{ desc:"认证审核中", text:"您尚未完成要素认证，继续完成要素认证，即可查看浙商资产招商项目！",class:'text-error'},
-  2:{ desc:"认证未通过", text:"您提交的资质认证信息未通过审核，未通过原因：",class:'text-dangerous'},
-  3:{ desc:"审核通过", text:"",class:'text-success'},
-  4:{ desc:"认证修改审核中", text:"您提交的资质认证信息修改正在审核中，请耐心等待审核结果",class:'text-error'},
-  5:{ desc:"认证修改未通过", text:"您提交的资质认证信息修改未通过审核，未通过原因：",class:'text-dangerous'},
-  6:{ desc:"认证修改审核通过", text:"",class:'text-success'},
-};
+  import FillForm from './fill-form';
+  import QualifyInfo from './qualify-info';
+  import { qualifies } from "@/plugin/api/attest";
+  import IconLaw from '@/assets/img/lawyer.png';
+  import IconOrg from '@/assets/img/org.png';
+
+  // 资质审核相关状态
+  const qualifyStatus = {
+    0:{ desc:"未认证", text:""},
+    1:{ desc:"认证审核中", text:"您尚未完成要素认证，继续完成要素认证，即可查看浙商资产招商项目！",class:'text-error'},
+    2:{ desc:"认证未通过", text:"您提交的资质认证信息未通过审核，未通过原因：",class:'text-dangerous'},
+    3:{ desc:"审核通过", text:"",class:'text-success'},
+    4:{ desc:"认证修改审核中", text:"您提交的资质认证信息修改正在审核中，请耐心等待审核结果",class:'text-error'},
+    5:{ desc:"认证修改未通过", text:"您提交的资质认证信息修改未通过审核，未通过原因：",class:'text-dangerous'},
+    6:{ desc:"认证修改审核通过", text:"",class:'text-success'},
+  };
 
 export default {
   name: 'qualifies',
@@ -219,6 +177,10 @@ export default {
   data() {
     return {
       spinning:true,
+      visible:false,
+      visibleLoading:false,
+      editVisible:false,
+      modalStep:0,
       // 0 无身份 1 律师 2 机构
       identity:0,
       // 未认证 选择状态
@@ -229,7 +191,10 @@ export default {
         name:'言殁岚',
         phone:'17137246841'
       },
-      contacts_name:'言殁岚',
+      // 相关资质信息
+      source:{},
+      sourceLog:{},
+      contacts_name:'',
       icon:{
         law:IconLaw,
         org:IconOrg,
@@ -239,7 +204,8 @@ export default {
   },
   created(){},
   components:{
-    FillForm
+    FillForm,
+    QualifyInfo
   },
   methods:{
     // 继续下一步[选择身份]
@@ -254,7 +220,7 @@ export default {
         title: '确定返回服务商身份选择吗？',
         content: '返回后，将清空当前填写的所有内容。',
         onOk() {
-          _this.nextStep = true;
+          _this.nextStep = false;
           _this.identity = '';
         },
         onCancel() {},
@@ -269,7 +235,6 @@ export default {
     toEditContacts(bol){
       if(bol){
         this.editStatus = true;
-        this.contacts_name = '';
       }else{
         this.editStatus = false;
         this.contacts_name = '';
@@ -277,13 +242,38 @@ export default {
     },
     // 查看资质状态
     checkQualifies(){
-     console.log('查看资质状态');
+      this.visibleLoading = true;
+      const api = this.identity === 1 ? qualifies.lawyerLog : qualifies.orgLog;
+      api().then(({data = {},code})=>{
+        if(code === 20000){
+          const {
+            contact, logId, phone, qualify = {},qualifyVO = {},
+          } = data || {};
+          this.sourceLog = {
+            contact,logId,phone,
+            ...qualify,
+            ...qualifyVO
+          };
+          this.visible = true;
+        }else{
+          this.$message.error('网络请求异常，请重新请求!');
+        }
+      }).finally(()=>{
+        this.visibleLoading = false;
+      })
     },
     // 判断数据当前状态
     status(rule){
       const { qualifyAuditStatus: q} = this.statusInfo;
       return  rule.toString() ? new RegExp(q).test(rule) : q;
     },
+    // 关闭弹窗
+    handleModalClose(){
+      this.visible = false;
+      this.$nextTick(()=>{
+        this.modalStep = 0;
+      });
+    }
   },
   computed:{
     info() {
@@ -293,22 +283,34 @@ export default {
         text:qualifyStatus[qualifyAuditStatus].text + (reasonOfNotPass || '')
       };
     },
+    modalTitle(){
+      return this.modalStep === 0 ? "我提交的认证信息" : "我提交的认证信息-编辑";
+    },
   },
   mounted() {
-    const { identity, isSubmitCertify } = this.$store.getters.getInfo;
-    this.identity = identity;
-    console.log(isSubmitCertify);
+    // const { identity, isSubmitCertify } = this.$store.getters.getInfo;
+    // console.log(isSubmitCertify);
+    this.identity = this.$store.getters.getInfo.identity;
     // 查询当前服务商的机构属性
     qualifies.qualify().then(({data = {},code})=>{
       if(code === 20000){
-        const info = (data['lawyerQualifyDetail'] || data['organizationQualifyDetail']) || {};
-        this.statusInfo = info.qualifyCondition || {};
+        const {
+          contact, logId, phone,qualifyCondition, qualify = {},qualifyVO = {},
+        } = (data['lawyerQualifyDetail'] || data['organizationQualifyDetail']) || {};
+        this.statusInfo = qualifyCondition || {};
+        this.contacts_name = contact;
+        this.source = {
+          contact,logId,phone,
+          ...qualify,
+          ...qualifyVO
+        };
         this.spinning = false;
       }else if(code === 80001){
         this.statusInfo = {
           qualifyAuditStatus:0,
           reasonOfNotPass:'',
         };
+        this.spinning = false;
       }else{
         this.$error({
           title: '提示',
@@ -321,9 +323,6 @@ export default {
         content: '网络请求异常，请重新请求!',
       });
     })
-    // setTimeout(()=>{
-    //   this.spinning = false;
-    // },300)
   },
 
 }
@@ -408,7 +407,7 @@ export default {
             width:100%;
           }
           .image-status-remark{
-            margin: 18px 0;
+            margin: 25px 0;
           }
         }
         .info-button{
@@ -418,19 +417,18 @@ export default {
           right: 32px;
         }
         .info-item{
-          padding-top: 6px;
-          padding-bottom: 10px;
+          padding: 7px 0;
           &_title{
             border-left: 4px solid $common-base-active;
             padding-left: 6px;
             font-size: 16px;
-            height: 20px;
-            line-height: 20px;
+            height: 25px;
+            line-height: 25px;
           }
           &_list{
-            margin:24px 0;
+            margin:22px 0;
             display: flex;
-            line-height: 20px;
+            line-height: 25px;
             &-title{
               width: 33.3%;
               font-size: 14px;
@@ -445,7 +443,7 @@ export default {
               flex: 1;
               color: $text-content;
               .remark{
-                margin-left: 100px;
+                display: block;
                 font-size: 12px;
                 color: $text-remark;
               }
