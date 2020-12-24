@@ -31,7 +31,6 @@
             <a-input
               autocomplete="off"
               class="form-tel-input"
-              maxlength="11"
               v-model.trim="form.phone"
               placeholder="请输入您本人实名登记的手机号码"
             >
@@ -45,7 +44,6 @@
           <a-form-model-item class="verify-item" prop="code">
             <a-input
               autocomplete="off"
-              maxlength="6"
               v-model.trim="form.code"
               placeholder="请输入验证码"
             >

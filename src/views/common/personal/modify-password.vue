@@ -1,13 +1,13 @@
 <template>
   <div class="personal-main">
-    <div class="container">
+    <div class="container" ref="container">
       <a-modal
         :bodyStyle="{ display: 'flex', justifyContent: 'center' }"
         :centered="true"
+        :getContainer="()=>$refs.container"
         :maskStyle="{ background: 'rgba(0, 0, 0, 0.5)' }"
         v-model="visible"
         title="修改登录密码"
-        @ok="handleOk"
       >
         <a-form-model
           ref="ruleForm"
@@ -16,24 +16,24 @@
           :label-col="labelCol"
           :wrapper-col="wrapperCol"
         >
-          <a-form-model-item label="原密码" prop="oldPwd">
-            <a-input placeholder="请输入原密码" v-model.trim="form.oldPwd" />
+          <a-form-model-item label="原密码" prop="oldPassword">
+            <a-input placeholder="请输入原密码" v-model="form.oldPassword" />
           </a-form-model-item>
-          <a-form-model-item label="新密码" prop="newPwd">
+          <a-form-model-item label="新密码" prop="newPassword">
             <a-input
               placeholder="请输入长度6-20位，同时包含数字和字母密码"
-              v-model.trim="form.newPwd"
+              v-model="form.newPassword"
             />
           </a-form-model-item>
           <a-form-model-item label="确认密码" prop="confirmPwd">
             <a-input
               placeholder="请再次输入登录密码"
-              v-model.trim="form.confirmPwd"
+              v-model="form.confirmPwd"
             />
           </a-form-model-item>
         </a-form-model>
         <button slot="footer" class="save-btn">保存</button>
-        <button slot="footer" class="cancel-btn">取消</button>
+        <button slot="footer" class="cancel-btn" @click="cancel">取消</button>
       </a-modal>
     </div>
   </div>
@@ -45,15 +45,15 @@ export default {
     return {
       visible: false,
       form: {
-        oldPwd: "",
-        newPwd: "",
+        newPassword: "",
+        oldPassword: "",
         confirmPwd: "",
       },
       rules: {
         oldPwd: [
           {
             required: true,
-            message: "Please input Activity name",
+            message: "请输入原密码",
             trigger: "blur",
           },
         ],
@@ -80,10 +80,9 @@ export default {
     showModal() {
       this.visible = true;
     },
-    handleOk(e) {
-      console.log(e);
+    cancel(){
       this.visible = false;
-    },
+    }
   },
 };
 </script>
@@ -94,7 +93,6 @@ export default {
   background: #cccccc;
   border-radius: 2px;
   font-size: 14px;
-  font-family: PingFangSC-Regular, PingFang SC;
   font-weight: 400;
   color: #ffffff;
   line-height: 20px;
@@ -107,7 +105,6 @@ export default {
   border-radius: 2px;
   border: 1px solid #d9d9d9;
   font-size: 14px;
-  font-family: PingFangSC-Regular, PingFang SC;
   font-weight: 400;
   color: #666666;
   line-height: 20px;

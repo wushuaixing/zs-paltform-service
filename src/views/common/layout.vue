@@ -21,8 +21,8 @@
                 <div @click="handleModifyPhone"><a-icon type="user" />修改绑定手机号</div>
               </a-menu-item>
               <a-menu-item key="2">
-                <div @click="handleSetPwd"><a-icon type="user" />设置登录密码</div>
-                <div @click="handleModifyPwd"><a-icon type="user" />修改登录密码</div>
+                <div @click="handleSetPwd" v-if="isSetPassword===0"><a-icon type="user" />设置登录密码</div>
+                <div @click="handleModifyPwd" v-if="isSetPassword===1"><a-icon type="user" />修改登录密码</div>
               </a-menu-item>
               <a-menu-item key="3">
                 <router-link to="/login"><a-icon type="user" />退出登录</router-link>
