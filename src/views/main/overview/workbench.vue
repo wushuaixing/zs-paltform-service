@@ -14,7 +14,6 @@
               </a-list-item-meta>
             </a-list-item>
           </a-list>
-          <!-- 新写法待修改 -->
           <!-- 认证过的服务商 -->
             <div v-if="true">
               <ul>
@@ -38,6 +37,11 @@
                   <span>[竞标失败]：</span>
                    <a href="javascript:;">立即前往</a>
                 </li>
+                 <li>
+                  <a-badge status="error" />
+                  <span>[竞标失败]：</span>
+                   <a href="javascript:;">立即前往</a>
+                </li>
               </ul>
             </div>
         </div>
@@ -45,7 +49,7 @@
       <div class="item-wrapper">
         <div class="item-project item-format">竞标项目进度概览</div>
         <!-- 没有添加项目之前 -->
-        <div v-if="false" class="empty">
+        <div v-if="isShow" class="empty">
           <a-empty :image="simpleImage" description>
             <slot name="description"
               >您还没有已开始的项目，去<a href="javascript:;"
@@ -54,8 +58,8 @@
             >
           </a-empty>
         </div>
-        <div class="item-content item-format">
-          <div class="total">我的项目总数：{{echarts.myProjectAbandon}}</div>
+        <div class="item-content item-format" v-if="!isShow">
+          <div class="total">我的项目总数：{{echarts.myProjectsNum}}</div>
           <div class="data-display">
             <!-- 饼形图 -->
             <div class="chart">
@@ -90,12 +94,16 @@
       <div class="item-wrapper">
         <div class="item-title item-format">我的日程</div>
         <div class="item-content item-format">
+           <!-- <a-calendar @panelChange="onPanelChange" >
+             <div slot="headerRender">123</div>
+           </a-calendar> -->
           <!-- <DragVerify v-if="false"></DragVerify> -->
           <!--<img src="https://qiniu.yczcjk.com/123.png" alt="">-->
           <a-calendar>
-               <a-date-picker  @change="onChange"/>
+              <a-date-picker  @change="onChange"/>
               <ul slot="dateCellRender" slot-scope="value" class="events">
-                <li v-for="item in getListData(value)" :key="item.content">
+                <!-- {{value}} -->
+                <li v-for="item in getListData(value)"  :key="item.content">
                   <a-badge :status="item.type" :text="item.content" />
                 </li>
               </ul>
@@ -121,6 +129,9 @@
 
 <script>
 import { getEcharts } from "@/plugin/api/echarts";
+import { getCalendar } from "@/plugin/api/calendar";
+// import { _.merge } from 'lodash'
+// import { _.cloneDeep } from 'lodash'
 import echarts from "echarts";
 // 模拟的数据 
 const data = [
@@ -140,35 +151,35 @@ const data = [
   },
 ];
 // list表数据
-const list = [
-  {
-    id: 1,
-    description: "点击前往",
-    title: `【资质审核通过】: 您已通过资质审核，您可在“服务项目招商中心”对您有意向的项目进行报名！`,
-  },
-  {
-    id: 2,
-    description: "点击前往",
-    title:
-      "【竞标成功】: 您提交的关于债务人xxx的服务方案已通过，请至“我的项目-我的竞标-已中标”列表中查看相关项目",
-  },
-  {
-    id: 3,
-    description: "点击前往",
-    title:
-      "【方案提交即将截止】: 您已成功注册成为浙商资产服务商，为了更精准地给您推送优质项目，请您尽快进行服务商资质及要素认证！",
-  },
-  {
-    id: 4,
-    description: "点击前往",
-    title: `【资质审核通过】: 您已通过资质审核，您可在“服务项目招商中心”对您有意向的项目进行报名！`,
-  },
-  {
-    id: 4,
-    description: "点击前往",
-    title: `【资质审核通过】: 您已通过资质审核，您可在“服务项目招商中心”对您有意向的项目进行报名！`,
-  }
-];
+// const list = [
+//   {
+//     id: 1,
+//     description: "点击前往",
+//     title: `【资质审核通过】: 您已通过资质审核，您可在“服务项目招商中心”对您有意向的项目进行报名！`,
+//   },
+//   {
+//     id: 2,
+//     description: "点击前往",
+//     title:
+//       "【竞标成功】: 您提交的关于债务人xxx的服务方案已通过，请至“我的项目-我的竞标-已中标”列表中查看相关项目",
+//   },
+//   {
+//     id: 3,
+//     description: "点击前往",
+//     title:
+//       "【方案提交即将截止】: 您已成功注册成为浙商资产服务商，为了更精准地给您推送优质项目，请您尽快进行服务商资质及要素认证！",
+//   },
+//   {
+//     id: 4,
+//     description: "点击前往",
+//     title: `【资质审核通过】: 您已通过资质审核，您可在“服务项目招商中心”对您有意向的项目进行报名！`,
+//   },
+//   {
+//     id: 4,
+//     description: "点击前往",
+//     title: `【资质审核通过】: 您已通过资质审核，您可在“服务项目招商中心”对您有意向的项目进行报名！`,
+//   }
+// ];
 export default {
   name: "Workbench",
   nameComment: "工作台",
@@ -177,51 +188,66 @@ export default {
   },
   data() {
     return {
-      list,
+      // 图表显示
+      isShow: false,
       data,
       // 后台图表的数据
       echarts:[
-      ]
+      ],
+      listData:[],
+      dev: []
+      
     };
   },
   computed: {
     test () {
       return '[资质认证未确认]' + this.echarts + "试试看拼接"
-    }
+    },
+    
   },
   methods: {
     getListData(value) {
-      let listData;
-      switch (value.date()) {
-        case 8:
-          listData = [
-            { type: "warning", content: "腾房完毕" },
-            { type: "success", content: "完成评估" },
-          ];
-          break;
-        case 10:
-          listData = [
-            { type: "warning", content: "This is warning event." },
-            { type: "success", content: "This is usual event." },
-            { type: "error", content: "This is error event." },
-          ];
-          break;
-        case 15:
-          listData = [
-            { type: "warning", content: "This is warning event" },
-            {
-              type: "success",
-              content: "This is very long usual event。。....",
-            },
-            { type: "error", content: "This is error event 1." },
-            { type: "error", content: "This is error event 2." },
-            { type: "error", content: "This is error event 3." },
-            { type: "error", content: "This is error event 4." },
-          ];
-          break;
-        default:
-      }
-      return listData || [];
+      // let listData;
+      console.log(...value);
+      console.log(value._d);
+      // const dev = JSON.parse(JSON.stringify(value))
+      // console.log(dev);
+      // var deep = _.cloneDeep(value);
+      // console.log(deep[0] === value[0]);
+      // this.listData.push(value.date())
+      // return listData
+      // console.log(value.data());
+      // this.arr[length] = value._d
+      // switch (value.date()) {
+      //   case 8:
+      //     listData = [
+      //       { type: "warning", content: "腾房完毕" },
+      //       { type: "success", content: "完成评估" },
+      //     ];
+      //     break;
+      //   case 10:
+      //     listData = [
+      //       { type: "warning", content: "This is warning event." },
+      //       { type: "success", content: "This is usual event." },
+      //       { type: "error", content: "This is error event." },
+      //     ];
+      //     break;
+      //   case 15:
+      //     listData = [
+      //       { type: "warning", content: "This is warning event" },
+      //       {
+      //         type: "success",
+      //         content: "This is very long usual event。。....",
+      //       },
+      //       { type: "error", content: "This is error event 1." },
+      //       { type: "error", content: "This is error event 2." },
+      //       { type: "error", content: "This is error event 3." },
+      //       { type: "error", content: "This is error event 4." },
+      //     ];
+      //     break;
+      //   default:
+      // }
+      // return listData || [];
     },
 
     getMonthData(value) {
@@ -229,10 +255,19 @@ export default {
         return 1394;
       }
     },
+    
     // 日期修改
     onChange(date, dateString) {
       console.log(date, dateString);
     },
+    // 获取后台日历数据
+    async getListDatas (value) {
+      const res = await getCalendar(value)
+      console.log(res);
+    }
+  },
+  created () {
+
   },
   async mounted() {
     var myChart = echarts.init(document.getElementById("main"));
@@ -241,18 +276,9 @@ export default {
     console.log(res);
     this.echarts = res.data
     var option = {
-      // tooltip: {
-      //   trigger: "item",
-      //   formatter: "{a} <br/>{b}: {c} ({d}%)",
-      // },
       label: {
         color:this.color
       },
-      // legend: {
-      //   // orient: "vertical",
-      //   left: 100,
-      //   data: ["直接访问", "邮件营销", "联盟广告", "视频广告", "搜索引擎"],
-      // },
       series: [
         {
           name: "访问来源",
@@ -274,24 +300,23 @@ export default {
             show: false,
           },
           data: [
-            { value: 30},
-            { value: this.echarts.myProjectCaseSubmitted},
-            { value: 70},
-            { value: 10},
-            { value: 30},
-            { value: 50},
-            console.log(this.echarts.myProjectCaseSubmitted),
-            // { value: this.echarts.myProjectCaseUnSubmit},
+            // { value: 30},
             // { value: this.echarts.myProjectCaseSubmitted},
-            // { value: this.echarts.myProjectsReview},
-            // { value: this.echarts.myProjectsAimed},
-            // { value: this.echarts.myProjectsInvalid},
-            // { value: this.echarts.myProjectAbandon},
+            // { value: 70},
+            // { value: 10},
+            // { value: 30},
+            // { value: 50},
+            // console.log(this.echarts.myProjectCaseSubmitted),
+            { value: this.echarts.myProjectCaseUnSubmit},
+            { value: this.echarts.myProjectCaseSubmitted},
+            { value: this.echarts.myProjectsReview},
+            { value: this.echarts.myProjectsAimed},
+            { value: this.echarts.myProjectsInvalid},
+            { value: this.echarts.myProjectAbandon},
           ],
         },
       ],
     };
-    // console.log(option);
     myChart.setOption(option);
   },
 };
@@ -371,7 +396,6 @@ $background: #e9e9e9;
     align-items: center;
     width: 100%;
     height: 200px;
-    // background-color: #333;
     .ant-badge {
       margin: 10px 10px;
     }
@@ -381,13 +405,16 @@ $background: #e9e9e9;
     width: 150px;
     height: 150px;
     border-radius: 50%;
-    // background-color: pink;
   }
   .schemeProcess {
     width: 30%;
   }
   .schemeStatus {
     width: 30%;
+  }
+  .total {
+    margin-top: 10px;
+    font-weight: 800;
   }
   .empty {
     margin-top: 50px;
@@ -439,19 +466,6 @@ span {
   font-size: 16px;
   padding: 3px 0;
 }
-// .identification {
-//   margin-bottom: 20px;
-//   padding-bottom: 20px;
-//   border-bottom: 1px solid #E9E9E9;
-// }
-// strong {
-//   font-size: 16px;
-//   font-weight: 600;
-  
-// }
-// .authentication {
-//   display: inline;
-// }
 #main{
   position: absolute;
   top: 0px;
