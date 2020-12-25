@@ -31,7 +31,7 @@
             <a-input
               autocomplete="off"
               class="form-tel-input"
-              maxlength="11"
+              :maxLength="11"
               v-model.trim="form.phone"
               placeholder="请输入您本人实名登记的手机号码"
             >
@@ -45,8 +45,8 @@
           <a-form-model-item class="verify-item" prop="code">
             <a-input
               autocomplete="off"
-              maxlength="6"
               v-model.trim="form.code"
+              :maxLength="6"
               placeholder="请输入验证码"
             >
               <div slot="suffix" @click="sendVerifyCode" class="phonecode">
@@ -134,10 +134,7 @@ export default {
     doRegister() {
       this.$refs.ruleForm.validate((validate) => {
         console.log(validate);
-        if (!validate) {
-          this.$message.error("必填信息不能为空");
-          return;
-        }
+        if (!validate) return this.$message.error("必填信息不能为空");
         authRegister(this.form)
           .then((res) => {
             console.log(res);
@@ -159,7 +156,7 @@ export default {
     sendVerifyCode() {
       this.$refs.ruleForm.validateField("phone", (validate) => {
         if (validate) {
-          return;
+          return false;
         } else {
           //60秒倒计时阶段不可发送验证码
           if (this.countdown) return;
