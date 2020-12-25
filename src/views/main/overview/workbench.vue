@@ -17,9 +17,9 @@
           <!-- 认证过的服务商 -->
             <div v-if="true">
               <ul class="through">
-                <li>
+                <li v-show="list.code === 1">
                   <a-badge status="success" />
-                  <span>[资质审核通过]：</span> {{test}}
+                  <span>[资质审核通过]：</span> {{list.message}}
                   <a href="javascript:;">立即前往</a>
                 </li>
                 <li>
@@ -92,27 +92,28 @@
            <!-- <a-calendar @panelChange="onPanelChange" >
              <div slot="headerRender">123</div>
            </a-calendar> -->
-          <a-calendar>
-              <a-date-picker  @change="onChange"/>
+
+          <a-calendar @panelChange="onChange" @change='onChange2'>
+              <a-date-picker  />
               <ul slot="dateCellRender" slot-scope="value" class="events">
-                <!-- {{value}} -->
+                <!-- {{value.year()+'-'+ (value.month()+1).toString().padStart(2,0) +'-' + value.date().toString().padStart(2,0)}} -->
                 <li v-for="item in getListData(value)"  :key="item.content">
                   <a-badge :status="item.type" :text="item.content" />
                 </li>
               </ul>
-              <template slot="monthCellRender" slot-scope="value">
+              <template slot="monthCellRender" slot-scope="value" v-if='false'>
                 <div v-if="getMonthData(value)" class="notes-month">
                   <section>{{ getMonthData(value) }}</section>
                   <span>Backlog number</span>
                 </div>
               </template>
-            <slot>
+            <!-- <slot>
               <a-month-picker placeholder="Select month" @change="onChange" />
               <br />
               <a-range-picker @change="onChange" />
               <br />
               <a-week-picker placeholder="Select week" @change="onChange" />
-            </slot>
+            </slot> -->
           </a-calendar>
         </div>
       </div>
@@ -140,7 +141,7 @@ const data = [
   {
     description: "立即前往",
     title:
-      "【认证未通过】: 很抱歉，您提交的要素信息未通过审核，请进行编辑和重新提交！",
+    "【认证未通过】: 很抱歉，您提交的要素信息未通过审核，请进行编辑和重新提交！",
   },
 ];
 export default {
@@ -155,20 +156,26 @@ export default {
       isShow: false,
       data,
       // 后台图表的数据
-      echarts:[
-      ],
+      echarts:[],
       listData:[],
-      data2: [
-      ]
+      list: []
     };
   },
   computed: {
     test () {
-      return '[资质认证未确认]' + this.echarts + "试试看拼接"
+      return '[资质认证未确认]'
     }, 
   },
   methods: {
     getListData(value) {
+      // console.log(value.format('yyyy-MM-dd'))
+      // let reg = (value.year() + '-' + (value.month() + 1).toString().padStart(2,0) + '-' + value.date().toString().padStart(2,0))
+      // console.log(reg);
+      // let tag = JSON.parse(JSON.stringify(reg))
+      // console.log(tag);
+    //  console.log( Object.keys(reg));
+      // console.log(value.date());
+      // console.log(value._d)
     //   // console.log(value);
     //   // var value2 = {}
     //   console.log(value._d);
@@ -223,9 +230,14 @@ export default {
         return 1394;
       }
     },
+    onChange2() {
+      console.log(...arguments)
+      // console.log(value);
+
+    },
     onChange(date, dateString) {
-      console.log(date, dateString);
-      this.getListData()
+
+      console.log(date.format('yyyy-MM'), dateString);
       // if(data===12){
       //   2020-12-01
       //   2020-12-31
@@ -238,8 +250,12 @@ export default {
     },
     // 待办事项
     async getList() {
-      const res = await getTODoList()
+      const {data: res} = await getTODoList()
+      // console.log(code,message);
       console.log(res);
+      console.log(res[0].code);
+      console.log(res[0].message);
+      // this.list = {...res}
     }
   },
   created () {
