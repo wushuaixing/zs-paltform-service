@@ -156,8 +156,8 @@ export default {
                 this.$message.success("密码修改成功,请重新登录");
                 this.$router.push('/login')
               }
-              if (res.code === 30001) this.$message.error("密码错误,请重新输入")
-              if (res.code !== 20000 && res.code !== 30001) this.$message.error("密码修改失败");
+              if (res.code === 50001) this.$message.error("密码错误,请重新输入")
+              if (res.code !== 20000 && res.code !== 50001) this.$message.error("密码修改失败");
             });
           }
         });
