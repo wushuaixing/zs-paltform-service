@@ -59,6 +59,21 @@ export const removeObjectNullVal = (obj) => {
 	return newObj;
 };
 
+/**
+ * 获取fileList
+ * @param str
+ */
+export const fileListRule = (str)=>{
+	if(!str) return [];
+	const source = str.split(';');
+	if(source.length) return source.map(i=>({
+		uid: ranStr(8),
+		status: 'done',
+		name:i,
+		url: i,
+	}))
+};
+
 export const getArea = (provinceCode, cityCode, areaCode) => {
 	console.log(provinceCode, cityCode, areaCode, area)
 };
