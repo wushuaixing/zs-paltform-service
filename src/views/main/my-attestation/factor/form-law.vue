@@ -2,6 +2,7 @@
   <div class="factor-form-wrapper">
     <a-form v-bind="formItemLayout" :form="form" autocomplete="off" class="attest-form">
       <div class="factor-form-subtitle"><span>基本信息</span></div>
+
       <a-form-item label="毕业院校">
         <a-input v-decorator="field.college.dec" v-bind="field.college.other"/>
       </a-form-item>
@@ -48,8 +49,27 @@
           <a-input v-decorator="field.avoPost.dec" v-bind="field.avoPost.other"/>
         </a-form-item>
       </div>
+      <a-form-item label="曾就业律所/单位" >
+        <a-textarea v-decorator="adv.area.dec" v-bind="adv.area.other"/>
+      </a-form-item>
+      <a-form-item label="执业经历（不良）" >
+        <a-textarea v-decorator="adv.area.dec" v-bind="adv.area.other"/>
+      </a-form-item>
+      <a-form-item label="执业经历（非不良）" >
+        <a-textarea v-decorator="adv.area.dec" v-bind="adv.area.other"/>
+      </a-form-item>
+      <a-form-item label="是否曾入浙商律所库" class="form-item-row">
+        <a-radio-group v-decorator="field.isPub.dec" v-bind="field.isPub.other">
+          <a-row>
+            <a-col :span="6"><a-radio :value="true">是</a-radio></a-col>
+            <a-col :span="6"><a-radio :value="false">否</a-radio></a-col>
+          </a-row>
+        </a-radio-group>
+      </a-form-item>
+
 
       <div class="factor-form-subtitle"><span>擅长优势</span></div>
+
       <a-form-item label="擅长业务类型" class="form-item-row">
         <a-checkbox-group v-decorator="adv.type.dec" v-bind="adv.type.other">
           <a-row>
@@ -185,7 +205,6 @@
           <a-textarea v-decorator="firms.con.dec" v-bind="firms.con.other"/>
         </a-form-item>
 
-
       </div>
       <a-form-item label=" " class="form-item-no-title" >
         <a-button type="primary" @click="handleSubmit">确认无误并提交</a-button>
@@ -218,7 +237,7 @@ export default {
       formItemLayout,
       field:{
         college:{
-          dec:['college', { rules: [{ required: true, message: '毕业院校不能为空' }] }],
+          dec:['graduateSchool', { rules: [{ required: true, message: '毕业院校不能为空' }] }],
           other:{
             placeholder:'请填写毕业院校',
             ...textarea
@@ -239,7 +258,7 @@ export default {
           }
         },
         exp:{
-          dec:['exp', { rules: [{ required: true, message: '请选择从业不良时间经验!' }] }],
+          dec:['workingTime', { rules: [{ required: true, message: '请选择从业不良时间经验!' }] }],
           options:expOption,
           other:{ ...baseWidth }
         },
@@ -258,16 +277,17 @@ export default {
           }
         },
         involve:{
-          dec:['involve',{ rules: [{ required: true, message: '主要涉业地区不能为空' }] }],
+          dec:['workArea',{ rules: [{ required: true, message: '主要涉业地区不能为空' }] }],
           other:{
             clearable:true,
             options:areaOption,
             size:"small",
+            // collapseTags:true,
             props: {
               value:'id',
               label:'name',
               multiple: true,
-              checkStrictly:false,
+              checkStrictly:true,
             },
             placeholder:'请选择主要涉业地区',
             ...baseWidth,
@@ -493,7 +513,9 @@ export default {
           })
         })
       }else {
-        setFieldsValue({ [dec[0]]:val.toString() });
+        const str = (val.map(i=>i.join('/')).toString());
+        console.log(str);
+        setFieldsValue({ [dec[0]]:str });
       }
     },
     DeleteLawInfo() {
@@ -528,7 +550,9 @@ export default {
     },
     handleSubmit(e) {
       e.preventDefault();
+      console.log(1111);
       this.form.validateFields((err, values) => {
+        console.log(values);
         if (!err) {
           console.log('Received values of form: ', values);
         }
