@@ -49,7 +49,7 @@
       <div class="item-wrapper">
         <div class="item-project item-format">竞标项目进度概览</div>
         <!-- 没有添加项目之前 -->
-        <div v-if="false" class="empty">
+        <div v-if="isShow" class="empty">
           <a-empty :image="simpleImage" description>
             <slot name="description"
               >您还没有已开始的项目，去<a href="javascript:;"
@@ -58,7 +58,7 @@
             >
           </a-empty>
         </div>
-        <div class="item-content item-format">
+        <div class="item-content item-format" v-if="!isShow">
           <div class="total">我的项目总数：{{echarts.myProjectsNum}}</div>
           <div class="data-display">
             <!-- 饼形图 -->
@@ -103,7 +103,7 @@
               <a-date-picker  @change="onChange"/>
               <ul slot="dateCellRender" slot-scope="value" class="events">
                 <!-- {{value}} -->
-                <li v-for="item in getListData3(value)"  :key="item.content">
+                <li v-for="item in getListData(value)"  :key="item.content">
                   <a-badge :status="item.type" :text="item.content" />
                 </li>
               </ul>
@@ -130,7 +130,8 @@
 <script>
 import { getEcharts } from "@/plugin/api/echarts";
 import { getCalendar } from "@/plugin/api/calendar";
-// import { merge } from 'lodash'
+// import { _.merge } from 'lodash'
+// import { _.cloneDeep } from 'lodash'
 import echarts from "echarts";
 // 模拟的数据 
 const data = [
@@ -187,11 +188,14 @@ export default {
   },
   data() {
     return {
+      // 图表显示
+      isShow: false,
       data,
       // 后台图表的数据
       echarts:[
       ],
-      listData:[]
+      listData:[],
+      dev: []
       
     };
   },
@@ -202,13 +206,15 @@ export default {
     
   },
   methods: {
-    getListData3(value) {
+    getListData(value) {
       // let listData;
-      // console.log({...value});
+      console.log(...value);
       console.log(value._d);
-      // if(value.date() === 1)
-      console.log(value.date());
-      this.listData.push(value.date())
+      // const dev = JSON.parse(JSON.stringify(value))
+      // console.log(dev);
+      // var deep = _.cloneDeep(value);
+      // console.log(deep[0] === value[0]);
+      // this.listData.push(value.date())
       // return listData
       // console.log(value.data());
       // this.arr[length] = value._d
