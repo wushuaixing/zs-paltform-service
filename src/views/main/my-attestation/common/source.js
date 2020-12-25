@@ -33,7 +33,14 @@ export const lawAdvType = [
 	{id:21,value:21, label:"投行业务"},
 	{id:0, value:0, label:"其他"},
 ];
-
+// 擅长-其他资源
+export const lawAdvList = [
+	{ id: 1, label: '仲裁', value: '1' },
+	{ id: 2, label: '政府', value: '2' },
+	{ id: 3, label: '资金方', value: '3' },
+	{ id: 4, label: '公证', value: '4' },
+	{ id: 0, label: '其他', value: '0' },
+];
 // 从业不良时间经验
 export const expOption = [
 	{ id: 2, label: '1年以内', value: '2' },
@@ -57,9 +64,11 @@ export const hisCoo = [
 ];
 // 后续期望合作方向 - 合作意向
 export const cooIntent = [
-	{ id: 1, label: '清收', value: '1' },
-	{ id: 2, label: '跟投', value: '2' },
-	{ id: 3, label: '介绍投资人', value: '3' },
+	{ id: 1, label: '合作清收', value: '1' },
+	{ id: 2, label: '保底清收', value: '2' },
+	{ id: 3, label: '跟投', value: '3' },
+	{ id: 4, label: '介绍投资人', value: '4' },
+	{ id: 5, label: '担保类项目', value: '5' },
 	{ id: 0, label: '其他', value: '4' },
 ];
 

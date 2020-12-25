@@ -134,7 +134,6 @@ export default {
       callback();
     };
     return {
-      test:5,
       params: {
         loginType: 0,
         phone: "",
@@ -229,16 +228,16 @@ export default {
           }
         })
         .then((res) => {
-          console.log(res)
+          console.log(res);
           if (res.code === 20000) {
             this.$store.dispatch("login", res.data);
             this.$router.push("/");
           } else{
             this.params.pictureCode = "";
             this.toGetImageCode();
-            if (res.data && res.data.count >= 5) return this.$message.error(`账号或密码错误,您还可以尝试${10 - res.data.count}次`)
-            if (res.code === 30001) return this.$message.error("账号或密码错误")
-            if (res.code === 30003) return this.$message.error("验证码错误")
+            if (res.data && res.data.count >= 5) return this.$message.error(`账号或密码错误,您还可以尝试${10 - res.data.count}次`);
+            if (res.code === 30001) return this.$message.error("账号或密码错误");
+            if (res.code === 30003) return this.$message.error("验证码错误");
             if (res.code === 30006) return this.$warning({
               title:"账号冻结提示",
               content:"账号或密码输入错误次数过多，请在1小时后尝试",
@@ -246,8 +245,8 @@ export default {
               mask:false,
               okText:"我知道了",
               getContainer:()=>this.$refs.loginContainer
-            })
-            if (res.code === 30009) return this.$message.error("手机号未注册,请先进行注册")
+            });
+            if (res.code === 30009) return this.$message.error("手机号未注册,请先进行注册");
             if (res.code === 30010) return this.$message.error("图片验证码错误");
           }
         });
@@ -265,16 +264,14 @@ export default {
     },
     // 获取手机验证码
     handleCode() {
-      this.$refs.ruleForm.validateField("phone", (validate) => {
-        if (validate) {
-          return;
-        } else {
+      this.$refs.ruleForm.validateField("phone", (errorMessage) => {
+        if (!errorMessage) {
           if (this.code.disabled) return;
           let countdown = 60;
           this.code.disabled = true;
           api.loginCode({ phone: this.params.phone }).then((res) => {
             if (res.code === 20000) {
-              this.$message.success("验证码发送成功")
+              this.$message.success("验证码发送成功");
               this.code.text = `重新发送（${countdown}s）`;
               this.interval = setInterval(() => {
                 countdown -= 1;

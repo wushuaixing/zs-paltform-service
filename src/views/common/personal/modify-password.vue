@@ -118,13 +118,7 @@ export default {
       //   this.$refs.ruleForm.resetFields();
       // }
       //长度6-20位校验
-      const lengthCheck = (value) => {
-        if (value.length < 6 || value.length > 20) {
-          return false;
-        } else {
-          return true;
-        }
-      };
+      const lengthCheck = (value) => !(value.length < 6 || value.length > 20);
       //校验是否有数字
       const numberCheck = /\d/;
       //校验是否有字母
@@ -140,10 +134,8 @@ export default {
     doSave() {
       if (this.form.newPassword === "") return this.$message.error("请输入密码");
       if (this.passwordCheck.every((item) => item === true)) {
-        this.$refs.ruleForm.validate((validate) => {
-          if (!validate) {
-            return;
-          } else {
+        this.$refs.ruleForm.validate((checkStatus) => {
+          if (checkStatus) {
             editPassword(
               encryptEditPwd({
                 editType: 1,
@@ -156,7 +148,7 @@ export default {
                 this.$message.success("密码修改成功,请重新登录");
                 this.$router.push('/login')
               }
-              if (res.code === 50001) this.$message.error("密码错误,请重新输入")
+              if (res.code === 50001) this.$message.error("密码错误,请重新输入");
               if (res.code !== 20000 && res.code !== 50001) this.$message.error("密码修改失败");
             });
           }

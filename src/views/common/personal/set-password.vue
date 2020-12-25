@@ -97,11 +97,7 @@ export default {
       }
       //长度6-20位校验
       const lengthCheck = (value) => {
-        if (value.length < 6 || value.length > 20) {
-          return false;
-        } else {
-          return true;
-        }
+        return !(value.length < 6 || value.length > 20);
       };
       //校验是否有数字
       const numberCheck = /\d/;
@@ -117,14 +113,14 @@ export default {
       this.visible = false;
     },
     doSave() {
-      if (this.form.newPassword == "") {
+      if (this.form.newPassword === "") {
         this.$message.error("请输入密码");
         return;
       }
       if (this.passwordCheck.every((item) => item === true)) {
         this.$refs.ruleForm.validate((validate) => {
           if (!validate) {
-            return;
+            return false;
           } else {
             editPassword(
               encryptEditPwd({

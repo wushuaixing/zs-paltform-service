@@ -156,7 +156,7 @@ export default {
     sendVerifyCode() {
       this.$refs.ruleForm.validateField("phone", (validate) => {
         if (validate) {
-          return;
+          return false;
         } else {
           //60秒倒计时阶段不可发送验证码
           if (this.countdown) return;

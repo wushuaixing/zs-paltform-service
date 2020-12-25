@@ -7,7 +7,6 @@
         :getContainer="()=>$refs.container"
         :maskStyle="{ background: 'rgba(0, 0, 0, 0.5)' }"
         v-model="visible"
-        className="modify-phone-modal"
         title="修改绑定手机号"
       >
         <a-form-model
@@ -129,7 +128,7 @@ export default {
     sendVerifyCode() {
       this.$refs.ruleForm.validateField("phone", (validate) => {
         if (validate) {
-          return;
+          return false;
         } else {
           //60秒倒计时阶段不可发送验证码
           if (this.countdown) return;
@@ -164,8 +163,7 @@ export default {
       }
       this.$refs.ruleForm.validate((validate) => {
         console.log(validate);
-        if (!validate) return;
-      })
+      });
       //step==1,验证原手机号
       if (this.step === 1) {
         verifyOldPhone(this.form.code, this.form.phone).then((res) => {
@@ -174,7 +172,7 @@ export default {
             this.$message.success("验证通过");
             this.form.phone = "";
             this.form.code = "";
-            clearInterval(this.timer)
+            clearInterval(this.timer);
             this.countdown = null;
             this.step++;
           }
@@ -192,7 +190,7 @@ export default {
             this.$message.success("绑定新手机号成功");
             this.form.phone = "";
             this.form.code = "";
-            clearInterval(this.timer)
+            clearInterval(this.timer);
             this.countdown = null;
             this.step++;
           }
