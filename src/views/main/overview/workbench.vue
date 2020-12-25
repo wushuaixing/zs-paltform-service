@@ -5,7 +5,7 @@
         <div class="item-title item-format item-toDo">待办事项</div>
         <div class="item-content item-format item-thing">
           <!-- 未认证的服务商 -->
-          <a-list v-if="false" item-layout="horizontal" :data-source="data">
+          <!-- <a-list v-if="false" item-layout="horizontal" :data-source="data">
             <a-list-item slot="renderItem" slot-scope="item">
               <a-list-item-meta description :title="item.title">
                 <a slot="description" href="javascript:;">{{
@@ -13,10 +13,10 @@
                 }}</a>
               </a-list-item-meta>
             </a-list-item>
-          </a-list>
+          </a-list> -->
           <!-- 认证过的服务商 -->
             <div v-if="true">
-              <ul>
+              <ul class="through">
                 <li>
                   <a-badge status="success" />
                   <span>[资质审核通过]：</span> {{test}}
@@ -34,12 +34,7 @@
                 </li>
                 <li>
                   <a-badge status="error" />
-                  <span>[竞标失败]：</span>
-                   <a href="javascript:;">立即前往</a>
-                </li>
-                 <li>
-                  <a-badge status="error" />
-                  <span>[竞标失败]：</span>
+                  <span class="error">[竞标失败]：</span>
                    <a href="javascript:;">立即前往</a>
                 </li>
               </ul>
@@ -97,8 +92,6 @@
            <!-- <a-calendar @panelChange="onPanelChange" >
              <div slot="headerRender">123</div>
            </a-calendar> -->
-          <!-- <DragVerify v-if="false"></DragVerify> -->
-          <!--<img src="https://qiniu.yczcjk.com/123.png" alt="">-->
           <a-calendar>
               <a-date-picker  @change="onChange"/>
               <ul slot="dateCellRender" slot-scope="value" class="events">
@@ -129,7 +122,7 @@
 
 <script>
 import { getEcharts } from "@/plugin/api/echarts";
-import { getCalendar } from "@/plugin/api/calendar";
+import { getCalendar, getTODoList } from "@/plugin/api/calendar";
 // import { _.merge } from 'lodash'
 // import { _.cloneDeep } from 'lodash'
 import echarts from "echarts";
@@ -150,36 +143,6 @@ const data = [
       "【认证未通过】: 很抱歉，您提交的要素信息未通过审核，请进行编辑和重新提交！",
   },
 ];
-// list表数据
-// const list = [
-//   {
-//     id: 1,
-//     description: "点击前往",
-//     title: `【资质审核通过】: 您已通过资质审核，您可在“服务项目招商中心”对您有意向的项目进行报名！`,
-//   },
-//   {
-//     id: 2,
-//     description: "点击前往",
-//     title:
-//       "【竞标成功】: 您提交的关于债务人xxx的服务方案已通过，请至“我的项目-我的竞标-已中标”列表中查看相关项目",
-//   },
-//   {
-//     id: 3,
-//     description: "点击前往",
-//     title:
-//       "【方案提交即将截止】: 您已成功注册成为浙商资产服务商，为了更精准地给您推送优质项目，请您尽快进行服务商资质及要素认证！",
-//   },
-//   {
-//     id: 4,
-//     description: "点击前往",
-//     title: `【资质审核通过】: 您已通过资质审核，您可在“服务项目招商中心”对您有意向的项目进行报名！`,
-//   },
-//   {
-//     id: 4,
-//     description: "点击前往",
-//     title: `【资质审核通过】: 您已通过资质审核，您可在“服务项目招商中心”对您有意向的项目进行报名！`,
-//   }
-// ];
 export default {
   name: "Workbench",
   nameComment: "工作台",
@@ -195,59 +158,64 @@ export default {
       echarts:[
       ],
       listData:[],
-      dev: []
-      
+      data2: [
+      ]
     };
   },
   computed: {
     test () {
       return '[资质认证未确认]' + this.echarts + "试试看拼接"
-    },
-    
+    }, 
   },
   methods: {
     getListData(value) {
-      // let listData;
-      console.log(...value);
-      console.log(value._d);
-      // const dev = JSON.parse(JSON.stringify(value))
-      // console.log(dev);
-      // var deep = _.cloneDeep(value);
-      // console.log(deep[0] === value[0]);
-      // this.listData.push(value.date())
-      // return listData
-      // console.log(value.data());
-      // this.arr[length] = value._d
-      // switch (value.date()) {
-      //   case 8:
-      //     listData = [
-      //       { type: "warning", content: "腾房完毕" },
-      //       { type: "success", content: "完成评估" },
-      //     ];
-      //     break;
-      //   case 10:
-      //     listData = [
-      //       { type: "warning", content: "This is warning event." },
-      //       { type: "success", content: "This is usual event." },
-      //       { type: "error", content: "This is error event." },
-      //     ];
-      //     break;
-      //   case 15:
-      //     listData = [
-      //       { type: "warning", content: "This is warning event" },
-      //       {
-      //         type: "success",
-      //         content: "This is very long usual event。。....",
-      //       },
-      //       { type: "error", content: "This is error event 1." },
-      //       { type: "error", content: "This is error event 2." },
-      //       { type: "error", content: "This is error event 3." },
-      //       { type: "error", content: "This is error event 4." },
-      //     ];
-      //     break;
-      //   default:
-      // }
-      // return listData || [];
+    //   // console.log(value);
+    //   // var value2 = {}
+    //   console.log(value._d);
+    //   // for(var k in value) {
+    //   //   value2[k] = value[k]
+    //   // }
+    //   // console.log(value2[k]);
+    //   // dev.push(value._d)
+      
+    //   // var dev = JSON.parse(JSON.stringify(value._d))
+    //   // console.log(dev);
+    //   // var deep = _.cloneDeep(value);
+    //   // console.log(deep[0] === value[0]);
+    //   // this.listData.push(value.date())
+    //   // console.log(value.data());
+    //   // this.arr[length] = value._d
+      let listData;
+      switch (value.date()) {
+        case 8:
+          listData = [
+            { type: "warning", content: "腾房完毕" },
+            { type: "success", content: "完成评估" },
+          ];
+          break;
+        case 10:
+          listData = [
+            { type: "warning", content: "This is warning event." },
+            { type: "success", content: "This is usual event." },
+            { type: "error", content: "This is error event." },
+          ];
+          break;
+        case 15:
+          listData = [
+            { type: "warning", content: "This is warning event" },
+            {
+              type: "success",
+              content: "This is very long usual event。。....",
+            },
+            { type: "error", content: "This is error event 1." },
+            { type: "error", content: "This is error event 2." },
+            { type: "error", content: "This is error event 3." },
+            { type: "error", content: "This is error event 4." },
+          ];
+          break;
+        default:
+      }
+      return listData || [];
     },
 
     getMonthData(value) {
@@ -255,25 +223,33 @@ export default {
         return 1394;
       }
     },
-    
-    // 日期修改
     onChange(date, dateString) {
       console.log(date, dateString);
+      this.getListData()
+      // if(data===12){
+      //   2020-12-01
+      //   2020-12-31
+      // }
     },
     // 获取后台日历数据
     async getListDatas (value) {
-      const res = await getCalendar(value)
+      const {data:res} = await getCalendar(value)
+      console.log(res);
+    },
+    // 待办事项
+    async getList() {
+      const res = await getTODoList()
       console.log(res);
     }
   },
   created () {
-
+    this.getList()
   },
   async mounted() {
     var myChart = echarts.init(document.getElementById("main"));
     const res = await getEcharts(data)
     if (res.code !== 20000) return
-    console.log(res);
+    // console.log(res);
     this.echarts = res.data
     var option = {
       label: {
@@ -328,6 +304,10 @@ $background: #e9e9e9;
 .workbench-wrapper {
   height: 100%;
   padding: 16px;
+  a {
+      text-decoration: none!important;
+      color: #0A91B4!important;
+    }
   .workbench {
     &-item {
       height: 100%;
@@ -367,16 +347,19 @@ $background: #e9e9e9;
       min-height: 500px;
       max-height: 600px;
     }
+    
   }
   ul {
     margin: 0;
     padding: 0;
   }
-  li {
-    list-style: none;
-    border-bottom: 1px solid #E9E9E9;
-    margin: 0;
-    padding: 10px 0;
+  .through {
+    li {
+      list-style: none;
+      border-bottom: 1px solid #E9E9E9;
+      margin: 0;
+      padding: 10px 0;
+    }
   }
   .item-toDo {
     margin: 0 20px;
@@ -460,6 +443,9 @@ $background: #e9e9e9;
   /deep/.ant-fullcalendar-today .ant-fullcalendar-date {
     border-top: 6px solid #008cb0 !important;
   }
+}
+.error {
+  text-decoration: line-through;
 }
 span {
   font-weight: 800;
