@@ -134,6 +134,7 @@ export default {
       callback();
     };
     return {
+      test:5,
       params: {
         loginType: 0,
         phone: "",

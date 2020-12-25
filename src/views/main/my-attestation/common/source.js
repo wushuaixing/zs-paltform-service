@@ -1,48 +1,39 @@
-export const areaOption = [
-	{
-		value: 'zhejiang',
-		label: 'Zhejiang',
-		children: [
-			{
-				value: 'hangzhou',
-				label: 'Hangzhou',
-				children: [
-					{
-						value: 'xihu1',
-						label: 'West Lake1',
-					},
-					{
-						value: 'xihu2',
-						label: 'West Lake2',
-					},
-				],
-			},
-		],
-	},
-	{
-		value: 'jiangsu',
-		label: 'Jiangsu',
-		children: [
-			{
-				value: 'nanjing',
-				label: 'Nanjing',
-				children: [
-					{
-						value: 'zhonghuamen',
-						label: 'Zhong Hua Men',
-					},
-				],
-			},
-		],
-	},
-];
+import areaSource  from '@/assets/js/address';
+export const areaOption = areaSource;
 // 擅长业务类型
 export const orgAdvType = [
 	{ id: 1, label: '工业', value: 'Apple' },
 	{ id: 2, label: '商业', value: 'Pear' },
 	{ id: 3, label: '住宅', value: 'Orange' },
+	{ id: 4, label: '纯担保类', value: 'Orange' },
 	{ id: 0, label: '其他', value: 'else' },
 ];
+// 擅长业务类型 - 律师
+export const lawAdvType = [
+	{id:1, value:1, label:"立案/保全"},
+	{id:2, value:2, label:"诉讼"},
+	{id:3, value:3, label:"执行"},
+	{id:4, value:4, label:"财产发现"},
+	{id:5, value:5, label:"拍卖腾空"},
+	{id:6, value:6, label:"破产/重组"},
+	{id:7, value:7, label:"代位权/撤销权"},
+	{id:8, value:8, label:"担保合同纠纷"},
+	{id:9, value:9, label:"资管"},
+	{id:10,value:10, label:"境外追索"},
+	{id:11,value:11, label:"股东责任"},
+	{id:12,value:12, label:"公司法律纠纷"},
+	{id:13,value:13, label:"贸融"},
+	{id:14,value:14, label:"能矿"},
+	{id:15,value:15, label:"房地产"},
+	{id:16,value:16, label:"票据"},
+	{id:17,value:17, label:"刑事交叉"},
+	{id:18,value:18, label:"融资租赁"},
+	{id:19,value:19, label:"并购重组"},
+	{id:20,value:20, label:"资产推介"},
+	{id:21,value:21, label:"投行业务"},
+	{id:0, value:0, label:"其他"},
+];
+
 // 从业不良时间经验
 export const expOption = [
 	{ id: 2, label: '1年以内', value: '2' },

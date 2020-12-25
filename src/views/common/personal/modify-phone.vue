@@ -7,6 +7,7 @@
         :getContainer="()=>$refs.container"
         :maskStyle="{ background: 'rgba(0, 0, 0, 0.5)' }"
         v-model="visible"
+        className="modify-phone-modal"
         title="修改绑定手机号"
       >
         <a-form-model

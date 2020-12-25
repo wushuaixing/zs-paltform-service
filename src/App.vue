@@ -24,7 +24,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
   height: 100vh;
-  min-width: 1200px;
+  min-width: 1440px;
 }
 input::placeholder {
   font-family: Avenir, Helvetica, Arial, sans-serif;
