@@ -1,6 +1,6 @@
 <template>
   <a-modal
-      :title="name"
+      :title="`抵押物清单-${msgInfo.debtor}`"
       v-model="visible"
       :destroyOnClose="true"
       dialogClass="msgs-modal"
@@ -12,15 +12,18 @@
         <div class="title">
           保证人
         </div>
-        <p>浙江天赐生态科技有限公司，张三，李四</p>
+        <p>{{ msgInfo.amcProjectGuarantors|guarantorsList }}</p>
       </div>
       <div class="part">
         <div class="title">
           抵押物
         </div>
-        <a-table :columns="msgInfoColumns" :data-source="msgInfo">
-          <template slot="type" slot-scope="{type}">
-            <span v-for="item in type" :key="item" :style="{marginRight:'5px'}">{{ MSGS_TYPE[item] }}</span>
+        <a-table :columns="msgInfoColumns" :data-source="msgInfo.amcProjectCollaterals" :row-key="record => record.id">
+          <template slot="collateralType" slot-scope="{collateralType}">
+            <span>{{ MSGS_TYPE[collateralType] }}</span>
+          </template>
+          <template slot="area" slot-scope="item">
+            <span>{{ item|area }}</span>
           </template>
         </a-table>
       </div>
@@ -39,22 +42,26 @@ export default {
       visible: false,
       msgInfoColumns,
       MSGS_TYPE,
-      name: '浙江混天绫实业有限公司',
-      msgInfo: [
-        {
-          key: 1,
-          number: 1,//序号
-          name: '浙江混天绫实业有限公司', //债务人名称
-          type: 1,
-          area: '广东省湛江市',//抵质押物分布区域
-          msgsName: '贵州省遵义市播州区鸭溪镇黎明路溪城鸣苑2栋1层1-11号商业用房',
-        },
-      ]
     }
+  },
+  props: {
+    msgInfo: {
+      type: Object,
+      default: () => {
+      },
+    },
   },
   methods: {
     handleOpenModal() {
       this.visible = true;
+    }
+  },
+  filters: {
+    guarantorsList: (arr = []) => {
+      return arr.map(i => i.guarantorName).join("、");
+    },
+    area: (params) => {
+      return `省份：${params.provinceCode} 市区：${params.cityCode} 区：${params.areaCode}`
     }
   }
 }
@@ -65,8 +72,10 @@ export default {
   width: 1000px !important;
 
   .ant-modal-content {
+    width: 100%;
+
     .ant-modal-body {
-      padding: 0 24px 27px;
+      padding: 0 24px 27px !important;
 
       .part {
         padding-top: 32px;

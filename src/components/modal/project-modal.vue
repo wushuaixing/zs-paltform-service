@@ -24,30 +24,30 @@
         <ul>
           <li>
             <p>债务人名称：</p>
-            <p>{{ projectInfo.name }}</p>
+            <p>{{ projectInfo.debtor }}</p>
           </li>
           <li>
             <p>担保方式：</p>
-            <p>{{ projectInfo.guaranty }}</p>
+            <p>{{ SECURITY_TYPE[projectInfo.security] }}</p>
           </li>
           <li>
             <p>债权本金：</p>
-            <p>{{ projectInfo.money1|amountTh }}万元</p>
+            <p>{{ projectInfo.debtCaptial|amountTh }}万元</p>
           </li>
           <li>
-            <p>债券利息：</p>
-            <p>{{ projectInfo.money2|amountTh }}万元</p>
+            <p>债权利息：</p>
+            <p>{{ projectInfo.debtInterest|amountTh }}万元</p>
           </li>
           <li>
             <p>保证人清单：</p>
-            <p v-for="item in projectInfo.guarantorsList" :key="item">{{ item }}</p>
+            <p>{{ projectInfo.amcProjectGuarantors|guarantorsList }}</p>
           </li>
           <li>
             <p>
               抵押物清单：
             </p>
             <div>
-              <p v-for="item in projectInfo.msgsInfoList" :key="item">{{ item }}</p>
+              <div v-for="item in projectInfo.amcProjectCollaterals" :key="item.id">{{ item.collateralName }}</div>
             </div>
           </li>
         </ul>
@@ -63,6 +63,10 @@
 </template>
 
 <script>
+import {signUpApi} from "@/plugin/api/investment-center";
+import {SECURITY_TYPE} from "@/views/investment-center/source";
+import {message} from "ant-design-vue";
+
 export default {
   name: "ProjectModal",
   nameComment: '竞标报名/放弃竞标弹窗',
@@ -70,6 +74,7 @@ export default {
     return {
       visible: false,
       isSignUpSuccess: false,
+      SECURITY_TYPE,
     }
   },
   props: {
@@ -93,8 +98,17 @@ export default {
         this.$router.push('/project/biding');
       } else {
         if (this.sign === 'signUp') {
-          console.log('竞标报名');
-          this.isSignUpSuccess = true;
+          const id = parseInt(this.projectInfo.id);
+          signUpApi(id).then((res) => {
+            if (res.code === 20000) {
+              this.isSignUpSuccess = true;
+              this.$emit('handleSignUp');
+            } else {
+              message.warning(res.message, 2, () => {
+                this.visible = false;
+              })
+            }
+          })
         } else {
           this.visible = false;
         }
@@ -105,6 +119,11 @@ export default {
       this.visible = false;
       this.isSignUpSuccess = false;
     },
+  },
+  filters: {
+    guarantorsList: (arr = []) => {
+      return arr.map(i => i.guarantorName).join("、");
+    },
   }
 }
 </script>
@@ -113,8 +132,12 @@ export default {
 .fail-modal {
   width: 1000px !important;
 
+  .ant-modal-content {
+    width: 100%;
+  }
+
   .ant-modal-body {
-    padding: 0 24px 24px;
+    padding: 0 24px 24px !important;
 
     .fail-modal-wrapper {
       .header {
