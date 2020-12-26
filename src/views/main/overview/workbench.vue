@@ -17,26 +17,17 @@
           <!-- 认证过的服务商 -->
             <div v-if="true">
               <ul class="through">
-                <li v-show="list.code === 1">
-                  <a-badge status="success" />
-                  <span>[资质审核通过]：</span> {{list.message}}
-                  <a href="javascript:;">立即前往</a>
+                <li  v-for="(item, index) in list" :key="index">
+                  <a-badge :status="MATTYER_TYPE[item.code].text" />
+                  <span class="thing">{{ MATTYER_TYPE[item.code].name}}</span>
+                  <span>{{item.message}}</span>
+                  <router-link :to="MATTYER_TYPE[item.code].path">立即前往</router-link>
                 </li>
-                <li>
-                  <a-badge status="success" />
-                  <span>[竞标成功]：</span>
-                   <a href="javascript:;">立即前往</a>
-                </li>
-                <li>
-                  <a-badge status="warning" />
-                  <span>[方案提交即将截止]：</span>
-                   <a href="javascript:;">立即前往</a>
-                </li>
-                <li>
+                <!-- <li>
                   <a-badge status="error" />
                   <span class="error">[竞标失败]：</span>
                    <a href="javascript:;">立即前往</a>
-                </li>
+                </li> -->
               </ul>
             </div>
         </div>
@@ -44,16 +35,14 @@
       <div class="item-wrapper">
         <div class="item-project item-format">竞标项目进度概览</div>
         <!-- 没有添加项目之前 -->
-        <div v-if="isShow" class="empty">
-          <a-empty :image="simpleImage" description>
+        <div v-if="echarts.myProjectsNum === 0" class="empty">
+          <a-empty description>
             <slot name="description"
-              >您还没有已开始的项目，去<a href="javascript:;"
-                >服务商项目招商中心</a
-              >添加第一个项目</slot
+              >您还没有已开始的项目，去<router-link to="center">服务商项目招商中心</router-link>添加第一个项目</slot
             >
           </a-empty>
         </div>
-        <div class="item-content item-format" v-if="!isShow">
+        <div class="item-content item-format" v-if="echarts.myProjectsNum !== 0">
           <div class="total">我的项目总数：{{echarts.myProjectsNum}}</div>
           <div class="data-display">
             <!-- 饼形图 -->
@@ -89,12 +78,8 @@
       <div class="item-wrapper">
         <div class="item-title item-format">我的日程</div>
         <div class="item-content item-format">
-           <!-- <a-calendar @panelChange="onPanelChange" >
-             <div slot="headerRender">123</div>
-           </a-calendar> -->
-
           <a-calendar @panelChange="onChange" @change='onChange2'>
-              <a-date-picker  />
+              <!-- <a-date-picker  /> -->
               <ul slot="dateCellRender" slot-scope="value" class="events">
                 <!-- {{value.year()+'-'+ (value.month()+1).toString().padStart(2,0) +'-' + value.date().toString().padStart(2,0)}} -->
                 <li v-for="item in getListData(value)"  :key="item.content">
@@ -124,47 +109,27 @@
 <script>
 import { getEcharts } from "@/plugin/api/echarts";
 import { getCalendar, getTODoList } from "@/plugin/api/calendar";
+import { MATTYER_TYPE } from "./toDoList";
 // import { _.merge } from 'lodash'
 // import { _.cloneDeep } from 'lodash'
 import echarts from "echarts";
-// 模拟的数据 
-const data = [
-  {
-    description: "立即前往",
-    title: `【资质及要素认证】: 您已成功注册成为浙商资产服务商，为了更精准地给您推送优质项目，请您尽快进行服务商资质及要素认证！`,
-  },
-  {
-    description: "立即前往",
-    title:
-      "【认证未通过】: 很抱歉，您提交的资质信息未通过审核，请进行编辑和重新提交！",
-  },
-  {
-    description: "立即前往",
-    title:
-    "【认证未通过】: 很抱歉，您提交的要素信息未通过审核，请进行编辑和重新提交！",
-  },
-];
 export default {
   name: "Workbench",
   nameComment: "工作台",
   components: {
-    // DragVerify
   },
   data() {
     return {
-      // 图表显示
-      isShow: false,
-      data,
       // 后台图表的数据
       echarts:[],
       listData:[],
-      list: []
+      // 待办事项的数据
+      list: [],
+      // 提醒类型
+      MATTYER_TYPE
     };
   },
   computed: {
-    test () {
-      return '[资质认证未确认]'
-    }, 
   },
   methods: {
     getListData(value) {
@@ -238,10 +203,6 @@ export default {
     onChange(date, dateString) {
 
       console.log(date.format('yyyy-MM'), dateString);
-      // if(data===12){
-      //   2020-12-01
-      //   2020-12-31
-      // }
     },
     // 获取后台日历数据
     async getListDatas (value) {
@@ -250,12 +211,9 @@ export default {
     },
     // 待办事项
     async getList() {
-      const {data: res} = await getTODoList()
-      // console.log(code,message);
-      console.log(res);
-      console.log(res[0].code);
-      console.log(res[0].message);
-      // this.list = {...res}
+     const {data: res} = await getTODoList()
+    //  console.log(res,"=======")
+     this.list = res;
     }
   },
   created () {
@@ -263,7 +221,7 @@ export default {
   },
   async mounted() {
     var myChart = echarts.init(document.getElementById("main"));
-    const res = await getEcharts(data)
+    const res = await getEcharts()
     if (res.code !== 20000) return
     // console.log(res);
     this.echarts = res.data
@@ -464,7 +422,7 @@ $background: #e9e9e9;
   text-decoration: line-through;
 }
 span {
-  font-weight: 800;
+  font-weight: 400;
   font-size: 16px;
   padding: 3px 0;
 }
@@ -474,5 +432,10 @@ span {
   left: 0px;
   width: 150px;
   height: 150px;
+}
+// 提醒类型样式
+.thing {
+  font-weight: 800;
+  font-size: 16px;
 }
 </style>
