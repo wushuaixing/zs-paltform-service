@@ -1,6 +1,9 @@
 import request from "@/plugin/tools/request";
 
 const qualifies = {
+	// 资质查询
+	qualify:()=>request.get('/service/amcQualify/qualify'),
+
 	// 律师资质查询
 	lawyer:()=>request.get('/service/amcQualify/lawyer'),
 
@@ -11,13 +14,13 @@ const qualifies = {
 	lawyerAdd:params=>request.post('/service/amcQualify/lawyer/add',params),
 
 	// 机构资质查询
-	organ:()=>request.get('/service/amcQualify/organization'),
+	org:()=>request.get('/service/amcQualify/organization'),
 
 	// 记录表机构资质查询
-	organLog:()=>request.get('/service/amcQualify/organization/log'),
+	orgLog:()=>request.get('/service/amcQualify/organization/log'),
 
 	// 添加机构资质认证
-	organAdd:params=>request.post('/service/amcQualify/organization/add',params),
+	orgAdd:params=>request.post('/service/amcQualify/organization/add',params),
 
 	// 放弃修改
 	dropModify:()=>request.put('/service/amcQualify/dropModify'),
@@ -34,13 +37,13 @@ const factor = {
 	lawyerAdd:params=>request.post('/service/amcElement/lawyer/add',params),
 
 	// 机构要素查询
-	organ:()=>request.get('/service/amcElement/organization'),
+	org:()=>request.get('/service/amcElement/organization'),
 
 	// 记录表机构要素查询
-	organLog:()=>request.get('/service/amcElement/organization/log'),
+	orgLog:()=>request.get('/service/amcElement/organization/log'),
 
 	// 添加机构要素认证
-	organAdd:params=>request.post('/service/amcElement/organization/add',params),
+	orgAdd:params=>request.post('/service/amcElement/organization/add',params),
 
 	// 放弃修改
 	dropModify:()=>request.put('/service/amcElement/dropModify'),

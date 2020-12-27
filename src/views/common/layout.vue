@@ -21,8 +21,8 @@
                 <div @click="handleModifyPhone"><a-icon type="user" />修改绑定手机号</div>
               </a-menu-item>
               <a-menu-item key="2">
-                <div @click="handleSetPwd"><a-icon type="user" />设置登录密码</div>
-                <div @click="handleModifyPwd"><a-icon type="user" />修改登录密码</div>
+                <div @click="handleSetPwd" v-if="isSetPassword===0"><a-icon type="user" />设置登录密码</div>
+                <div @click="handleModifyPwd" v-if="isSetPassword===1"><a-icon type="user" />修改登录密码</div>
               </a-menu-item>
               <a-menu-item key="3">
                 <router-link to="/login"><a-icon type="user" />退出登录</router-link>
@@ -41,60 +41,57 @@
   </div>
 </template>
 <script>
-import { getInfo} from "@/plugin/api/base";
-import ModifyPhoneModal from "./personal/modify-phone"
-import ModifyPwdModal from "./personal/modify-password"
-import SetPwdModal from "./personal/set-password"
-export default {
-  data() {
-    return {
-      loading:true,
-      selectedKey:'a',
-      info:{},
-    };
-  },
-  components: {
-    ModifyPwdModal,
-    ModifyPhoneModal,
-    SetPwdModal
-  },
-  methods:{
-    handleModifyPhone(){
-      this.$refs.modifyPhone.showModal()
+  import { getInfo} from "@/plugin/api/base";
+  import ModifyPhoneModal from "./personal/modify-phone"
+  import ModifyPwdModal from "./personal/modify-password"
+  import SetPwdModal from "./personal/set-password"
+  export default {
+    data() {
+      return {
+        loading:true,
+        selectedKey:'a',
+        info:{},
+      };
     },
-    handleModifyPwd(){
-      this.$refs.modifyPwd.showModal()
+    components: {
+      ModifyPwdModal,
+      ModifyPhoneModal,
+      SetPwdModal
     },
-    handleSetPwd(){
-      this.$refs.setPwd.showModal()
+    methods:{
+      handleModifyPhone(){
+        this.$refs.modifyPhone.showModal()
+      },
+      handleModifyPwd(){
+        this.$refs.modifyPwd.showModal()
+      },
+      handleSetPwd(){
+        this.$refs.setPwd.showModal()
+      }
+    },
+    created() {
+      const { pathname } = window.location;
+      if(/center/.test(pathname))this.selectedKey = 'b';
+      if(!this.$store.state.isLogin){
+        getInfo().then(res=>{
+          this.loading = false;
+          this.$store.commit('updateInfo', res.data);
+          console.log(res.data);
+        }).catch(err=>{console.log(err)}).finally(()=>this.loading = false)
+      }else{
+        this.loading = false;
+      }
+    },
+    mounted() {
+      // console.log('默认页面：首次加载！');
+      console.log('检查校验：判断及检查相关token信息！');
+    },
+    computed:{
+      username(){
+        return this.$store.getters.getInfo.username;
+      },
     }
-  },
-  created() {
-    const { pathname } = window.location;
-    if(/center/.test(pathname))this.selectedKey = 'b';
-		if(!this.$store.state.isLogin){
-			getInfo().then(res=>{
-        console.log(res)
-				this.loading = false;
-				this.$store.commit('updateInfo', res.data);
-			}).catch(err=>{console.log(err)}).finally(()=>this.loading = false)
-		}else{
-			this.loading = false;
-		}
-  },
-  mounted() {
-    console.log('默认页面：首次加载！');
-    console.log('检查校验：判断及检查相关token信息！');
-  },
-  computed:{
-    username(){
-      return this.$store.getters.getInfo.username;
-    },
-    isSetPassword(){
-      return this.$store.getters.getInfo.isSetPassword
-    }
-  }
-};
+  };
 </script>
 
 <style lang="scss">

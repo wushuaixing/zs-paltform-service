@@ -49,6 +49,7 @@
       "parser": "babel-eslint"
     },
     "rules": {
+      "no-mixed-spaces-and-tabs":"error",
       "space-infix-ops": [
         "error",
         {

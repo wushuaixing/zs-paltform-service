@@ -78,7 +78,11 @@
       <div class="item-wrapper">
         <div class="item-title item-format">我的日程</div>
         <div class="item-content item-format">
-          <a-calendar @panelChange="onChange" @change='onChange2'>
+           <a-calendar
+              mode="month"
+              valueFormat="YYYY-MM-D"
+              @panelChange="onPanelChange"
+          >
               <!-- <a-date-picker  /> -->
               <ul slot="dateCellRender" slot-scope="value" class="events">
                 <!-- {{value.year()+'-'+ (value.month()+1).toString().padStart(2,0) +'-' + value.date().toString().padStart(2,0)}} -->
@@ -126,87 +130,60 @@ export default {
       // 待办事项的数据
       list: [],
       // 提醒类型
-      MATTYER_TYPE
+      MATTYER_TYPE,
+      // 开始时间和结束时间的参数
+      getCalendar:{
+        startDate:"",
+        endDate:""
+      },
+      data: [
+        { dateDay: '2020-12-2', dateMatters: ["吃饭","睡觉"], id: 1 },
+        { dateDay: '2020-12-6', dateMatters: ["敲代码"], id: 2 },
+        { dateDay: '2021-1-1', dateMatters: ["睡觉"], id: 3 },
+      ],
     };
   },
   computed: {
   },
   methods: {
     getListData(value) {
-      // console.log(value.format('yyyy-MM-dd'))
-      // let reg = (value.year() + '-' + (value.month() + 1).toString().padStart(2,0) + '-' + value.date().toString().padStart(2,0))
-      // console.log(reg);
-      // let tag = JSON.parse(JSON.stringify(reg))
-      // console.log(tag);
-    //  console.log( Object.keys(reg));
-      // console.log(value.date());
-      // console.log(value._d)
-    //   // console.log(value);
-    //   // var value2 = {}
-    //   console.log(value._d);
-    //   // for(var k in value) {
-    //   //   value2[k] = value[k]
-    //   // }
-    //   // console.log(value2[k]);
-    //   // dev.push(value._d)
-      
-    //   // var dev = JSON.parse(JSON.stringify(value._d))
-    //   // console.log(dev);
-    //   // var deep = _.cloneDeep(value);
-    //   // console.log(deep[0] === value[0]);
-    //   // this.listData.push(value.date())
-    //   // console.log(value.data());
-    //   // this.arr[length] = value._d
-      let listData;
-      switch (value.date()) {
-        case 8:
-          listData = [
-            { type: "warning", content: "腾房完毕" },
-            { type: "success", content: "完成评估" },
-          ];
-          break;
-        case 10:
-          listData = [
-            { type: "warning", content: "This is warning event." },
-            { type: "success", content: "This is usual event." },
-            { type: "error", content: "This is error event." },
-          ];
-          break;
-        case 15:
-          listData = [
-            { type: "warning", content: "This is warning event" },
-            {
-              type: "success",
-              content: "This is very long usual event。。....",
-            },
-            { type: "error", content: "This is error event 1." },
-            { type: "error", content: "This is error event 2." },
-            { type: "error", content: "This is error event 3." },
-            { type: "error", content: "This is error event 4." },
-          ];
-          break;
-        default:
+      let listData = [];
+      for (let i = 0; i < this.data.length; i++) {
+        let dateStr = `${value.year()}-${value.month() + 1}-${value.date()}`
+        if (dateStr === this.data[i].dateDay) {
+          this.data[i].dateMatters.forEach( item => {
+            var obj = { type: "warning", content: item };
+            listData.push(obj);
+          })
+          return listData;
+        }
       }
-      return listData || [];
     },
-
     getMonthData(value) {
       if (value.month() === 8) {
         return 1394;
       }
     },
-    onChange2() {
-      console.log(...arguments)
-      // console.log(value);
+    // 修改表单
+    onPanelChange(value) {
+      console.log(value);
+      console.log(value.slice(0,8) + '01',value.slice(0,8) + '31')
 
+      this.schedule.endDate = value.slice(0,8) + '01';
+      this.schedule.startDate = value.slice(0,8) + '31';
     },
     onChange(date, dateString) {
 
       console.log(date.format('yyyy-MM'), dateString);
     },
     // 获取后台日历数据
-    async getListDatas (value) {
-      const {data:res} = await getCalendar(value)
+    async getListDatas () {
+      var time = new Date().toLocaleString()
+      let baseDate = time.slice(0,7).replace("/","-");
+      let startDate = baseDate + '-' + "01"
+      let endDate = baseDate + '-' + "31"
+      console.log(startDate,endDate)
+      const {data:res} = await getCalendar(startDate,endDate)
       console.log(res);
     },
     // 待办事项
@@ -217,6 +194,8 @@ export default {
     }
   },
   created () {
+    this.getListDatas()
+    // 发起待办事项请求
     this.getList()
   },
   async mounted() {
