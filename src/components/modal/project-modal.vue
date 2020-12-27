@@ -56,7 +56,7 @@
     <div class="signup-success-wrapper" v-else>
       <img src="../../assets/img/logo.png" alt="">
       <p>报名成功！项目已进入您的竞标项目管理列表，您可前往列表查看项目详情和进行方案提交</p>
-      <p>本项目的项目经理为：xxx，联系方式：17764851245</p>
+      <p>本项目的项目经理为：{{ projectInfo.projectManager }}，联系方式：{{ projectInfo.contact }}</p>
       <p>请您尽快联系项目经理，完成尽调并提交服务方案</p>
     </div>
   </a-modal>

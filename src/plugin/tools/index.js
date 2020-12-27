@@ -74,6 +74,29 @@ export const fileListRule = (str)=>{
 	}))
 };
 
+/**
+ * 获取省市区组合名称
+ * @param provinceCode
+ * @param cityCode
+ * @param areaCode
+ * @returns string
+ */
 export const getArea = (provinceCode, cityCode, areaCode) => {
-	console.log(provinceCode, cityCode, areaCode, area)
+	let areaParams = [];
+	area.forEach((province) => {
+		if (parseInt(provinceCode) === province.id) {
+			areaParams.push(province.name)
+		}
+		province.children.forEach((city) => {
+			if (parseInt(cityCode) === city.id) {
+				areaParams.push(city.name)
+			}
+			city.children.forEach((area) => {
+				if (parseInt(areaCode) === area.id) {
+					areaParams.push(area.name)
+				}
+			})
+		})
+	});
+	return areaParams.join("");
 };
