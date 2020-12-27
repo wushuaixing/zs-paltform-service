@@ -90,6 +90,9 @@
       username(){
         return this.$store.getters.getInfo.username;
       },
+      isSetPassword(){
+        return this.$store.getters.getInfo.isSetPassword;
+      }
     }
   };
 </script>
