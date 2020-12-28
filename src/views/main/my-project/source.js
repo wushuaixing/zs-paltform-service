@@ -63,15 +63,15 @@ export const columns = {
 		...basCol.normal,
 		{
 			title:'合同签订日期',
-			dataIndex: 'signDate',
-			key: 'signDate',
+			dataIndex: 'aggrementDate',
+			key: 'aggrementDate',
 			sorter: true,
 			scopedSlots: { customRender: 'datetime' },
 		},
 		{
 			title:'服务期限',
-			key: 'deadline',
-			scopedSlots: { customRender: 'deadline' },
+			key: 'serviceTime',
+			scopedSlots: { customRender: 'serviceTime' },
 		},
 		{
 			title: '目标回款金额（万元）',

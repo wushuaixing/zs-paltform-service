@@ -53,10 +53,10 @@
                   <p/> -->
                 </div>
               </template>
-              <template slot="deadline" slot-scope="{deadline}">
+              <template slot="serviceTime" slot-scope="{serviceTime}">
                 <div class="deadline">
-                  <p>{{ deadline.monthNum }}个月</p>
-                  <p>({{ deadline.endTime }}到期)</p>
+                  <p>{{ serviceTime }}个月</p>
+                  <p>({{ serviceTime }}到期)</p>
                 </div>
               </template>
               <template slot="plan" slot-scope="{plan}">
@@ -77,7 +77,7 @@
                   </a-tooltip>
                   <a-button type="link" size="small" icon="file-text" v-else @click="handleAuction(item,'sub')" >方案报送</a-button>
                   <a-divider type="vertical" style="margin:0"/>
-                  <a-button type="link" size="small" icon="file-text" @click="handleAuction(item,'fail')">放弃竞标</a-button>
+                  <a-button type="link" size="small" icon="file-text" @click="handleAuction(item,'aba')">放弃竞标</a-button>
                 </template>
               </template>
             </a-table>
@@ -94,7 +94,7 @@ import Breadcrumb from '@/components/bread-crumb';
 import ProjectModal from '@/components/modal/project-modal';
 import { clearProto, disabledDate } from "@/plugin/tools";
 import { columns, colType } from "@/views/main/my-project/source";
-import { amcBiding } from "@/plugin/api/my-biding"
+import { amcBiding,amcBidAimed} from "@/plugin/api/my-biding"
 export default {
   name: 'ToReview',
   data() {
@@ -141,7 +141,7 @@ export default {
           process: 0,
           advanceLast:false,
           realSubmitDeadline: null,
-          security: "2",
+          security: "1",
           submitDeadline: null
         },{
           key: 2,
@@ -197,7 +197,7 @@ export default {
       this.tabConfig.pagination.total = res.data.total;
       this.tabConfig.dataSource = res.data.list;
     })
-    amcBiding({
+    amcBidAimed({
       aimStatus: 2,
       debtor: "",
       page: 1,
@@ -222,10 +222,14 @@ export default {
       console.log(pagination,sorter);
     },
     handleAuction(item,type){
-      console.log(type);
-      if (type === 'fail') {
+      // console.log(item);
+      if (type === 'aba') {
         this.projectInfo = clearProto(item);
         this.$refs.failModal.handleOpenModal();
+      }
+      if(type === 'view'){
+        console.log(item);
+        this.$router.push({path:"detail",query:{id:item.id}})
       }
     },
   },

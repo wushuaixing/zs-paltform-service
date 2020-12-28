@@ -23,4 +23,8 @@ Vue.filter('guarantyType', (val)=>{
 Vue.filter('timeFilter', (val)=>{
 	return val.substr(0,10)
 })
+
+Vue.filter('isLawsuitType', (val)=>{
+	return val === '0' ? '未诉讼' : '诉讼'
+ })
 export default Vue
