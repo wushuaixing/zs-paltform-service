@@ -413,6 +413,7 @@ export default {
         },
         bind:{
           ...Deploy.props,
+          accept:'application/pdf,image/*',
           listType:"picture-card",
           class:'upload-wrapper',
         }
