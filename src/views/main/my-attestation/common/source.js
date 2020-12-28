@@ -54,6 +54,8 @@ export const hisFour = [
 	{ id: 2, label: '长城', value: '2' },
 	{ id: 3, label: '华融', value: '3' },
 	{ id: 4, label: '信达', value: '4' },
+	{ id: 0, label: '地方持牌AMC', value: '0' },
+
 ];
 // 过往合作类型
 export const hisCoo = [
@@ -69,7 +71,7 @@ export const cooIntent = [
 	{ id: 3, label: '跟投', value: '3' },
 	{ id: 4, label: '介绍投资人', value: '4' },
 	{ id: 5, label: '担保类项目', value: '5' },
-	{ id: 0, label: '其他', value: '4' },
+	{ id: 0, label: '其他', value: '0' },
 ];
 
 // 律所信息 - 担任职务
@@ -77,7 +79,7 @@ export const lawDuty = [
 	{ id: 1, label: '主任', value: '1' },
 	{ id: 2, label: '合伙人', value: '2' },
 	{ id: 3, label: '律师', value: '3' },
-	{ id: 0, label: '其他', value: '4' },
+	{ id: 4, label: '其他', value: '0' },
 ];
 
 // 律所信息 - 担任职务

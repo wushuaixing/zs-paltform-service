@@ -27,6 +27,9 @@ const qualifies = {
 };
 
 const factor = {
+	// 要素查询
+	element:()=>request.get('/service/amcElement/element'),
+
 	// 律师要素查询
 	lawyer:()=>request.get('/service/amcElement/lawyer'),
 

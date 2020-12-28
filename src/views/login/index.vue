@@ -86,7 +86,6 @@ export default {
       return callback(new Error('手机号格式不正确'))
     };
     return {
-      // 后台统计错误的次数
       count: 0,
       activeName: 'second',
       // 控制验证码的显示与隐藏

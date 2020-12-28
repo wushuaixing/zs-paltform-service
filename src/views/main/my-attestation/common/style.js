@@ -9,6 +9,6 @@ export const textarea = {
 };
 
 export const formItemLayout =  {
-	labelCol: { span: 5 },
-	wrapperCol: { span: 19 },
+	labelCol: { span: 6 },
+	wrapperCol: { span: 18 },
 };

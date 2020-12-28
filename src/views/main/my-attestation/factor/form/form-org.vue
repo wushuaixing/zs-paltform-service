@@ -111,8 +111,8 @@
 
 <script>
 
-import { baseWidth, textarea } from "../common/style";
-import { areaOption, hisFour, hisCoo, orgAdvType, cooIntent } from "../common/source";
+import { baseWidth, textarea } from "../../common/style";
+import { areaOption, hisFour, hisCoo, orgAdvType, cooIntent } from "../../common/source";
 
 export default {
   name: 'FormOrgInfo',
