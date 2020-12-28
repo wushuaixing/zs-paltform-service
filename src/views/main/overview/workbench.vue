@@ -8,10 +8,10 @@
             <div v-if="true">
               <ul class="through">
                 <li  v-for="(item, index) in list" :key="index">
-                  <a-badge :status="MATTYER_TYPE[item.code].text" />
-                  <span class="thing">{{ MATTYER_TYPE[item.code].name}}</span>
+                  <a-badge :status="MATTER_TYPE[item.code].text" />
+                  <span class="thing">{{ MATTER_TYPE[item.code].name}}</span>
                   <span class="message">{{item.message}}</span>
-                  <router-link :to="MATTYER_TYPE[item.code].path">立即前往</router-link>
+                  <router-link :to="MATTER_TYPE[item.code].path">立即前往</router-link>
                 </li>
               </ul>
             </div>
@@ -82,8 +82,8 @@
 
 <script>
 import { getEcharts } from "@/plugin/api/echarts";
-import { getCalendar, getTODoList } from "@/plugin/api/calendar";
-import { MATTYER_TYPE } from "./toDoList";
+import { getCalendar, getToDoList } from "@/plugin/api/calendar";
+import { MATTER_TYPE } from "./toDoList";
 // import { _.merge } from 'lodash'
 // import { cloneDeep } from 'lodash'
 import echarts from "echarts";
@@ -101,7 +101,7 @@ export default {
       // 待办事项的数据
       list: [],
       // 提醒类型
-      MATTYER_TYPE,
+      MATTER_TYPE,
       // 开始时间和结束时间的参数
       schedule:{
         endDate:"",
@@ -121,12 +121,12 @@ export default {
     getListData(value) {
       let listData = [];
       for (let i = 0; i < this.data.length; i++) {
-        let dateStr = `${value.year()}-${value.month() + 1}-${value.date()}`
+        let dateStr = `${value.year()}-${value.month() + 1}-${value.date()}`;
         if (dateStr === this.data[i].dateDay) {
           this.data[i].dateMatters.forEach( item => {
             var obj = { type: "warning", content: item };
             listData.push(obj);
-          })
+          });
           return listData;
         }
       }
@@ -134,23 +134,23 @@ export default {
     // 修改表单
     onPanelChange(value) {
       console.log(value);
-      console.log(value.slice(0,8) + '01',value.slice(0,8) + '31')
+      console.log(value.slice(0,8) + '01',value.slice(0,8) + '31');
       this.schedule.endDate = value.slice(0,8) + '01';
       this.schedule.startDate = value.slice(0,8) + '31';
     },
     onChange(date, dateString) {
       console.log(date.format('yyyy-MM'), dateString);
-      this.getCalendearDatas ()
+      this.getCalendarData ()
     },
     // 获取日历事项
-    getCalendearDatas () {
-      var time = new Date().toLocaleString()
+    getCalendarData () {
+      var time = new Date().toLocaleString();
       let baseDate = time.slice(0,7).replace("/","-");
-      let startDate = baseDate + '-' + "01"
-      let endDate = baseDate + '-' + "31"
-      console.log(startDate,endDate)
+      let startDate = baseDate + '-' + "01";
+      let endDate = baseDate + '-' + "31";
+      console.log(startDate,endDate);
       getCalendar({startDate,endDate}).then((res) => {
-      console.log(res.data)
+      console.log(res.data);
       if (res.code !== 20000) return this.$message.error("获取日历事项失败");
       // for (let item of res.data) {
       //   var reg = item.dateDay
@@ -161,23 +161,23 @@ export default {
     },
     // 待办事项
     async getList() {
-      const res = await getTODoList()
+      const res = await getToDoList();
       console.log(res);
     //  this.list = res;
-    if (res.code !== 20000) return this.$message.error('您还没有待办事项') 
+    if (res.code !== 20000) return this.$message.error('您还没有待办事项');
       this.list = res.data
     }
   },
   created () {
-    this.getCalendearDatas()
+    this.getCalendarData();
     this.getList()
   },
   async mounted() {
     var myChart = echarts.init(document.getElementById("main"));
-    const res = await getEcharts()
-    if (res.code !== 20000) return this.$message.error('获取图表数据失败') 
+    const res = await getEcharts();
+    if (res.code !== 20000) return this.$message.error('获取图表数据失败');
     // console.log(res);
-    this.echarts = res.data
+    this.echarts = res.data;
     var option = {
       label: {
         color:this.color
@@ -243,7 +243,6 @@ $background: #e9e9e9;
       border-bottom: 1px solid $background;
       line-height: 1.5;
       font-size: 16px;
-      font-family: PingFangSC-Medium, PingFang SC;
       font-weight: 900;
       color: #262626;
     }
@@ -255,7 +254,7 @@ $background: #e9e9e9;
       min-height: 500px;
       max-height: 600px;
     }
-    
+
   }
   ul {
     margin: 0;
@@ -276,7 +275,6 @@ $background: #e9e9e9;
   .item-project {
     height: 16px;
     font-size: 16px;
-    font-family: PingFangSC-Medium, PingFang SC;
     font-weight: 900;
     color: #262626;
     line-height: 16px;
@@ -371,8 +369,8 @@ span {
 }
 #main{
   position: absolute;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
   width: 150px;
   height: 150px;
 }

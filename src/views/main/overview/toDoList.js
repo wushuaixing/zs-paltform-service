@@ -1,4 +1,4 @@
-export const MATTYER_TYPE =
+export const MATTER_TYPE =
 {
     1:{
         name:'[资质及要素认证提醒] : ',
