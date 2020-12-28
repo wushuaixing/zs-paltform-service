@@ -12,6 +12,9 @@ export default {
     userType:{
       type:String,
       default:'lawyer'
+    },
+    form:{
+      type:Object,
     }
   },
   data() {

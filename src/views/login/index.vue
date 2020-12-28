@@ -59,7 +59,7 @@
                                 @click="handleSubmit"
                                 plain
                             >模 拟 登 录</el-button>
-                          </el-form-item> 
+                          </el-form-item>
                           注册成为浙商资产服务商 -->
                           <div class="login-service"><u>注册成为浙商资产服务商</u></div>
                         </el-form>
@@ -73,20 +73,19 @@
 <script>
 import { authLogin, authCode } from "@/plugin/api/login";
 import { encryptInfo } from "@/plugin/tools/encrypt";
-const timeCount = 5 //倒计时时间
+const timeCount = 5; //倒计时时间
 export default {
   name:'login',
   data () {
     // 手机号校验规则
     const checkMobile = (rule, value, callback) => {
-      const reg = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/
+      const reg = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
       if (reg.test(value)) {
         return callback()
       }
       return callback(new Error('手机号格式不正确'))
-    }
+    };
     return {
-      // 后台统计错误的次数
       count: 0,
       activeName: 'second',
       // 控制验证码的显示与隐藏
@@ -154,14 +153,14 @@ export default {
           // console.log(code.count);
             console.log(data.count);
           if (data.count >= 3) {
-            this.count = data.count
-            this.titleClass = true
+            this.count = data.count;
+            this.titleClass = true;
             return
           }
           if (code === 30001) {
            return this.$message.error('手机号或密码错误')
-          }  
-        })  
+          }
+        })
       })
         // console.log(this.$refs.reform);
         // const correct = this.$refs.reform.model.phone === this.data.phone && this.$refs.reform.model.password === this.data.password
@@ -176,8 +175,8 @@ export default {
         //     // console.log('输入3次了');
         //     this.titleClass = true
         //   }
-        //   this.$message.error('账号或者密码错误,请重新登录') 
-        // } 
+        //   this.$message.error('账号或者密码错误,请重新登录')
+        // }
         // if (this.num >= 4 && this.num < 9) {
         //       if(normal) {
         //         this.$message.success('登陆验证成功')
@@ -224,7 +223,7 @@ export default {
           console.log(code);
           console.log(data);
           if(code === 20000) {
-            this.$store.dispatch('login',data)
+            this.$store.dispatch('login',data);
             this.$info({
               title: 'This is a notification message',
               content: '登录成功！确认后跳转',
@@ -236,7 +235,7 @@ export default {
           }
           if(code === 30003) return this.$message.error('验证码错误')
           // 手机号是不是被锁定待完善
-        })     
+        })
       })
     },
     // 点击tab触发
@@ -248,37 +247,37 @@ export default {
       this.password = ''
     },
     // 点击发送验证码触发函数
-    getCode () {
+    getCode: function () {
       // 验证手机号是否合法
-        this.$refs.reform1.validateField('phone', async valid =>{
-          if (valid) {
-            return false
-          } else {
-            this.show = false
-            const res = await authCode(encryptInfo({
-              "boo": true,
-              "datas": [2,7,9],
-              "phone": this.form.phone
-            }))
-            console.log(res);
-            // this.$message.successs('请在一分钟内获取验证码登录') 
-          }
-        })
-        // 验证码倒计时
-        if(!this.timer) {
-              this.countCode = timeCount
-              this.timer = setInterval(() => {
-                if (this.countCode > 0 && this.countCode <= timeCount) {
-                  this.countCode--
-                  } else {
-                  this.show = true
-                  clearInterval(this.timer)
-                  this.timer = null
-                  }
-                }, 1000)
-              }
+      this.$refs.reform1.validateField('phone', async valid => {
+        if (valid) {
+          return false
+        } else {
+          this.show = false;
+          const res = await authCode(encryptInfo({
+            "boo": true,
+            "datas": [2, 7, 9],
+            "phone": this.form.phone
+          }));
+          console.log(res);
+          // this.$message.successs('请在一分钟内获取验证码登录')
         }
-    },
+      });
+      // 验证码倒计时
+      if (!this.timer) {
+        this.countCode = timeCount;
+        this.timer = setInterval(() => {
+          if (this.countCode > 0 && this.countCode <= timeCount) {
+            this.countCode--
+          } else {
+            this.show = true;
+            clearInterval(this.timer);
+            this.timer = null
+          }
+        }, 1000)
+      }
+    }
+  },
     // handleSubmit() {
     //   authLogin(encryptInfo({
     //     "loginType": 1,
@@ -356,7 +355,7 @@ export default {
               width: 402px;
               height: 480px;
               background: #FFFFFF;
-              box-shadow: 4px 6px 15px 0px rgba(0, 0, 0, 0.2);
+              box-shadow: 4px 6px 15px 0 rgba(0, 0, 0, 0.2);
               border-radius: 2px;
               .tabs {
                 width: 368px;
@@ -365,7 +364,7 @@ export default {
                   width: 368px;
                   display: flex;
                   font-size: 16px;
-                  font-family: PingFangSC-Regular, PingFang SC;
+                  /*font-family: PingFangSC-Regular, PingFang SC;*/
                   font-weight: 400;
                   color: #008CB0;
                   // margin-top: 50px;
@@ -401,7 +400,7 @@ export default {
                 width: 254px;
                 height: 28px;
                 font-size: 28px;
-                font-family: PingFangSC-Medium, PingFang SC;
+                /*font-family: PingFangSC-Medium, PingFang SC;*/
                 font-weight: 500;
                 color: #008CB0;
                 line-height: 28px;
@@ -410,7 +409,7 @@ export default {
                 margin-top: 30px!important;
               }
               // /deep/#inp {
-                
+
               // }
               .el-input {
                 width: 338px;
@@ -451,7 +450,6 @@ export default {
               text-align: center;
               .login-text {
               width: 100%;
-              height: 40px;
               background: #008CB0;
               border-radius: 2px;
               height: 24px;
@@ -511,7 +509,7 @@ export default {
       width: 154px;
       height: 14px;
       font-size: 14px;
-      font-family: PingFangSC-Regular, PingFang SC;
+      /*font-family: PingFangSC-Regular, PingFang SC;*/
       font-weight: 400;
       color: #008CB0;
       line-height: 14px;

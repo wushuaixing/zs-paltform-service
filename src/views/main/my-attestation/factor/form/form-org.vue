@@ -111,8 +111,8 @@
 
 <script>
 
-import { baseWidth, textarea } from "../common/style";
-import { areaOption, hisFour, hisCoo, orgAdvType, cooIntent } from "../common/source";
+import { baseWidth, textarea } from "../../common/style";
+import { areaOption, hisFour, hisCoo, orgAdvType, cooIntent } from "../../common/source";
 
 export default {
   name: 'FormOrgInfo',
@@ -255,6 +255,7 @@ export default {
     handleSubmit(e) {
       e.preventDefault();
       this.form.validateFields((err, values) => {
+        console.log(values);
         if (!err) {
           console.log('Received values of form: ', values);
         }

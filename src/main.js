@@ -6,6 +6,7 @@ import store from './plugin/store'
 import { install, filter } from "./plugin/library";
 import 'ant-design-vue/dist/antd.less';
 import 'element-ui/lib/theme-chalk/index.css';
+import './assets/css/public.scss';
 import './version';
 import './plugin/element';
 
