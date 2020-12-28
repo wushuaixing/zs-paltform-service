@@ -140,6 +140,7 @@ export default {
     },
     onChange(date, dateString) {
       console.log(date.format('yyyy-MM'), dateString);
+      this.getCalendearDatas ()
     },
     // 获取日历事项
     getCalendearDatas () {
@@ -150,14 +151,11 @@ export default {
       console.log(startDate,endDate)
       getCalendar({startDate,endDate}).then((res) => {
       console.log(res.data)
-      // console.log(res.data[i]);
       if (res.code !== 20000) return this.$message.error("获取日历事项失败");
-      // for(var i = 0;i <= res.data.length; i++) {
-      //   this.res.data[i].dateDay.forEach(item => {
-      //     return item.slice(0,10)
-      //   })
+      // for (let item of res.data) {
+      //   var reg = item.dateDay
+      //   reg = reg.slice(0,10)
       // }
-      // console.log(res.data);
       this.data = res.data
     })
     },
@@ -166,7 +164,7 @@ export default {
       const res = await getTODoList()
       console.log(res);
     //  this.list = res;
-    if (res.code !== 20000) return this.$message.error('获取待办事项失败') 
+    if (res.code !== 20000) return this.$message.error('您还没有待办事项') 
       this.list = res.data
     }
   },

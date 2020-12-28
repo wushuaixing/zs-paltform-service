@@ -13,7 +13,7 @@ export const MATTYER_TYPE =
     3:{
         name:'[认证未通过提醒] : ',
         text:'warning',
-        path: 'attest/qualifies'
+        path: 'my-attestation/factor'
     },
     4:{
         name:'[资质及要素认证通过提醒] : ',
