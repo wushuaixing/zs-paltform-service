@@ -9,23 +9,23 @@ const basCol = {
 		},
 		{
 			title: '债权本金（万元）',
-			dataIndex: 'money1',
-			key: 'money1',
+			dataIndex: 'debtCaptial',
+			key: 'debtCaptial',
 			scopedSlots: { customRender: 'amount' },
 			align:'right',
 		},
 		{
 			title: '债权利息（万元）',
-			dataIndex: 'money2',
-			key: 'money2',
+			dataIndex: 'debtInterest',
+			key: 'debtInterest',
 			scopedSlots: { customRender: 'amount' },
 			align:'right',
 		}
 	],
 	guaranty:{
 		title: '担保方式',
-		dataIndex: 'guaranty',
-		key: 'gua',
+		key: 'security',
+		scopedSlots: { customRender: 'security' }
 	},
 	auction:{
 		title: '操作',
@@ -42,19 +42,19 @@ export const columns = {
 		basCol.guaranty,
 		{
 			title:'对接团队及联系方式',
-			key: 'contactWay',
-			scopedSlots: { customRender: 'contactWay' },
+			key: 'businessTeam',
+			scopedSlots: { customRender: 'businessTeam' },
 		},
 		{
 			title: '当前进展',
-			scopedSlots: { customRender: 'advance' },
-			key: 'advance',
+			scopedSlots: { customRender: 'process' },
+			key: 'process',
 		},
 		{
 			title: '更新日期',
 			sorter: true,
-			dataIndex: 'updateTime',
-			key: 'updateTime',
+			dataIndex: 'gmtModify',
+			key: 'gmtModify',
 			scopedSlots: { customRender: 'datetime' },
 		},
 		basCol.auction,
@@ -75,8 +75,8 @@ export const columns = {
 		},
 		{
 			title: '目标回款金额（万元）',
-			dataIndex: 'money3',
-			key: 'money3',
+			dataIndex: 'aimBackPrice',
+			key: 'aimBackPrice',
 			scopedSlots: { customRender: 'amount' },
 			align:'right',
 		},
