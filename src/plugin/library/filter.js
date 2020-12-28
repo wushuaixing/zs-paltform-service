@@ -12,8 +12,8 @@ Vue.filter('evolveType', (val)=>{
 })
 
 Vue.filter('amountTh', (val)=>{
-	if (typeof val !== 'number') return '-';
-	return val.toFixed(2);
+	if (!val) return '-';
+	return Number(val).toFixed(1);
 })
 
 

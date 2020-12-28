@@ -1,46 +1,140 @@
 <template>
-  <div class="factor-wrapper">
+  <div class="factor-wrapper qualifies-wrapper">
     <a-spin :spinning="spinning" class="spin-wrapper" tip="Loading......"/>
-    <!-- 服务商状态   -->
-    <div class="factor-status" v-if="false">
-      <div class="status-header">
-        <div class="status-header_title">我的服务商身份</div>
-        <div class="status-header_info">
-          <span>当前要素认证状态：<span>认证审核中</span></span>
-          <span>要素信息更新日期：2020-09-25</span>
+    <template v-if="!spinning">
+      <!-- 填写相关要素信息 -->
+      <template v-if="identity && status(0)">
+        <FormOrg v-if="identity === 1"></FormOrg>
+        <FormLaw v-if="identity === 2"></FormLaw>
+      </template>
+      <!-- 要素相关审核 展示 -->
+      <template v-if="identity && !status(0)">
+        <!-- 要素认证信息 -->
+        <div class="qualifies-item qualifies-status">
+          <div class="item-title status-title">
+            <div class="status-title-identity">
+              <span>我的服务商身份：</span>
+              <template v-if="identity === 1">
+                <img :src="icon.law" alt="" style="height: 32px;vertical-align: top;">
+                <span style="margin-left: 10px">律师</span>
+              </template>
+              <template v-else>
+                <img :src="icon.org" alt="" style="height: 32px;vertical-align: top;">
+                <span style="margin-left: 10px">机构</span>
+              </template>
+            </div>
+            <ul class="status-title-attribute">
+              <li>当前要素认证状态：<b :class="info.class">{{info.desc}}</b></li>
+              <li v-if="statusInfo.elementAuditStatus">
+                要素信息更新日期：{{statusInfo.elementModifyDate}}
+              </li>
+            </ul>
+          </div>
         </div>
-      </div>
-      <div class="status-content">
-        <p>您提交的要素认证信息未通过审核，未通过原因：xxxxxxxxxxxxxxxxxx</p>
-        <a-button>Default</a-button>
-      </div>
-    </div>
-    <!--  机构表单信息  -->
-    <FormOrg v-if="false"></FormOrg>
-    <FormLaw></FormLaw>
+        <!-- 要素认证提醒 -->
+        <div class="qualifies-item qualifies-status" v-if="status(245) || info.halfStatus">
+          <div class="status-content" v-if="!info.halfStatus">
+            <div>{{info.text}}</div>
+            <a-button type="primary" v-if="status(2)">编辑并重新提交</a-button>
+            <a-button type="primary" v-if="status(4)">查看我提交的认证修改信息</a-button>
+            <a-space v-if="status(5)">
+              <a-button type="primary">编辑并重新提交</a-button>
+              <a-button >放弃修改</a-button>
+            </a-space>
+          </div>
+          <div class="status-content" v-else>
+            <div>您已有半年未更新要素认证信息，若要素认证信息发生变化，请及时进行更新！</div>
+            <a-space>
+              <a-button type="primary">立即更新</a-button>
+              <a-button >放弃修改</a-button>
+            </a-space>
+          </div>
+        </div>
+        <!-- 要素认证状态 -->
+        <div class="qualifies-info" v-if="status(1)">
+          <div class="info-image-status">
+            <img src="../../../../assets/img/blank_nodata.png" alt="">
+            <p class="image-status-remark">您要提交的要素认证信息正在审核中 ，请您耐心等待</p>
+            <a-button @click="checkFactorStatus" type="primary" :loading="visibleLoading">查看我提交的资质认证</a-button>
+          </div>
+        </div>
+        <!-- 要素信息展示 -->
+        <FactorInfo v-if="status(23456)" :is-lawyer="identity === 1"/>
+      </template>
+
+    </template>
   </div>
 </template>
 
 <script>
-import FormOrg from './form-org';
-import FormLaw from './form-law';
+
+import { FormOrg, FormLaw } from './form';
+import FactorInfo from './factor-info';
+import { factor } from "@/plugin/api/attest";
+import IconLaw from '@/assets/img/lawyer.png';
+import IconOrg from '@/assets/img/org.png';
+
+// 要素审核相关状态
+const factorStatus = {
+  0:{ desc:"未认证", text:""},
+  1:{ desc:"认证审核中", text:"",class:'text-error'},
+  2:{ desc:"认证未通过", text:"您提交的要素认证信息未通过审核，未通过原因：",class:'text-dangerous'},
+  3:{ desc:"认证审核通过", text:"",class:'text-success'},
+  4:{ desc:"认证修改审核中", text:"您提交的要素认证信息修改正在审核中，请耐心等待审核结果",class:'text-error'},
+  5:{ desc:"认证修改未通过", text:"您提交的要素认证信息修改未通过审核，未通过原因：",class:'text-dangerous'},
+  6:{ desc:"认证修改审核通过", text:"",class:'text-success'},
+};
+
 export default {
   name: 'factor',
   nameComment: '要素认证',
   components:{
     FormOrg,
-    FormLaw
+    FormLaw,
+    FactorInfo,
   },
   data() {
     return {
-      spinning:false
+      spinning:false,
+      visibleLoading:false,
+      identity:'',
+      statusInfo:{
+        elementAuditStatus:3,
+        elementModifyDate:'',
+        reasonOfNotPass:'',
+        remindBaseTime:'',
+      },
+      icon:{
+        law:IconLaw,
+        org:IconOrg,
+      },
     };
   },
+  methods:{
+    checkFactorStatus(){
+      console.log('checkFactorStatus');
+    },
+    // 判断数据当前状态
+    status(rule){
+      const { elementAuditStatus: q} = this.statusInfo;
+      return  rule.toString() ? new RegExp(q).test(rule) : q;
+    },
+  },
+  computed:{
+    info() {
+      const { reasonOfNotPass, elementAuditStatus, remindBaseTime} = this.statusInfo;
+      return {
+        ...factorStatus[elementAuditStatus],
+        text:factorStatus[elementAuditStatus].text + (reasonOfNotPass || ''),
+        halfStatus: Boolean(remindBaseTime)
+      };
+    },
+  },
   mounted() {
-    // console.log('当前要素未认证！=== not ');
-    // setTimeout(()=>{
-    //   this.spinning = false;
-    // },300)
+    this.identity = this.$store.getters.getInfo.identity;
+    factor.element().then(res=>{
+      console.log( res);
+    })
   },
 }
 </script>
@@ -49,31 +143,6 @@ export default {
 .factor-wrapper {
   height: 100%;
   background-color: #fff;
-  .spin-wrapper {
-    width: 100%;
-    height: 40%;
-    line-height: 3;
-  }
-  .factor-status{
-    padding: 20px;
-    line-height: 32px;
-    border-bottom: 1px solid #dddddd;
-    .status-header{
-      display: flex;
-      justify-content: space-between;
-      &_title{
-        font-size: 20px;
-      }
-      &_info{
-        span:first-child{
-          margin-right: 20px;
-        }
-      }
-    }
-    .status-content{
-      text-align: center;
-    }
-  }
 }
 </style>
 <style lang='scss'>

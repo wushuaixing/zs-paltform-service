@@ -18,9 +18,10 @@
         <div class="title">
           抵押物
         </div>
-        <a-table :columns="msgInfoColumns" :data-source="msgInfo.amcProjectCollaterals" :row-key="record => record.id">
+        <a-table :columns="msgInfoColumns" :data-source="msgInfo.amcProjectCollaterals" :row-key="record => record.id"
+                 :pagination="false">
           <template slot="collateralType" slot-scope="{collateralType}">
-            <span>{{ MSGS_TYPE[collateralType] }}</span>
+            <span>{{ collateralType|collateralType }}</span>
           </template>
           <template slot="area" slot-scope="item">
             <span>{{ item|area }}</span>
@@ -32,7 +33,8 @@
 </template>
 
 <script>
-import {msgInfoColumns, MSGS_TYPE} from "./source";
+import {msgInfoColumns, MSGS_TYPE, queryOptions} from "./source";
+import {getArea} from "@/plugin/tools";
 
 export default {
   name: "MsgInfoModal",
@@ -61,7 +63,12 @@ export default {
       return arr.map(i => i.guarantorName).join("、");
     },
     area: (params) => {
-      return `省份：${params.provinceCode} 市区：${params.cityCode} 区：${params.areaCode}`
+      return getArea(params.provinceCode, params.cityCode, params.areaCode);
+    },
+    //抵质押物类型
+    collateralType: (val) => {
+      if (!val) return "-";
+      return queryOptions[1].list.find(i => val === i.value).label;
     }
   }
 }
