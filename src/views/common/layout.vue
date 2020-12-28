@@ -75,8 +75,12 @@
       if(!this.$store.state.isLogin){
         getInfo().then(res=>{
           this.loading = false;
-          this.$store.commit('updateInfo', res.data);
           console.log(res.data);
+          if(res.code === 20000){
+            this.$store.commit('updateInfo', res.data);
+          }else{
+            this.$router.push("/login");
+          }
         }).catch(err=>{console.log(err)}).finally(()=>this.loading = false)
       }else{
         this.loading = false;

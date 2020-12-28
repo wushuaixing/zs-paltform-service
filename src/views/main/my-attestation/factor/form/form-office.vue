@@ -1,6 +1,7 @@
 <template>
   <div class="factor-form-wrapper">
-
+    <a-form v-bind="formItemLayout" :form="form" autocomplete="off" class="attest-form">
+    </a-form>
   </div>
 </template>
 
@@ -21,7 +22,8 @@ export default {
     return {};
   },
   created() {
-    this.form = this.$form.createForm(this);
+    // this.form = this.$form.createForm(this);
+    console.log(this.form);
   },
 }
 </script>
