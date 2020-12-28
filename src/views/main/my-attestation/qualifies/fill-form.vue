@@ -23,7 +23,7 @@
       </a-form-item>
       <a-form-item :label="org.license.label">
         <div class="fill-form-upload-wrapper">
-          <a-upload v-decorator="org.license.dec" v-bind="org.letter.other" class="upload-wrapper">
+          <a-upload v-decorator="org.license.dec" v-bind="upload.bind" v-on="upload.on">
             <div class="upload-container">
               <a-icon type="plus" />
             </div>
@@ -35,7 +35,7 @@
       </a-form-item>
       <a-form-item :label="org.letter.label">
         <div class="fill-form-upload-wrapper">
-          <a-upload v-decorator="org.letter.dec" v-bind="org.letter.other" class="upload-wrapper">
+          <a-upload v-decorator="org.letter.dec" v-bind="upload.bind" v-on="upload.on">
             <div class="upload-container">
               <a-icon type="plus" />
             </div>
@@ -81,8 +81,8 @@
       </a-form-item>
       <a-form-item :label="law.card.label" >
         <div class="fill-form-upload-wrapper fill-form-upload__block" style="padding-left: 200px">
-          <a-upload v-decorator="law.card.decA" v-bind="law.card.other" class="upload-wrapper">
-            <div class="upload-container"  v-if="!fileLists.cardFront">
+          <a-upload v-decorator="law.card.decA" v-bind="upload.bind" v-on="upload.on" >
+            <div class="upload-container"  v-if="!getValue(law.card.decA[0],1)">
               <a-icon type="plus" />
             </div>
           </a-upload>
@@ -94,8 +94,8 @@
       </a-form-item>
       <a-form-item class="fill-form-upload__card" :wrapperCol="{span:24}">
         <div class="fill-form-upload-wrapper fill-form-upload__block">
-          <a-upload v-decorator="law.card.decB" v-bind="law.card.other" class="upload-wrapper">
-            <div class="upload-container"  v-if="!fileLists.cardBack">
+          <a-upload v-decorator="law.card.decB" v-bind="upload.bind" v-on="upload.on" >
+            <div class="upload-container"  v-if="!getValue(law.card.decB[0],1)">
               <a-icon type="plus" />
             </div>
           </a-upload>
@@ -104,7 +104,7 @@
       </a-form-item>
       <a-form-item :label="law.cert.label">
         <div class="fill-form-upload-wrapper">
-          <a-upload v-decorator="law.cert.dec" v-bind="law.cert.other" class="upload-wrapper">
+          <a-upload v-decorator="law.cert.dec" v-bind="upload.bind" v-on="upload.on" >
             <div class="upload-container">
               <a-icon type="plus" />
             </div>
@@ -116,7 +116,7 @@
       </a-form-item>
       <a-form-item :label="law.letter.label">
         <div class="fill-form-upload-wrapper">
-          <a-upload v-decorator="law.letter.dec" v-bind="law.letter.other" class="upload-wrapper">
+          <a-upload v-decorator="law.letter.dec" v-bind="upload.bind" v-on="upload.on" >
             <div class="upload-container">
               <a-icon type="plus" />
             </div>
@@ -144,6 +144,8 @@
 import { qualifies } from "@/plugin/api/attest";
 import { fileListRule } from "@/plugin/tools";
 
+import Deploy,{ getValueFromEvent } from '@/plugin/tools/qiniu-deploy';
+
 const formItemLayout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },
@@ -164,6 +166,7 @@ const yearOption = (()=>{
   return new Array(length).fill(1).map((i,index)=>({value:(minYear + length - index).toString()}))
 })();
 
+
 export default {
   name: 'FillForm',
   nameComment: '机构或律师（表单填写）',
@@ -176,7 +179,10 @@ export default {
       type:Boolean,
       default:true
     },
-    source: Object,
+    source: {
+      type:Object,
+      default:()=>{}
+    },
     noAuction:{
       type:Boolean,
       default:false
@@ -197,6 +203,7 @@ export default {
       formItemLayout,
       nameOption,
       yearOption,
+      uploadToken:'',
       org:{
         name:{
           label:'机构名称',
@@ -248,9 +255,8 @@ export default {
         buEmail:{
           label:'备用邮箱',
           dec:[ 'backupEmail', {
-              rules: [{ type: 'email',message: '请输入正确的邮箱地址！' }],
-            },
-          ],
+            rules: [{ type: 'email',message: '请输入正确的邮箱地址！' }],
+          }],
           other:{
             placeholder:'请输入备用的邮箱地址',
             ...baseWidth,
@@ -260,15 +266,13 @@ export default {
           label:'营业执照',
           dec:[ 'businessLicense', {
             valuePropName: 'fileList',
-            getValueFromEvent: this.normFile,
+            getValueFromEvent,
             rules: [
               { required: true, message: '请上传营业执照!' },
             ]
           },
           ],
           other:{
-            beforeUpload:()=>false,
-            listType:"picture-card",
             accept:'application/pdf,image/*',
           }
         },
@@ -276,15 +280,10 @@ export default {
           label:'保密承诺函',
           dec:[ 'confidentialityCommitmentLetter', {
             valuePropName: 'fileList',
-            getValueFromEvent: this.normFile,
+            getValueFromEvent,
             rules: [ { required: true, message: '请上传保密承诺函!' },
             ]
           }],
-          other:{
-            beforeUpload:()=>false,
-            listType:"picture-card",
-            accept:'application/pdf,image/*',
-          }
         },
       },
       law:{
@@ -313,17 +312,13 @@ export default {
         sex:{
           label:'性别',
           dec:[ 'sex', {
-            rules: [
-              { required: true, message: '请选择性别！' },
-            ]
+            rules: [{ required: true, message: '请选择性别！' },]
           }],
         },
         cardNo:{
           label:'执业证号',
           dec:[ 'licenseNumber', {
-            rules: [
-              { required: true, message: '执业证号不能为空!' },
-            ]
+            rules: [{ required: true, message: '执业证号不能为空!' }]
           }],
           other:{
             placeholder:'请输入执业证号',
@@ -333,9 +328,7 @@ export default {
         year:{
           label:'执业开始年份',
           dec:[ 'licenseStart',{
-            rules: [
-              { required: true, message: '执业开始年份不能为空！' },
-            ]
+            rules: [{ required: true, message: '执业开始年份不能为空！' },]
           }],
           other:{
             allowClear:true,
@@ -382,54 +375,47 @@ export default {
           label:'身份证照片',
           decA:[ 'frontOfCard', {
             valuePropName: 'fileList',
-            getValueFromEvent: e=>this.normFile(e,'cardFront'),
+            getValueFromEvent,
             rules: [
               { required: true, message: '请上传身份证照片!' },
             ]
           }],
           decB:[ 'backOfCard', {
             valuePropName: 'fileList',
-            getValueFromEvent: e=>this.normFile(e,'cardBack'),
+            getValueFromEvent,
           }],
-          other:{
-            beforeUpload:()=>false,
-            listType:"picture-card",
-          }
         },
         cert:{
           label:'从业资格证',
           dec:[ 'qualificationCertificate', {
             valuePropName: 'fileList',
-            getValueFromEvent: this.normFile,
+            getValueFromEvent,
             rules: [
               { required: true, message: '请上传从业资格证!' },
             ]
           }],
-          other:{
-            beforeUpload:()=>false,
-            listType:"picture-card",
-          }
         },
         letter:{
           label:'保密承诺函',
           dec:[ 'confidentialityCommitmentLetter', {
             valuePropName: 'fileList',
-            getValueFromEvent: this.normFile,
+            getValueFromEvent,
             rules: [
               { required: true, message: '请上传保密承诺函!' },
             ]
-          },
-          ],
-          other:{
-            beforeUpload:()=>false,
-            listType:"picture-card",
-          }
+          }],
         },
 
       },
-      fileLists:{
-        cardFront:0,
-        cardBack:0,
+      upload:{
+        on:{
+          ...Deploy.event
+        },
+        bind:{
+          ...Deploy.props,
+          listType:"picture-card",
+          class:'upload-wrapper',
+        }
       },
       // 联动字段属性
       relation:{
@@ -442,6 +428,13 @@ export default {
     this.form = this.$form.createForm(this);
   },
   methods:{
+    // 获取状态值，及判断
+    getValue(field,_value){
+      if(field)  {
+        const value = (this.form.getFieldValue(field) || []).length;
+        return _value ? _value === value : value;
+      }
+    },
     // 下拉搜索相关逻辑
     handleOrgChange(option = {}) {
       const orgSocialCreditCode = option.key || '';
@@ -529,8 +522,7 @@ export default {
     if(this.form && this.userType === 'lawyer'){
       this.form.setFieldsValue({ lawyerName })
     }
-
-    if(Object.keys(this.source).length){
+    if(Object.keys(this.source || {}).length){
       const {
         backOfCard:bc, frontOfCard:fc, confidentialityCommitmentLetter:cc, qualificationCertificate:qc, ..._source
       } = this.source;
@@ -601,7 +593,7 @@ export default {
       margin-bottom: 0;
       .ant-form-item-control{
         position: absolute;
-        top: -162px;
+        top: -161px;
         left:33.333%;
       }
     }
