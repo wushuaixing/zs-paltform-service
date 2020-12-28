@@ -10,7 +10,7 @@
                 <li  v-for="(item, index) in list" :key="index">
                   <a-badge :status="MATTYER_TYPE[item.code].text" />
                   <span class="thing">{{ MATTYER_TYPE[item.code].name}}</span>
-                  <span>{{item.message}}</span>
+                  <span class="message">{{item.message}}</span>
                   <router-link :to="MATTYER_TYPE[item.code].path">立即前往</router-link>
                 </li>
               </ul>
@@ -69,24 +69,10 @@
               @panelChange="onPanelChange"
           >
               <ul slot="dateCellRender" slot-scope="value" class="events">
-                <!-- {{value.year()+'-'+ (value.month()+1).toString().padStart(2,0) +'-' + value.date().toString().padStart(2,0)}} -->
                 <li v-for="item in getListData(value)"  :key="item.content">
                   <a-badge :status="item.type" :text="item.content" />
                 </li>
               </ul>
-              <!-- <template slot="monthCellRender" slot-scope="value" v-if='false'>
-                <div v-if="getMonthData(value)" class="notes-month">
-                  <section>{{ getMonthData(value) }}</section>
-                  <span>Backlog number</span>
-                </div>
-              </template> -->
-            <!-- <slot>
-              <a-month-picker placeholder="Select month" @change="onChange" />
-              <br />
-              <a-range-picker @change="onChange" />
-              <br />
-              <a-week-picker placeholder="Select week" @change="onChange" />
-            </slot> -->
           </a-calendar>
         </div>
       </div>
@@ -110,6 +96,7 @@ export default {
     return {
       // 后台图表的数据
       echarts:[],
+      // 需要渲染的事项数据
       listData:[],
       // 待办事项的数据
       list: [],
@@ -120,10 +107,11 @@ export default {
         endDate:"",
         startDate:""
       },
+      // 事项数据
       data: [
-        { dateDay: '2020-12-2', dateMatters: ["吃饭","睡觉"], id: 1 },
-        { dateDay: '2020-12-6', dateMatters: ["敲代码"], id: 2 },
-        { dateDay: '2021-1-1', dateMatters: ["睡觉"], id: 3 },
+        // { dateDay: '2020-12-2', dateMatters: ["吃饭","睡觉"], id: 1 },
+        // { dateDay: '2020-12-6', dateMatters: ["敲代码"], id: 2 },
+        // { dateDay: '2021-1-1', dateMatters: ["睡觉"], id: 3 },
       ],
     };
   },
@@ -143,11 +131,6 @@ export default {
         }
       }
     },
-    getMonthData(value) {
-      if (value.month() === 8) {
-        return 1394;
-      }
-    },
     // 修改表单
     onPanelChange(value) {
       console.log(value);
@@ -158,32 +141,43 @@ export default {
     onChange(date, dateString) {
       console.log(date.format('yyyy-MM'), dateString);
     },
-    // 获取后台日历数据
-    async getListDatas () {
+    // 获取日历事项
+    getCalendearDatas () {
       var time = new Date().toLocaleString()
       let baseDate = time.slice(0,7).replace("/","-");
       let startDate = baseDate + '-' + "01"
       let endDate = baseDate + '-' + "31"
       console.log(startDate,endDate)
-      const res = await getCalendar(startDate,endDate)
-      console.log(res);
+      getCalendar({startDate,endDate}).then((res) => {
+      console.log(res.data)
+      // console.log(res.data[i]);
+      if (res.code !== 20000) return this.$message.error("获取日历事项失败");
+      // for(var i = 0;i <= res.data.length; i++) {
+      //   this.res.data[i].dateDay.forEach(item => {
+      //     return item.slice(0,10)
+      //   })
+      // }
+      // console.log(res.data);
+      this.data = res.data
+    })
     },
     // 待办事项
     async getList() {
-     const {data: res} = await getTODoList()
-     console.log(res);
-     this.list = res;
+      const res = await getTODoList()
+      console.log(res);
+    //  this.list = res;
+    if (res.code !== 20000) return this.$message.error('获取待办事项失败') 
+      this.list = res.data
     }
   },
   created () {
-    this.getListDatas()
-    // 发起待办事项请求
+    this.getCalendearDatas()
     this.getList()
   },
   async mounted() {
     var myChart = echarts.init(document.getElementById("main"));
     const res = await getEcharts()
-    if (res.code !== 20000) return
+    if (res.code !== 20000) return this.$message.error('获取图表数据失败') 
     // console.log(res);
     this.echarts = res.data
     var option = {
@@ -195,29 +189,10 @@ export default {
           name: "访问来源",
           type: "pie",
           radius: ["50%", "70%"],
-          // avoidLabelOverlap: false,
-          // label: {
-          //   show: false,
-          //   position: "center",
-          // },
-          // emphasis: {
-          //   label: {
-          //     show: true,
-          //     fontSize: "30",
-          //     fontWeight: "bold",
-          //   },
-          // },
           labelLine: {
             show: false,
           },
           data: [
-            // { value: 30},
-            // { value: this.echarts.myProjectCaseSubmitted},
-            // { value: 70},
-            // { value: 10},
-            // { value: 30},
-            // { value: 50},
-            // console.log(this.echarts.myProjectCaseSubmitted),
             { value: this.echarts.myProjectCaseUnSubmit},
             { value: this.echarts.myProjectCaseSubmitted},
             { value: this.echarts.myProjectsReview},
@@ -338,10 +313,10 @@ $background: #e9e9e9;
     margin-top: 50px;
     text-align: center;
   }
-  a {
-    color: #1900ffb0;
-    text-decoration: underline;
-  }
+  // a {
+  //   color: #1900ffb0;
+  //   text-decoration: underline;
+  // }
   // 日历样式
   .events {
     list-style: none;
@@ -366,11 +341,10 @@ $background: #e9e9e9;
   /deep/.ant-fullcalendar-header {
     text-align: center;
   }
-  // .ant-fullcalendar-fullscreen {
-  //   text-align: center;
-  // }
   /deep/.ant-fullcalendar-column-header-inner {
+    font-weight: 800;
     text-align: center;
+    // display: none;
   }
   /deep/.ant-fullcalendar-date {
     border-top: 4px solid #e8e8e8;
@@ -379,13 +353,23 @@ $background: #e9e9e9;
     border-top: 6px solid #008cb0 !important;
   }
 }
-.error {
-  text-decoration: line-through;
+// .error {
+//   text-decoration: line-through;
+// }
+// 隐藏月和年选择按钮
+/deep/.ant-radio-group {
+  display: none;
 }
 span {
   font-weight: 400;
   font-size: 16px;
   padding: 3px 0;
+}
+.message {
+  font-size: 14px;
+  // letter-spacing: 0.1em;
+  height: 20px;
+  line-height: 20px;
 }
 #main{
   position: absolute;
