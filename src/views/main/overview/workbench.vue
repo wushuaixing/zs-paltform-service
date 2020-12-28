@@ -4,16 +4,6 @@
       <div class="item-wrapper item-border">
         <div class="item-title item-format item-toDo">待办事项</div>
         <div class="item-content item-format item-thing">
-          <!-- 未认证的服务商 -->
-          <!-- <a-list v-if="false" item-layout="horizontal" :data-source="data">
-            <a-list-item slot="renderItem" slot-scope="item">
-              <a-list-item-meta description :title="item.title">
-                <a slot="description" href="javascript:;">{{
-                  item.description
-                }}</a>
-              </a-list-item-meta>
-            </a-list-item>
-          </a-list> -->
           <!-- 认证过的服务商 -->
             <div v-if="true">
               <ul class="through">
@@ -23,11 +13,6 @@
                   <span>{{item.message}}</span>
                   <router-link :to="MATTYER_TYPE[item.code].path">立即前往</router-link>
                 </li>
-                <!-- <li>
-                  <a-badge status="error" />
-                  <span class="error">[竞标失败]：</span>
-                   <a href="javascript:;">立即前往</a>
-                </li> -->
               </ul>
             </div>
         </div>
@@ -83,19 +68,18 @@
               valueFormat="YYYY-MM-D"
               @panelChange="onPanelChange"
           >
-              <!-- <a-date-picker  /> -->
               <ul slot="dateCellRender" slot-scope="value" class="events">
                 <!-- {{value.year()+'-'+ (value.month()+1).toString().padStart(2,0) +'-' + value.date().toString().padStart(2,0)}} -->
                 <li v-for="item in getListData(value)"  :key="item.content">
                   <a-badge :status="item.type" :text="item.content" />
                 </li>
               </ul>
-              <template slot="monthCellRender" slot-scope="value" v-if='false'>
+              <!-- <template slot="monthCellRender" slot-scope="value" v-if='false'>
                 <div v-if="getMonthData(value)" class="notes-month">
                   <section>{{ getMonthData(value) }}</section>
                   <span>Backlog number</span>
                 </div>
-              </template>
+              </template> -->
             <!-- <slot>
               <a-month-picker placeholder="Select month" @change="onChange" />
               <br />
@@ -115,7 +99,7 @@ import { getEcharts } from "@/plugin/api/echarts";
 import { getCalendar, getTODoList } from "@/plugin/api/calendar";
 import { MATTYER_TYPE } from "./toDoList";
 // import { _.merge } from 'lodash'
-// import { _.cloneDeep } from 'lodash'
+// import { cloneDeep } from 'lodash'
 import echarts from "echarts";
 export default {
   name: "Workbench",
@@ -132,9 +116,9 @@ export default {
       // 提醒类型
       MATTYER_TYPE,
       // 开始时间和结束时间的参数
-      getCalendar:{
-        startDate:"",
-        endDate:""
+      schedule:{
+        endDate:"",
+        startDate:""
       },
       data: [
         { dateDay: '2020-12-2', dateMatters: ["吃饭","睡觉"], id: 1 },
@@ -168,12 +152,10 @@ export default {
     onPanelChange(value) {
       console.log(value);
       console.log(value.slice(0,8) + '01',value.slice(0,8) + '31')
-
       this.schedule.endDate = value.slice(0,8) + '01';
       this.schedule.startDate = value.slice(0,8) + '31';
     },
     onChange(date, dateString) {
-
       console.log(date.format('yyyy-MM'), dateString);
     },
     // 获取后台日历数据
@@ -183,13 +165,13 @@ export default {
       let startDate = baseDate + '-' + "01"
       let endDate = baseDate + '-' + "31"
       console.log(startDate,endDate)
-      const {data:res} = await getCalendar(startDate,endDate)
+      const res = await getCalendar(startDate,endDate)
       console.log(res);
     },
     // 待办事项
     async getList() {
      const {data: res} = await getTODoList()
-    //  console.log(res,"=======")
+     console.log(res);
      this.list = res;
     }
   },
