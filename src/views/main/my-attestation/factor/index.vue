@@ -4,8 +4,8 @@
     <template v-if="!spinning">
       <!-- 填写相关要素信息 -->
       <template v-if="identity && status(0)">
-        <FormOrg v-if="identity === 1"></FormOrg>
-        <FormLaw v-if="identity === 2"></FormLaw>
+        <FormOrg v-if="identity === 2"></FormOrg>
+        <FormLaw v-if="identity === 1"></FormLaw>
       </template>
       <!-- 要素相关审核 展示 -->
       <template v-if="identity && !status(0)">
@@ -25,7 +25,7 @@
             </div>
             <ul class="status-title-attribute">
               <li>当前要素认证状态：<b :class="info.class">{{info.desc}}</b></li>
-              <li v-if="statusInfo.elementAuditStatus">
+              <li v-if="statusInfo.isSubmitElements">
                 要素信息更新日期：{{statusInfo.elementModifyDate}}
               </li>
             </ul>
@@ -99,7 +99,7 @@ export default {
       visibleLoading:false,
       identity:'',
       statusInfo:{
-        elementAuditStatus:3,
+        isSubmitElements:3,
         elementModifyDate:'',
         reasonOfNotPass:'',
         remindBaseTime:'',
@@ -116,22 +116,23 @@ export default {
     },
     // 判断数据当前状态
     status(rule){
-      const { elementAuditStatus: q} = this.statusInfo;
+      const { isSubmitElements: q} = this.statusInfo;
       return  rule.toString() ? new RegExp(q).test(rule) : q;
     },
   },
   computed:{
     info() {
-      const { reasonOfNotPass, elementAuditStatus, remindBaseTime} = this.statusInfo;
+      const { reasonOfNotPass, isSubmitElements, remindBaseTime} = this.statusInfo;
       return {
-        ...factorStatus[elementAuditStatus],
-        text:factorStatus[elementAuditStatus].text + (reasonOfNotPass || ''),
+        ...factorStatus[isSubmitElements],
+        text:factorStatus[isSubmitElements].text + (reasonOfNotPass || ''),
         halfStatus: Boolean(remindBaseTime)
       };
     },
   },
   mounted() {
     this.identity = this.$store.getters.getInfo.identity;
+    this.statusInfo.isSubmitElements = this.$store.getters.getInfo.isSubmitElements;
     factor.element().then(res=>{
       console.log( res);
     })
@@ -147,10 +148,15 @@ export default {
 </style>
 <style lang='scss'>
 .factor-form-wrapper{
-  padding: 20px;
+  padding: 24px;
   .factor-form-subtitle{
     text-align: left;
-    padding: 10px 0;
+    padding: 32px 0 24px;
+    color: #333;
+    font-weight: bold;
+    &:first-child{
+      padding-top: 0;
+    }
     span{
       display: block;
       padding-left: 10px;
