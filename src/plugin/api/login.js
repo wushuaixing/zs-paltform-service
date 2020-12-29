@@ -21,8 +21,3 @@ export const getCaptcha = params => request.post('/service/auth/getCaptcha','',{
 // 退出登录
 export const logout = () => request.post('/service/auth/logout' );
 
-
-
-// 登录前判断当前账号状态
-export const accountStatus = params => request.get('/service/auth/loginPreCheckAccountStatus?phone=' + params);
-//test

@@ -179,7 +179,7 @@ export default {
     source: Object,
     noAuction:{
       type:Boolean,
-      default:false
+      default:true
     },
   },
   data() {

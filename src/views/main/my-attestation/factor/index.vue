@@ -61,7 +61,6 @@
         <!-- 要素信息展示 -->
         <FactorInfo v-if="status(23456)" :is-lawyer="identity === 1"/>
       </template>
-
     </template>
   </div>
 </template>
