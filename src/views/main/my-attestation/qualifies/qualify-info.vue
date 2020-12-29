@@ -36,7 +36,8 @@
 			<div class="info-item_list">
 				<div class="info-item_list-title">身份证照片</div>
 				<div class="info-item_list-content">
-					<FileList :fileList="[source.frontOfCard,source.backOfCard].join(';')"/>
+					<FileList :fileList="source.frontOfCard"/>
+					<FileList :fileList="source.backOfCard"/>
 				</div>
 			</div>
 			<div class="info-item_list">
@@ -112,7 +113,7 @@
 			},
 			noDate:{
 				type:Boolean,
-				default:true,
+				default:false,
 			}
 		},
 		components:{
@@ -123,4 +124,5 @@
 </script>
 
 <style lang="scss">
+
 </style>

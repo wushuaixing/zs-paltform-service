@@ -1,5 +1,5 @@
 <template>
-  <a-layout style="padding: 76px 120px 30px;">
+  <a-layout style="padding: 76px 0 30px;">
     <a-spin v-if="loading" class="spin-wrapper" size="large" tip="数据加载中，请稍后..."/>
     <div class="investment-center-wrapper" v-else>
       <div class="header">
@@ -108,18 +108,18 @@ export default {
   },
   methods: {
     getTableList() {
+      this.loading = true;
       amcProjectListApi(removeObjectNullVal(this.queryParams)).then((res) => {
-        this.loading = true;
         if (res.code === 20000) {
           const data = res.data;
           this.total = data.total;
           this.amcProjectInfo = data.list;
-          this.loading = false;
         } else {
-          this.loading = false;
           message.warning(res.message);
         }
-      })
+      }).catch(err => {
+        console.log(err)
+      }).finally(() => this.loading = false);
     },
 
     //查看抵押物信息 竞标报名弹窗
@@ -172,6 +172,8 @@ export default {
 .investment-center-wrapper {
   flex: 1;
   background: #ffffff;
+  width: 1200px;
+  margin: 0 auto;
 
   .header {
     display: flex;

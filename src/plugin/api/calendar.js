@@ -3,4 +3,4 @@ import request from "@/plugin/tools/request";
 export const getCalendar = (params) => request.get('/service/workTable/mySchedule', {params});
 
 // 获取待办事项的数据
-export const getTODoList = () => request.get('/service/workTable');
+export const getToDoList = () => request.get('/service/workTable');

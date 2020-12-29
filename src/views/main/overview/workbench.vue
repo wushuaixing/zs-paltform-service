@@ -4,30 +4,15 @@
       <div class="item-wrapper item-border">
         <div class="item-title item-format item-toDo">待办事项</div>
         <div class="item-content item-format item-thing">
-          <!-- 未认证的服务商 -->
-          <!-- <a-list v-if="false" item-layout="horizontal" :data-source="data">
-            <a-list-item slot="renderItem" slot-scope="item">
-              <a-list-item-meta description :title="item.title">
-                <a slot="description" href="javascript:;">{{
-                  item.description
-                }}</a>
-              </a-list-item-meta>
-            </a-list-item>
-          </a-list> -->
           <!-- 认证过的服务商 -->
             <div v-if="true">
               <ul class="through">
                 <li  v-for="(item, index) in list" :key="index">
-                  <a-badge :status="MATTYER_TYPE[item.code].text" />
-                  <span class="thing">{{ MATTYER_TYPE[item.code].name}}</span>
-                  <span>{{item.message}}</span>
-                  <router-link :to="MATTYER_TYPE[item.code].path">立即前往</router-link>
+                  <a-badge :status="MATTER_TYPE[item.code].text" />
+                  <span class="thing">{{ MATTER_TYPE[item.code].name}}</span>
+                  <span class="message">{{item.message}}</span>
+                  <router-link :to="MATTER_TYPE[item.code].path">立即前往</router-link>
                 </li>
-                <!-- <li>
-                  <a-badge status="error" />
-                  <span class="error">[竞标失败]：</span>
-                   <a href="javascript:;">立即前往</a>
-                </li> -->
               </ul>
             </div>
         </div>
@@ -78,27 +63,16 @@
       <div class="item-wrapper">
         <div class="item-title item-format">我的日程</div>
         <div class="item-content item-format">
-          <a-calendar @panelChange="onChange" @change='onChange2'>
-              <!-- <a-date-picker  /> -->
+           <a-calendar
+              mode="month"
+              valueFormat="YYYY-MM-D"
+              @panelChange="onPanelChange"
+          >
               <ul slot="dateCellRender" slot-scope="value" class="events">
-                <!-- {{value.year()+'-'+ (value.month()+1).toString().padStart(2,0) +'-' + value.date().toString().padStart(2,0)}} -->
                 <li v-for="item in getListData(value)"  :key="item.content">
                   <a-badge :status="item.type" :text="item.content" />
                 </li>
               </ul>
-              <template slot="monthCellRender" slot-scope="value" v-if='false'>
-                <div v-if="getMonthData(value)" class="notes-month">
-                  <section>{{ getMonthData(value) }}</section>
-                  <span>Backlog number</span>
-                </div>
-              </template>
-            <!-- <slot>
-              <a-month-picker placeholder="Select month" @change="onChange" />
-              <br />
-              <a-range-picker @change="onChange" />
-              <br />
-              <a-week-picker placeholder="Select week" @change="onChange" />
-            </slot> -->
           </a-calendar>
         </div>
       </div>
@@ -108,10 +82,10 @@
 
 <script>
 import { getEcharts } from "@/plugin/api/echarts";
-import { getCalendar, getTODoList } from "@/plugin/api/calendar";
-import { MATTYER_TYPE } from "./toDoList";
+import { getCalendar, getToDoList } from "@/plugin/api/calendar";
+import { MATTER_TYPE } from "./toDoList";
 // import { _.merge } from 'lodash'
-// import { _.cloneDeep } from 'lodash'
+// import { cloneDeep } from 'lodash'
 import echarts from "echarts";
 export default {
   name: "Workbench",
@@ -122,109 +96,88 @@ export default {
     return {
       // 后台图表的数据
       echarts:[],
+      // 需要渲染的事项数据
       listData:[],
       // 待办事项的数据
       list: [],
       // 提醒类型
-      MATTYER_TYPE
+      MATTER_TYPE,
+      // 开始时间和结束时间的参数
+      schedule:{
+        endDate:"",
+        startDate:""
+      },
+      // 事项数据
+      data: [
+        // { dateDay: '2020-12-2', dateMatters: ["吃饭","睡觉"], id: 1 },
+        // { dateDay: '2020-12-6', dateMatters: ["敲代码"], id: 2 },
+        // { dateDay: '2021-1-1', dateMatters: ["睡觉"], id: 3 },
+      ],
     };
   },
   computed: {
   },
   methods: {
     getListData(value) {
-      // console.log(value.format('yyyy-MM-dd'))
-      // let reg = (value.year() + '-' + (value.month() + 1).toString().padStart(2,0) + '-' + value.date().toString().padStart(2,0))
-      // console.log(reg);
-      // let tag = JSON.parse(JSON.stringify(reg))
-      // console.log(tag);
-    //  console.log( Object.keys(reg));
-      // console.log(value.date());
-      // console.log(value._d)
-    //   // console.log(value);
-    //   // var value2 = {}
-    //   console.log(value._d);
-    //   // for(var k in value) {
-    //   //   value2[k] = value[k]
-    //   // }
-    //   // console.log(value2[k]);
-    //   // dev.push(value._d)
-      
-    //   // var dev = JSON.parse(JSON.stringify(value._d))
-    //   // console.log(dev);
-    //   // var deep = _.cloneDeep(value);
-    //   // console.log(deep[0] === value[0]);
-    //   // this.listData.push(value.date())
-    //   // console.log(value.data());
-    //   // this.arr[length] = value._d
-      let listData;
-      switch (value.date()) {
-        case 8:
-          listData = [
-            { type: "warning", content: "腾房完毕" },
-            { type: "success", content: "完成评估" },
-          ];
-          break;
-        case 10:
-          listData = [
-            { type: "warning", content: "This is warning event." },
-            { type: "success", content: "This is usual event." },
-            { type: "error", content: "This is error event." },
-          ];
-          break;
-        case 15:
-          listData = [
-            { type: "warning", content: "This is warning event" },
-            {
-              type: "success",
-              content: "This is very long usual event。。....",
-            },
-            { type: "error", content: "This is error event 1." },
-            { type: "error", content: "This is error event 2." },
-            { type: "error", content: "This is error event 3." },
-            { type: "error", content: "This is error event 4." },
-          ];
-          break;
-        default:
-      }
-      return listData || [];
-    },
-
-    getMonthData(value) {
-      if (value.month() === 8) {
-        return 1394;
+      let listData = [];
+      for (let i = 0; i < this.data.length; i++) {
+        let dateStr = `${value.year()}-${value.month() + 1}-${value.date()}`;
+        if (dateStr === this.data[i].dateDay) {
+          this.data[i].dateMatters.forEach( item => {
+            var obj = { type: "warning", content: item };
+            listData.push(obj);
+          });
+          return listData;
+        }
       }
     },
-    onChange2() {
-      console.log(...arguments)
-      // console.log(value);
-
+    // 修改表单
+    onPanelChange(value) {
+      console.log(value);
+      console.log(value.slice(0,8) + '01',value.slice(0,8) + '31');
+      this.schedule.endDate = value.slice(0,8) + '01';
+      this.schedule.startDate = value.slice(0,8) + '31';
     },
     onChange(date, dateString) {
-
       console.log(date.format('yyyy-MM'), dateString);
+      this.getCalendarData ()
     },
-    // 获取后台日历数据
-    async getListDatas (value) {
-      const {data:res} = await getCalendar(value)
-      console.log(res);
+    // 获取日历事项
+    getCalendarData () {
+      var time = new Date().toLocaleString();
+      let baseDate = time.slice(0,7).replace("/","-");
+      let startDate = baseDate + '-' + "01";
+      let endDate = baseDate + '-' + "31";
+      console.log(startDate,endDate);
+      getCalendar({startDate,endDate}).then((res) => {
+      console.log(res.data);
+      if (res.code !== 20000) return this.$message.error("获取日历事项失败");
+      // for (let item of res.data) {
+      //   var reg = item.dateDay
+      //   reg = reg.slice(0,10)
+      // }
+      this.data = res.data
+    })
     },
     // 待办事项
     async getList() {
-     const {data: res} = await getTODoList()
-    //  console.log(res,"=======")
-     this.list = res;
+      const res = await getToDoList();
+      console.log(res);
+    //  this.list = res;
+    if (res.code !== 20000) return this.$message.error('您还没有待办事项');
+      this.list = res.data
     }
   },
   created () {
+    this.getCalendarData();
     this.getList()
   },
   async mounted() {
     var myChart = echarts.init(document.getElementById("main"));
-    const res = await getEcharts()
-    if (res.code !== 20000) return
+    const res = await getEcharts();
+    if (res.code !== 20000) return this.$message.error('获取图表数据失败');
     // console.log(res);
-    this.echarts = res.data
+    this.echarts = res.data;
     var option = {
       label: {
         color:this.color
@@ -234,29 +187,10 @@ export default {
           name: "访问来源",
           type: "pie",
           radius: ["50%", "70%"],
-          // avoidLabelOverlap: false,
-          // label: {
-          //   show: false,
-          //   position: "center",
-          // },
-          // emphasis: {
-          //   label: {
-          //     show: true,
-          //     fontSize: "30",
-          //     fontWeight: "bold",
-          //   },
-          // },
           labelLine: {
             show: false,
           },
           data: [
-            // { value: 30},
-            // { value: this.echarts.myProjectCaseSubmitted},
-            // { value: 70},
-            // { value: 10},
-            // { value: 30},
-            // { value: 50},
-            // console.log(this.echarts.myProjectCaseSubmitted),
             { value: this.echarts.myProjectCaseUnSubmit},
             { value: this.echarts.myProjectCaseSubmitted},
             { value: this.echarts.myProjectsReview},
@@ -309,7 +243,6 @@ $background: #e9e9e9;
       border-bottom: 1px solid $background;
       line-height: 1.5;
       font-size: 16px;
-      font-family: PingFangSC-Medium, PingFang SC;
       font-weight: 900;
       color: #262626;
     }
@@ -321,7 +254,7 @@ $background: #e9e9e9;
       min-height: 500px;
       max-height: 600px;
     }
-    
+
   }
   ul {
     margin: 0;
@@ -342,7 +275,6 @@ $background: #e9e9e9;
   .item-project {
     height: 16px;
     font-size: 16px;
-    font-family: PingFangSC-Medium, PingFang SC;
     font-weight: 900;
     color: #262626;
     line-height: 16px;
@@ -377,10 +309,10 @@ $background: #e9e9e9;
     margin-top: 50px;
     text-align: center;
   }
-  a {
-    color: #1900ffb0;
-    text-decoration: underline;
-  }
+  // a {
+  //   color: #1900ffb0;
+  //   text-decoration: underline;
+  // }
   // 日历样式
   .events {
     list-style: none;
@@ -405,11 +337,10 @@ $background: #e9e9e9;
   /deep/.ant-fullcalendar-header {
     text-align: center;
   }
-  // .ant-fullcalendar-fullscreen {
-  //   text-align: center;
-  // }
   /deep/.ant-fullcalendar-column-header-inner {
+    font-weight: 800;
     text-align: center;
+    // display: none;
   }
   /deep/.ant-fullcalendar-date {
     border-top: 4px solid #e8e8e8;
@@ -418,18 +349,28 @@ $background: #e9e9e9;
     border-top: 6px solid #008cb0 !important;
   }
 }
-.error {
-  text-decoration: line-through;
+// .error {
+//   text-decoration: line-through;
+// }
+// 隐藏月和年选择按钮
+/deep/.ant-radio-group {
+  display: none;
 }
 span {
   font-weight: 400;
   font-size: 16px;
   padding: 3px 0;
 }
+.message {
+  font-size: 14px;
+  // letter-spacing: 0.1em;
+  height: 20px;
+  line-height: 20px;
+}
 #main{
   position: absolute;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
   width: 150px;
   height: 150px;
 }

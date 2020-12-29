@@ -2,12 +2,31 @@ import areaSource  from '@/assets/js/address';
 export const areaOption = areaSource;
 // 擅长业务类型
 export const orgAdvType = [
-	{ id: 1, label: '工业', value: 'Apple' },
-	{ id: 2, label: '商业', value: 'Pear' },
-	{ id: 3, label: '住宅', value: 'Orange' },
-	{ id: 4, label: '纯担保类', value: 'Orange' },
-	{ id: 0, label: '其他', value: 'else' },
+	{ id: 1, label: '工业', value: 1 },
+	{ id: 2, label: '商业', value: 2 },
+	{ id: 3, label: '住宅', value: 3 },
+	{ id: 4, label: '纯担保类', value: 4 },
+	{ id: 0, label: '其他', value: 0 },
 ];
+
+// 投资偏好类型
+export const hisCoo = [
+	{ id: 1, label: '债权', value: 1 },
+	{ id: 2, label: '债券', value: 2 },
+	{ id: 3, label: '股权', value: 3 },
+	{ id: 4, label: '居民用房', value: 4 },
+	{ id: 5, label: '商业用房', value: 5 },
+	{ id: 6, label: '工业用房', value: 6 },
+	{ id: 7, label: '土地使用权', value: 7 },
+	{ id: 8, label: '在建或其他房地产', value: 8 },
+	{ id: 9, label: '收益权', value: 9 },
+	{ id: 10, label: '矿权', value: 10 },
+	{ id: 11, label: '船舶', value: 11 },
+	{ id: 12, label: '车辆', value: 12 },
+	{ id: 13, label: '机器设备', value: 13 },
+	{ id: 14, label: '林权', value: 14 },
+];
+
 // 擅长业务类型 - 律师
 export const lawAdvType = [
 	{id:1, value:1, label:"立案/保全"},
@@ -43,10 +62,10 @@ export const lawAdvList = [
 ];
 // 从业不良时间经验
 export const expOption = [
-	{ id: 2, label: '1年以内', value: '2' },
-	{ id: 3, label: '1-3年', value: '3' },
-	{ id: 1, label: '3年以上', value: '4' },
-	{ id: 4, label: '暂未有实际项目落地', value: '1' },
+	{ id: 0, label: '暂未有实际项目落地', value: '0' },
+	{ id: 1, label: '1年以内', value: '1' },
+	{ id: 2, label: '1-3年', value: '2' },
+	{ id: 3, label: '3年以上', value: '3' },
 ];
 // 历史合作四大
 export const hisFour = [
@@ -58,11 +77,11 @@ export const hisFour = [
 
 ];
 // 过往合作类型
-export const hisCoo = [
+export const typeOfCooperation = [
 	{ id: 1, label: '配资收购', value: '1' },
 	{ id: 2, label: '资产包收购', value: '2' },
 	{ id: 3, label: '债权清收', value: '3' },
-	{ id: 4, label: '其他（投行等）', value: '4' },
+	{ id: 0, label: '其他（投行等）', value: '0' },
 ];
 // 后续期望合作方向 - 合作意向
 export const cooIntent = [
@@ -72,6 +91,7 @@ export const cooIntent = [
 	{ id: 4, label: '介绍投资人', value: '4' },
 	{ id: 5, label: '担保类项目', value: '5' },
 	{ id: 0, label: '其他', value: '0' },
+
 ];
 
 // 律所信息 - 担任职务

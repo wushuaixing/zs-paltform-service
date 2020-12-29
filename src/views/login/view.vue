@@ -2,7 +2,12 @@
   <div class="register-wrapper">
     <div class="register-container">
       <div class="register-content">
-        <div class="video-wrapper">111</div>
+        <div class="video-wrapper">
+          <div class="zs-logo">
+            <img class="zs-logo-pic" src="../../assets/img/zs-logo.png" alt="">
+          </div>
+          <video autoplay controls src="http://qlumgyse9.hd-bkt.clouddn.com/promotion-vedio.mp4"></video>
+        </div>
         <div class="login-wrapper" ref="loginContainer">
           <div class="login-title">服务商招募管理系统</div>
           <a-form-model
@@ -321,9 +326,22 @@ export default {
     }
   }
   .video-wrapper {
-    width: 879px;
+    position: relative;
+    //width: 879px; 视频左右两侧会留白
+    width: 853px;
     height: 100%;
     background-color: #fff;
+    .zs-logo{
+      position: absolute;
+      top: -150px;
+    }
+    video{
+      // width: 100%;
+      height: 100%;
+      &:focus{
+        outline: none;
+      }
+    }
   }
   .login {
     &-wrapper {

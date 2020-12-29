@@ -4,8 +4,9 @@
     <template v-if="!spinning">
       <!-- 填写相关要素信息 -->
       <template v-if="identity && status(0)">
-        <FormOrg v-if="identity === 1"></FormOrg>
-        <FormLaw v-if="identity === 2"></FormLaw>
+        <FormLaw v-if="identity === 1" />
+				<FormLawOff v-if="identity === 1" />
+				<FormOrg v-if="identity === 2" />
       </template>
       <!-- 要素相关审核 展示 -->
       <template v-if="identity && !status(0)">
@@ -67,7 +68,7 @@
 
 <script>
 
-import { FormOrg, FormLaw } from './form';
+import { FormOrg, FormLaw, FormLawOff } from './form';
 import FactorInfo from './factor-info';
 import { factor } from "@/plugin/api/attest";
 import IconLaw from '@/assets/img/lawyer.png';
@@ -91,6 +92,7 @@ export default {
     FormOrg,
     FormLaw,
     FactorInfo,
+		FormLawOff,
   },
   data() {
     return {
@@ -98,10 +100,10 @@ export default {
       visibleLoading:false,
       identity:'',
       statusInfo:{
-        elementAuditStatus:3,
-        elementModifyDate:'',
-        reasonOfNotPass:'',
-        remindBaseTime:'',
+        elementAuditStatus: 0,
+        elementModifyDate: '',
+        reasonOfNotPass: '',
+        remindBaseTime: '',
       },
       icon:{
         law:IconLaw,
