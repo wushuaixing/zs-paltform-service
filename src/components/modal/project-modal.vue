@@ -98,7 +98,7 @@ export default {
         this.$router.push('/project/biding');
       } else {
         if (this.sign === 'signUp') {
-          const id = parseInt(this.projectInfo.id);
+          const id = Number(this.projectInfo.id);
           signUpApi(id).then((res) => {
             if (res.code === 20000) {
               this.isSignUpSuccess = true;

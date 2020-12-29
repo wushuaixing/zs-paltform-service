@@ -1,6 +1,6 @@
 export const baseWidth = {
 	style:{
-		width:'677px'
+		width:'678px',
 	}
 };
 export const textarea = {

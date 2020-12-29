@@ -1,10 +1,11 @@
 import axios from 'axios';
+import router from '../../router';
 
 const ENV = process.env.NODE_ENV;
 
 /* =========  常规请求   ========= */
 const request = axios.create({
-	baseURL:ENV === 'development' ? '/proxy-api' : '',
+	baseURL:ENV === 'development' ? '/proxy-api' : '/api',
 	timeout: 1000 * 30,
 	withCredentials: true,
 	credentials: 'include',
@@ -68,8 +69,9 @@ const responseMethods = {
 			window.location.reload();
 			return response;
 		}
-		if (res.code === 403) {
+		if (res.code === 70001) {
 			// navigate('/');
+			router.push('/login');
 			// window.location.reload();
 			return response;
 		}
@@ -106,7 +108,11 @@ const responseMethods = {
 		// }
 		return response.data;
 	},
-	onRejected: () => {
+	onRejected: (error) => {
+		console.log(error.response.status);
+		if(error.response.status === 403) {
+			router.push('/login')
+		}
 		// const notShow = (error.config.params || {}).event === 'loop';
 		// // 如果没有token直接返回到登陆界面
 		// if (cookies.get('token') === undefined) {

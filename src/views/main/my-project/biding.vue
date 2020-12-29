@@ -43,7 +43,7 @@
               <template slot="process" slot-scope="{process}">
                 <a-avatar :size="6" :style="{backgroundColor: process===0 ? '#F5222D' : process===1 ? '#52C41A' : '#FAAD14',marginRight:'5px'}"/>
                 {{process|evolveType}}<br>
-                <div style="color:#F5222D;border:1px #F5222D dashed" v-if="process===0">方案提交即将截止</div>
+                <div style="width:fit-content;color:#F5222D;border:1px #F5222D dashed" v-if="process===0">方案提交即将截止</div>
               </template>
               <template slot="datetime" slot-scope="time">{{time|timeFilter}}</template>
               <template slot="businessTeam" slot-scope="team">
@@ -87,12 +87,14 @@
       </div>
       <ProjectModal :projectInfo="projectInfo" :sign="'fail'" ref="failModal"/>
     </div>
+    <planModal/>
   </div>
 </template>
 
 <script>
 import Breadcrumb from '@/components/bread-crumb';
 import ProjectModal from '@/components/modal/project-modal';
+import planModal from "./Plan-modal";
 import { clearProto, disabledDate } from "@/plugin/tools";
 import { columns, colType } from "@/views/main/my-project/source";
 import {amcBidDetail, amcBiding ,amcBidAimed ,amcBidAbandon,amcBidInvalid,unreadInfo,changeUnRead} from "@/plugin/api/my-biding"
@@ -197,7 +199,8 @@ export default {
   },
   components:{
     Breadcrumb,
-    ProjectModal
+    ProjectModal,
+    planModal,
   },
   created() {
     this.getProjectList();
