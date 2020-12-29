@@ -197,6 +197,7 @@ export default {
     ProjectModal
   },
   created() {
+    this.tabStatus = 3;
   },
   methods:{
     handleSubmit(e){

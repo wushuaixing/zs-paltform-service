@@ -48,7 +48,7 @@ export const MATTYER_TYPE =
     10:{
         name:'[竞标成功提醒]: ',
         text:'success',
-        path: 'attest/qualifies'
+        path: 'project/biding'
     },
     11:{
         name:'[竞标失效提醒]: ',
