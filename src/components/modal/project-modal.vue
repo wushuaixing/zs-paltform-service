@@ -66,7 +66,7 @@
 import {signUpApi} from "@/plugin/api/investment-center";
 import {SECURITY_TYPE} from "@/views/investment-center/source";
 import {message} from "ant-design-vue";
-
+import {abandonBid} from "@/plugin/api/my-biding"
 export default {
   name: "ProjectModal",
   nameComment: '竞标报名/放弃竞标弹窗',
@@ -110,7 +110,16 @@ export default {
             }
           })
         } else {
-          this.visible = false;
+          abandonBid(this.projectInfo.id).then(res=>{
+            console.log(res)
+            if(res.code === 20000){
+              console.log(11111)
+              this.visible = false;
+              this.$parent.getProjectList();
+            }else{
+              this.$message.error("网络错误")
+            }
+          })
         }
       }
 
