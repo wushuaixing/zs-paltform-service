@@ -85,12 +85,14 @@
       </div>
       <ProjectModal :projectInfo="projectInfo" :sign="'fail'" ref="failModal"/>
     </div>
+    <planModal/>
   </div>
 </template>
 
 <script>
 import Breadcrumb from '@/components/bread-crumb';
 import ProjectModal from '@/components/modal/project-modal';
+import planModal from "./Plan-modal";
 import { clearProto, disabledDate } from "@/plugin/tools";
 import { columns, colType } from "@/views/main/my-project/source";
 
@@ -194,7 +196,8 @@ export default {
   },
   components:{
     Breadcrumb,
-    ProjectModal
+    ProjectModal,
+    planModal,
   },
   created() {
   },
