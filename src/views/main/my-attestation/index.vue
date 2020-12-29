@@ -148,7 +148,7 @@ export default {
         margin: 0 auto;
         text-align: center;
         img{
-          width:100%;
+          width:80%;
         }
         .image-status-remark{
           margin: 25px 0;
@@ -272,7 +272,6 @@ export default {
       font-size: 14px;
       color: $text-remark;
       span{
-        vertical-align: text-top;
         font-size: 16px;
         color: $text-title;
       }

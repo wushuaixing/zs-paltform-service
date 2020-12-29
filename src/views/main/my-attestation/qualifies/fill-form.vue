@@ -2,16 +2,22 @@
   <div class="qualifies-form-wrapper attest-form">
     <slot name="title"/>
     <div style="height: 10px"/>
-    <a-form v-bind="formItemLayout" :form="form" autocomplete="off" v-if="userType ==='org'">
-      <a-form-item :label="org.name.label">
-        <a-select v-decorator="org.name.dec" v-bind="org.name.other">
-          <a-select-option v-for="i in nameOption" :key="i.id" :value="i.creditCode">{{i.name}}</a-select-option>
-        </a-select>
-      </a-form-item>
-      <a-form-item :label="org.code.label">
-        <a-input v-decorator="org.code.dec" style="display: none"/>
-        <span :class="codeClass">{{ relation.codeText }}</span>
-      </a-form-item>
+    <a-form v-bind="formItemLayout" :form="form" autocomplete="off" v-if="userType ==='org'" selfUpdate>
+			<a-form-item :label="org.name.label">
+				<a-input v-decorator="org.name.dec" v-bind="org.name.other"/>
+			</a-form-item>
+			<a-form-item :label="org.code.label">
+				<a-input v-decorator="org.code.dec" v-bind="org.code.other"/>
+			</a-form-item>
+      <!--<a-form-item :label="org.name.label">-->
+        <!--<a-select v-decorator="org.name.dec" v-bind="org.name.other">-->
+          <!--<a-select-option v-for="i in nameOption" :key="i.id" :value="i.creditCode">{{i.name}}</a-select-option>-->
+        <!--</a-select>-->
+      <!--</a-form-item>-->
+      <!--<a-form-item :label="org.code.label">-->
+        <!--<a-input v-decorator="org.code.dec" style="display: none"/>-->
+        <!--<span :class="codeClass">{{ relation.codeText }}</span>-->
+      <!--</a-form-item>-->
       <a-form-item :label="org.identity.label">
         <a-textarea v-decorator="org.identity.dec" v-bind="org.identity.other"/>
       </a-form-item>
@@ -42,12 +48,12 @@
           </a-upload>
           <div class="upload-text">
             <div>*请下载保密承诺函模板，签字、用印后扫描或拍照上传；支持jpg、pdf格式</div>
-            <a href="#">承诺函模板下载</a>
+						<a href="#" style="text-decoration: underline">承诺函模板下载</a>
           </div>
         </div>
       </a-form-item>
     </a-form>
-    <a-form v-bind="formItemLayout" :form="form" autocomplete="off" v-if="userType ==='lawyer'">
+    <a-form v-bind="formItemLayout" :form="form" autocomplete="off" v-if="userType ==='lawyer'" selfUpdate>
       <a-form-item :label="law.name.label">
         <a-input v-decorator="law.name.dec" v-bind="law.name.other"/>
         <span class="normal">{{ username }}</span>
@@ -79,8 +85,8 @@
       <a-form-item :label="law.buEmail.label">
         <a-input v-decorator="law.buEmail.dec" v-bind="law.buEmail.other"/>
       </a-form-item>
-      <a-form-item :label="law.card.label" >
-        <div class="fill-form-upload-wrapper fill-form-upload__block" style="padding-left: 200px">
+      <a-form-item :label="law.card.label" :selfUpdate="false">
+        <div class="fill-form-upload-wrapper fill-form-upload__block" style="padding-left: 200px;height: 132px;">
           <a-upload v-decorator="law.card.decA" v-bind="upload.bind" v-on="upload.on" >
             <div class="upload-container"  v-if="!getValue(law.card.decA[0],1)">
               <a-icon type="plus" />
@@ -92,8 +98,8 @@
           <div class="upload-text">*支持jpg、pdf格式</div>
         </div>
       </a-form-item>
-      <a-form-item class="fill-form-upload__card" :wrapperCol="{span:24}">
-        <div class="fill-form-upload-wrapper fill-form-upload__block">
+      <a-form-item class="fill-form-upload__card" :wrapperCol="{span:24}" :selfUpdate="false">
+        <div class="fill-form-upload-wrapper fill-form-upload__block" style="height: 132px;">
           <a-upload v-decorator="law.card.decB" v-bind="upload.bind" v-on="upload.on" >
             <div class="upload-container"  v-if="!getValue(law.card.decB[0],1)">
               <a-icon type="plus" />
@@ -162,7 +168,7 @@ const nameOption = [
 
 const yearOption = (()=>{
   const minYear = 1980;
-  const maxYear = new Date().getFullYear() + 5;
+  const maxYear = new Date().getFullYear() + 1;
   const length = maxYear - minYear < 0 ? 50 : maxYear - minYear;
   return new Array(length).fill(1).map((i,index)=>({value:(minYear + length - index).toString()}))
 })();
@@ -212,28 +218,51 @@ export default {
       org:{
         name:{
           label:'机构名称',
-          dec:['name',{
-              initialValue:'',
-              rules: [ { required: true, message: '机构名称不能为空！' } ],
-              change: this.handleOrgChange,
-            },
-          ],
-          other:{
-            allowClear:true,
-            labelInValue: true,
-            showSearch: true,
-            optionFilterProp: "children",
-            showArrow: false,
-            filterOption: (input, option) => option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0,
-            autoComplete:'off',
-            placeholder:'请输入机构名称',
-            ...baseWidth,
-          }
+          // dec:['name',{
+          //     initialValue:'',
+          //     rules: [ { required: true, message: '机构名称不能为空！' } ],
+          //     // change: this.handleOrgChange,
+          //   },
+          // ],
+          // other:{
+          //   allowClear:true,
+          //   labelInValue: true,
+          //   showSearch: true,
+          //   optionFilterProp: "children",
+          //   showArrow: false,
+          //   filterOption: (input, option) => option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0,
+          //   autoComplete:'off',
+          //   placeholder:'请输入机构名称',
+          //   ...baseWidth,
+          // },
+					// label:'邮箱地址',
+					dec:['name', {
+						rules: [
+							{ required: true, message: '机构名称不能为空' },
+							// { min: 4, message: '请输入正确的机构名称'},
+						]},
+					],
+					other:{
+						autoComplete:'off',
+						placeholder:'请输入机构名称',
+						...baseWidth,
+					}
         },
         code:{
           label:'统一社会信用代码',
-          dec:['orgSocialCreditCode'],
-        },
+          // dec:['orgSocialCreditCode'],
+					// label:'邮箱地址',
+					dec:['orgSocialCreditCode', {
+						rules: [
+							{ required: true, message: '统一社会信用代码不能为空' },
+						]},
+					],
+					other:{
+						autoComplete:'off',
+						placeholder:'请输入统一社会信用代码',
+						...baseWidth,
+					}
+				},
         identity:{
           label:'合伙人身份',
           dec:['partnerDetail'],
@@ -274,12 +303,8 @@ export default {
             getValueFromEvent,
             rules: [
               { required: true, message: '请上传营业执照!' },
-            ]
-          },
+            ]},
           ],
-          other:{
-            accept:'application/pdf,image/*',
-          }
         },
         letter:{
           label:'保密承诺函',
@@ -436,10 +461,10 @@ export default {
   methods:{
     // 获取状态值，及判断
     getValue(field,_value){
-      if(field)  {
-        const value = (this.form.getFieldValue(field) || []).length;
-        return _value ? _value === value : value;
-      }
+			if(field)  {
+				const value = (this.form.getFieldValue(field) || []).length;
+				return _value ? _value === value : value;
+			}
     },
     // 下拉搜索相关逻辑
     handleOrgChange(option = {}) {
@@ -496,7 +521,6 @@ export default {
         return Object.assign({},source,{
 					businessLicense:getFileList(source.businessLicense),
 					confidentialityCommitmentLetter:getFileList(source.confidentialityCommitmentLetter),
-          name:(source.name || {}).label
         })
       }else{
         const _source = Object.assign({},source,{
@@ -508,6 +532,31 @@ export default {
         return {lawyerQualify:{..._source}}
       }
     },
+		// resetFormValue
+		async resetFormValue(source){
+			this.form.resetFields();
+			const {
+				backOfCard:bc, frontOfCard:fc, confidentialityCommitmentLetter:cc, businessLicense:bl,
+				qualificationCertificate:qc, ..._source
+			} = source;
+			const fieldValues = this.userType === 'lawyer' ? {
+				..._source,
+				backOfCard: await fileListRuleAsync(bc),
+				frontOfCard:await fileListRuleAsync(fc),
+				confidentialityCommitmentLetter:await fileListRuleAsync(cc),
+				qualificationCertificate:await fileListRuleAsync(qc),
+			} : {
+				..._source,
+				businessLicense:await fileListRuleAsync(bl),
+				confidentialityCommitmentLetter:await fileListRuleAsync(cc),
+			};
+			delete fieldValues.qualifyMaterial;
+			delete fieldValues.contact;
+			delete fieldValues.logId;
+			delete fieldValues.createTime;
+			delete fieldValues.phone;
+			this.form.setFieldsValue({...fieldValues});
+		},
   },
   computed:{
     codeClass:function () {
@@ -526,21 +575,7 @@ export default {
       this.form.setFieldsValue({ lawyerName })
     }
     if(Object.keys(this.source || {}).length){
-      const {
-        backOfCard:bc, frontOfCard:fc, confidentialityCommitmentLetter:cc, qualificationCertificate:qc, ..._source
-      } = this.source;
-      const fieldValues = {
-        ..._source,
-        backOfCard: await fileListRuleAsync(bc),
-        frontOfCard:await fileListRuleAsync(fc),
-        confidentialityCommitmentLetter:await fileListRuleAsync(cc),
-        qualificationCertificate:await fileListRuleAsync(qc),
-      };
-      delete fieldValues.contact;
-      delete fieldValues.logId;
-      delete fieldValues.createTime;
-      delete fieldValues.phone;
-      this.form.setFieldsValue({...fieldValues})
+			await this.resetFormValue(this.source);
     }
   }
 }
