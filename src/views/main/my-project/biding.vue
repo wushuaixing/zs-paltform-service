@@ -34,28 +34,29 @@
           </a-tabs>
           <div class="biding-content-table">
             <a-table :columns="columns" v-bind="tabConfig" @change="handleTableChange">
-              <template slot="debtor" slot-scope="{name}">
-                <span>{{name}}</span>
+              <template slot="debtor" slot-scope="{debtor}">
+                <span>{{debtor}}</span>
               </template>
               <template slot="amount" slot-scope="amount">{{amount|amountTh}}</template>
-              <template slot="advance" slot-scope="{advance,advanceLast}">
-                <a-avatar :size="6" :style="{backgroundColor: advance===2?'#f5222d':'#1890ff',marginRight:'5px'}"/>
-                {{advance|evolveType}}<br>
+              <template slot="security" slot-scope="{security}">{{security|guarantyType}}</template>
+              <template slot="process" slot-scope="{process,advanceLast}">
+                <a-avatar :size="6" :style="{backgroundColor: process===0 ? '#F5222D' : process===1 ? '#52C41A' : '#FAAD14',marginRight:'5px'}"/>
+                {{process|evolveType}}<br>
                 <a-tag color="#f50" v-if="advanceLast">方案提交即将截止</a-tag>
               </template>
-              <template slot="datetime" slot-scope="time">{{time}}</template>
-              <template slot="contactWay" slot-scope="{contactWay}">
+              <template slot="datetime" slot-scope="time">{{time|timeFilter}}</template>
+              <template slot="businessTeam" slot-scope="{businessTeam}">
                 <div class="contactWay">
-                  <p>{{ contactWay.orgName }}
+                  <p>{{ businessTeam}}
                   <p/>
-                  <p><span>{{ contactWay.name }}</span><span>{{ contactWay.phone }}</span>
-                  <p/>
+                  <!-- <p><span>{{ contactWay.name }}</span><span>{{ contactWay.phone }}</span>
+                  <p/> -->
                 </div>
               </template>
-              <template slot="deadline" slot-scope="{deadline}">
+              <template slot="serviceTime" slot-scope="{serviceTime}">
                 <div class="deadline">
-                  <p>{{ deadline.monthNum }}个月</p>
-                  <p>({{ deadline.endTime }}到期)</p>
+                  <p>{{ serviceTime }}个月</p>
+                  <p>({{ serviceTime }}到期)</p>
                 </div>
               </template>
               <template slot="plan" slot-scope="{plan}">
@@ -76,7 +77,7 @@
                   </a-tooltip>
                   <a-button type="link" size="small" icon="file-text" v-else @click="handleAuction(item,'sub')" >方案报送</a-button>
                   <a-divider type="vertical" style="margin:0"/>
-                  <a-button type="link" size="small" icon="file-text" @click="handleAuction(item,'fail')">放弃竞标</a-button>
+                  <a-button type="link" size="small" icon="file-text" @click="handleAuction(item,'aba')">放弃竞标</a-button>
                 </template>
               </template>
             </a-table>
@@ -93,7 +94,7 @@ import Breadcrumb from '@/components/bread-crumb';
 import ProjectModal from '@/components/modal/project-modal';
 import { clearProto, disabledDate } from "@/plugin/tools";
 import { columns, colType } from "@/views/main/my-project/source";
-
+import { amcBiding,amcBidAimed} from "@/plugin/api/my-biding"
 export default {
   name: 'ToReview',
   data() {
@@ -109,6 +110,15 @@ export default {
         { id:4, title:'已失效' ,dot:false},
       ],
       tabStatus:1,
+      params:{
+        aimStatus: 1,
+        debtor: "",
+        page: 1,
+        process: 0,
+        size: 10,
+        sortField: "",
+        sortOrder: ""
+      },
       query:{
         username:"",
         startTime:'',
@@ -119,36 +129,21 @@ export default {
       },
       tabConfig:{
         dataSource:[{
-          key: 1,
-          name: '临时用户1', //债务人名称
-          money1: 12321.123123, //债权本金
-          money2: 4187545, //债权利息
-          money3: 765765.999, //目标回款金额
-          advance: 1, //当前进展
-          advanceLast: false,//当前进展--方案提交即将截止
-          guaranty: '抵押+担保', //担保方式
-          contactWay: {  //对接团队及联系方式
-            orgName: '浙萧资产',
-            name: '李经理',
-            phone: '15236163212',
-          },
-          updateTime: '2020-09-25', //更新日期
-          signDate: '2020-12-25', //合同签订日期
-          abaDate: '2023-12-25', //放弃日期
-          failDate: '2021-12-22', //失效日期
-          deadline: { //服务期限
-            monthNum: 24,
-            endTime: '2022-09-15',
-          },
-          plan: { //本阶段计划
-            time: '2020-09-25',
-            content: '诉讼完结',
-            flag: true,
-          },
-          behind: true,
-          guarantorsList: ['浙江天策生态科技有限公司，张三，李四'],//保证人清单
-          msgsInfoList: ['兴业银行杭州分行关于玉环县雅迪水暖器材有限不良债权转让公告', '惠州大亚湾霞涌霞光西路3号海韵雅苑2栋24层03号房屋']//抵押物清单
-        }, {
+          businessTeam: "浙江不知名的团队",
+          closeSubmitDeadline: 0,
+          debtCaptial: "9999.99",
+          debtInterest: "9999.99",
+          debtor: "杭州阿里巴巴集团",
+          gmtCreate: "2020-12-23T02:46:50.000+0000",
+          gmtModify: "2020-12-23T02:46:50.000+0000",
+          id: 1234567890,
+          isRead: 0,
+          process: 0,
+          advanceLast:false,
+          realSubmitDeadline: null,
+          security: "1",
+          submitDeadline: null
+        },{
           key: 2,
           name: '临时用户2', //债务人名称
           money1: 14321.123123, //债权本金
@@ -181,10 +176,10 @@ export default {
         }],
         size:'middle',
         pagination:{
-          current:1,
-          total:1,
+          total:40,
+          showSizeChanger:true,
+          pageSizeOptions:['10', '20', '30', '40'],
           showQuickJumper:true,
-          showLessItems:true,
           showTotal:val=>`共${val}条信息`,
         },
       },
@@ -197,6 +192,23 @@ export default {
     ProjectModal
   },
   created() {
+    amcBiding(this.params).then(res=>{
+      console.log(res);
+      this.tabConfig.pagination.total = res.data.total;
+      this.tabConfig.dataSource = res.data.list;
+    })
+    amcBidAimed({
+      aimStatus: 2,
+      debtor: "",
+      page: 1,
+      process: 0,
+      size: 10,
+      sortField: "",
+      sortOrder: ""
+    }).then(res=>{
+      console.log(res)
+      // this.tabConfig.dataSource = res.data.list;
+    })
   },
   methods:{
     handleSubmit(e){
@@ -207,13 +219,17 @@ export default {
       this.query.tabStatus = val;
     },
     handleTableChange(pagination, filters, sorter){
-      console.log(sorter);
+      console.log(pagination,sorter);
     },
     handleAuction(item,type){
-      console.log(type);
-      if (type === 'fail') {
+      // console.log(item);
+      if (type === 'aba') {
         this.projectInfo = clearProto(item);
         this.$refs.failModal.handleOpenModal();
+      }
+      if(type === 'view'){
+        console.log(item);
+        this.$router.push({path:"detail",query:{id:item.id}})
       }
     },
   },

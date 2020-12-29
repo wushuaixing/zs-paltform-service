@@ -54,6 +54,11 @@ const routes = [
                 name:'my-project/biding',
                 component:()=>import("@/views/main/my-project/biding"),
               },
+              {
+                path: 'detail',
+                name: 'my-project/biding/detail',
+                component:()=>import("@/views/main/my-project/detail/detail")
+              }
               // {
               //   path: 'storage',
               //   name:'service-provider/be-storage',
