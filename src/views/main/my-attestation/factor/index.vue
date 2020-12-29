@@ -62,14 +62,15 @@
         <!-- 要素信息展示 -->
         <FactorInfo v-if="status(23456)" :is-lawyer="identity === 1"/>
       </template>
+
     </template>
   </div>
 </template>
 
 <script>
 
-import FactorInfo from './factor-info';
 import { FormOrg, FormLaw, FormLawOff } from './form';
+import FactorInfo from './factor-info';
 import { factor } from "@/plugin/api/attest";
 import IconLaw from '@/assets/img/lawyer.png';
 import IconOrg from '@/assets/img/org.png';
@@ -92,7 +93,7 @@ export default {
     FormOrg,
     FormLaw,
     FactorInfo,
-		FormLawOff
+		FormLawOff,
   },
   data() {
     return {
