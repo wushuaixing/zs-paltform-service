@@ -31,7 +31,7 @@
         </div>
       </div>
       <!--  填写信息：  -->
-      <FillForm v-if="status(0) && nextStep" :userType="identity === 1?'lawyer':'org'">
+      <FillForm v-if="status(0) && nextStep" :userType="identity === 1?'lawyer':'org'" isFirst>
         <div class="qualifies-item" slot="title">
           <div class="item-title item-title_no-border">
             <span>您当前选择的服务商身份为：</span>
@@ -76,8 +76,8 @@
           <div class="status-content">
             <div>{{info.text}}</div>
             <a-button type="primary" v-if="status(1)">立即前往要素认证</a-button>
-            <a-button type="primary" v-if="status(2)">编辑并重新提交</a-button>
-            <a-button type="primary" v-if="status(4)">查看我提交的认证修改信息</a-button>
+            <a-button type="primary" v-if="status(2)" @click="checkQualifies" :loading="visibleLoading">编辑并重新提交</a-button>
+            <a-button type="primary" v-if="status(4)" @click="checkQualifies" :loading="visibleLoading">查看我提交的认证修改信息</a-button>
             <a-space v-if="status(5)">
               <a-button type="primary">编辑并重新提交</a-button>
               <a-button >放弃修改</a-button>
@@ -87,7 +87,7 @@
         <!-- 资质认证信息 -->
         <div class="qualifies-info" v-if="status(3456)">
           <div class="info-button">
-            <a-button >编辑我的资质信息</a-button>
+            <a-button @click="handleEdit" icon="edit"> 编辑我的资质信息</a-button>
           </div>
           <QualifyInfo :source="source" :is-lawyer="identity === 1"/>
           <div class="info-item" data-label="当前联络人信息" v-if="identity === 2">
@@ -124,8 +124,8 @@
       </template>
     </template>
     <a-modal v-model="visible" :title="modalTitle" :maskClosable="false" :width="1000">
-      <QualifyInfo :source="sourceLog" :is-lawyer="identity === 1" no-title no-date v-if="modalStep===0"/>
-      <FillForm :userType="identity === 1?'lawyer':'org'" v-if="modalStep===1"
+      <QualifyInfo :source="sourceLog" :is-lawyer="identity === 1" no-title no-date  v-if="modalStep===0"/>
+      <FillForm :userType="identity === 1?'lawyer':'org'" v-if="modalStep===1" :noAuction="false"
                 :source="sourceLog" @toTellRes="handleSubmit" ref="fillFromRef"/>
       <template slot="footer">
         <div style="text-align: center" v-if="modalStep===0">
@@ -138,7 +138,7 @@
         <div style="text-align: center" v-if="modalStep===1">
           <a-space>
             <a-button key="submit" type="primary" @click="handleEditInfo">确认修改并提交</a-button>
-            <a-button key="back" @click="modalStep=0">取消</a-button>
+            <a-button key="back" @click="modalStep=0" v-if="onlyEdit">取消</a-button>
             <a-button key="back" @click="handleModalClose" style="margin-left: 30px">关闭</a-button>
           </a-space>
         </div>
@@ -174,7 +174,7 @@ export default {
       spinning:true,
       visible:false,
       visibleLoading:false,
-      editVisible:false,
+      onlyEdit:false,
       modalStep:0,
       // 0 无身份 1 律师 2 机构
       identity:0,
@@ -269,16 +269,25 @@ export default {
         this.modalStep = 0;
       });
     },
-    //
+    // 提交我的资质信息
     handleSubmit(val){
       console.log(val);
+			this.$message.success('资质认证提交成功！');
+			this.handleModalClose()
     },
-    //
+    // 编辑我的资质信息 - 查看且编辑
     handleEditInfo(e){
       const { fillFromRef } = this.$refs;
       console.log(this.$refs.fillFromRef);
       fillFromRef.handleSubmit(e);
 
+    },
+    // 编辑我的资质信息 - 仅编辑
+    handleEdit(){
+      this.modalStep = 1;
+      this.visible = true;
+      this.onlyEdit = false;
+      this.sourceLog = this.source;
     }
   },
   computed:{

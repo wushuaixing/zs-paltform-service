@@ -1,4 +1,5 @@
 import {area} from "@/assets/area";
+import {getDownLoadToken} from "@/plugin/api/base";
 
 /**
  * 清空原型链内容
@@ -65,12 +66,34 @@ export const removeObjectNullVal = (obj) => {
  */
 export const fileListRule = (str)=>{
 	if(!str) return [];
-	const source = str.split(';');
-	if(source.length) return source.map(i=>({
-		uid: ranStr(8),
+	if(!Array.isArray(JSON.parse(str))) return [];
+	return JSON.parse(str).map(i=>({
+		...i,
 		status: 'done',
-		name:i,
-		url: i,
+	}))
+};
+
+/**
+ * 获取fileList - async
+ * @param str
+ */
+export const fileListRuleAsync = (str)=>{
+	if(!str) return [];
+	if(!Array.isArray(JSON.parse(str))) return [];
+	return Promise.all(JSON.parse(str).map(async i=>{
+			if (i.viewUrl) return i;
+			else{
+				return getDownLoadToken(i.hash || i.url).then(res=>{
+					if(res.code === 20000) {
+						i.viewUrl = res.data;
+						i.url = res.data;
+						i.status = 'done';
+					}
+					return i;
+				});
+			}
+		// ...i,
+		// status: 'done',
 	}))
 };
 

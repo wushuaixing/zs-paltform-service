@@ -1,31 +1,33 @@
 // const path = require('path');
 
 module.exports = {
-	configureWebpack:{
+    configureWebpack:{
 		resolve:{
 			alias:{
 				// '@@': path.resolve(__dirname)+'\\src/views'
 			}
 		}
 	},
-	css: {
+
+    css: {
 		loaderOptions: {
 			less: {
 				lessOptions: {
 					modifyVars: {
-						'primary-color': '#008CB0', // 全局主色
-						'link-color': 'rgba(0, 140, 176, 0.73)', // 链接色
+						'primary-color': '#008CB0',
+						'link-color': 'rgba(0, 140, 176, 0.73)',
 					},
 					javascriptEnabled: true,
 				},
 			},
 			scss: {
-				additionalData: `@import "~@/assets/css/configuration.scss";`
+				additionalData: '@import "~@/assets/css/configuration.scss";'
 			},
 
 		}
 	},
-	devServer:{
+
+    devServer:{
 		proxy: {
 			'/proxy-api': {     //这里最好有一个 /
 				target: 'http://172.16.151.210:8001/api',  // 后台接口域名
@@ -38,6 +40,7 @@ module.exports = {
 				}
 			}
 		}
-	}
+	},
 
+    productionSourceMap: false
 }

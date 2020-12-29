@@ -5,13 +5,13 @@
         <div class="item-title item-format ">待办事项</div>
         <div class="item-content item-format item-thing item-toDo">
           <!-- 认证过的服务商 -->
-            <div v-if="true">
+            <div>
               <ul class="through">
                 <li  v-for="(item, index) in list" :key="index">
-                  <a-badge :status="MATTYER_TYPE[item.code].text" />
-                  <span class="thing">{{ MATTYER_TYPE[item.code].name}}</span>
+                  <a-badge :status="MATTER_TYPE[item.code].text" />
+                  <span class="thing">{{ MATTER_TYPE[item.code].name}}</span>
                   <span class="message">{{item.message}}</span>
-                  <router-link :to="MATTYER_TYPE[item.code].path">立即前往</router-link>
+                  <router-link :to="MATTER_TYPE[item.code].path">立即前往</router-link>
                 </li>
               </ul>
             </div>
@@ -20,12 +20,12 @@
       <div class="item-wrapper">
         <div class="item-project item-format">竞标项目进度概览</div>
         <!-- 没有添加项目 -->
-        <div v-if="echarts.myProjectsNum === 0" class="empty">
+        <div class="empty" v-if="echarts.myProjectsNum !== 0" >
           <a-empty description>
             <slot name="description">您还没有已开始的项目，去<router-link to="center">服务商项目招商中心</router-link>添加第一个项目</slot>
           </a-empty>
         </div>
-        <div class="item-content item-format" v-else >
+        <div class="item-content item-format" v-else>
           <div class="total">我的项目总数：{{echarts.myProjectsNum}}</div>
           <div class="data-display">
             <!-- 饼图 -->
@@ -118,7 +118,7 @@ export default {
           this.data[i].matters.forEach( item => {
             var obj = { type: "warning", content: item.dateMatters };
             listData.push(obj);
-          })
+          });
           return listData;
         }
       }
@@ -141,15 +141,15 @@ export default {
     },
     onChange(date, dateString) {
       console.log(date.format('yyyy-MM'), dateString);
-      this.getCalendearDatas ()
+      this.getCalendarData ()
     },
     // 获取日历事项
-    getCalendearDatas () {
-      var time = new Date().toLocaleString()
+    getCalendarData () {
+      var time = new Date().toLocaleString();
       let baseDate = time.slice(0,7).replace("/","-");
-      let startDate = baseDate + '-' + "01"
-      let endDate = baseDate + '-' + "31"
-      console.log(startDate,endDate)
+      let startDate = baseDate + '-' + "01";
+      let endDate = baseDate + '-' + "31";
+      console.log(startDate,endDate);
       getCalendar({startDate,endDate}).then((res) => {
       console.log(res);
       console.log(res.data)
@@ -159,7 +159,7 @@ export default {
     },
     // 待办事项
     async getList() {
-      const res = await getTODoList()
+      const res = await getTODoList();
       console.log(res);
     //  this.list = res;
     if (res.code !== 20000) return 
@@ -282,7 +282,7 @@ $background: #e9e9e9;
     &-thing {
       min-height: 532px;
     }
-    
+
   }
     ul {
       margin: 0;

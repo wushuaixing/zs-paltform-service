@@ -23,7 +23,7 @@
       </a-form-item>
       <a-form-item :label="org.license.label">
         <div class="fill-form-upload-wrapper">
-          <a-upload v-decorator="org.license.dec" v-bind="org.letter.other" class="upload-wrapper">
+          <a-upload v-decorator="org.license.dec" v-bind="upload.bind" v-on="upload.on">
             <div class="upload-container">
               <a-icon type="plus" />
             </div>
@@ -35,7 +35,7 @@
       </a-form-item>
       <a-form-item :label="org.letter.label">
         <div class="fill-form-upload-wrapper">
-          <a-upload v-decorator="org.letter.dec" v-bind="org.letter.other" class="upload-wrapper">
+          <a-upload v-decorator="org.letter.dec" v-bind="upload.bind" v-on="upload.on">
             <div class="upload-container">
               <a-icon type="plus" />
             </div>
@@ -81,8 +81,8 @@
       </a-form-item>
       <a-form-item :label="law.card.label" >
         <div class="fill-form-upload-wrapper fill-form-upload__block" style="padding-left: 200px">
-          <a-upload v-decorator="law.card.decA" v-bind="law.card.other" class="upload-wrapper">
-            <div class="upload-container"  v-if="!fileLists.cardFront">
+          <a-upload v-decorator="law.card.decA" v-bind="upload.bind" v-on="upload.on" >
+            <div class="upload-container"  v-if="!getValue(law.card.decA[0],1)">
               <a-icon type="plus" />
             </div>
           </a-upload>
@@ -94,8 +94,8 @@
       </a-form-item>
       <a-form-item class="fill-form-upload__card" :wrapperCol="{span:24}">
         <div class="fill-form-upload-wrapper fill-form-upload__block">
-          <a-upload v-decorator="law.card.decB" v-bind="law.card.other" class="upload-wrapper">
-            <div class="upload-container"  v-if="!fileLists.cardBack">
+          <a-upload v-decorator="law.card.decB" v-bind="upload.bind" v-on="upload.on" >
+            <div class="upload-container"  v-if="!getValue(law.card.decB[0],1)">
               <a-icon type="plus" />
             </div>
           </a-upload>
@@ -104,7 +104,7 @@
       </a-form-item>
       <a-form-item :label="law.cert.label">
         <div class="fill-form-upload-wrapper">
-          <a-upload v-decorator="law.cert.dec" v-bind="law.cert.other" class="upload-wrapper">
+          <a-upload v-decorator="law.cert.dec" v-bind="upload.bind" v-on="upload.on" >
             <div class="upload-container">
               <a-icon type="plus" />
             </div>
@@ -116,7 +116,7 @@
       </a-form-item>
       <a-form-item :label="law.letter.label">
         <div class="fill-form-upload-wrapper">
-          <a-upload v-decorator="law.letter.dec" v-bind="law.letter.other" class="upload-wrapper">
+          <a-upload v-decorator="law.letter.dec" v-bind="upload.bind" v-on="upload.on" >
             <div class="upload-container">
               <a-icon type="plus" />
             </div>
@@ -141,8 +141,11 @@
 </template>
 
 <script>
+
 import { qualifies } from "@/plugin/api/attest";
-import { fileListRule } from "@/plugin/tools";
+import { fileListRuleAsync } from "@/plugin/tools";
+
+import Deploy,{ getValueFromEvent, getFileList } from '@/plugin/tools/qiniu-deploy';
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -164,6 +167,7 @@ const yearOption = (()=>{
   return new Array(length).fill(1).map((i,index)=>({value:(minYear + length - index).toString()}))
 })();
 
+
 export default {
   name: 'FillForm',
   nameComment: '机构或律师（表单填写）',
@@ -176,10 +180,17 @@ export default {
       type:Boolean,
       default:true
     },
-    source: Object,
+		isFirst:{
+			type:Boolean,
+			default:false
+    },
+    source: {
+      type:Object,
+      default:()=>{}
+    },
     noAuction:{
       type:Boolean,
-      default:false
+      default:true
     },
   },
   data() {
@@ -197,6 +208,7 @@ export default {
       formItemLayout,
       nameOption,
       yearOption,
+      uploadToken:'',
       org:{
         name:{
           label:'机构名称',
@@ -248,9 +260,8 @@ export default {
         buEmail:{
           label:'备用邮箱',
           dec:[ 'backupEmail', {
-              rules: [{ type: 'email',message: '请输入正确的邮箱地址！' }],
-            },
-          ],
+            rules: [{ type: 'email',message: '请输入正确的邮箱地址！' }],
+          }],
           other:{
             placeholder:'请输入备用的邮箱地址',
             ...baseWidth,
@@ -260,15 +271,13 @@ export default {
           label:'营业执照',
           dec:[ 'businessLicense', {
             valuePropName: 'fileList',
-            getValueFromEvent: this.normFile,
+            getValueFromEvent,
             rules: [
               { required: true, message: '请上传营业执照!' },
             ]
           },
           ],
           other:{
-            beforeUpload:()=>false,
-            listType:"picture-card",
             accept:'application/pdf,image/*',
           }
         },
@@ -276,15 +285,10 @@ export default {
           label:'保密承诺函',
           dec:[ 'confidentialityCommitmentLetter', {
             valuePropName: 'fileList',
-            getValueFromEvent: this.normFile,
+            getValueFromEvent,
             rules: [ { required: true, message: '请上传保密承诺函!' },
             ]
           }],
-          other:{
-            beforeUpload:()=>false,
-            listType:"picture-card",
-            accept:'application/pdf,image/*',
-          }
         },
       },
       law:{
@@ -302,7 +306,7 @@ export default {
           label:'身份证号码',
           dec:[ 'cardNumber', {
             trigger:'blur',
-            rules: [ { validator: validateCard }]
+            rules: [ { required: true, validator: validateCard }]
           }],
           other:{
             placeholder:'请输入身份证号码',
@@ -313,17 +317,13 @@ export default {
         sex:{
           label:'性别',
           dec:[ 'sex', {
-            rules: [
-              { required: true, message: '请选择性别！' },
-            ]
+            rules: [{ required: true, message: '请选择性别！' },]
           }],
         },
         cardNo:{
           label:'执业证号',
           dec:[ 'licenseNumber', {
-            rules: [
-              { required: true, message: '执业证号不能为空!' },
-            ]
+            rules: [{ required: true, message: '执业证号不能为空!' }]
           }],
           other:{
             placeholder:'请输入执业证号',
@@ -333,9 +333,7 @@ export default {
         year:{
           label:'执业开始年份',
           dec:[ 'licenseStart',{
-            rules: [
-              { required: true, message: '执业开始年份不能为空！' },
-            ]
+            rules: [{ required: true, message: '执业开始年份不能为空！' },]
           }],
           other:{
             allowClear:true,
@@ -382,54 +380,48 @@ export default {
           label:'身份证照片',
           decA:[ 'frontOfCard', {
             valuePropName: 'fileList',
-            getValueFromEvent: e=>this.normFile(e,'cardFront'),
+            getValueFromEvent,
             rules: [
               { required: true, message: '请上传身份证照片!' },
             ]
           }],
           decB:[ 'backOfCard', {
             valuePropName: 'fileList',
-            getValueFromEvent: e=>this.normFile(e,'cardBack'),
+            getValueFromEvent,
           }],
-          other:{
-            beforeUpload:()=>false,
-            listType:"picture-card",
-          }
         },
         cert:{
           label:'从业资格证',
           dec:[ 'qualificationCertificate', {
             valuePropName: 'fileList',
-            getValueFromEvent: this.normFile,
+            getValueFromEvent,
             rules: [
               { required: true, message: '请上传从业资格证!' },
             ]
           }],
-          other:{
-            beforeUpload:()=>false,
-            listType:"picture-card",
-          }
         },
         letter:{
           label:'保密承诺函',
           dec:[ 'confidentialityCommitmentLetter', {
             valuePropName: 'fileList',
-            getValueFromEvent: this.normFile,
+            getValueFromEvent,
             rules: [
               { required: true, message: '请上传保密承诺函!' },
             ]
-          },
-          ],
-          other:{
-            beforeUpload:()=>false,
-            listType:"picture-card",
-          }
+          }],
         },
 
       },
-      fileLists:{
-        cardFront:0,
-        cardBack:0,
+      upload:{
+        on:{
+          ...Deploy.event
+        },
+        bind:{
+          ...Deploy.props,
+          accept:'application/pdf,image/*',
+          listType:"picture-card",
+          class:'upload-wrapper',
+        }
       },
       // 联动字段属性
       relation:{
@@ -442,6 +434,13 @@ export default {
     this.form = this.$form.createForm(this);
   },
   methods:{
+    // 获取状态值，及判断
+    getValue(field,_value){
+      if(field)  {
+        const value = (this.form.getFieldValue(field) || []).length;
+        return _value ? _value === value : value;
+      }
+    },
     // 下拉搜索相关逻辑
     handleOrgChange(option = {}) {
       const orgSocialCreditCode = option.key || '';
@@ -462,15 +461,6 @@ export default {
       this.form.setFieldsValue({ orgSocialCreditCode });
       // if(option.key)
     },
-    normFile(e,field) {
-      console.log('Upload event:', e);
-      if (Array.isArray(e)) { return e }
-      this.fileLists = {
-        ...this.fileLists,
-        [field]:e.fileList.length,
-      };
-      return e && e.fileList;
-    },
     // 确认无误并提交
     handleSubmit(e) {
       e.preventDefault();
@@ -487,27 +477,33 @@ export default {
       const addApi = this.userType === 'lawyer' ? qualifies.lawyerAdd : qualifies.orgAdd;
       addApi(_source).then(res=>{
         if(res.code === 20000 ){
-          console.log(res);
-          if(this.toTellRes){
-            this.$emit.toTellRes(res)
-          }
-        }
+					if(this.isFirst){
+						this.$success({
+							title: '资质认证提交成功',
+							okText:'点击前往"要素认证"',
+							onOk:()=>this.$router.push('/attest/factor'),
+						})
+					}
+					this.$emit('toTellRes',res)
+        }else{
+					this.$message.error('资质认证提交失败！');
+				}
       })
     },
     // 处理当前数据
     processData(source = {}){
       if(this.userType === 'org') {
         return Object.assign({},source,{
-          confidentialityCommitmentLetter:'https://qiniu.yczcjk.com/123.png',
-          businessLicense:'https://qiniu.yczcjk.com/123.png',
+					businessLicense:getFileList(source.businessLicense),
+					confidentialityCommitmentLetter:getFileList(source.confidentialityCommitmentLetter),
           name:(source.name || {}).label
         })
       }else{
         const _source = Object.assign({},source,{
-          frontOfCard:'https://qiniu.yczcjk.com/123.png',
-          backOfCard:'https://qiniu.yczcjk.com/123.png',
-          qualificationCertificate:'https://qiniu.yczcjk.com/123.png',
-          confidentialityCommitmentLetter:'https://qiniu.yczcjk.com/123.png',
+          frontOfCard:getFileList(source.frontOfCard),
+					backOfCard:getFileList(source.backOfCard),
+					qualificationCertificate:getFileList(source.qualificationCertificate),
+					confidentialityCommitmentLetter:getFileList(source.confidentialityCommitmentLetter),
         });
         return {lawyerQualify:{..._source}}
       }
@@ -523,32 +519,27 @@ export default {
       return this.$store.getters.getInfo.username;
     },
   },
-  mounted(){
+  async mounted(){
     // console.log(this.$store.getters.getInfo.username);
     const lawyerName = this.$store.getters.getInfo.username;
     if(this.form && this.userType === 'lawyer'){
       this.form.setFieldsValue({ lawyerName })
     }
-
-    if(Object.keys(this.source).length){
+    if(Object.keys(this.source || {}).length){
       const {
         backOfCard:bc, frontOfCard:fc, confidentialityCommitmentLetter:cc, qualificationCertificate:qc, ..._source
       } = this.source;
       const fieldValues = {
         ..._source,
-        backOfCard:fileListRule(bc),
-        frontOfCard:fileListRule(fc),
-        confidentialityCommitmentLetter:fileListRule(cc),
-        qualificationCertificate:fileListRule(qc),
+        backOfCard: await fileListRuleAsync(bc),
+        frontOfCard:await fileListRuleAsync(fc),
+        confidentialityCommitmentLetter:await fileListRuleAsync(cc),
+        qualificationCertificate:await fileListRuleAsync(qc),
       };
       delete fieldValues.contact;
       delete fieldValues.logId;
       delete fieldValues.createTime;
       delete fieldValues.phone;
-      this.fileLists = {
-        cardFront:fileListRule(fc).length,
-        cardBack:fileListRule(bc).length,
-      };
       this.form.setFieldsValue({...fieldValues})
     }
   }

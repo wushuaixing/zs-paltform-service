@@ -159,6 +159,7 @@ export default {
         position: absolute;
         top: 22px;
         right: 32px;
+        z-index: 1;
       }
       .info-item{
         padding: 7px 0;
