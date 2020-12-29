@@ -14,7 +14,6 @@
     "core-js": "^3.6.5",
     "crypto-js": "^4.0.0",
     "element-ui": "^2.14.1",
-    "lodash": "^4.17.20",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
     "vuex": "^3.4.0"
@@ -49,7 +48,7 @@
       "parser": "babel-eslint"
     },
     "rules": {
-      "no-mixed-spaces-and-tabs":"error",
+      "no-mixed-spaces-and-tabs": "error",
       "space-infix-ops": [
         "error",
         {

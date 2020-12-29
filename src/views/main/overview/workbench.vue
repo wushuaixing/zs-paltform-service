@@ -173,30 +173,42 @@ export default {
       console.log(res);
       this.echarts = res.data
       let option = {
-        // color: ['red', 'blue','green','skyblue','pink'],
-        label: {
-          color:this.color
-        },
-        series: [
-          {
-            name: "访问来源",
-            type: "pie",
-            radius: ["50%", "70%"],
-            labelLine: {
+      // color: ['red', 'blue','green','skyblue','pink'],
+      tooltip: {
+          trigger: 'item',
+      },
+      series: [
+        {
+          // name: '访问来源',
+          type: 'pie',
+          radius: ['50%', '70%'],
+          // avoidLabelOverlap: false,
+          label: {
               show: false,
-            },
-            data: [
-              { value: this.echarts.myProjectCaseUnSubmit},
-              { value: this.echarts.myProjectCaseSubmitted},
-              { value: this.echarts.myProjectsReview},
-              { value: this.echarts.myProjectsAimed},
-              { value: this.echarts.myProjectsInvalid},
-              { value: this.echarts.myProjectAbandon},
-            ]
+              position: 'center',
           },
-        ],
-      }
-      myChart.setOption(option);
+          emphasis: {
+              label: {
+                  // show: true,
+                  fontSize: '16',
+                  fontWeight: 'bold'
+              }
+          },
+          labelLine: {
+              show: false
+          },
+          data: [
+              { value: this.echarts.myProjectCaseUnSubmit, name: '方案待提交'},
+            { value: this.echarts.myProjectCaseSubmitted, name: '方案已提交'},
+            { value: this.echarts.myProjectsReview, name:'方案审批中'},
+            { value: this.echarts.myProjectsAimed, name: '中标'},
+            { value: this.echarts.myProjectsInvalid, name: '失效'},
+            { value: this.echarts.myProjectAbandon, name:'放弃'},
+          ]
+        }
+      ]
+    }
+    myChart.setOption(option);
     },
   },
   created () {
@@ -356,6 +368,7 @@ $background: #e9e9e9;
     // 日历头样式
     /deep/.ant-fullcalendar-header {
       text-align: center;
+      margin-bottom: 5px;
     }
     /deep/.ant-fullcalendar-column-header-inner {
       font-weight: 800;
