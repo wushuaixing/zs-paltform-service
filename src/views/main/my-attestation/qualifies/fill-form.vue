@@ -141,10 +141,11 @@
 </template>
 
 <script>
-import { qualifies } from "@/plugin/api/attest";
-import { fileListRule } from "@/plugin/tools";
 
-import Deploy,{ getValueFromEvent } from '@/plugin/tools/qiniu-deploy';
+import { qualifies } from "@/plugin/api/attest";
+import { fileListRuleAsync } from "@/plugin/tools";
+
+import Deploy,{ getValueFromEvent, getFileList } from '@/plugin/tools/qiniu-deploy';
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -179,13 +180,17 @@ export default {
       type:Boolean,
       default:true
     },
+		isFirst:{
+			type:Boolean,
+			default:false
+    },
     source: {
       type:Object,
       default:()=>{}
     },
     noAuction:{
       type:Boolean,
-      default:false
+      default:true
     },
   },
   data() {
@@ -301,7 +306,7 @@ export default {
           label:'身份证号码',
           dec:[ 'cardNumber', {
             trigger:'blur',
-            rules: [ { validator: validateCard }]
+            rules: [ { required: true, validator: validateCard }]
           }],
           other:{
             placeholder:'请输入身份证号码',
@@ -456,15 +461,6 @@ export default {
       this.form.setFieldsValue({ orgSocialCreditCode });
       // if(option.key)
     },
-    normFile(e,field) {
-      console.log('Upload event:', e);
-      if (Array.isArray(e)) { return e }
-      this.fileLists = {
-        ...this.fileLists,
-        [field]:e.fileList.length,
-      };
-      return e && e.fileList;
-    },
     // 确认无误并提交
     handleSubmit(e) {
       e.preventDefault();
@@ -481,27 +477,33 @@ export default {
       const addApi = this.userType === 'lawyer' ? qualifies.lawyerAdd : qualifies.orgAdd;
       addApi(_source).then(res=>{
         if(res.code === 20000 ){
-          console.log(res);
-          if(this.toTellRes){
-            this.$emit.toTellRes(res)
-          }
-        }
+					if(this.isFirst){
+						this.$success({
+							title: '资质认证提交成功',
+							okText:'点击前往"要素认证"',
+							onOk:()=>this.$router.push('/attest/factor'),
+						})
+					}
+					this.$emit('toTellRes',res)
+        }else{
+					this.$message.error('资质认证提交失败！');
+				}
       })
     },
     // 处理当前数据
     processData(source = {}){
       if(this.userType === 'org') {
         return Object.assign({},source,{
-          confidentialityCommitmentLetter:'https://qiniu.yczcjk.com/123.png',
-          businessLicense:'https://qiniu.yczcjk.com/123.png',
+					businessLicense:getFileList(source.businessLicense),
+					confidentialityCommitmentLetter:getFileList(source.confidentialityCommitmentLetter),
           name:(source.name || {}).label
         })
       }else{
         const _source = Object.assign({},source,{
-          frontOfCard:'https://qiniu.yczcjk.com/123.png',
-          backOfCard:'https://qiniu.yczcjk.com/123.png',
-          qualificationCertificate:'https://qiniu.yczcjk.com/123.png',
-          confidentialityCommitmentLetter:'https://qiniu.yczcjk.com/123.png',
+          frontOfCard:getFileList(source.frontOfCard),
+					backOfCard:getFileList(source.backOfCard),
+					qualificationCertificate:getFileList(source.qualificationCertificate),
+					confidentialityCommitmentLetter:getFileList(source.confidentialityCommitmentLetter),
         });
         return {lawyerQualify:{..._source}}
       }
@@ -517,7 +519,7 @@ export default {
       return this.$store.getters.getInfo.username;
     },
   },
-  mounted(){
+  async mounted(){
     // console.log(this.$store.getters.getInfo.username);
     const lawyerName = this.$store.getters.getInfo.username;
     if(this.form && this.userType === 'lawyer'){
@@ -529,19 +531,15 @@ export default {
       } = this.source;
       const fieldValues = {
         ..._source,
-        backOfCard:fileListRule(bc),
-        frontOfCard:fileListRule(fc),
-        confidentialityCommitmentLetter:fileListRule(cc),
-        qualificationCertificate:fileListRule(qc),
+        backOfCard: await fileListRuleAsync(bc),
+        frontOfCard:await fileListRuleAsync(fc),
+        confidentialityCommitmentLetter:await fileListRuleAsync(cc),
+        qualificationCertificate:await fileListRuleAsync(qc),
       };
       delete fieldValues.contact;
       delete fieldValues.logId;
       delete fieldValues.createTime;
       delete fieldValues.phone;
-      this.fileLists = {
-        cardFront:fileListRule(fc).length,
-        cardBack:fileListRule(bc).length,
-      };
       this.form.setFieldsValue({...fieldValues})
     }
   }
@@ -594,7 +592,7 @@ export default {
       margin-bottom: 0;
       .ant-form-item-control{
         position: absolute;
-        top: -161px;
+        top: -162px;
         left:33.333%;
       }
     }

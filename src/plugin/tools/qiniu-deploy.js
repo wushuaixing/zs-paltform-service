@@ -26,13 +26,13 @@ const beforeUpload = e => getUploadToken().then(res=>{
  * @returns {Promise<*>}
  */
 const preview = file =>{
-	const { status, response, url } = file;
+	const { status, response = {} } = file;
 	if(status !== 'done') {
 		message.error('该文件不支持预览');
 	}else{
 		console.log(file);
 		if(file.viewUrl) return window.open(file.viewUrl);
-		const fileKey = response.hash || url;
+		const fileKey = response.hash ? response.hash : file.hash;
 		getDownLoadToken(fileKey).then(res=>{
 			if(res.code === 20000) {
 				file.viewUrl = res.data;
@@ -56,6 +56,25 @@ export const getValueFromEvent = e =>{
 		message.error('文件上传失败！');
 	}
 	return e && e.fileList;
+};
+
+/**
+ * 获取上传的文件json
+ * @param val
+ */
+export const getFileList = val => {
+	if (Array.isArray(val)) {
+		const res = val.filter(i=>i.status === 'done').map(i=>{
+			return {
+				uid:i.uid,
+				name:i.name,
+				type:i.type,
+				hash:(i.response) ? i.response.hash : i.hash
+			}
+		});
+		return JSON.stringify(res);
+	}
+	return '';
 };
 
 const Deploy = {
