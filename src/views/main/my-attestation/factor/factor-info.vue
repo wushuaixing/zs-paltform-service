@@ -39,43 +39,41 @@
         </a-form>
       </div>
       <!--律师详情展示-->
-      <div class="info-item" v-if="userinfo.identity === 1" id="attorney">
+      <div class="info-item" v-if="userinfo.identity === 1">
         <a href="#attorney" :class="btn === '律师信息' ? 'button-attorney attorney_btn' : 'attorney_btn'"
            @click="switchInform('律师信息')">律师信息</a>
         <a href="#lawOffice " :class="btn === '律所信息' ? 'button-attorney attorney_btn' : 'attorney_btn'"
            @click="switchInform('律所信息')">律所信息</a>
         <!--律师信息-->
-        <div>
-          <div class="info-type">
-            <span>律师信息</span>
-            <span><a-icon type="edit"/> 编辑我的要素信息</span>
-          </div>
-          <a-form v-bind="formItemLayout">
-            <div class="factor-form-subtitle"><span>个人背景</span></div>
-            <a-form-item label="毕业院校">{{ element.graduateSchool }}</a-form-item>
-            <a-form-item label="专业">{{ element.major }}</a-form-item>
-            <a-form-item label="从业不良经验">暂定</a-form-item>
-            <a-form-item label="主要涉及地区">{{ element.workArea }}</a-form-item>
-            <a-form-item label="是否有公检法等工作经历">{{ whether[element.isWorkOfPublicSecurityOrgans] }}</a-form-item>
-            <a-form-item label="当前是否存在其他兼职/任职">{{ element.workRole }}</a-form-item>
-          </a-form>
-          <a-form v-bind="formItemLayout">
-            <div class="factor-form-subtitle"><span>擅长优势</span></div>
-            <a-form-item label="擅长业务类型">{{ coodClass[element.goodCases] }}</a-form-item>
-            <a-form-item label="擅长业务区域">{{ element.areasOfGoodCases }}</a-form-item>
-            <a-form-item label="其他资源">{{ resources[element.otherResources] }}</a-form-item>
-          </a-form>
-          <a-form v-bind="formItemLayout">
-            <div class="factor-form-subtitle"><span>历史合作情况</span></div>
-            <a-form-item label="历史合作四大">{{ element.cooperatedAmc | historyCooperation }}</a-form-item>
-            <a-form-item label="是否曾与浙商合作">{{ whether[element.isCooperatedWithZheshang] }}</a-form-item>
-            <a-form-item label="其他AMC合作情况">{{ whether[element.isCooperatedWithOtherAmc] }}</a-form-item>
-          </a-form>
-          <a-form v-bind="formItemLayout">
-            <div class="factor-form-subtitle"><span>后续期望合作方向</span></div>
-            <a-form-item label="合作意向">{{ cooperIntention[element.cooperationIntention] }}</a-form-item>
-          </a-form>
+        <div class="info-type" id="attorney">
+          <span>律师信息</span>
+          <span><a-icon type="edit"/> 编辑我的要素信息</span>
         </div>
+        <a-form v-bind="formItemLayout">
+          <div class="factor-form-subtitle"><span>个人背景</span></div>
+          <a-form-item label="毕业院校">{{ element.graduateSchool }}</a-form-item>
+          <a-form-item label="专业">{{ element.major }}</a-form-item>
+          <a-form-item label="从业不良经验">暂定</a-form-item>
+          <a-form-item label="主要涉及地区">{{ element.workArea }}</a-form-item>
+          <a-form-item label="是否有公检法等工作经历">{{ whether[element.isWorkOfPublicSecurityOrgans] }}</a-form-item>
+          <a-form-item label="当前是否存在其他兼职/任职">{{ element.workRole }}</a-form-item>
+        </a-form>
+        <a-form v-bind="formItemLayout">
+          <div class="factor-form-subtitle"><span>擅长优势</span></div>
+          <a-form-item label="擅长业务类型">{{ coodClass[element.goodCases] }}</a-form-item>
+          <a-form-item label="擅长业务区域">{{ element.areasOfGoodCases }}</a-form-item>
+          <a-form-item label="其他资源">{{ resources[element.otherResources] }}</a-form-item>
+        </a-form>
+        <a-form v-bind="formItemLayout">
+          <div class="factor-form-subtitle"><span>历史合作情况</span></div>
+          <a-form-item label="历史合作四大">{{ element.cooperatedAmc | historyCooperation }}</a-form-item>
+          <a-form-item label="是否曾与浙商合作">{{ whether[element.isCooperatedWithZheshang] }}</a-form-item>
+          <a-form-item label="其他AMC合作情况">{{ whether[element.isCooperatedWithOtherAmc] }}</a-form-item>
+        </a-form>
+        <a-form v-bind="formItemLayout">
+          <div class="factor-form-subtitle"><span>后续期望合作方向</span></div>
+          <a-form-item label="合作意向">{{ cooperIntention[element.cooperationIntention] }}</a-form-item>
+        </a-form>
         <!--律所信息-->
         <div id="lawOffice">
           <div class="info-type">
@@ -85,18 +83,22 @@
           <div v-if="true" class="notAddLawyer">
             <img src="@/assets/img/no-finished.png"/>
             <div class="text">您还未添加挂靠律师信息认证，请尽快添加！</div>
-            <button>立即添加</button>
+            <button @click="addLawOffice">立即添加</button>
           </div>
           <div v-if="false">
             <a-form v-bind="formItemLayout">
-              <div class="factor-form-subtitle"><span>后续期的合作方向</span></div>
-              <a-form-item label="律所信息展示">律所信息展示</a-form-item>
-            </a-form>
-            <a-form v-bind="formItemLayout">
-              <div class="factor-form-subtitle"><span>律所信息</span></div>
-              <a-form-item label="擅长业务类型"></a-form-item>
-              <a-form-item label="擅长业务区域"></a-form-item>
-              <a-form-item label="其他资源"></a-form-item>
+              <a-form-item label="律所名字">{{ lawOffice.lawOfficeName }}</a-form-item>
+              <a-form-item label="律所地址">{{ lawOffice.lawOfficeAddress }}</a-form-item>
+              <a-form-item label="律所类型">{{ firmType[lawOffice.lawOfficeType] }}</a-form-item>
+              <a-form-item label="律所是否经营3年以上">{{ lawWhether[lawOffice.isWorkForThreeYear] }}</a-form-item>
+              <a-form-item label="是否存在分所">{{ lawWhether[lawOffice.hasOtherOffice] }}</a-form-item>
+              <a-form-item label="分所展业地域">{{ lawOffice.officeWorkAddress }}</a-form-item>
+              <a-form-item label="分所的人员情况">{{ lawOffice.otherOfficeStaffInfo }}</a-form-item>
+              <a-form-item label="律所请收团对人数">{{ lawOffice.totalTeamSize }}</a-form-item>
+              <a-form-item label="本人在律所但任职务">{{ element.roleInLawOffice }}</a-form-item>
+              <a-form-item label="律所简介">{{ lawOffice.lawOfficeInformation }}</a-form-item>
+              <a-form-item label="律所资质">{{ lawOffice.lawOfficeQualify }}</a-form-item>
+              <a-form-item label="律所业绩介绍">{{ lawOffice.lawOfficeQualifyPerformance }}</a-form-item>
             </a-form>
           </div>
         </div>
@@ -122,7 +124,7 @@ export default {
     return {
       formItemLayout,
       btn: '律师信息',//锚点控制按钮
-      userinfo: {},
+      userinfo: {},//用户信息
       whether: {1: '是', 2: '否', 0: '其他'},
       coodClass: {
         1: '立案/保全',
@@ -163,6 +165,14 @@ export default {
         5: '担保类项目',
         0: '其他'
       },
+      firmType: {
+        1: '公司制',
+        2: '合伙制'
+      },
+      lawWhether: {
+        0: '否',
+        1: '是'
+      },
       //机构展示数据
       organizationElementVO: {
         areasOfGoodCases: "擅长业务区域",
@@ -183,7 +193,7 @@ export default {
         investmentExperience: "",
         investmentPreferenceType: "",
         isCooperatedWithOtherAmc: "",
-        isCooperatedWithZheshang: 0,//"是否与浙商合作过（1：是，2否，0：其他）"
+        isCooperatedWithZheshang: 1,//"是否与浙商合作过（1：是，2否，0：其他）"
         isCooperatedWithZheshangDetail: "",
         liquidationSituation: "历史清收情况",
         logId: 0,
@@ -219,7 +229,7 @@ export default {
         goodCases: 17,
         graduateSchool: "浙江大学",
         isCooperatedWithOtherAmc: 1,
-        isCooperatedWithZheshang: 2,
+        isCooperatedWithZheshang: 1,
         isCooperatedWithZheshangDetail: "",
         isInStorage: "",
         isWorkOfPublicSecurityOrgans: 1,
@@ -248,18 +258,40 @@ export default {
         otherResources: 1,
         otherResourcesAdvantage: "",
         otherResourcesDetail: "",
-        roleInLawOffice: "",
+        roleInLawOffice: 1,
         typeOfCooperationCode: "",
         workArea: "浙江",
         workRole: "兼职/任职职务",
         workUnitName: "",
         workingTime: ""
       },
+      //律所的信息
+      lawOffice: {
+        code: "",
+        hasOtherOffice: 0,
+        id: 0,
+        isWorkForThreeYear: 1,
+        lawOfficeAddress: "浙江辽宁葫芦岛",
+        lawOfficeInformation: "律所简介数据",
+        lawOfficeName: "浙商资产",
+        lawOfficeQualify: "律所资质数据",
+        lawOfficeQualifyPerformance: "律所业绩介绍数据",
+        lawOfficeType: 1,
+        officeWorkAddress: "",
+        otherOfficeStaffInfo: "",
+        otherOfficeWorkAddress: "",
+        totalTeamSize: 0
+      },
     }
   },
   methods: {
+    //锚点跳转
     switchInform(val) {
       this.btn = val
+    },
+    //点击添加律所的信息
+    addLawOffice() {
+      alert("添加律所的信息")
     }
   },
   created() {
@@ -286,15 +318,18 @@ export default {
       margin-right: 13px;
       margin-bottom: 12px;
     }
-    .notAddLawyer{
+
+    .notAddLawyer {
       text-align: center;
       margin: 60px 0;
-      .text{
+
+      .text {
         color: #666666;
         font-size: 14px;
-        margin:24px 0 ;
+        margin: 24px 0;
       }
-      button{
+
+      button {
         width: 88px;
         height: 32px;
         color: #FFFFFF;

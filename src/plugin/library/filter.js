@@ -21,7 +21,7 @@ Vue.filter('amountTh', (val)=>{
 
 //机构是否与浙商合作过的字段过滤器
 Vue.filter('factorWith', (val)=>{
-	return val === 0 ? '是' : val === 1 ? '否' : '其他';
+	return val === 1 ? '是' : val === 2 ? '否' : '其他';
 })
 //机构历史合作银行
 Vue.filter('historyCooperation', (val)=>{
