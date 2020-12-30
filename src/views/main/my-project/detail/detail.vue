@@ -122,7 +122,7 @@
           <div>
             <div class="subtitle">处置计划：</div>
             <div>
-              <a-steps :current="1">
+              <a-steps :current="2">
                 <a-popover slot="progressDot" slot-scope="{ index, status, prefixCls }">
                   <template slot="content">
                     <span>step {{ index }} status: {{ status }}</span>
