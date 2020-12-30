@@ -28,7 +28,7 @@
           <a-tabs @change="handleTabChange" v-model="params.aimStatus">
             <a-tab-pane v-for="i in tabType" :key="i.id">
               <template slot="tab">
-                <a-badge :dot="i.dot"  :numberStyle="{width:'8px',height:'8px'}">{{i.title}}</a-badge>
+                <a-badge :dot="!i.dot===1"  :numberStyle="{width:'8px',height:'8px'}">{{i.title}}</a-badge>
               </template>
             </a-tab-pane>
           </a-tabs>
@@ -101,8 +101,8 @@ export default {
   data() {
     return {
       navData:[
-        {id:1,title:'服务商管理',path:'/provider/review'},
-        {id:2,title:'待审查',path:'/provider/review'},
+        {id:1,title:'我的项目',path:'/provider/review'},
+        {id:2,title:'我的竞标',path:'/provider/review'},
       ],
       tabType:[
         { id:1, title:'进行中' ,dot:true},
@@ -110,6 +110,7 @@ export default {
         { id:3, title:'已放弃' ,dot:false},
         { id:4, title:'已失效' ,dot:true},
       ],
+
       http:{
         1:amcBiding,  //进行中
         2:amcBidAimed, //已中标
@@ -221,6 +222,9 @@ export default {
     getUnreadInfo(){
       unreadInfo().then(res=>{
         console.log(res)
+        this.tabType[0].dot = res.data.goingUnRead;
+        this.tabType[1].dot = res.data.aimedUnRead;
+        this.tabType[3].dot = res.data.invalidUnRead;
       })
     },
     // 搜索查询

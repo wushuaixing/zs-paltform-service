@@ -24,12 +24,36 @@
     <div class="plan-modal-wrapper">
       <div class="basic-info">
         <div class="title" style="margin-top: 32px">债权基本信息</div>
-        <ul class="content">
+        <!-- <ul class="content">
           <li v-for="item in data" :key="item.val">
             <div>{{ item.label }}</div>
             <div>{{ `${item.val}${item.unit}` }}</div>
           </li>
-        </ul>
+        </ul> -->
+        <div  class="content">
+          <a-row>
+            <a-col :span="8">
+              <span>债务人名称：</span><span>{{msgInfo.debtor}}</span>
+            </a-col>
+            <a-col :span="8">
+              <span>债务人注册地：</span><span>{{msgInfo.debtorAddress}}</span>
+            </a-col>
+            <a-col :span="8">
+              <span>当前诉讼状态：</span><span>{{msgInfo.isLawsuit|isLawsuitType}}</span>
+            </a-col>
+          </a-row>
+          <a-row>
+            <a-col :span="8">
+              <span>债权本金：</span><span>{{msgInfo.debtCaptial | amountTh}}万元</span>
+            </a-col>
+            <a-col :span="8">
+              <span>债权利息：</span><span>{{msgInfo.debtInterest|amountTh}}万元</span>
+            </a-col>
+            <a-col :span="8">
+              <span>担保方式：</span><span>{{msgInfo.security | guarantyType}}</span>
+            </a-col>
+          </a-row>
+        </div>
       </div>
       <div class="plan">
         <div class="title" style="margin-top: 32px">服务方案</div>
@@ -146,7 +170,7 @@ export default {
   nameComment: "查看抵质押物清单弹窗",
   data() {
     return {
-      visible: true,
+      visible: false,
       data: [
         {
           label: "债务人名称：",
@@ -285,6 +309,9 @@ export default {
       });
     },
   },
+  created(){
+    // this.form = this.msgInfo;
+  },
   filters: {
     area: (params) => {
       return getArea(params.provinceCode, params.cityCode, params.areaCode);
@@ -298,7 +325,8 @@ export default {
   width: 1200px !important;
   .plan-modal-wrapper {
     .content {
-      li {
+      margin-left: 20px;
+      .ant-row{
         margin-top: 24px;
       }
     }
