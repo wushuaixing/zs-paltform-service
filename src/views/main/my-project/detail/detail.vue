@@ -19,11 +19,11 @@
             </div>
             <div style="margin-right: 30px">
               <span class="subtitle">报名日期：</span
-              ><span class="spantext">{{}}</span>
+              ><span class="spantext">{{info.gmtCreate}}</span>
             </div>
             <div>
               <span class="subtitle">方案提交截止日期：</span
-              ><span class="spantext">{{}}</span>
+              ><span class="spantext">{{info.submitDeadline}}</span>
             </div>
           </div>
         </div>
@@ -72,7 +72,7 @@
             <div>
               <span class="subtitle">保证人清单：</span
               ><span class="spantext">{{
-                info.amcProjectGuarantors.guarantorName
+                info.amcProjectGuarantors|guarantorsList
               }}</span>
             </div>
           </a-col>
@@ -89,7 +89,7 @@
             </div>
           </a-col>
         </a-row>
-        <div class="flex-style" style="margin-top:24px;">
+        <div class="flex-style" style="margin-top: 24px">
           <div class="ctitle">我提交的服务方案</div>
           <div class="flex-style">
             <div style="margin-right: 30px">
@@ -108,21 +108,34 @@
           <p class="text">您暂未提交服务方案</p>
           <button class="submitbtn">去提交</button>
         </div>
-        <div >
+        <div v-else>
           <div class="flex-style">
             <div>
               <span class="subtitle">服务期限：</span>
-              <span class="spantext">{{}}</span>
+              <span class="spantext">{{info.serviceTime}}</span>
             </div>
             <div>
               <span class="subtitle">目标回款：</span>
-              <span class="spantext">{{}}</span>
+              <span class="spantext">{{info.aimBackPrice}}</span>
             </div>
           </div>
           <div>
             <div class="subtitle">处置计划：</div>
-            <div class="step">
-              
+            <div>
+              <a-steps :current="1">
+                <a-popover slot="progressDot" slot-scope="{ index, status, prefixCls }">
+                  <template slot="content">
+                    <span>step {{ index }} status: {{ status }}</span>
+                  </template>
+                  <span :class="`${prefixCls}-icon-dot`" />
+                </a-popover>
+                <a-step title="申请执行" description="3个月内" />
+                <a-step title="执行裁定" description="6个月内" />
+                <a-step title="腾房完成" description="9个月内" />
+                <a-step title="评估完成" description="12个月内" />
+                <a-step title="处置完成" description="18个月内" />
+                <a-step title="回款" description="24个月内" />
+              </a-steps>
             </div>
           </div>
         </div>
@@ -155,53 +168,91 @@ export default {
           2: "方案审核中",
         },
       },
-      tipStyle:{
-        
-      },
+      tipStyle: {},
       info: {
-        abandonDate: "",
-        aggrementDate: "",
-        aimBackPrice: "",
+        abandonDate: "2020-12-29",
+        aggrementDate: "2020-12-29",
+        aimBackPrice: "999.99",
         aimedStatus: "2",
-        amcBidFiles: "",
-        amcProjectCollaterals: [
+        amcBidFiles: [
           {
-            collateralType: "房产",
-            provinceCode: "浙江省",
-            cityCode: "杭州市",
-            areaCode: "西湖区",
-          },
-          {
-            collateralType: "房产",
-            provinceCode: "浙江省",
-            cityCode: "杭州市",
-            areaCode: "西湖区",
+            amcBidId: 0,
+            caseFileAddress: "",
+            gmtCreate: "2020-12-29",
+            gmtDelete: "2020-12-29",
+            gmtModify: "2020-12-29",
+            id: 0,
+            isDelete: "0",
+            serviceContractFileAddress: "",
           },
         ],
-        amcProjectGuarantors: {
-          guarantorName: "浙江天赐生态科技有限公司、张三、李四",
-        },
-        caseFileStatus: "",
-        debtCaptial: "781.4",
-        debtInterest: "781.4",
-        debtor: "浙江混天绫实业有限公司",
-        debtorAddress: "",
-        gmtCreate: "",
-        id: "",
-        isDeleted: "",
-        isLawsuit: "",
-        realSubmitDeadline: "",
-        recallDate: "",
-        scheduleManagements: "",
-        security: "",
-        serviceCaseUpdateTime: "",
-        serviceTime: "",
-        submitDeadline: "",
+        amcProjectCollaterals: [
+          {
+            amcProjectId: 0,
+            areaCode: 0,
+            cityCode: 0,
+            collateralName: "",
+            collateralType: 0,
+            gmtCreate: "2020-12-29",
+            gmtDeleted: "2020-12-29",
+            gmtModify: "2020-12-29",
+            id: 0,
+            isDeleted: "0",
+            provinceCode: 0,
+          },
+        ],
+        amcProjectGuarantors: [
+          {
+            amcProjectId: 0,
+            gmtCreate: "2020-12-29",
+            gmtDeleted: "2020-12-29",
+            gmtModify: "2020-12-29",
+            guarantorCard: "11111111111111",
+            guarantorName: "马云",
+            guarantorPhone: "10086",
+            id: 0,
+            isDeleted: "0",
+          },
+        ],
+        caseFileStatus: "0",
+        debtCaptial: "130.15",
+        debtInterest: "120.2",
+        debtor: "阿里巴巴集团",
+        debtorAddress: "杭州市西湖区",
+        gmtCreate: "2020-12-29",
+        id: 0,
+        isDeleted: "0",
+        isLawsuit: "0",
+        realSubmitDeadline: "2020-12-29",
+        recallDate: "2020-12-29",
+        scheduleManagements: [
+          {
+            amcBidId: 0,
+            amcServiceUserId: 0,
+            dateDay: "2020-12-29",
+            dateMatters: "腾房完毕",
+            dateMonth: 0,
+            gmtCreate: "2020-12-29",
+            gmtDelete: "2020-12-29",
+            gmtModify: "2020-12-29",
+            id: 0,
+            isDelete: "0",
+          },
+        ],
+        security: "2",
+        serviceCaseUpdateTime: "2020-12-29",
+        serviceTime: "2020-12-29",
+        submitDeadline: "2020-12-29",
       },
     };
   },
   components: {
     Breadcrumb,
+  },
+  filters: {
+    guarantorsList: (arr = []) => {
+      return arr.map(i => i.guarantorName).join("、");
+    },
   },
   methods: {},
   created() {

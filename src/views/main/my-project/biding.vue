@@ -231,7 +231,7 @@ export default {
       this.query.tabStatus = val;
       this.getProjectList()
     },
-    // 分页
+    // 分页,排序
     handleTableChange(pagination, filters, sorter){
       this.params.page = pagination.current;
       this.params.size = pagination.pageSize;
