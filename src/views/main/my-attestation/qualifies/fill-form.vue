@@ -506,7 +506,10 @@ export default {
 						this.$success({
 							title: '资质认证提交成功',
 							okText:'点击前往"要素认证"',
-							onOk:()=>this.$router.push('/attest/factor'),
+							onOk:()=>{
+								this.$store.dispatch("updateIdentity", this.userType === 'lawyer' ? 1 : 2);
+								this.$router.push('/attest/factor');
+							}
 						})
 					}
 					this.$emit('toTellRes',res)
