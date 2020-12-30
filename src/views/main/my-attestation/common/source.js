@@ -62,10 +62,10 @@ export const lawAdvList = [
 ];
 // 从业不良时间经验
 export const expOption = [
-	{ id: 0, label: '暂未有实际项目落地', value: '0' },
 	{ id: 1, label: '1年以内', value: '1' },
 	{ id: 2, label: '1-3年', value: '2' },
 	{ id: 3, label: '3年以上', value: '3' },
+	{ id: 0, label: '暂未有实际项目落地', value: '0' },
 ];
 // 历史合作四大
 export const hisFour = [

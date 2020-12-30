@@ -7,7 +7,7 @@
             <img class="zs-logo-pic" src="../../assets/img/zs-logo.png" alt="">
           </div>
 					<div style="width: 853px; height: 480px;overflow: hidden;">
-						<video autoplay controls src="http://qlumgyse9.hd-bkt.clouddn.com/promotion-vedio.mp4"></video>
+						<video muted autoplay controls src="http://qlumgyse9.hd-bkt.clouddn.com/promotion-vedio.mp4"></video>
 					</div>
         </div>
         <div class="login-wrapper" ref="loginContainer">
