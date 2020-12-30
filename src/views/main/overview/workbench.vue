@@ -21,12 +21,12 @@
       <div class="item-wrapper">
         <div class="item-project item-format">竞标项目进度概览</div>
         <!-- 没有添加项目 -->
-        <div class="empty" v-if="echarts.myProjectsNum !== 0" >
+        <div class="empty" v-show="echarts.myProjectsNum === 0" >
           <a-empty description>
             <slot name="description">您还没有已开始的项目，去<router-link to="center">服务商项目招商中心</router-link>添加第一个项目</slot>
           </a-empty>
         </div>
-        <div class="item-content item-format" v-else>
+        <div class="item-content item-format" v-show="echarts.myProjectsNum !== 0">
           <div class="total">我的项目总数：{{echarts.myProjectsNum}}</div>
           <div class="data-display">
             <!-- 饼图 -->
@@ -145,18 +145,17 @@ export default {
       this.getCalendarData ()
     },
     // 获取日历事项
-    getCalendarData () {
+    async getCalendarData () {
       var time = new Date().toLocaleString();
       let baseDate = time.slice(0,7).replace("/","-");
       let startDate = baseDate + '-' + "01";
       let endDate = baseDate + '-' + "31";
       console.log(startDate,endDate);
-      getCalendar({startDate,endDate}).then((res) => {
+      const res = await getCalendar({startDate,endDate})
       console.log(res);
       console.log(res.data)
       if (res.code !== 20000) return this.$message.error("获取日历事项失败");
       this.data = res.data
-    })
     },
     // 待办事项
     async getList() {
@@ -175,40 +174,40 @@ export default {
       this.echarts = res.data
       let option = {
       // color: ['red', 'blue','green','skyblue','pink'],
-      tooltip: {
-          trigger: 'item',
-      },
-      series: [
-        {
-          // name: '访问来源',
-          type: 'pie',
-          radius: ['50%', '70%'],
-          // avoidLabelOverlap: false,
-          label: {
-              show: false,
-              position: 'center',
-          },
-          emphasis: {
-              label: {
-                  // show: true,
-                  fontSize: '16',
-                  fontWeight: 'bold'
-              }
-          },
-          labelLine: {
-              show: false
-          },
-          data: [
-              { value: this.echarts.myProjectCaseUnSubmit, name: '方案待提交'},
-            { value: this.echarts.myProjectCaseSubmitted, name: '方案已提交'},
-            { value: this.echarts.myProjectsReview, name:'方案审批中'},
-            { value: this.echarts.myProjectsAimed, name: '中标'},
-            { value: this.echarts.myProjectsInvalid, name: '失效'},
-            { value: this.echarts.myProjectAbandon, name:'放弃'},
-          ]
-        }
-      ]
-    }
+        tooltip: {
+            trigger: 'item',
+        },
+        series: [
+          {
+            // name: '访问来源',
+            type: 'pie',
+            radius: ['50%', '70%'],
+            // avoidLabelOverlap: false,
+            label: {
+                show: false,
+                position: 'center',
+            },
+            emphasis: {
+                label: {
+                    show: true,
+                    fontSize: '16',
+                    fontWeight: 'bold'
+                }
+            },
+            labelLine: {
+                show: false
+            },
+            data: [
+                { value: this.echarts.myProjectCaseUnSubmit, name: '方案待提交'},
+              { value: this.echarts.myProjectCaseSubmitted, name: '方案已提交'},
+              { value: this.echarts.myProjectsReview, name:'方案审批中'},
+              { value: this.echarts.myProjectsAimed, name: '中标'},
+              { value: this.echarts.myProjectsInvalid, name: '失效'},
+              { value: this.echarts.myProjectAbandon, name:'放弃'},
+            ]
+          }
+        ]
+      }
     myChart.setOption(option);
     },
     // 根据详情路由跳转
@@ -219,12 +218,9 @@ export default {
   created () {
     this.getCalendarData()
     this.getList()
-    this.$nextTick(() => { //延迟等待渲染完再加载
-    this.initECharts()
-    })
   },
   mounted() {
-    // this.initECharts()
+    this.initECharts()
   }
 };
 </script>
@@ -256,7 +252,7 @@ $background: #e9e9e9;
   }
   .item {
     &-format {
-      padding: 24px;
+      padding: 10px;
       font-size: 14px;
       line-height: 1;
       border-bottom: 1px solid #E9E9E9;
@@ -265,21 +261,22 @@ $background: #e9e9e9;
       border-bottom: 10px solid $background;
     }
     &-title {
+      padding: 20px 24px;
       border-bottom: 1px solid $background;
       line-height: 1.5;
       font-size: 16px;
       font-family: PingFangSC-Medium, PingFang SC;
-      font-weight: 500;
+      font-weight: 600;
       color: #262626;
     }
     &-project {
+      padding: 20px 24px;
       border-bottom: 1px solid $background;
       font-size: 16px;
       font-family: PingFangSC-Medium, PingFang SC;
-      font-weight: 500;
+      font-weight: 600;
       color: #333333;
       line-height: 16px;
-      padding: 20px 20px;
     }
     &-content {
       min-height: 150px;
@@ -297,7 +294,7 @@ $background: #e9e9e9;
       li {
         list-style: none;
         border-bottom: 1px solid #E9E9E9;
-        margin: 0;
+        margin-left: 20px;
         padding: 10px 0;
       }
     }
@@ -310,7 +307,7 @@ $background: #e9e9e9;
     //   height: 16px;
     //   font-size: 16px;
     //   font-family: PingFangSC-Medium, PingFang SC;
-    //   font-weight: 900;
+    //   font-weight: 600;
     //   color: #262626;
     //   line-height: 16px;
     // }
@@ -330,19 +327,24 @@ $background: #e9e9e9;
       height: 150px;
       border-radius: 50%;
     }
-    .schemeProcess {
+    .schemeProcess,.schemeStatus {
       width: 30%;
-    }
-    .schemeStatus {
-      width: 30%;
+      span {
+        height: 20px;
+        font-size: 14px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: #333333;
+        line-height: 20px;
+      }
     }
     .total {
-      padding: 0 5px;
+      padding: 0 14px;
       margin-top: 10px;
       height: 16px;
       font-size: 14px;
       font-family: PingFangSC-Medium, PingFang SC;
-      font-weight: 500;
+      font-weight: 600;
       color: #333333;
       line-height: 16px;
     }
@@ -370,6 +372,14 @@ $background: #e9e9e9;
     .notes-month section {
       font-size: 28px;
     }
+    /deep/.ant-badge-status-text {
+      height: 17px;
+      font-size: 12px;
+      font-family: PingFangSC-Regular, PingFang SC;
+      font-weight: 400;
+      color: #999999;
+      line-height: 17px;
+    }
     // 日历头样式
     /deep/.ant-fullcalendar-header {
       text-align: center;
@@ -384,6 +394,15 @@ $background: #e9e9e9;
     }
     /deep/.ant-fullcalendar-today .ant-fullcalendar-date {
       border-top: 6px solid #008cb0 !important;
+      opacity: 0.8;
+    }
+    /deep/.ant-badge-status-text {
+      height: 12px;
+      font-size: 12px;
+      font-family: PingFangSC-Regular, PingFang SC;
+      font-weight: 400;
+      color: #666666;
+      line-height: 12px;
     }
   }
   // 隐藏月和年选择按钮
@@ -410,10 +429,16 @@ $background: #e9e9e9;
   }
   // 提醒类型样式
   .thing {
-    font-weight: 800;
-    font-size: 16px;
+    color: #333333;
+    line-height: 22px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-size: 14px;
   }
   /deep/.ant-btn {
     padding: unset;
+    height: 20px;
+    line-height: 20px;
   }
 </style>
