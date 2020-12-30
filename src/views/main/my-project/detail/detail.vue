@@ -109,7 +109,7 @@
           <button class="submitbtn">去提交</button>
         </div>
         <div v-else>
-          <div class="flex-style">
+          <div class="serviceTime-aimBackPrice-row">
             <div>
               <span class="subtitle">服务期限：</span>
               <span class="spantext">{{info.serviceTime}}</span>
@@ -119,15 +119,15 @@
               <span class="spantext">{{info.aimBackPrice}}</span>
             </div>
           </div>
-          <div>
+          <div class="plan">
             <div class="subtitle">处置计划：</div>
-            <div>
+            <div class="step">
               <a-steps :current="1">
-                <a-popover slot="progressDot" slot-scope="{ index, status, prefixCls }">
+                <a-popover slot="progressDot" slot-scope="{ index, status }">
                   <template slot="content">
                     <span>step {{ index }} status: {{ status }}</span>
                   </template>
-                  <span :class="`${prefixCls}-icon-dot`" />
+                  <img src="@/assets/img/step-act.png" alt="">
                 </a-popover>
                 <a-step title="申请执行" description="3个月内" />
                 <a-step title="执行裁定" description="6个月内" />
@@ -141,12 +141,14 @@
         </div>
       </a-card>
     </div>
+    <PlanModal/>
   </div>
 </template>
 
 <script>
 import { amcBidDetail } from "@/plugin/api/my-biding";
 import Breadcrumb from "@/components/bread-crumb";
+import PlanModal from '../Plan-modal.vue';
 export default {
   data() {
     return {
@@ -248,6 +250,7 @@ export default {
   },
   components: {
     Breadcrumb,
+    PlanModal
   },
   filters: {
     guarantorsList: (arr = []) => {
@@ -322,6 +325,19 @@ export default {
       color: #666666;
       line-height: 14px;
     }
+  }
+}
+.serviceTime-aimBackPrice-row{
+  margin-top: 24px;
+  display: flex;
+  div~div{
+    margin-left: 30px;
+  }
+}
+.plan{
+  margin-top: 24px;
+  .step{
+    margin-top: 24px;
   }
 }
 </style>
