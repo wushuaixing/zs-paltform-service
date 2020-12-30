@@ -11,7 +11,8 @@
                   <a-badge :status="MATTER_TYPE[item.code].text" />
                   <span class="thing">{{ MATTER_TYPE[item.code].name}}</span>
                   <span class="message">{{item.message}}</span>
-                  <router-link :to="MATTER_TYPE[item.code].path">立即前往</router-link>
+                  <!-- <router-link :to="MATTER_TYPE[item.code].path">立即前往</router-link> -->
+                   <a-button type="link" @click="onTarget(MATTER_TYPE[item.code].path, item.projectId)" >立即前往</a-button>
                 </li>
               </ul>
             </div>
@@ -80,7 +81,7 @@
 <script>
 import { getEcharts } from "@/plugin/api/echarts";
 import { getCalendar, getTODoList } from "@/plugin/api/calendar";
-import { MATTYER_TYPE } from "./toDoList";
+import { MATTER_TYPE } from "./toDoList";
 import echarts from "echarts";
 export default {
   name: "Workbench",
@@ -96,7 +97,7 @@ export default {
       // 待办事项的数据
       list: [],
       // 提醒类型
-      MATTYER_TYPE,
+      MATTER_TYPE,
       // 开始时间和结束时间请求的携带参数
       schedule:{
         endDate:"",
@@ -210,9 +211,13 @@ export default {
     }
     myChart.setOption(option);
     },
+    // 根据详情路由跳转
+    onTarget (path,id) {
+      this.$router.push({path,query:id})
+    }
   },
   created () {
-    this.getCalendearDatas()
+    this.getCalendarData()
     this.getList()
     this.$nextTick(() => { //延迟等待渲染完再加载
     this.initECharts()
@@ -251,7 +256,7 @@ $background: #e9e9e9;
   }
   .item {
     &-format {
-      padding: 16px;
+      padding: 24px;
       font-size: 14px;
       line-height: 1;
       border-bottom: 1px solid #E9E9E9;
@@ -407,5 +412,8 @@ $background: #e9e9e9;
   .thing {
     font-weight: 800;
     font-size: 16px;
+  }
+  /deep/.ant-btn {
+    padding: unset;
   }
 </style>
