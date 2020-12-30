@@ -87,18 +87,18 @@
           </div>
           <div v-if="false">
             <a-form v-bind="formItemLayout">
-              <a-form-item label="律所名字">{{ lawOffice.lawOfficeName }}</a-form-item>
-              <a-form-item label="律所地址">{{ lawOffice.lawOfficeAddress }}</a-form-item>
-              <a-form-item label="律所类型">{{ firmType[lawOffice.lawOfficeType] }}</a-form-item>
-              <a-form-item label="律所是否经营3年以上">{{ lawWhether[lawOffice.isWorkForThreeYear] }}</a-form-item>
-              <a-form-item label="是否存在分所">{{ lawWhether[lawOffice.hasOtherOffice] }}</a-form-item>
-              <a-form-item label="分所展业地域">{{ lawOffice.officeWorkAddress }}</a-form-item>
-              <a-form-item label="分所的人员情况">{{ lawOffice.otherOfficeStaffInfo }}</a-form-item>
-              <a-form-item label="律所请收团对人数">{{ lawOffice.totalTeamSize }}</a-form-item>
+              <a-form-item label="律所名字">{{ element.lawOffice.lawOfficeName }}</a-form-item>
+              <a-form-item label="律所地址">{{ element.lawOffice.lawOfficeAddress }}</a-form-item>
+              <a-form-item label="律所类型">{{ firmType[element.lawOffice.lawOfficeType] }}</a-form-item>
+              <a-form-item label="律所是否经营3年以上">{{ lawWhether[element.lawOffice.isWorkForThreeYear] }}</a-form-item>
+              <a-form-item label="是否存在分所">{{ lawWhether[element.lawOffice.hasOtherOffice] }}</a-form-item>
+              <a-form-item label="分所展业地域">{{ element.lawOffice.officeWorkAddress }}</a-form-item>
+              <a-form-item label="分所的人员情况">{{ element.lawOffice.otherOfficeStaffInfo }}</a-form-item>
+              <a-form-item label="律所请收团对人数">{{ element.lawOffice.totalTeamSize }}</a-form-item>
               <a-form-item label="本人在律所但任职务">{{ element.roleInLawOffice }}</a-form-item>
-              <a-form-item label="律所简介">{{ lawOffice.lawOfficeInformation }}</a-form-item>
-              <a-form-item label="律所资质">{{ lawOffice.lawOfficeQualify }}</a-form-item>
-              <a-form-item label="律所业绩介绍">{{ lawOffice.lawOfficeQualifyPerformance }}</a-form-item>
+              <a-form-item label="律所简介">{{ element.lawOffice.lawOfficeInformation }}</a-form-item>
+              <a-form-item label="律所资质">{{ element.lawOffice.lawOfficeQualify }}</a-form-item>
+              <a-form-item label="律所业绩介绍">{{ element.lawOffice.lawOfficeQualifyPerformance }}</a-form-item>
             </a-form>
           </div>
         </div>
@@ -264,23 +264,6 @@ export default {
         workRole: "兼职/任职职务",
         workUnitName: "",
         workingTime: ""
-      },
-      //律所的信息
-      lawOffice: {
-        code: "",
-        hasOtherOffice: 0,
-        id: 0,
-        isWorkForThreeYear: 1,
-        lawOfficeAddress: "浙江辽宁葫芦岛",
-        lawOfficeInformation: "律所简介数据",
-        lawOfficeName: "浙商资产",
-        lawOfficeQualify: "律所资质数据",
-        lawOfficeQualifyPerformance: "律所业绩介绍数据",
-        lawOfficeType: 1,
-        officeWorkAddress: "",
-        otherOfficeStaffInfo: "",
-        otherOfficeWorkAddress: "",
-        totalTeamSize: 0
       },
     }
   },

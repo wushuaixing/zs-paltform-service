@@ -63,6 +63,7 @@
         <FactorInfo v-if="status(23456)" :is-lawyer="identity === 1"/>
       </template>
     </template>
+    <FactorInfo v-if="true" :is-lawyer="identity === 1"/>
   </div>
 </template>
 
@@ -132,7 +133,8 @@ export default {
     },
   },
   mounted() {
-    this.identity = this.$store.getters.getInfo.identity;
+    // this.identity = this.$store.getters.getInfo.identity;
+    this.identity = 2;
     factor.element().then(res=>{
       console.log( res);
     })
