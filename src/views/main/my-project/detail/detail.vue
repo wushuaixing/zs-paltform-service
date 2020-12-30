@@ -121,22 +121,6 @@
           </div>
           <div class="plan">
             <div class="subtitle">处置计划：</div>
-            <div class="step">
-              <a-steps :current="1">
-                <a-popover slot="progressDot" slot-scope="{ index, status }">
-                  <template slot="content">
-                    <span>step {{ index }} status: {{ status }}</span>
-                  </template>
-                  <img src="@/assets/img/step-act.png" alt="">
-                </a-popover>
-                <a-step title="申请执行" description="3个月内" />
-                <a-step title="执行裁定" description="6个月内" />
-                <a-step title="腾房完成" description="9个月内" />
-                <a-step title="评估完成" description="12个月内" />
-                <a-step title="处置完成" description="18个月内" />
-                <a-step title="回款" description="24个月内" />
-              </a-steps>
-            </div>
           </div>
         </div>
       </a-card>
