@@ -6,7 +6,9 @@
           <div class="zs-logo">
             <img class="zs-logo-pic" src="../../assets/img/zs-logo.png" alt="">
           </div>
-          <video autoplay controls src="http://qlumgyse9.hd-bkt.clouddn.com/promotion-vedio.mp4"></video>
+					<div style="width: 853px; height: 480px;overflow: hidden;">
+						<video autoplay controls src="http://qlumgyse9.hd-bkt.clouddn.com/promotion-vedio.mp4"></video>
+					</div>
         </div>
         <div class="login-wrapper" ref="loginContainer">
           <div class="login-title">服务商招募管理系统</div>
@@ -308,14 +310,15 @@ export default {
 .register-wrapper {
   height: 100vh;
   display: flex;
+	padding: 135px 0;
   .register {
     &-container {
       width: 100%;
-      height: 600px;
+      height: 560px;
       background: #1a1939 url("../../assets/img/background.jpg") center
         no-repeat;
       margin: auto;
-      padding-top: 60px;
+      padding-top: 40px;
     }
     &-content {
       width: 1306px;
@@ -333,7 +336,8 @@ export default {
     background-color: #fff;
     .zs-logo{
       position: absolute;
-      top: -150px;
+      top: -135px;
+			z-index: 1;
     }
     video{
       // width: 100%;
