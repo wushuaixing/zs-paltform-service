@@ -21,6 +21,7 @@ Vue.filter('guarantyType', (val)=>{
 })
 
 Vue.filter('timeFilter', (val)=>{
+	if(!val) return '-';
 	return val.substr(0,10)
 })
 

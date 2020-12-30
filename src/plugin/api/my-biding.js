@@ -14,3 +14,12 @@ export const amcBidInvalid = params => request.post('/service/amcBid/invalid',pa
 
 // 根据项目ID查询详情
 export const amcBidDetail = params => request.get(`/service/amcBid?id=${params}`);
+
+// 放弃竞标接口
+export const abandonBid = params => request.delete(`/service/amcBid/${params}`);
+
+// 进行中、已中标、已失效是否有已读标识
+export const unreadInfo = () => request.get('/service/amcBid/unreadInfo');
+
+// 未读消息点击后变更状态
+export const changeUnRead = params => request.get(`/service/amcBid/changeUnRead?id=${params}`);

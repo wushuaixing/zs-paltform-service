@@ -6,16 +6,16 @@
         <div class="biding-query">
           <a-form-model layout="inline" @submit="handleSubmit" @submit.native.prevent>
             <a-form-model-item>
-              <a-input v-model="query.username" placeholder="请输入债务人名称" class="custom-prefix-6" style="width: 500px">
+              <a-input v-model="params.debtor" placeholder="请输入债务人名称" class="custom-prefix-6" style="width: 500px">
                 <template slot="prefix" >
                   <div class="query-item-prefix">债务人名称</div>
                 </template>
               </a-input>
             </a-form-model-item>
             <a-form-model-item label="当前进展：" v-if="query.tabStatus === 1">
-              <a-select v-model="query.orgType" placeholder="请选择当前竞标进展" style="width: 180px" allowClear>
-                <a-select-option value="1">方案待提交</a-select-option>
-                <a-select-option value="2">方案已提交</a-select-option>
+              <a-select v-model="params.process" placeholder="请选择当前竞标进展" style="width: 180px" allowClear>
+                <a-select-option :value="0">方案待提交</a-select-option>
+                <a-select-option :value="1">方案已提交</a-select-option>
               </a-select>
             </a-form-model-item>
             <a-form-model-item>
@@ -25,7 +25,7 @@
         </div>
         <div class="biding-hr"/>
         <div class="biding-content">
-          <a-tabs @change="handleTabChange">
+          <a-tabs @change="handleTabChange" v-model="params.aimStatus">
             <a-tab-pane v-for="i in tabType" :key="i.id">
               <template slot="tab">
                 <a-badge :dot="i.dot"  :numberStyle="{width:'8px',height:'8px'}">{{i.title}}</a-badge>
@@ -34,23 +34,24 @@
           </a-tabs>
           <div class="biding-content-table">
             <a-table :columns="columns" v-bind="tabConfig" @change="handleTableChange">
-              <template slot="debtor" slot-scope="{debtor}">
+              <template slot="debtor" slot-scope="{debtor,isRead}">
+                <a-avatar v-if="!isRead&&isRead!==undefined" :size="8" style="background-color:#F5222D;margin-right:5px"/>
                 <span>{{debtor}}</span>
               </template>
               <template slot="amount" slot-scope="amount">{{amount|amountTh}}</template>
               <template slot="security" slot-scope="{security}">{{security|guarantyType}}</template>
-              <template slot="process" slot-scope="{process,advanceLast}">
+              <template slot="process" slot-scope="{process}">
                 <a-avatar :size="6" :style="{backgroundColor: process===0 ? '#F5222D' : process===1 ? '#52C41A' : '#FAAD14',marginRight:'5px'}"/>
                 {{process|evolveType}}<br>
-                <a-tag color="#f50" v-if="advanceLast">方案提交即将截止</a-tag>
+                <div style="width:fit-content;color:#F5222D;border:1px #F5222D dashed" v-if="process===0">方案提交即将截止</div>
               </template>
               <template slot="datetime" slot-scope="time">{{time|timeFilter}}</template>
-              <template slot="businessTeam" slot-scope="{businessTeam}">
+              <template slot="businessTeam" slot-scope="team">
                 <div class="contactWay">
-                  <p>{{ businessTeam}}
+                  <p>{{ team.businessTeam}}
                   <p/>
-                  <!-- <p><span>{{ contactWay.name }}</span><span>{{ contactWay.phone }}</span>
-                  <p/> -->
+                  <p><span>{{ team.projectManager }}</span><span>{{ team.contact }}</span>
+                  <p/>
                 </div>
               </template>
               <template slot="serviceTime" slot-scope="{serviceTime}">
@@ -59,11 +60,11 @@
                   <p>({{ serviceTime }}到期)</p>
                 </div>
               </template>
-              <template slot="plan" slot-scope="{plan}">
+              <template slot="plan" slot-scope="plan">
                 <div class="plan">
-                  <div v-if="plan.flag">
-                    <p>{{ plan.time }}前</p>
-                    <p>({{ plan.content }})</p>
+                  <div v-if="plan.dateMatters">
+                    <p>{{ plan.dateDay|timeFilter }}前</p>
+                    <p>{{ plan.dateMatters }}</p>
                   </div>
                   <p v-else>服务到期</p>
                 </div>
@@ -96,7 +97,7 @@ import ProjectModal from '@/components/modal/project-modal';
 import planModal from "./Plan-modal";
 import { clearProto, disabledDate } from "@/plugin/tools";
 import { columns, colType } from "@/views/main/my-project/source";
-import { amcBiding,amcBidAimed} from "@/plugin/api/my-biding"
+import {amcBidDetail, amcBiding ,amcBidAimed ,amcBidAbandon,amcBidInvalid,unreadInfo,changeUnRead} from "@/plugin/api/my-biding"
 export default {
   name: 'ToReview',
   data() {
@@ -106,17 +107,21 @@ export default {
         {id:2,title:'待审查',path:'/provider/review'},
       ],
       tabType:[
-        { id:1, title:'进行中' ,dot:false},
-        { id:2, title:'已中标' ,dot:false},
+        { id:1, title:'进行中' ,dot:true},
+        { id:2, title:'已中标' ,dot:true},
         { id:3, title:'已放弃' ,dot:false},
-        { id:4, title:'已失效' ,dot:false},
+        { id:4, title:'已失效' ,dot:true},
       ],
-      tabStatus:1,
+      http:{
+        1:amcBiding,  //进行中
+        2:amcBidAimed, //已中标
+        3:amcBidAbandon, //已放弃
+        4:amcBidInvalid  //已失效
+      },
+      // 请求参数字段
       params:{
         aimStatus: 1,
-        debtor: "",
         page: 1,
-        process: 0,
         size: 10,
         sortField: "",
         sortOrder: ""
@@ -131,50 +136,53 @@ export default {
       },
       tabConfig:{
         dataSource:[{
-          businessTeam: "浙江不知名的团队",
+          businessTeam: "浙萧",
           closeSubmitDeadline: 0,
-          debtCaptial: "9999.99",
-          debtInterest: "9999.99",
-          debtor: "杭州阿里巴巴集团",
-          gmtCreate: "2020-12-23T02:46:50.000+0000",
-          gmtModify: "2020-12-23T02:46:50.000+0000",
-          id: 1234567890,
+          contact: "17767790721",
+          debtCaptial: "199.12",
+          debtInterest: "31.30",
+          debtor: "杭州圣淘控股集团有限公司",
+          gmtCreate: "2020-12-29T03:04:13.000+0000",
+          gmtModify: "2020-12-29T03:04:13.000+0000",
+          id: 1343752189446983700,
           isRead: 0,
-          process: 0,
-          advanceLast:false,
+          process: 2,
+          projectManager: "王经理",
           realSubmitDeadline: null,
           security: "1",
-          submitDeadline: null
+          submitDeadline: null,
+          advanceLast:false,
+          aggrementDate: "2020-12-29T03:04:13.000+0000",
+          aimBackPrice: "9999.99",
+          dateDay: "2020-12-29T03:04:13.000+0000",
+          dateMatters: "腾房完毕",
+          serviceTime: "2020-12-29T03:04:13.000+0000",
+          abandonDate:"2020-12-29T03:04:13.000+0000",
+          readSubmitDeadline:"2020-12-29T03:04:13.000+0000"
         },{
-          key: 2,
-          name: '临时用户2', //债务人名称
-          money1: 14321.123123, //债权本金
-          money2: 1435, //债权利息
-          money3: 4343.999, //目标回款金额
-          advance: 2, //当前进展
-          advanceLast: true,//当前进展--方案提交即将截止
-          guaranty: '抵押+担保', //担保方式
-          contactWay: {  //对接团队及联系方式
-            orgName: '源城资产',
-            name: '王经理',
-            phone: '18537729667',
-          },
-          updateTime: '2033-09-25', //更新日期
-          signDate: '2021-01-05', //合同签订日期
-          abaDate: '2025-02-25', //放弃日期
-          failDate: '2023-11-02', //失效日期
-          deadline: { //服务期限
-            monthNum: 68,
-            endTime: '2028-02-05',
-          },
-          plan: { //本阶段计划
-            time: '2010-09-25',
-            content: '诉讼完结',
-            flag: false,
-          },
-          behind: false,
-          guarantorsList: ['上海市奉贤区南奉公路999弄370号1层，张艰苦，李奋斗'],
-          msgsInfoList: ['贵州省遵义市播州区鸭溪镇黎明路溪城鸣苑2栋1层1-11号商业用房', '惠州大亚湾霞涌霞光西路3号海韵雅苑2栋24层03号房屋']
+          businessTeam: "浙萧",
+          closeSubmitDeadline: 0,
+          contact: "17767790721",
+          debtCaptial: "199.12",
+          debtInterest: "31.30",
+          debtor: "杭州圣淘控股集团有限公司",
+          gmtCreate: "2020-12-29T03:04:13.000+0000",
+          gmtModify: "2020-12-29T03:04:13.000+0000",
+          id: 1343752189446983700,
+          isRead: 0,
+          process: 0,
+          projectManager: "王经理",
+          realSubmitDeadline: null,
+          security: "1",
+          submitDeadline: null,
+          advanceLast:false,
+          aggrementDate: "2020-12-29T03:04:13.000+0000",
+          aimBackPrice: "9999.99",
+          dateDay: "2020-12-29T03:04:13.000+0000",
+          dateMatters: "腾房完毕",
+          serviceTime: "2020-12-29T03:04:13.000+0000",
+          abandonDate:"2020-12-29T03:04:13.000+0000",
+          readSubmitDeadline:"2020-12-29T03:04:13.000+0000"
         }],
         size:'middle',
         pagination:{
@@ -195,43 +203,58 @@ export default {
     planModal,
   },
   created() {
-    amcBiding(this.params).then(res=>{
-      console.log(res);
-      this.tabConfig.pagination.total = res.data.total;
-      this.tabConfig.dataSource = res.data.list;
-    })
-    amcBidAimed({
-      aimStatus: 2,
-      debtor: "",
-      page: 1,
-      process: 0,
-      size: 10,
-      sortField: "",
-      sortOrder: ""
-    }).then(res=>{
-      console.log(res)
-      // this.tabConfig.dataSource = res.data.list;
-    })
+    this.getProjectList();
   },
   methods:{
-    handleSubmit(e){
-      e.preventDefault();
-      console.log(clearProto(this.query));
+    //获取项目列表
+    getProjectList(){
+      this.http[this.params.aimStatus](this.params).then(res=>{
+        if(res.code === 20000){
+          console.log(res)
+          this.tabConfig.pagination.total = res.data.total;
+          this.tabConfig.dataSource = res.data.list;
+        }
+      })
     },
+    //获取进行中,已中标,已失效是否已读状态
+    getUnreadInfo(){
+      unreadInfo().then(res=>{
+        console.log(res)
+      })
+    },
+    // 搜索查询
+    handleSubmit(){
+      this.getProjectList();
+    },
+    // tab状态切换
     handleTabChange(val){
       this.query.tabStatus = val;
+      this.getProjectList()
     },
+    // 分页
     handleTableChange(pagination, filters, sorter){
-      console.log(pagination,sorter);
+      this.params.page = pagination.current;
+      this.params.size = pagination.pageSize;
+      this.params.sortField = sorter.field;
+      this.params.sortOrder = sorter.order ? sorter.order === "ascend" ? "ASC" : "DESC" : "";
+      this.getProjectList();
     },
+    // table操作列
     handleAuction(item,type){
-      // console.log(item);
+      console.log(clearProto(item));
       if (type === 'aba') {
-        this.projectInfo = clearProto(item);
-        this.$refs.failModal.handleOpenModal();
+        amcBidDetail(item.id).then(res=>{
+          console.log(res)
+        if(res.code === 20000){
+          this.projectInfo = clearProto(res.data)
+          this.$refs.failModal.handleOpenModal();
+        }
+      })
       }
       if(type === 'view'){
-        console.log(item);
+        changeUnRead(item.id).then(res=>{
+          console.log(res)
+        })
         this.$router.push({path:"detail",query:{id:item.id}})
       }
     },
