@@ -24,7 +24,7 @@
           <a-row>
             <a-col v-for="item in history.coo.options" :key="item.id" v-bind="item.id===0?{span:24}:{span:6}">
               <a-checkbox :value="item.value">{{ item.label }}</a-checkbox>
-              <a-input v-if="item.id===0" style="width: 100px"/>
+              <a-input v-if="item.id===0" style="width: 548px"/>
             </a-col>
           </a-row>
         </a-checkbox-group>
@@ -82,10 +82,10 @@
 
 <script>
 import {baseWidth, textarea, formItemLayout} from "@/views/main/my-attestation/common/style";
-import {cooIntent, hisCoo, hisFour} from "@/views/main/my-attestation/common/source";
+import {cooIntent, typeOfCooperation, hisFour} from "@/views/main/my-attestation/common/source";
 
 export default {
-  name: "form-public",
+  name: "FormPublic",
   nameComment: '律师机构表单公用-历史合作/后期期望合作',
   data() {
     return {
@@ -101,7 +101,7 @@ export default {
         },
         coo: {
           dec: ['typeOfCooperationCode', {rules: [{required: true, message: '请勾选合作类型'}]}],
-          options: hisCoo,
+          options: typeOfCooperation,
           other: {
             ...baseWidth,
           }

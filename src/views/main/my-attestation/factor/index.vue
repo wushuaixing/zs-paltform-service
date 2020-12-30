@@ -4,9 +4,10 @@
     <template v-if="!spinning">
       <!-- 填写相关要素信息 -->
       <template v-if="identity && status(0)">
-        <FormLaw v-if="identity === 1" />
-				<FormLawOff v-if="identity === 1" />
-				<FormOrg v-if="identity === 2" />
+<!--        <FormLaw v-if="identity === 1" />-->
+<!--				<FormLawOff v-if="identity === 1" />-->
+<!--				<FormOrg v-if="identity === 2" />-->
+        <FactorForm/>
       </template>
       <!-- 要素相关审核 展示 -->
       <template v-if="identity && !status(0)">
@@ -69,7 +70,8 @@
 
 <script>
 
-import { FormOrg, FormLaw, FormLawOff } from './form';
+// import { FormOrg, FormLaw, FormLawOff } from './form';
+import FactorForm from './form-item/index';
 import FactorInfo from './factor-info';
 import { factor } from "@/plugin/api/attest";
 import IconLaw from '@/assets/img/lawyer.png';
@@ -90,10 +92,11 @@ export default {
   name: 'factor',
   nameComment: '要素认证',
   components:{
-    FormOrg,
-    FormLaw,
+    // FormOrg,
+    // FormLaw,
     FactorInfo,
-		FormLawOff,
+		// FormLawOff,
+    FactorForm
   },
   data() {
     return {

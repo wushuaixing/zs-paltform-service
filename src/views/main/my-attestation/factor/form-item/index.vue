@@ -1,13 +1,15 @@
 <template>
   <div>
-    <template>
+    <template v-if="true">
       <FormLaw/>
       <template v-if="officeInfo">
         <FormOffice/>
       </template>
-      <FormOrg/>
-      <FormPublic/>
     </template>
+    <templete v-else>
+      <FormOrg/>
+    </templete>
+    <FormPublic/>
     <a-form-item :wrapperCol="{span:24}" v-if="!officeInfo">
       <a-button type="dashed" block icon="plus" @click="handleAddOffice">添加律所信息</a-button>
     </a-form-item>

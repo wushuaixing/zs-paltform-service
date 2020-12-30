@@ -113,16 +113,16 @@
 </template>
 
 <script>
-import {baseWidth, textarea} from "../../../common/style";
+import {baseWidth, textarea} from "@/views/main/my-attestation/common/style";
 import {
   areaOption,
   expOption,
   hisCoo,
   orgAdvType
-} from "../../../common/source";
+} from "@/views/main/my-attestation/common/source";
 
 export default {
-  name: 'FormOrgInfo',
+  name: 'FormOrg',
   nameComment: '要素信息表单-机构基本信息',
   data() {
     return {

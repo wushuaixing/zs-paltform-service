@@ -98,11 +98,11 @@
 </template>
 
 <script>
-import {baseWidth, formItemLayout, textarea} from "../../common/style";
+import {baseWidth, formItemLayout, textarea} from "@/views/main/my-attestation/common/style";
 import {areaOption, lawDuty, lawType} from "@/views/main/my-attestation/common/source";
 
 export default {
-  name: 'FormOfficeInfo',
+  name: 'FormOffice',
   nameComment: '要素信息表单-律所基本信息',
   data() {
     return {
