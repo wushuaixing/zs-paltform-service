@@ -4,10 +4,8 @@
     <template v-if="!spinning">
       <!-- 填写相关要素信息 -->
       <template v-if="identity && status(0)">
-<!--        <FormLaw v-if="identity === 1" />-->
-<!--				<FormLawOff v-if="identity === 1" />-->
-<!--				<FormOrg v-if="identity === 2" />-->
-        <FactorForm/>
+        <FactorForm :role="2" :isOfficeFill="true"/>
+<!--        <FactorForm :role="identity"/>-->
       </template>
       <!-- 要素相关审核 展示 -->
       <template v-if="identity && !status(0)">

@@ -1,5 +1,5 @@
 <template>
-  <a-form v-bind="formItemLayout" :form="form" autocomplete="off" selfUpdate>
+  <a-form v-bind="formItemLayout" :form="form" autocomplete="off">
     <div class="factor-form-subtitle">基本信息</div>
     <a-form-item label="机构简介">
       <a-textarea v-decorator="field.intro.dec" v-bind="field.intro.other"/>
@@ -59,7 +59,7 @@
     <a-form-item label="社会资源优势">
       <a-textarea v-decorator="adv.otherResourcesAdvantage.dec" v-bind="adv.otherResourcesAdvantage.other"/>
     </a-form-item>
-    <a-form-item label="是否有投行项目经验" class="form-item-row" :selfUpdate="false">
+    <a-form-item label="是否有投行项目经验" class="form-item-row">
       <a-radio-group v-decorator="adv.isHasBankExperience.dec" v-bind="adv.isHasBankExperience.other">
         <a-row>
           <a-col :span="6">
@@ -71,11 +71,12 @@
         </a-row>
       </a-radio-group>
     </a-form-item>
-    <template v-if="getValue(adv.isHasBankExperience.dec[0]) ==='1' ">
-      <a-form-item label="历史投行项目案例">
-        <a-input v-decorator="adv.investmentBankProjectCase.dec" v-bind="adv.investmentBankProjectCase.other"/>
-      </a-form-item>
-    </template>
+    <!--      <template v-if="getValue(adv.isHasBankExperience.dec[0]) ==='1'">-->
+    <!--      </template>-->
+    <a-form-item label="历史投行项目案例">
+      <a-input v-decorator="adv.investmentBankProjectCase.dec" v-bind="adv.investmentBankProjectCase.other"/>
+    </a-form-item>
+
     <div class="factor-form-subtitle">投资意向</div>
     <a-form-item label="是否有投资意向" class="form-item-row" :selfUpdate="false">
       <a-radio-group v-decorator="intention.hasInvestmentIntention.dec"
@@ -90,8 +91,8 @@
         </a-row>
       </a-radio-group>
     </a-form-item>
-    <template v-if="getValue(intention.hasInvestmentIntention.dec[0]) ==='1' ">
-      <a-form-item label="投资偏好类型" class="form-item-row">
+    <template v-if="isFirst?getValue(intention.hasInvestmentIntention.dec[0]) ==='1': source.hasInvestmentIntention ">
+      <a-form-item label="投资偏好类型" class="form-item-row" :selfUpdate="false">
         <a-checkbox-group v-decorator="intention.investmentPreferenceType.dec"
                           v-bind="intention.investmentPreferenceType.other">
           <a-row>
@@ -124,6 +125,7 @@ import {
 export default {
   name: 'FormOrg',
   nameComment: '要素信息表单-机构基本信息',
+
   data() {
     return {
       formItemLayout: {
@@ -287,8 +289,24 @@ export default {
       },
     }
   },
+  props: {
+    isFirst: {
+      type: Boolean,
+      default: false
+    },
+    source: {
+      type: Object,
+      default: () => {
+      }
+    },
+  },
   created() {
     this.form = this.$form.createForm(this);
+  },
+  mounted() {
+    if (Object.keys(this.source || {}).length) {
+      this.resetFormValue(this.source);
+    }
   },
   methods: {
     getValue(params) {
@@ -311,7 +329,38 @@ export default {
         setFieldsValue({[field]: str});
       }
     },
-  }
+    handleSubmit(e) {
+      e.preventDefault();
+      this.form.validateFields((err, data) => {
+        if (!err) {
+          console.log(this.processData(data));
+        } else {
+          console.log(err, data)
+        }
+      });
+    },
+    // 处理当前数据
+    processData(source = {}) {
+      return Object.assign({}, source, {
+        goodCases: (source.goodCases || []).join(','),
+        headOfficeAddress: (source.headOfficeAddress || []).join(','),
+        investmentPreferenceType: (source.investmentPreferenceType || []).join(','),
+        investmentArea: (source.investmentArea || []).join(','),
+      })
+    },
+
+    resetFormValue(source) {
+      const fieldValues = {
+        ...source,
+        goodCases: (source.goodCases || '').split(',').map(i => Number(i)),
+        headOfficeAddress: (source.headOfficeAddress || '').split(',').map(i => Number(i)),
+        investmentPreferenceType: (source.investmentPreferenceType || '').split(',').map(i => Number(i)),
+        investmentArea: (source.investmentArea || '').split(',').map(i => Number(i)),
+      };
+      console.log(fieldValues)
+      this.form.setFieldsValue({...fieldValues});
+    },
+  },
 }
 </script>
 
