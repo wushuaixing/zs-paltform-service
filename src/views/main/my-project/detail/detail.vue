@@ -161,13 +161,25 @@
           <div class="plan">
             <div class="subtitle">处置计划：</div>
           </div>
+          <div style="margin-top:24px ">
+            <a-steps :current="1">
+              <a-popover slot="progressDot" slot-scope="{ index, status, prefixCls }">
+                <template slot="content">
+                  <span>step {{ index }} status: {{ status }}</span>
+                </template>
+                <span :class="`${prefixCls}-icon-dot`" />
+              </a-popover>
+              <a-step title="申请执行" description="三个月" />
+              <a-step title="执行待定" description="6个月内" />
+              <a-step title="腾房完成" description="9个月" />
+              <a-step title="评估完成" description="12个月内" />
+              <a-step title="处置完成" description="18个月内" />
+              <a-step title="回款" description="24个月内" />
+            </a-steps>
+          </div>
           <div class="plan_scheme">
             <div class="subtitle">方案文档：<a>服务方案.doc</a></div>
-            <button
-              class="modify_scheme"
-              @click="goSubmit"
-              v-if="info.caseFileStatus === '1'"
-            >
+            <button class="modify_scheme" @click="goSubmit" v-if="info.caseFileStatus === '1'">
               修改服务方案
             </button>
           </div>
@@ -212,16 +224,16 @@ export default {
         aimBackPrice: "999.99",
         aimedStatus: "4",
         amcBidFiles: [
-          {
-            amcBidId: 0,
-            caseFileAddress: "",
-            gmtCreate: "2020-12-29",
-            gmtDelete: "2020-12-29",
-            gmtModify: "2020-12-29",
-            id: 0,
-            isDelete: "0",
-            serviceContractFileAddress: "",
-          },
+          // {
+          //   amcBidId: 0,
+          //   caseFileAddress: "",
+          //   gmtCreate: "2020-12-29",
+          //   gmtDelete: "2020-12-29",
+          //   gmtModify: "2020-12-29",
+          //   id: 0,
+          //   isDelete: "0",
+          //   serviceContractFileAddress: "",
+          // },
         ],
         amcProjectCollaterals: [
           {

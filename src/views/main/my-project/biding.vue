@@ -45,7 +45,7 @@
                 {{process|evolveType}}<br>
                 <div class="tipsInfo" v-if="process===0">方案提交即将截止</div>
               </template>
-              <template slot="datetime" slot-scope="time">{{time|timeFilter}}</template>
+              <template slot="datetime" slot-scope="time">{{time}}</template>
               <template slot="businessTeam" slot-scope="team">
                 <div class="contactWay">
                   <p>{{ team.businessTeam}}
@@ -63,7 +63,7 @@
               <template slot="plan" slot-scope="plan">
                 <div class="plan">
                   <div v-if="plan.dateMatters">
-                    <p>{{ plan.dateDay|timeFilter }}前</p>
+                    <p>{{ plan.dateDay }}前</p>
                     <p>{{ plan.dateMatters }}</p>
                   </div>
                   <p v-else>服务到期</p>
@@ -141,8 +141,8 @@ export default {
           debtCaptial: "199.12",
           debtInterest: "31.30",
           debtor: "杭州圣淘控股集团有限公司",
-          gmtCreate: "2020-12-29T03:04:13.000+0000",
-          gmtModify: "2020-12-29T03:04:13.000+0000",
+          gmtCreate: "2020-12-29",
+          gmtModify: "2020-12-29",
           id: 1343752189446983700,
           isRead: 0,
           process: 2,
@@ -151,13 +151,13 @@ export default {
           security: "1",
           submitDeadline: null,
           advanceLast:false,
-          aggrementDate: "2020-12-29T03:04:13.000+0000",
+          aggrementDate: "2020-12-29",
           aimBackPrice: "9999.99",
-          dateDay: "2020-12-29T03:04:13.000+0000",
+          dateDay: "2020-12-29",
           dateMatters: "腾房完毕",
-          serviceTime: "2020-12-29T03:04:13.000+0000",
-          abandonDate:"2020-12-29T03:04:13.000+0000",
-          readSubmitDeadline:"2020-12-29T03:04:13.000+0000"
+          serviceTime: "2020-12-29",
+          abandonDate:"2020-12-29",
+          readSubmitDeadline:"2020-12-29"
         },{
           businessTeam: "浙萧",
           closeSubmitDeadline: 0,
@@ -165,8 +165,8 @@ export default {
           debtCaptial: "199.12",
           debtInterest: "31.30",
           debtor: "杭州圣淘控股集团有限公司",
-          gmtCreate: "2020-12-29T03:04:13.000+0000",
-          gmtModify: "2020-12-29T03:04:13.000+0000",
+          gmtCreate: "2020-12-29",
+          gmtModify: "2020-12-29",
           id: 1343752189446983700,
           isRead: 0,
           process: 0,
@@ -175,13 +175,13 @@ export default {
           security: "1",
           submitDeadline: null,
           advanceLast:false,
-          aggrementDate: "2020-12-29T03:04:13.000+0000",
+          aggrementDate: "2020-12-29",
           aimBackPrice: "9999.99",
-          dateDay: "2020-12-29T03:04:13.000+0000",
+          dateDay: "2020-12-29",
           dateMatters: "腾房完毕",
-          serviceTime: "2020-12-29T03:04:13.000+0000",
-          abandonDate:"2020-12-29T03:04:13.000+0000",
-          readSubmitDeadline:"2020-12-29T03:04:13.000+0000"
+          serviceTime: "2020-12-29",
+          abandonDate:"2020-12-29",
+          readSubmitDeadline:"2020-12-29"
         }],
         size:'middle',
         pagination:{
@@ -248,12 +248,12 @@ export default {
     click(row){
       return {
           on: {
-              click: () => {
-                //未读消息变为已读
-                changeUnRead(row.id).then(res=>{
-                  console.log(res)
-                })
-              }
+            click: () => {
+              //未读消息变为已读
+              changeUnRead(row.id).then(res=>{
+                console.log(res)
+              })
+            }
           }
       }
     },
