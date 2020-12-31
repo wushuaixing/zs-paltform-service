@@ -28,12 +28,12 @@
           <a-tabs @change="handleTabChange" v-model="params.aimStatus">
             <a-tab-pane v-for="i in tabType" :key="i.id">
               <template slot="tab">
-                <a-badge :dot="!i.dot===1"  :numberStyle="{width:'8px',height:'8px'}">{{i.title}}</a-badge>
+                <a-badge :dot="i.dot!==1&&i.id!==3"  :numberStyle="{width:'8px',height:'8px'}">{{i.title}}</a-badge>
               </template>
             </a-tab-pane>
           </a-tabs>
           <div class="biding-content-table">
-            <a-table :columns="columns" v-bind="tabConfig" @change="handleTableChange">
+            <a-table :columns="columns" :customRow="click" v-bind="tabConfig" @change="handleTableChange">
               <template slot="debtor" slot-scope="{debtor,isRead}">
                 <a-avatar v-if="!isRead&&isRead!==undefined" :size="8" style="background-color:#F5222D;margin-right:5px"/>
                 <span>{{debtor}}</span>
@@ -243,6 +243,19 @@ export default {
       this.params.sortField = sorter.field;
       this.params.sortOrder = sorter.order ? sorter.order === "ascend" ? "ASC" : "DESC" : "";
       this.getProjectList();
+    },
+    //tablet添加行点击事件
+    click(row){
+      return {
+          on: {
+              click: () => {
+                //未读消息变为已读
+                changeUnRead(row.id).then(res=>{
+                  console.log(res)
+                })
+              }
+          }
+      }
     },
     // table操作列
     handleAuction(item,type){

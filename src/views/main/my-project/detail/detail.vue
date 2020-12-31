@@ -94,7 +94,7 @@
         </a-row>
         <a-row>
           <a-col :span="24" style="display: flex">
-            <div class="subtitle">抵押物清单:</div>
+            <div class="subtitle">抵押物清单：</div>
             <div>
               <p v-for="(i, index) in info.amcProjectCollaterals" :key="index">
                 {{ index + 1 }}. {{ i.collateralType }},{{

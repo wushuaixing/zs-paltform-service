@@ -302,7 +302,7 @@ export default {
       }
     },
     addDomain() {
-      if(this.form.plans.length === 20) return this.$message.info("处置计划最只能添加20条");
+      if(this.form.plans.length === 20) return this.$message.info("处置计划最多只能添加20条");
       this.form.plans.push({
         content: '',
         months: '',
