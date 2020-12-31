@@ -97,9 +97,7 @@
             <div class="subtitle">抵押物清单:</div>
             <div>
               <p v-for="(i, index) in info.amcProjectCollaterals" :key="index">
-                {{ index + 1 }}. {{ i.collateralType }},{{
-                  i.provinceCode + i.cityCode + i.areaCode
-                }}
+                {{index+1}}. {{i.collateralType|collateralType}}、{{i|area}}、{{i.collateralName}}
               </p>
             </div>
           </a-col>
@@ -191,7 +189,9 @@
 </template>
 
 <script>
-// import  {getArea} from "@/plugin/tools"
+
+import  {getArea} from "@/plugin/tools"
+import {queryOptions} from "@/views/investment-center/source"
 import { amcBidDetail } from "@/plugin/api/my-biding";
 import Breadcrumb from "@/components/bread-crumb";
 import PlanModal from "../Plan-modal.vue";
@@ -238,16 +238,29 @@ export default {
         amcProjectCollaterals: [
           {
             amcProjectId: 0,
-            areaCode: 0,
-            cityCode: 0,
-            collateralName: "车子",
-            collateralType: 0,
+            areaCode: 330104,
+            cityCode: 3301,
+            collateralName: "抵押物名称",
+            collateralType: 1,
             gmtCreate: "2020-12-29",
             gmtDeleted: "2020-12-29",
             gmtModify: "2020-12-29",
             id: 0,
             isDeleted: "0",
-            provinceCode: 0,
+            provinceCode: 33,
+          },
+          {
+            amcProjectId: 0,
+            areaCode: 330104,
+            cityCode: 3301,
+            collateralName: "抵押物名称",
+            collateralType: 1,
+            gmtCreate: "2020-12-29",
+            gmtDeleted: "2020-12-29",
+            gmtModify: "2020-12-29",
+            id: 0,
+            isDeleted: "0",
+            provinceCode: 33,
           },
         ],
         amcProjectGuarantors: [
@@ -262,6 +275,7 @@ export default {
             id: 0,
             isDeleted: "0",
           },
+
         ],
         caseFileStatus: "",
         debtCaptial: "130.15",
@@ -303,6 +317,13 @@ export default {
     guarantorsList: (arr = []) => {
       return arr.map((i) => i.guarantorName).join("、");
     },
+    area:(params) => {
+      return getArea(params.provinceCode,params.cityCode,params.areaCode);
+    },
+    collateralType:(val)=>{
+      if(!val)return"-";
+      return queryOptions[1].list.find(i=>val === i.value).label;
+    }
   },
   methods: {
     goSubmit() {
