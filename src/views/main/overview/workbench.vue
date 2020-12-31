@@ -4,7 +4,7 @@
       <div class="item-wrapper item-border">
         <div class="item-title item-format ">待办事项</div>
         <div class="item-content item-format item-thing item-toDo">
-          <!-- 认证过的服务商 -->
+          <!-- 待办事项 -->
             <div>
               <ul class="through">
                 <li  v-for="(item, index) in list" :key="index">
@@ -20,16 +20,16 @@
       </div>
       <div class="item-wrapper">
         <div class="item-project item-format">竞标项目进度概览</div>
-        <!-- 没有添加项目 -->
+        <!-- 未添加项目 -->
         <div class="empty" v-show="echarts.myProjectsNum === 0" >
           <a-empty description>
-            <slot name="description">您还没有已开始的项目，去<router-link to="center">服务商项目招商中心</router-link>添加第一个项目</slot>
+            <slot name="description">您还没有已开始的项目，去<router-link to="/center">服务商项目招商中心</router-link>添加第一个项目</slot>
           </a-empty>
         </div>
         <div class="item-content item-format" v-show="echarts.myProjectsNum !== 0">
           <div class="total">我的项目总数：{{echarts.myProjectsNum}}</div>
           <div class="data-display">
-            <!-- 饼图 -->
+            <!-- 饼图显示 -->
             <div class="chart">
               <div id="main"></div>
             </div>
@@ -161,9 +161,8 @@ export default {
     async getList() {
       const res = await getTODoList();
       console.log(res);
-    //  this.list = res;
-    if (res.code !== 20000) return 
-      this.list = res.data
+      if (res.code !== 20000) return 
+        this.list = res.data
     },
     //echarts饼图
     async initECharts () {
@@ -179,7 +178,6 @@ export default {
         },
         series: [
           {
-            // name: '访问来源',
             type: 'pie',
             radius: ['50%', '70%'],
             // avoidLabelOverlap: false,
@@ -298,19 +296,6 @@ $background: #e9e9e9;
         padding: 10px 0;
       }
     }
-    // .item-toDo {
-    //   // margin: 0 20px;
-    //   // padding: 0 20px;
-    //   // padding-left: 0;
-    // }
-    // .item-project {
-    //   height: 16px;
-    //   font-size: 16px;
-    //   font-family: PingFangSC-Medium, PingFang SC;
-    //   font-weight: 600;
-    //   color: #262626;
-    //   line-height: 16px;
-    // }
     .data-display {
       display: flex;
       justify-content: space-between;
@@ -416,7 +401,6 @@ $background: #e9e9e9;
   }
   .message {
     font-size: 14px;
-    // letter-spacing: 0.1em;
     height: 20px;
     line-height: 20px;
   }
