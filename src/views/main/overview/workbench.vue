@@ -21,12 +21,12 @@
       <div class="item-wrapper">
         <div class="item-project item-format">竞标项目进度概览</div>
         <!-- 未添加项目 -->
-        <div class="empty" v-show="echarts.myProjectsNum === 0" >
+        <div class="empty" v-if="isShowEcharts">
           <a-empty description>
             <slot name="description">您还没有已开始的项目，去<router-link to="/center">服务商项目招商中心</router-link>添加第一个项目</slot>
           </a-empty>
         </div>
-        <div class="item-content item-format" v-show="echarts.myProjectsNum !== 0">
+        <div class="item-content item-format" v-else>
           <div class="total">我的项目总数：{{echarts.myProjectsNum}}</div>
           <div class="data-display">
             <!-- 饼图显示 -->
@@ -79,6 +79,7 @@
 </template>
 
 <script>
+/*eslint-disable*/
 import { getEcharts } from "@/plugin/api/echarts";
 import { getCalendar, getTODoList } from "@/plugin/api/calendar";
 import { MATTER_TYPE } from "./toDoList";
@@ -91,7 +92,7 @@ export default {
   data() {
     return {
       // 后台图表的数据
-      echarts:[],
+      echarts: {},
       // 需要渲染的事项数据
       listData:[],
       // 待办事项的数据
@@ -109,6 +110,11 @@ export default {
     };
   },
   computed: {
+    isShowEcharts(){
+      for (let key in this.echarts){
+        return this.echarts[key] !== 0 ? false : true;
+      }
+    }
   },
   methods: {
     getListData(value) {
@@ -219,8 +225,17 @@ export default {
   },
   mounted() {
     this.initECharts()
+  },
+  watch: {
+    // $route(to){
+    //   if(to.path === 'overview') {
+    //     this.getCalendarData()
+    //     this.getList()
+    //     // this.initECharts()
+    //   }
+    // }
   }
-};
+}
 </script>
 
 <style scoped lang="scss">
