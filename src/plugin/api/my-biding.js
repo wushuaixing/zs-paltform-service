@@ -13,7 +13,7 @@ export const amcBidAbandon = params => request.post('/service/amcBid/abandon',pa
 export const amcBidInvalid = params => request.post('/service/amcBid/invalid',params);
 
 // 根据项目ID查询详情
-export const amcBidDetail = params => request.get(`/service/amcBid?id=${params}`);
+export const amcBidDetail = (id,type) => request.get(`/service/amcBid?id=${id}&type=${type}`);
 
 // 放弃竞标接口
 export const abandonBid = params => request.delete(`/service/amcBid/${params}`);
@@ -23,3 +23,9 @@ export const unreadInfo = () => request.get('/service/amcBid/unreadInfo');
 
 // 未读消息点击后变更状态
 export const changeUnRead = params => request.get(`/service/amcBid/changeUnRead?id=${params}`);
+
+// 提交服务方案接口
+export const submitServicePlan = params => request.post('/service/amcBid/submitServicePlan',params);
+
+// 修改服务方案接口
+export const modifyCase = params => request.post('/service/amcBid/modifyCase',params);

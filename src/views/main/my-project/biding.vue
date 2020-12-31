@@ -40,12 +40,12 @@
               </template>
               <template slot="amount" slot-scope="amount">{{amount|amountTh}}</template>
               <template slot="security" slot-scope="{security}">{{security|guarantyType}}</template>
-              <template slot="process" slot-scope="{process}">
+              <template slot="process" slot-scope="{process,closeSubmitDeadline}">
                 <a-avatar :size="6" :style="{backgroundColor: process===0 ? '#F5222D' : process===1 ? '#52C41A' : '#FAAD14',marginRight:'5px'}"/>
                 {{process|evolveType}}<br>
-                <div class="tipsInfo" v-if="process===0">方案提交即将截止</div>
+                <div class="tipsInfo" v-if="closeSubmitDeadline===1&&process===0">方案提交即将截止</div>
               </template>
-              <template slot="datetime" slot-scope="time">{{time}}</template>
+              <template slot="datetime" slot-scope="time">{{time|timeFilter}}</template>
               <template slot="businessTeam" slot-scope="team">
                 <div class="contactWay">
                   <p>{{ team.businessTeam}}
@@ -63,7 +63,7 @@
               <template slot="plan" slot-scope="plan">
                 <div class="plan">
                   <div v-if="plan.dateMatters">
-                    <p>{{ plan.dateDay }}前</p>
+                    <p>{{ plan.dateDay|timeFilter }}前</p>
                     <p>{{ plan.dateMatters }}</p>
                   </div>
                   <p v-else>服务到期</p>
@@ -105,10 +105,10 @@ export default {
         {id:2,title:'我的竞标',path:'/provider/review'},
       ],
       tabType:[
-        { id:1, title:'进行中' ,dot:true},
-        { id:2, title:'已中标' ,dot:true},
+        { id:1, title:'进行中' ,dot:false},
+        { id:2, title:'已中标' ,dot:false},
         { id:3, title:'已放弃' ,dot:false},
-        { id:4, title:'已失效' ,dot:true},
+        { id:4, title:'已失效' ,dot:false},
       ],
 
       http:{
@@ -261,7 +261,7 @@ export default {
     handleAuction(item,type){
       console.log(clearProto(item));
       if (type === 'aba') {
-        amcBidDetail(item.id).then(res=>{
+        amcBidDetail(item.id,this.params.aimStatus).then(res=>{
           console.log(res)
         if(res.code === 20000){
           this.projectInfo = clearProto(res.data)
@@ -270,10 +270,7 @@ export default {
       })
       }
       if(type === 'view'){
-        changeUnRead(item.id).then(res=>{
-          console.log(res)
-        })
-        this.$router.push({path:"detail",query:{id:item.id}})
+        this.$router.push({path:"detail",query:{id:item.id,type:this.params.aimStatus}})
       }
     },
   },

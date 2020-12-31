@@ -9,14 +9,14 @@
   >
     <template slot="footer">
       <a-button key="back" @click="handleCancel"> 取消 </a-button>
-      <a-button key="submit" type="primary" @click="handleModify(sign)">
+      <a-button key="submit" type="primary" @click="handleModify('add')">
         确认提交
       </a-button>
       <a-button
         v-if="false"
         key="submit"
         type="primary"
-        @click="handleModify(modify)"
+        @click="handleModify('edit')"
       >
         确认修改
       </a-button>
@@ -24,12 +24,6 @@
     <div class="plan-modal-wrapper">
       <div class="basic-info">
         <div class="title" style="margin-top: 32px">债权基本信息</div>
-        <!-- <ul class="content">
-          <li v-for="item in data" :key="item.val">
-            <div>{{ item.label }}</div>
-            <div>{{ `${item.val}${item.unit}` }}</div>
-          </li>
-        </ul> -->
         <div  class="content">
           <a-row>
             <a-col :span="8">
@@ -165,6 +159,7 @@
 <script>
 import { getArea } from "@/plugin/tools";
 import Deploy from "@/plugin/tools/qiniu-deploy";
+import {submitServicePlan,modifyCase} from "@/plugin/api/my-biding"
 export default {
   name: "MsgInfoModal",
   nameComment: "查看抵质押物清单弹窗",
@@ -274,8 +269,8 @@ export default {
             months: '',
           },
         ],
-        projectId: "",
-        documentAddress: "",
+        projectId: "1343816091497205760",
+        documentAddress: "www.baidu.com",
       },
     };
   },
@@ -292,8 +287,20 @@ export default {
     handleCancel() {
       this.visible = false;
     },
-    handleNumValid(params) {
-      this.form[params] = this.form[params].replace(/[^0-9]/g, "");
+    // handleNumValid(params) {
+    //   this.form[params] = this.form[params].replace(/[^0-9]/g, "");
+    // },
+    handleModify(type){
+      if(type === 'add'){
+        submitServicePlan(this.form).then(res=>{
+          console.log(res)
+        })
+      }
+      if(type === 'edit'){
+        modifyCase(this.form).then(res=>{
+          console.log(res)
+        })
+      }
     },
     removeDomain(item) {
       let index = this.form.plans.indexOf(item);

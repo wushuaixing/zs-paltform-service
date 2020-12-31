@@ -28,7 +28,7 @@
             <!--项目已中标 -->
             <div v-if="info.aimedStatus === '3'">
               <span class="subtitle">合同签订日期：</span>
-              <span class="spantext">{{ info.submitDeadline }}</span>
+              <span class="spantext">{{ info.aggrementDate }}</span>
             </div>
             <!-- 已放弃-->
             <div v-if="info.abandonDate">
@@ -97,9 +97,7 @@
             <div class="subtitle">抵押物清单：</div>
             <div>
               <p v-for="(i, index) in info.amcProjectCollaterals" :key="index">
-                {{ index + 1 }}. {{ i.collateralType }},{{
-                  i.provinceCode + i.cityCode + i.areaCode
-                }}
+                {{index+1}}. {{i.collateralType|collateralType}}、{{i|area}}、{{i.collateralName}}
               </p>
             </div>
           </a-col>
@@ -109,11 +107,11 @@
           <div class="flex-style" v-if="info.aimedStatus === '3'">
             <div style="margin-right: 30px">
               <span class="subtitle">方案结束日期：</span>
-              <span class="spantext">{{}}</span>
+              <span class="spantext">{{dateOprate(info.aggrementDate,info.serviceTime)}}</span>
             </div>
             <div>
               <span class="subtitle">方案开始日期：</span>
-              <span class="spantext">{{}}</span>
+              <span class="spantext">{{info.aggrementDate }}</span>
             </div>
           </div>
           <div class="flex-style" v-if="info.aimedStatus != '3'">
@@ -141,7 +139,7 @@
           <p class="text" v-if="info.aimedStatus !== '4'">您暂未提交服务方案</p>
           <button
             class="submitbtn"
-            @click="goSubmit"
+            @click="goSubmit('add')"
             v-if="info.aimedStatus !== '4'"
           >
             去提交
@@ -151,7 +149,7 @@
           <div class="serviceTime-aimBackPrice-row">
             <div>
               <span class="subtitle">服务期限：</span>
-              <span class="spantext">{{ info.serviceTime }}</span>
+              <span class="spantext">{{ info.serviceTime }}个月</span>
             </div>
             <div>
               <span class="subtitle">目标回款：</span>
@@ -179,7 +177,7 @@
           </div>
           <div class="plan_scheme">
             <div class="subtitle">方案文档：<a>服务方案.doc</a></div>
-            <button class="modify_scheme" @click="goSubmit" v-if="info.caseFileStatus === '1'">
+            <button class="modify_scheme" @click="goSubmit('edit')" v-if="info.caseFileStatus === '1'">
               修改服务方案
             </button>
           </div>
@@ -191,7 +189,9 @@
 </template>
 
 <script>
-// import  {getArea} from "@/plugin/tools"
+
+import  {getArea} from "@/plugin/tools"
+import {queryOptions} from "@/views/investment-center/source"
 import { amcBidDetail } from "@/plugin/api/my-biding";
 import Breadcrumb from "@/components/bread-crumb";
 import PlanModal from "../Plan-modal.vue";
@@ -238,16 +238,29 @@ export default {
         amcProjectCollaterals: [
           {
             amcProjectId: 0,
-            areaCode: 0,
-            cityCode: 0,
-            collateralName: "车子",
-            collateralType: 0,
+            areaCode: 330104,
+            cityCode: 3301,
+            collateralName: "抵押物名称",
+            collateralType: 1,
             gmtCreate: "2020-12-29",
             gmtDeleted: "2020-12-29",
             gmtModify: "2020-12-29",
             id: 0,
             isDeleted: "0",
-            provinceCode: 0,
+            provinceCode: 33,
+          },
+          {
+            amcProjectId: 0,
+            areaCode: 330104,
+            cityCode: 3301,
+            collateralName: "抵押物名称",
+            collateralType: 1,
+            gmtCreate: "2020-12-29",
+            gmtDeleted: "2020-12-29",
+            gmtModify: "2020-12-29",
+            id: 0,
+            isDeleted: "0",
+            provinceCode: 33,
           },
         ],
         amcProjectGuarantors: [
@@ -262,6 +275,7 @@ export default {
             id: 0,
             isDeleted: "0",
           },
+
         ],
         caseFileStatus: "",
         debtCaptial: "130.15",
@@ -303,11 +317,25 @@ export default {
     guarantorsList: (arr = []) => {
       return arr.map((i) => i.guarantorName).join("、");
     },
+    area:(params) => {
+      return getArea(params.provinceCode,params.cityCode,params.areaCode);
+    },
+    collateralType:(val)=>{
+      if(!val)return"-";
+      return queryOptions[1].list.find(i=>val === i.value).label;
+    }
   },
   methods: {
     goSubmit() {
       this.$refs.planModal.handleOpenModal();
     },
+    dateOprate(time,month){
+      var date = new Date(time);
+      date.toLocaleDateString();
+      date.setMonth(date.getMonth() + month);
+      // date.toLocaleDateString();
+      return date.toLocaleDateString().replaceAll('/','-');
+    }
   },
   computed: {
     deadDate() {
@@ -315,9 +343,8 @@ export default {
     },
   },
   created() {
-    console.log(this.$route.query.id);
-    var id = this.$route.query.id;
-    amcBidDetail(id).then((res) => {
+    var {id,type} = this.$route.query;
+    amcBidDetail(id,type).then((res) => {
       console.log(res);
       this.info = res.data;
     });
