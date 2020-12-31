@@ -67,7 +67,7 @@ export const expOption = [
 	{ id: 3, label: '3年以上', value: '3' },
 	{ id: 0, label: '暂未有实际项目落地', value: '0' },
 ];
-// 历史合作四大
+// 历史合作amc
 export const hisFour = [
 	{ id: 1, label: '东方', value: '1' },
 	{ id: 2, label: '长城', value: '2' },

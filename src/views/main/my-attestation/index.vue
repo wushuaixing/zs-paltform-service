@@ -137,6 +137,7 @@ export default {
         }
         button{
           min-width: 144px;
+					margin-right: 10px;
         }
       }
     }
@@ -283,6 +284,12 @@ export default {
       height: 25px;
       line-height: 25px;
     }
+		&_subtitle{
+			font-size: 14px;
+			height: 25px;
+			line-height: 25px;
+			color: $text-title;
+		}
     &_list{
       margin:22px 0;
       display: flex;
