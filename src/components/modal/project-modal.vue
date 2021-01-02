@@ -47,7 +47,7 @@
               抵押物清单：
             </p>
             <div>
-              <div v-for="(item,index) in projectInfo.amcProjectCollaterals" :key="index">{{ item.collateralName }}
+              <div v-for="(item,index) in projectInfo.amcProjectCollaterals" :key="index">
                 {{index+1}}. {{item.collateralType|collateralType}}、{{item|area}}、{{item.collateralName}}
               </div>
             </div>

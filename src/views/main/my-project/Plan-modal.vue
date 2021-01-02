@@ -9,11 +9,11 @@
   >
     <template slot="footer">
       <a-button key="back" @click="handleCancel"> 取消 </a-button>
-      <a-button key="submit" type="primary" @click="handleModify('add')">
+      <a-button key="submit" v-if="!servePlan" type="primary" @click="handleModify('add')">
         确认提交
       </a-button>
       <a-button
-        v-if="false"
+        v-else
         key="submit"
         type="primary"
         @click="handleModify('edit')"
@@ -27,24 +27,24 @@
         <div  class="content">
           <a-row>
             <a-col :span="8">
-              <span>债务人名称：</span><span>{{msgInfo.debtor}}</span>
+              <span>债务人名称：</span><span>{{projectInfo.debtor}}</span>
             </a-col>
             <a-col :span="8">
-              <span>债务人注册地：</span><span>{{msgInfo.debtorAddress}}</span>
+              <span>债务人注册地：</span><span>{{projectInfo.debtorAddress}}</span>
             </a-col>
             <a-col :span="8">
-              <span>当前诉讼状态：</span><span>{{msgInfo.isLawsuit|isLawsuitType}}</span>
+              <span>当前诉讼状态：</span><span>{{projectInfo.isLawsuit|isLawsuitType}}</span>
             </a-col>
           </a-row>
           <a-row>
             <a-col :span="8">
-              <span>债权本金：</span><span>{{msgInfo.debtCaptial | amountTh}}万元</span>
+              <span>债权本金：</span><span>{{projectInfo.debtCaptial | amountTh}}万元</span>
             </a-col>
             <a-col :span="8">
-              <span>债权利息：</span><span>{{msgInfo.debtInterest|amountTh}}万元</span>
+              <span>债权利息：</span><span>{{projectInfo.debtInterest|amountTh}}万元</span>
             </a-col>
             <a-col :span="8">
-              <span>担保方式：</span><span>{{msgInfo.security | guarantyType}}</span>
+              <span>担保方式：</span><span>{{projectInfo.security | guarantyType}}</span>
             </a-col>
           </a-row>
         </div>
@@ -65,7 +65,7 @@
           >
             <a-input-number
               placeholder="请输入服务期限"
-              v-model="form.serviceTime"
+              v-model.trim="form.serviceTime"
               :precision="0"
               style="width: 246px"
               :max="120"
@@ -76,7 +76,7 @@
           <a-form-model-item label="回款目标" prop="collectionTarget">
             <a-input-number
               placeholder="请输入回款目标"
-              v-model="form.collectionTarget"
+              v-model.trim="form.collectionTarget"
               :precision="2"
               style="width: 246px"
             />
@@ -88,10 +88,11 @@
             :key="index"
           >
             <div>
-              <span>从签约日期起</span
-              ><a-input
-                v-model="item.months"
+              <span>从签约日期起</span>
+              <a-input-number
+                v-model.trim="item.months"
                 class="plan-ipt"
+                :precision="0"
                 style="
                   width: 235px;
                   height: 32px;
@@ -99,9 +100,9 @@
                   margin: 0 8px;
                 "
               />
-              <span>个月内完成</span
-              ><a-input
-                v-model="item.content"
+              <span>个月内完成</span>
+              <a-input
+                v-model.trim="item.content"
                 :maxLength="30"
                 style="
                   width: 235px;
@@ -166,38 +167,6 @@ export default {
   data() {
     return {
       visible: false,
-      data: [
-        {
-          label: "债务人名称：",
-          val: "浙江混天绫实业有限公司",
-          unit: "",
-        },
-        {
-          label: "债务人注册地：",
-          val: "浙江省杭州市西湖区",
-          unit: "",
-        },
-        {
-          label: "当前诉讼状态：",
-          val: "未诉",
-          unit: "",
-        },
-        {
-          label: "债权本金：",
-          val: "781.4",
-          unit: "万元",
-        },
-        {
-          label: "债权利息：",
-          val: "534900953",
-          unit: "万元",
-        },
-        {
-          label: "担保方式：",
-          val: "抵押+担保",
-          unit: "",
-        },
-      ],
       formItemLayout: {
         labelCol: {
           xs: { span: 24 },
@@ -253,7 +222,7 @@ export default {
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       form: {
-        serviceTime: "",
+        serviceTime: 10,
         collectionTarget: "",
         plans: [
           {
@@ -275,7 +244,7 @@ export default {
     };
   },
   props: {
-    msgInfo: {
+    projectInfo: {
       type: Object,
       default: () => {},
     },
@@ -287,18 +256,34 @@ export default {
     handleCancel() {
       this.visible = false;
     },
-    // handleNumValid(params) {
-    //   this.form[params] = this.form[params].replace(/[^0-9]/g, "");
-    // },
     handleModify(type){
       if(type === 'add'){
         submitServicePlan(this.form).then(res=>{
-          console.log(res)
+          console.log(res);
+          if(res.code === 20000){
+            this.$message.success("方案提交成功");
+            this.visible = false;
+          }else{
+            this.$message.error("方案提交失败")
+          }
         })
       }
       if(type === 'edit'){
-        modifyCase(this.form).then(res=>{
-          console.log(res)
+        var _this = this
+        this.$confirm({
+          title:'确定要修改已提交的方案吗?',
+          content:'请确认修改后的方案核心要素信息与方案文档保持一致！',
+          onOk(){
+            modifyCase(_this.form).then(res=>{
+              console.log(res)
+              if(res.code === 20000){
+                _this.$message.success("修改成功");
+                _this.visible = false;
+              }else{
+                _this.$message.error("修改失败");
+              }
+            })
+          }
         })
       }
     },
@@ -317,7 +302,10 @@ export default {
     },
   },
   created(){
-    // this.form = this.msgInfo;
+    this.servePlan = JSON.parse(window.localStorage.getItem("servePlan"));
+    if(this.servePlan){
+      this.form = this.servePlan;
+    }
   },
   filters: {
     area: (params) => {
@@ -347,20 +335,6 @@ export default {
     }
     .ant-modal-body {
       padding: 0 24px 27px !important;
-
-      .basic-info {
-        ul {
-          list-style: none;
-          display: flex;
-          flex-wrap: wrap;
-
-          li {
-            display: flex;
-            width: 33%;
-          }
-        }
-      }
-
       .plan {
         .serviceTime {
           margin-top: 24px;
@@ -370,7 +344,6 @@ export default {
             padding-left: 12px;
           }
         }
-
         .ant-form-item-children {
           .unit {
             background-color: #efefef;
@@ -382,7 +355,6 @@ export default {
             vertical-align: center;
             line-height: 30px;
           }
-
           .ant-input-number {
             border-radius: 0;
           }

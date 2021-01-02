@@ -184,7 +184,7 @@
         </div>
       </a-card>
     </div>
-    <PlanModal :msgInfo="info" ref="planModal" />
+    <PlanModal :projectInfo="info" ref="planModal" />
   </div>
 </template>
 
@@ -326,22 +326,37 @@ export default {
     }
   },
   methods: {
-    goSubmit() {
+    goSubmit(type) {
+      if(type === "edit"){
+        var servePlan = { //服务方案
+            serviceTime: "",
+            collectionTarget: "",
+            projectId: "",
+            plans: [],
+            documentAddress: "www.baidu.com",
+          };
+          servePlan.serviceTime = this.info.serviceTime;
+          servePlan.collectionTarget = this.info.aimBackPrice;
+          servePlan.projectId = this.info.id;
+          // servePlan.documentAddress = this.info.amcBidFiles[0].caseFileAddress;
+          this.info.scheduleManagements.forEach(item=>{
+            var plan = {};
+            plan.content = item.dateMatters;
+            plan.months = item.dateMonth;
+            servePlan.plans.push(plan);
+          })
+          window.localStorage.setItem("servePlan",JSON.stringify(servePlan));
+      }
       this.$refs.planModal.handleOpenModal();
     },
     dateOprate(time,month){
       var date = new Date(time);
       date.toLocaleDateString();
       date.setMonth(date.getMonth() + month);
-      // date.toLocaleDateString();
       return date.toLocaleDateString().replaceAll('/','-');
     }
   },
-  computed: {
-    deadDate() {
-      return this.form.submitDeadline - Date.now() < 7 ? true : false;
-    },
-  },
+  computed: {},
   created() {
     var {id,type} = this.$route.query;
     amcBidDetail(id,type).then((res) => {
