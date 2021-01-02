@@ -98,11 +98,11 @@
 </template>
 
 <script>
-import {baseWidth, formItemLayout, textarea} from "../../common/style";
+import {baseWidth, formItemLayout, textarea} from "@/views/main/my-attestation/common/style";
 import {areaOption, lawDuty, lawType} from "@/views/main/my-attestation/common/source";
 
 export default {
-  name: 'FormOfficeInfo',
+  name: 'FormOffice',
   nameComment: '要素信息表单-律所基本信息',
   data() {
     return {
@@ -236,6 +236,17 @@ export default {
       },
     };
   },
+  props: {
+    isFirst: {
+      type: Boolean,
+      default: false
+    },
+    source: {
+      type: Object,
+      default: () => {
+      }
+    },
+  },
   created() {
     this.form = this.$form.createForm(this);
   },
@@ -282,7 +293,38 @@ export default {
     handleAddOffice() {
       this.officeInfo = true;
     },
-  }
+    handleSubmit(e) {
+      e.preventDefault();
+      this.form.validateFields((err, data) => {
+        if (!err) {
+          console.log(data);
+        } else {
+          console.log(err, data)
+        }
+      });
+    },
+    //处理数据
+    processData(source = {}) {
+      return Object.assign({}, source, {
+        officeWorkAddress: source.officeWorkAddress,//展业地区待处理
+        otherOfficeWorkAddress: source.otherOfficeWorkAddress,//分布展业地区待处理
+      })
+    },
+    resetFormValue(source) {
+      const fieldValues = {
+        ...source,
+        officeWorkAddress: source.officeWorkAddress,//展业地区待处理
+        otherOfficeWorkAddress: source.otherOfficeWorkAddress,//分布展业地区待处理
+      };
+      this.form.setFieldsValue({...fieldValues});
+    },
+  },
+
+  mounted() {
+    if (Object.keys(this.source || {}).length) {
+      this.resetFormValue(this.source);
+    }
+  },
 }
 </script>
 

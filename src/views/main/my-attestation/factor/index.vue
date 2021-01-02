@@ -44,7 +44,7 @@
           </div>
         </div>
         <!-- 要素信息展示 -->
-        <Detail v-if="status(23456)" :is-lawyer="identity === 1"/>
+        <DetailInfo v-if="status(23456)" :is-lawyer="identity === 1"/>
       </template>
     </template>
   </div>
@@ -53,7 +53,7 @@
 <script>
 
 // import { FormOrg, FormLaw, FormLawOff } from './form';
-import Detail from './detail';
+import DetailInfo from './detail';
 import { factor } from "@/plugin/api/attest";
 import IconLaw from '@/assets/img/lawyer.png';
 import IconOrg from '@/assets/img/org.png';
@@ -73,7 +73,7 @@ export default {
   name: 'factor',
   nameComment: '要素认证',
   components:{
-	  Detail,
+	  DetailInfo,
   },
   data() {
     return {

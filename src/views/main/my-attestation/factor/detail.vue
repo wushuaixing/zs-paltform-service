@@ -2,14 +2,14 @@
 	<div class="qualifies-info-wrapper qualify-detail-wrapper">
 		<slot name="title"/>
 		<!--律师详情展示-->
-		<div class="info-item" data-label="我的要素认证信息-律师" >
+		<div class="info-item" data-label="我的要素认证信息-律师" v-if="!isLawyer">
 			<div class="info-item_auction" v-if="isEdit">
 				<a-button @click="scrollIntoView('item_category_lawyer')">律师信息</a-button>
 				<a-button @click="scrollIntoView('item_category_office')">
 					<a-badge :dot="noOffice" class="dot-badge">律所信息</a-badge>
 				</a-button>
 			</div>
-			<div class="info-item_category" id="item_category_lawyer">
+			<div class="info-item_category" id="item_category_lawyer" data-lable="律师信息">
 				<span class="title">律师信息</span>
 				<a-button type="link" icon="edit" v-if="isEdit">编辑我的要素信息</a-button>
 				<span class="date" v-else>提交日期：{{ dataSource.evolveType }}</span>
@@ -23,7 +23,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="info-item_category" id="item_category_office">
+			<div class="info-item_category" id="item_category_office" data-lable="律所信息">
 				<span class="title">律所信息</span>
 			</div>
 			<div class="info-item_img" v-if="noOffice">
@@ -34,18 +34,29 @@
 				</template>
 			</div>
 			<template v-else>
-				<div class="info-item_list" v-for="(i,index) in officeField" :key="'office'+index">
-					<div class="info-item_list-title">{{i.label}}</div>
-					<div class="info-item_list-content">{{i.field}}</div>
+				<div v-for="(i,_index) in officeField" :key="'office'+_index">
+					<div class="info-item_list" v-if="toShow(i)">
+						<div class="info-item_list-title">{{i.label}}</div>
+						<div class="info-item_list-content">{{toProcess(i,dataSource.officeData)||'-'}}</div>
+					</div>
 				</div>
 			</template>
 		</div>
 		<!--机构信息展示-->
-		<div class="info-item" data-label="我的要素认证信息-机构">
+		<div class="info-item" data-label="我的要素认证信息-机构" v-else>
 			<div class="info-item_category">
 				<span class="title">机构信息</span>
 				<a-button type="link" icon="edit" v-if="isEdit">编辑我的要素信息</a-button>
 				<span class="date" v-else>提交日期：{{ dataSource.createTime || '-' }}</span>
+			</div>
+			<div v-for="(item,index) in orgField" :key="index">
+				<div class="info-item_subtitle">{{item.title}}</div>
+				<div v-for="(i,_index) in item.children" :key="'org'+_index">
+					<div class="info-item_list" v-if="toShow(i)">
+						<div class="info-item_list-title">{{i.label}}</div>
+						<div class="info-item_list-content">{{toProcess(i)||'-'}}</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -53,6 +64,7 @@
 
 <script>
 	import { formItemLayout } from "../common/style";
+	import { areaAnalysis } from '@/plugin/tools/index';
 	import noFinished from '@/assets/img/no-finished.png';
 
 	const _dataSource = {
@@ -155,7 +167,6 @@
 			return {
 				noFinished,
 				formItemLayout,
-				dataSource: _dataSource.lawData,
 				lawyerField:[],
 				officeField:[],
 				orgField:[],
@@ -164,17 +175,23 @@
 		created(){
 			const _is = this.$options.filters['is'];
 			const _multi = this.$options.filters['multi'];
+			const _unit = this.$options.filters['unit'];
+			const _area = val => this.$options.filters['area'](areaAnalysis(val));
+			const _areas = val => this.$options.filters['areas'](areaAnalysis(val,false));
 			const _if = i => i === '1';
 			const publicField = [
 				{
 					title:"历史合作情况",
 					children:[
-						{ label:"是否曾与浙商合作", field:"isCooperatedWithZheshang", f:_is, },
-						{ label:"过往合作类型", field:"typeOfCooperationCode", m:_if, about:'isCooperatedWithZheshang',f:_multi, other:'cooperatedAmcDetail', origin:"typeOfCooperation"},
+						{ label:"是否曾与浙商合作", field:"isCooperatedWithZheshang",
+							f:_multi, other:'isCooperatedWithZheshangDetail',origin:"isOther" },
+						{ label:"过往合作类型", field:"typeOfCooperationCode", m:_if, about:'isCooperatedWithZheshang',
+							f:_multi, other:'cooperatedAmcDetail', origin:"typeOfCooperation"},
 						{ label:"历史合作团队", field:"cooperationTeam", m:_if, about:'isCooperatedWithZheshang' },
 						{ label:"历史清收情况", field:"liquidationSituation", m:_if, about:'isCooperatedWithZheshang' },
 						{ label:"是否曾与其他AMC合作", field:"isCooperatedWithOtherAmc", f:_is, },
-						{ label:"历史合作AMC", field:"cooperatedAmc", m:_if, about:'isCooperatedWithOtherAmc',f:_multi, other:'cooperatedAmcDetail', origin:"hisFour" },
+						{ label:"历史合作AMC", field:"cooperatedAmc", m:_if, about:'isCooperatedWithOtherAmc',
+							f:_multi, other:'cooperatedAmcDetail', origin:"hisFour" },
 						{ label:"其他AMC合作情况", field:"cooperationSituation" , m:_if, about:'isCooperatedWithOtherAmc'},
 					]
 				},
@@ -191,9 +208,9 @@
 					children:[
 						{ label:"毕业院校", field:"graduateSchool" },
 						{ label:"专业", field:"major" },
-						{ label:"从业不良时间经验", field:"workingTime" },
-						{ label:"所在地区", field:"area" },
-						{ label:"主要涉业地区", field:"workArea" },
+						{ label:"从业不良时间经验", field:"workingTime",f:_multi, origin:"expOption" },
+						{ label:"所在地区", field:"area",f:_area, },
+						{ label:"主要涉业地区", field:"workArea",f:_areas },
 						{ label:"是否有公检法等工作经历", field:"isWorkOfPublicSecurityOrgans", f:_is, },
 						{ label:"当前是否存在其他兼职/任职", field:"isWorkOther", f:_is, },
 						{ label:"兼职/任职单位名称", field:"workUnitName", m:_if, about:'isWorkOther'},
@@ -213,7 +230,7 @@
 						{ label:"主要代理案件管辖法院 ", field:"competentCourt" },
 						{ label:"熟悉法院 ", field:"familiarCourts" },
 						{ label:"其他社会资源优势", field:"otherResourcesAdvantage" },
-						{ label:"其他资源", field:"otherResources" },
+						{ label:"其他资源", field:"otherResources",f:_multi, other:'otherResourcesDetail', origin:"lawAdvList"  },
 					]
 				},
 				...publicField,
@@ -221,13 +238,14 @@
 			this.officeField = [
 				{ label:"律所名字", field:"lawOfficeName"},
 				{ label:"律所地址", field:"lawOfficeAddress"},
-				{ label:"律所类型", field:"lawOfficeType"},
-				{ label:"律所是否经营3年以上", field:"isWorkForThreeYear"},
-				{ label:"是否存在分所", field:"hasOtherOffice"},
-				{ label:"分所展业地域", field:"officeWorkAddress"},
+				{ label:"展业地域", field:"officeWorkAddress",f:_areas},
+				{ label:"律所类型", field:"lawOfficeType",f:_multi, origin:"lawType"},
+				{ label:"律所是否经营3年以上", field:"isWorkForThreeYear",f:_is},
+				{ label:"是否存在分所", field:"hasOtherOffice",f:_is},
+				{ label:"分所展业地域", field:"otherOfficeWorkAddress",f:_areas},
 				{ label:"分所的人员情况", field:"otherOfficeStaffInfo"},
-				{ label:"律所请收团对人数", field:"totalTeamSize"},
-				{ label:"本人在律所但任职务", field:"roleInLawOffice"},
+				{ label:"律所请收团对人数", field:"totalTeamSize",f:_unit, unit:'人'},
+				{ label:"本人在律所但任职务", field:"roleInLawOffice",f:_multi, origin:"lawDuty"},
 				{ label:"律所简介", field:"lawOfficeInformation"},
 				{ label:"律所资质", field:"lawOfficeQualify"},
 				{ label:"律所业绩介绍", field:"lawOfficeQualifyPerformance"},
@@ -237,12 +255,12 @@
 					title:"基本背景",
 					children:[
 						{ label:"机构简介", field:"organizationInformation" },
-						{ label:"从业不良时间经验", field:"workingTime" },
-						{ label:"公司总部所在地", field:"headOfficeAddress" },
-						{ label:"公司分部覆盖地区", field:"branchOfficeAddress" },
-						{ label:"公司总人数", field:"numberOfCompany" },
-						{ label:"清收团队数", field:"numberOfTeams" },
-						{ label:"清收团队总人数", field:"numberOfCompany" },
+						{ label:"从业不良时间经验", field:"workingTime",f:_multi, origin:"expOption" },
+						{ label:"公司总部所在地", field:"headOfficeAddress",f:_area },
+						{ label:"公司分部覆盖地区", field:"branchOfficeAddress",f:_areas },
+						{ label:"公司总人数", field:"numberOfCompany",f:_unit, unit:'人' },
+						{ label:"清收团队数", field:"numberOfTeams",f:_unit, unit:'个' },
+						{ label:"清收团队总人数", field:"numberOfCompany" ,f:_unit, unit:'人'},
 						{ label:"组织架构", field:"organizationalStructureInformation" },
 						{ label:"所控制的其他主体", field:"otherMasterSubject" },
 					]
@@ -250,21 +268,22 @@
 				{
 					title:"擅长优势",
 					children:[
-						{ label:"擅长业务类型", field:"goodCases" },
-						{ label:"擅长业务区域", field:"areasOfGoodCases" },
+						{ label:"擅长业务类型", field:"goodCases",f:_multi, other:'otherGoodCases', origin:"orgAdvType" },
+						{ label:"擅长业务区域", field:"areasOfGoodCases",f:_areas },
 						{ label:"社会资源优势 ", field:"otherResourcesAdvantage" },
-						{ label:"是否有投行项目经验 ", field:"hasInvestmentBankExperience" },
-						{ label:"历史投行项目案例", field:"investmentBankProjectCase" },
+						{ label:"是否有投行项目经验 ", field:"hasInvestmentBankExperience", f:_is, },
+						{ label:"历史投行项目案例", field:"investmentBankProjectCase", m:_if, about:'hasInvestmentBankExperience'},
 					]
 				},
 				{
 					title:"投资意向",
 					children:[
-						{ label:"是否有投资意向", field:"hasInvestmentIntention" },
-						{ label:"投资偏好类型", field:"investmentPreferenceType" },
-						{ label:"标的金额范围", field:"startAmountOfSubject" },
-						{ label:"投资区域", field:"investmentArea" },
-						{ label:"以往投资经历", field:"investmentExperience" },
+						{ label:"是否有投资意向", field:"hasInvestmentIntention" ,f:_is,},
+						{ label:"投资偏好类型", field:"investmentPreferenceType",
+							m:_if, about:'hasInvestmentIntention', f:_multi, origin:"hisCoo"},
+						{ label:"标的金额范围", field:"startAmountOfSubject",m:_if, about:'hasInvestmentIntention' },
+						{ label:"投资区域", field:"investmentArea",m:_if, about:'hasInvestmentIntention',f:_area },
+						{ label:"以往投资经历", field:"investmentExperience",m:_if, about:'hasInvestmentIntention' },
 					]
 				},
 				...publicField,
@@ -272,16 +291,17 @@
 		},
 		methods: {
 			// process 处理展示数据
-			toProcess(item){
-				const { field, f, origin, other } = item;
-				const value = this.dataSource[field];
-				const _other = this.dataSource[other];
-				return f ? f(value,origin,_other) : value;
+			toProcess(item,source){
+				const { field, f, origin, other, unit } = item;
+				const _source = source || this.dataSource;
+				const value = _source[field];
+				const _other = (other ? _source[other] : '') || unit;
+				return f ? f(value,_other,origin) : value;
 			},
 			// 是否展示元素
-			toShow(item){
-				const _val = this.dataSource[item.about];
-				return item.m ? item.m(_val) : true;
+			toShow(item,source){
+				const _source = source || this.dataSource;
+				return item.m && item.about ? item.m(_source[item.about]) : true;
 			},
 			//锚点跳转
 			scrollIntoView(ele) {
@@ -289,12 +309,18 @@
 			},
 			//点击添加律所的信息
 			toAddOfficeInfo() {
-				alert("添加律所的信息")
+				console.log("添加律所的信息");
+				this.$emit('addOffice');
 			}
 		},
 		computed:{
+			dataSource(){
+				// dataSource: _dataSource.lawData,
+					// dataSource1: _dataSource.orgData,
+				return this.source || _dataSource.lawData;
+			},
 			noOffice(){
-				return Object.keys(this.dataSource.lawOffice || {}).length;
+				return Object.keys((this.source || {}).lawOffice || {}).length;
 			},
 		}
 	}

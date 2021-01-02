@@ -13,29 +13,28 @@
           </a-col>
           <a-col :span="24">
             <a-radio value="0">其他</a-radio>
-            <a-input style="width: 606px;margin-left: 3px" placeholder="请说明情况" v-model="assist[history.once.else]"/>
+            <a-input style="width: 606px;margin-left: 3px" placeholder="请说明情况" v-decorator="history.once.detail"/>
           </a-col>
         </a-row>
       </a-radio-group>
     </a-form-item>
-    <template v-if="getValue(history.once.dec[0]) ==='1'">
+<!--    <template v-if="getValue(history.once.dec[0]) ==='1'">-->
       <a-form-item label="过往合作类型" class="form-item-row">
         <a-checkbox-group v-decorator="history.coo.dec" v-bind="history.coo.other">
           <a-row>
-            <a-col v-for="item in history.coo.options" :key="item.id" v-bind="item.id===0?{span:24}:{span:6}">
+            <a-col v-for="item in history.coo.options" :key="item.id" v-bind="{span:6}">
               <a-checkbox :value="item.value">{{ item.label }}</a-checkbox>
-              <a-input v-if="item.id===0" style="width: 100px"/>
             </a-col>
           </a-row>
         </a-checkbox-group>
       </a-form-item>
-      <a-form-item label="历史合作团队">
-        <a-textarea v-decorator="history.team.dec" v-bind="history.team.other"/>
-      </a-form-item>
+<!--      <a-form-item label="历史合作团队">-->
+<!--        <a-textarea v-decorator="history.team.dec" v-bind="history.team.other"/>-->
+<!--      </a-form-item>-->
       <a-form-item label="历史清收情况">
         <a-textarea v-decorator="history.col.dec" v-bind="history.col.other"/>
       </a-form-item>
-    </template>
+<!--    </template>-->
     <a-form-item label="是否曾与其他AMC合作" class="form-item-row" :selfUpdate="false">
       <a-radio-group v-decorator="history.is.dec" v-bind="history.is.other">
         <a-row>
@@ -48,14 +47,14 @@
         </a-row>
       </a-radio-group>
     </a-form-item>
-    <template v-if="getValue(history.is.dec[0]) ==='1'">
+<!--    <template v-if="getValue(history.is.dec[0]) ==='1'">-->
       <a-form-item label="历史合作AMC" class="form-item-row">
         <a-checkbox-group v-decorator="history.type.dec" v-bind="history.type.other">
           <a-row>
             <a-col v-for="item in history.type.options" :key="item.id" v-bind="item.id===0?{span:24}:{span:6}">
               <a-checkbox :value="item.value">{{ item.label }}</a-checkbox>
               <a-input v-if="item.id===0" style="width: 555px" placeholder="请列明具体合作AMC"
-                       v-model="assist[history.type.else]"/>
+                       v-decorator="history.type.detail"/>
             </a-col>
           </a-row>
         </a-checkbox-group>
@@ -63,7 +62,7 @@
       <a-form-item label="其他AMC合作情况">
         <a-textarea v-decorator="history.other.dec" v-bind="history.other.other"/>
       </a-form-item>
-    </template>
+<!--    </template>-->
     <!-- 后续期望合作方向  -->
     <div class="factor-form-subtitle"><span>后续期望合作方向</span></div>
     <a-form-item label="合作意向" class="form-item-row">
@@ -72,7 +71,7 @@
           <a-col v-for="item in dir.intent.options" :key="item.id" v-bind="item.id===0?{span:24}:{span:6}">
             <a-checkbox :value="item.value">{{ item.label }}</a-checkbox>
             <a-input v-if="item.id===0" style="width: 606px;margin-left: 10px" placeholder="多个方向请用中文顿号隔开"
-                     v-model="assist[dir.intent.else]"/>
+                     v-decorator="dir.intent.detail"/>
           </a-col>
         </a-row>
       </a-checkbox-group>
@@ -82,10 +81,10 @@
 
 <script>
 import {baseWidth, textarea, formItemLayout} from "@/views/main/my-attestation/common/style";
-import {cooIntent, hisCoo, hisFour} from "@/views/main/my-attestation/common/source";
+import {cooIntent, typeOfCooperation, hisFour} from "@/views/main/my-attestation/common/source";
 
 export default {
-  name: "form-public",
+  name: "FormPublic",
   nameComment: '律师机构表单公用-历史合作/后期期望合作',
   data() {
     return {
@@ -95,13 +94,14 @@ export default {
           dec: ['isCooperatedWithZheshang', {
             rules: [{required: true, message: '请选择与浙商合作情况'}],
           }],
+          detail:['isCooperatedWithZheshangDetail'],
           other: {
             ...baseWidth,
           }
         },
         coo: {
           dec: ['typeOfCooperationCode', {rules: [{required: true, message: '请勾选合作类型'}]}],
-          options: hisCoo,
+          options: typeOfCooperation,
           other: {
             ...baseWidth,
           }
@@ -130,7 +130,7 @@ export default {
         type: {
           dec: ['cooperatedAmc', {rules: [{required: true, message: '至少勾选一项历史合作AMC'}]}],
           options: hisFour,
-          else: 'cooperatedAmcDetail',
+          detail: ['cooperatedAmcDetail'],
           other: {
             ...baseWidth,
           }
@@ -146,7 +146,7 @@ export default {
       dir: {
         intent: {
           dec: ['cooperationIntention', {rules: [{required: true, message: '请勾选合作意向'}]}],
-          else: 'otherCooperationIntention',
+          detail: ['otherCooperationIntention'],
           options: cooIntent,
           other: {
             ...baseWidth,
@@ -156,14 +156,60 @@ export default {
       assist: {},
     }
   },
-  beforeCreate() {
+  props:{
+    isFirst:{
+      type:Boolean,
+      default:false
+    },
+    role:{
+      type:String,
+      default:'lawyer'
+    },
+    source: {
+      type:Object,
+      default:()=>{}
+    },
+  },
+  created() {
     this.form = this.$form.createForm(this);
+  },
+  mounted() {
+    if (Object.keys(this.source || {}).length) {
+      this.resetFormValue(this.source);
+    }
   },
   methods:{
     getValue(field){
       if(field) return this.form.getFieldValue(field);
     },
-  }
+    handleSubmit(e) {
+      e.preventDefault();
+      this.form.validateFields((err, data) => {
+        if (!err) {
+          console.log(this.processData(data));
+        } else {
+          console.log(err, data)
+        }
+      });
+    },
+    // 处理当前数据
+    processData(source = {}){
+      return Object.assign({},source,{
+        cooperatedAmc:(source.cooperatedAmc || []).join(','),
+        cooperationIntention:(source.cooperationIntention || []).join(','),
+        typeOfCooperationCode:(source.cooperationIntention || []).join(','),
+      })
+    },
+    resetFormValue(source) {
+      const fieldValues = {
+        ...source,
+        cooperatedAmc: (source.cooperatedAmc || '').split(','),
+        cooperationIntention: (source.cooperationIntention || '').split(','),
+        typeOfCooperationCode: (source.typeOfCooperationCode || '').split(','),
+      };
+      this.form.setFieldsValue({...fieldValues});
+    },
+  },
 }
 </script>
 

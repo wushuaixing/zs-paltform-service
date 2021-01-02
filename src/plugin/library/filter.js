@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import * as source from '@/views/main/my-attestation/common/source';
+import area from '@/assets/js/area.json';
 
 Vue.filter('capitalize', function (value) {
 	if (!value) return '';
@@ -33,8 +34,14 @@ Vue.filter('is', (val)=>{
 	return '';
 });
 
+// 单位展示信息
+Vue.filter('unit', (val,unit = '')=>{
+	if(!Number(val)) return "";
+	return val + unit || "";
+});
+
 // 多项选择:展示 (val:值,field:数据字段,remark ="":其他字段)
-Vue.filter('multi',(val,field,remark = '')=>{
+Vue.filter('multi',(val,remark = '',field)=>{
 	if(!field) return val;
 	if(!val) return val;
 	const _data = source[field] || [];
@@ -47,8 +54,36 @@ Vue.filter('multi',(val,field,remark = '')=>{
 	return _label.filter(i=>i).join('、');
 });
 
+// 地区省市区展示
+const areaArray = val=>{
+	let result = [];
+	if(area[val[0]]) {
+		const i = area[val[0]];
+		result[0] = i.name;
+		if(i.child[val[1]]){
+			const item = i.child[val[1]];
+			result[1] = item.name;
+			if(item.child[val[2]]){
+				result[2] = item.child[val[2]].name;
+			}
+		}
+	}
+	return result.join('/')
+};
+Vue.filter('area',value=>{
+	if(value.length && Array.isArray(value)){
+		console.log(value);
+		return areaArray(value);
+	}
+	return value;
+});
 
-
+Vue.filter('areas',data=>{
+	if(data.length && Array.isArray(data)){
+		return data.map(i=>areaArray(i)).join('、');
+	}
+	return data;
+});
 
 //机构历史合作银行
 Vue.filter('historyCooperation', (val)=>{
@@ -56,8 +91,13 @@ Vue.filter('historyCooperation', (val)=>{
 });
 //机构合作意向
 Vue.filter('IntentionCooperation',(val)=>{
-
-	return val === 1 ? '合作清收' : val === 2  ? '保底清收' : val === 3 ? '跟投' : val === 4 ? '介绍投资人' : val === 5 ? '担保类项目' : '其他';
+	return (
+		val === 1 ? '合作清收' :
+			val === 2  ? '保底清收' :
+				val === 3 ? '跟投' :
+					val === 4 ? '介绍投资人' :
+						val === 5 ? '担保类项目' : '其他'
+	);
 });
 //擅长业务类型
 Vue.filter('typeBusiness',(val)=>{
