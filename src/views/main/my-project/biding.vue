@@ -1,15 +1,7 @@
 <template>
   <div>
     <Breadcrumb :source="navData" icon="environment"></Breadcrumb>
-    <div v-if="!isCertification===0" class="nothing">
-      <img class="nothing-pic" src="@/assets/img/tempty.png" alt="">
-      <div class="nothing-msg">您尚未完成资质认证，请先完成资质认证！</div>
-      <div class="nothing-btn">
-        <a-button type="primary" @click="goConfirm">
-          立即前往资质认证
-        </a-button>
-      </div>
-    </div>
+    <a-spin v-if="loading" class="spin-wrapper" size="large"/>
     <div v-else class="biding-wrapper">
       <div class="biding-wrapper-content">
         <div class="biding-query">
@@ -189,6 +181,15 @@
       <ProjectModal :projectInfo="projectInfo" :sign="'fail'" ref="failModal" />
       <PlanModal :projectInfo="projectInfo" ref="planModal" />
     </div>
+    <div v-if="!isCertification===0" class="nothing">
+      <img class="nothing-pic" src="@/assets/img/tempty.png" alt="">
+      <div class="nothing-msg">您尚未完成资质认证，请先完成资质认证！</div>
+      <div class="nothing-btn">
+        <a-button type="primary" @click="goConfirm">
+          立即前往资质认证
+        </a-button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -211,6 +212,7 @@ export default {
   name: "ToReview",
   data() {
     return {
+      loading:true,
       navData: [
         { id: 1, title: "我的项目", path: "/provider/review" },
         { id: 2, title: "我的竞标", path: "/provider/review" },
@@ -323,6 +325,7 @@ export default {
       this.http[this.params.aimStatus](this.params).then((res) => {
         if (res.code === 20000) {
           console.log(res);
+          this.loading = false;
           this.tabConfig.pagination.total = res.data.total;
           this.tabConfig.dataSource = res.data.list;
         }
@@ -339,10 +342,12 @@ export default {
     },
     // 搜索查询
     handleSubmit() {
+      this.loading = true;
       this.getProjectList();
     },
     // tab状态切换
     handleTabChange(val) {
+      this.loading = true;
       this.query.tabStatus = val;
       this.getProjectList();
     },
@@ -387,12 +392,13 @@ export default {
         });
       }
       if (type === "sub" || type === "edit") {
-        if(type === "sub"){
-          window.localStorage.removeItem("servePlan")
-        }
+        
         amcBidDetail(item.id, this.params.aimStatus).then((res) => {
         if (res.code === 20000) {
           this.projectInfo = clearProto(res.data);
+          if(type === "sub"){
+            window.localStorage.removeItem("servePlan")
+          }
           if(type === "edit"){
             var servePlan = { //服务方案
               serviceTime: "",
@@ -418,6 +424,7 @@ export default {
         this.$refs.planModal.handleOpenModal();
       }
     },
+    //计算方案结束日期
     dateOprate(time, month) {
       var date = new Date(time);
       date.toLocaleDateString();
@@ -440,6 +447,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.spin-wrapper{
+  width: 100%;
+  padding-top: 10vh !important;
+}
 .nothing{
   width: 100%;
   height: 100%;

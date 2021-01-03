@@ -80,6 +80,7 @@
               :precision="0"
               style="width: 246px"
               :max="120"
+              :min="1"
             />
             <span class="unit">个月</span>
             <span class="tips">*请将服务期限换算成月数填写，请填写正整数</span>
@@ -146,7 +147,11 @@
             style="margin-top: 30px"
           >
             <div style="display: flex" v-if="!form.documentAddress">
-              <a-upload v-bind="upload.bind" v-on="upload.on">
+              <a-upload
+                v-decorator="decorator"
+                v-bind="upload.bind"
+                v-on="upload.on"
+              >
                 <a-button> <a-icon type="upload" />上传文件</a-button>
               </a-upload>
               <span style="font-size: 12px; margin-left: 10px">
@@ -178,7 +183,7 @@
 
 <script>
 import { getArea } from "@/plugin/tools";
-import Deploy from "@/plugin/tools/qiniu-deploy";
+import Deploy, { getValueFromEvent } from "@/plugin/tools/qiniu-deploy";
 import { submitServicePlan, modifyCase } from "@/plugin/api/my-biding";
 export default {
   name: "MsgInfoModal",
@@ -229,6 +234,13 @@ export default {
           },
         ],
       },
+      decorator: [
+        "confidentialityCommitmentLetter",
+        {
+          valuePropName: "fileList",
+          getValueFromEvent,
+        },
+      ],
       upload: {
         bind: {
           ...Deploy.props,
@@ -242,7 +254,7 @@ export default {
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       form: {
-        serviceTime: 10,
+        serviceTime: '',
         collectionTarget: "",
         plans: [
           {
@@ -277,18 +289,18 @@ export default {
       this.visible = false;
     },
     handleModify(type) {
-      this.$refs.ruleForm.validateField(
-        ["serviceTime", "collectionTarget"],
-        (error) => {
-          console.log(error);
-          if (error) {
-            return false;
-          } else {
-            // var plansRequired = this.form.plans.every((item) =>item.content !== '' && !item.months !== '');
-            // console.log(plansRequired);
-          }
-        }
-      );
+      if(!this.form.serviceTime || !this.form.collectionTarget)return false;
+      for (let i = 0; i < this.form.plans.length; i++) {
+        let arr = this.form.plans.filter(
+          (item) => item.months === this.form.plans[i].months
+        );
+        if (arr.length !== 1)
+          return this.$message.error(
+            "您填写了重复的计划时间，同一时间阶段的计划请填写在一个阶段性目标中！"
+          );
+      }
+      if (this.form.documentAddress === "")
+        return this.$message.error("请上传服务方案文档");
       if (type === "add") {
         submitServicePlan(this.form).then((res) => {
           console.log(res);
@@ -296,12 +308,12 @@ export default {
             this.$message.success("方案提交成功");
             this.visible = false;
           } else {
-            this.$message.error("方案提交失败");
+            this.$message.error("方案提交失败,请检查信息是否填写完整");
           }
         });
       }
       if (type === "edit") {
-        var _this = this;
+        let _this = this;
         this.$confirm({
           title: "确定要修改已提交的方案吗?",
           content: "请确认修改后的方案核心要素信息与方案文档保持一致！",
@@ -312,7 +324,7 @@ export default {
                 _this.$message.success("修改成功");
                 _this.visible = false;
               } else {
-                _this.$message.error("修改失败");
+                _this.$message.error("修改失败,请检查信息是否填写完整");
               }
             });
           },

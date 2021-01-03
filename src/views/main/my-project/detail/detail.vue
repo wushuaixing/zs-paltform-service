@@ -1,8 +1,10 @@
 <template>
   <div class="project-detail">
+    <a-spin v-if="loading" class="spin-wrapper" size="large"/>
     <div
       style="background: #ececec; padding: 16px"
       class="project-detail-content"
+      v-else
     >
       <Breadcrumb :source="navData" icon="environment"></Breadcrumb>
       <a-card :bordered="false" style="width: 100%; height: 810px">
@@ -115,7 +117,7 @@
               <span class="spantext">{{info.aggrementDate }}</span>
             </div>
           </div>
-          <div class="flex-style" v-if="info.aimedStatus != '3'">
+          <div class="flex-style" v-if="info.aimedStatus !== '3'">
             <div
               style="margin-right: 30px"
               v-if="info.caseFileStatus === '1' || info.caseFileStatus === '2'"
@@ -195,6 +197,7 @@ import PlanModal from "../Plan-modal.vue";
 export default {
   data() {
     return {
+      loading:true,
       navData: [
         { id: 1, title: "服务商管理", path: "/provider/review" },
         { id: 2, title: "待审查", path: "/provider/review" },
@@ -373,6 +376,7 @@ export default {
       }
       this.$refs.planModal.handleOpenModal();
     },
+    //计算方案结束日期
     dateOprate(time,month){
       var date = new Date(time);
       date.toLocaleDateString();
@@ -385,6 +389,7 @@ export default {
     var {id,type} = this.$route.query;
     amcBidDetail(id,type).then((res) => {
       console.log(res);
+      this.loading = false;
       this.info = res.data;
     });
   },
@@ -396,7 +401,10 @@ export default {
   padding: 0;
   margin: 0;
 }
-
+.spin-wrapper{
+  width: 100%;
+  padding-top: 10vh!important;
+}
 .project-detail {
   &-content {
     .ant-row {
