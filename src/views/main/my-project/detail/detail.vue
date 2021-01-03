@@ -153,7 +153,7 @@
             </div>
             <div>
               <span class="subtitle">目标回款：</span>
-              <span class="spantext">{{ info.aimBackPrice }}</span>
+              <span class="spantext">{{ info.aimBackPrice }}万元</span>
             </div>
           </div>
           <div class="plan">
@@ -327,6 +327,9 @@ export default {
   },
   methods: {
     goSubmit(type) {
+      if(type === "add"){
+        window.localStorage.removeItem("servePlan")
+      }
       if(type === "edit"){
         var servePlan = { //服务方案
             serviceTime: "",

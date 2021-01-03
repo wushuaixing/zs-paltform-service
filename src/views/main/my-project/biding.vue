@@ -1,7 +1,16 @@
 <template>
   <div>
     <Breadcrumb :source="navData" icon="environment"></Breadcrumb>
-    <div class="biding-wrapper">
+    <div v-if="!isCertification===0" class="nothing">
+      <img class="nothing-pic" src="@/assets/img/tempty.png" alt="">
+      <div class="nothing-msg">您尚未完成资质认证，请先完成资质认证！</div>
+      <div class="nothing-btn">
+        <a-button type="primary" @click="goConfirm">
+          立即前往资质认证
+        </a-button>
+      </div>
+    </div>
+    <div v-else class="biding-wrapper">
       <div class="biding-wrapper-content">
         <div class="biding-query">
           <a-form-model
@@ -378,6 +387,9 @@ export default {
         });
       }
       if (type === "sub" || type === "edit") {
+        if(type === "sub"){
+          window.localStorage.removeItem("servePlan")
+        }
         amcBidDetail(item.id, this.params.aimStatus).then((res) => {
         if (res.code === 20000) {
           this.projectInfo = clearProto(res.data);
@@ -412,19 +424,38 @@ export default {
       date.setMonth(date.getMonth() + month);
       return date.toLocaleDateString().replaceAll("/", "-");
     },
+    goConfirm(){
+      this.$router.push({name:'my-attestation/qualifies'})
+    }
   },
   computed: {
     columns: function () {
       return columns[colType[this.query.tabStatus]];
     },
+    isCertification(){
+      return this.$store.getters.getInfo.isCertification;
+    }
   },
 };
 </script>
 
 <style scoped lang="scss">
-.spin-wrapper {
+.nothing{
   width: 100%;
-  padding-top: 10vh !important;
+  height: 100%;
+  text-align: center;
+  &-pic{
+    margin-top: 232px;
+  }
+  &-msg{
+    font-size: 14px;
+    font-weight: 500;
+    color: #666666;
+    margin-top: 12px;
+  }
+  &-btn{
+    margin-top: 24px;
+  }
 }
 .biding-wrapper {
   padding: 16px;

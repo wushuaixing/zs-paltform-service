@@ -55,6 +55,7 @@
         <a-form-model
           :model="form"
           :rules="rules"
+          ref="ruleForm"
           :label-col="labelCol"
           :wrapper-col="wrapperCol"
         >
@@ -133,7 +134,7 @@
             prop="documentAddress"
             style="margin-top: 30px"
           >
-            <div style="display: flex">
+            <div style="display: flex" v-if="!form.documentAddress">
               <a-upload v-bind="upload.bind" v-on="upload.on">
                 <a-button> <a-icon type="upload" />上传文件</a-button>
               </a-upload>
@@ -149,6 +150,9 @@
                 "
                 >服务方案模版下载</span
               >
+            </div>
+            <div v-else>
+              <a>服务方案.doc</a>
             </div>
           </a-form-model-item>
         </a-form-model>
@@ -257,6 +261,10 @@ export default {
       this.visible = false;
     },
     handleModify(type){
+      this.$refs.ruleForm.validate(validate=>{
+        console.log(validate);
+        
+      })
       if(type === 'add'){
         submitServicePlan(this.form).then(res=>{
           console.log(res);
@@ -264,12 +272,12 @@ export default {
             this.$message.success("方案提交成功");
             this.visible = false;
           }else{
-            this.$message.error("方案提交失败")
+            this.$message.error("方案提交失败");
           }
         })
       }
       if(type === 'edit'){
-        var _this = this
+        var _this = this;
         this.$confirm({
           title:'确定要修改已提交的方案吗?',
           content:'请确认修改后的方案核心要素信息与方案文档保持一致！',
@@ -381,5 +389,8 @@ export default {
       color: #333333;
     }
   }
+}
+.ant-modal-confirm-btns{
+  margin: 0 auto;
 }
 </style>
