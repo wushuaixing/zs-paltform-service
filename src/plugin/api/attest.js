@@ -24,6 +24,10 @@ const qualifies = {
 
 	// 放弃修改
 	dropModify:()=>request.put('/service/amcQualify/dropModify'),
+
+	// 修改联系人名称
+	modifyContact:params=>request.post('/service/amcQualify/modifyContact?contact=' + (params || '')),
+
 };
 
 const factor = {
