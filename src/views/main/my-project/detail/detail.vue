@@ -69,8 +69,7 @@
             <div>
               <span class="subtitle">债权本金：</span
               ><span class="spantext"
-                >{{ info.debtCaptial | amountTh }}万元</span
-              >
+                >{{ info.debtCaptial | amountTh }}万元</span>
             </div>
           </a-col>
           <a-col :span="8">
@@ -95,7 +94,7 @@
         <a-row>
           <a-col :span="24" style="display: flex">
             <div class="subtitle">抵押物清单:</div>
-            <div>
+            <div class="sutitle-text">
               <p v-for="(i, index) in info.amcProjectCollaterals" :key="index">
                 {{index+1}}. {{i.collateralType|collateralType}}、{{i|area}}、{{i.collateralName}}
               </p>
@@ -331,16 +330,14 @@ export default {
     },
   },
   computed: {
-    deadDate() {
-      return this.form.submitDeadline - Date.now() < 7 ? true : false;
-    },
+
   },
   created() {
     console.log(this.$route.query.id);
     var id = this.$route.query.id;
     amcBidDetail(id).then((res) => {
       console.log(res);
-      // this.info = res.data;
+      this.info = res.data;
     });
   },
 };
@@ -462,5 +459,9 @@ export default {
   border: 1px dashed #faad14;
   border-radius: 2px;
   margin-top: 4px;
+}
+.sutitle-text{
+  margin-left: 10px;
+  margin-top: -2px;
 }
 </style>
