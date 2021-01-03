@@ -11,32 +11,34 @@
           <div class="right flex-style">
             <div style="margin-right: 30px">
               <span class="subtitle">项目状态：</span>
-              <span class="spantext">{{
+              <span class="spantext" :style="{color:info.aimedStatus === '2'
+              ? projectStatus.caseFileStatus[info.caseFileStatus].color
+              : projectStatus.aimedStatus[info.aimedStatus].color}">{{
                 info.aimedStatus === "2"
-                  ? projectStatus.caseFileStatus[info.caseFileStatus]
-                  : projectStatus.aimedStatus[info.aimedStatus]
+                  ? projectStatus.caseFileStatus[info.caseFileStatus].text
+                  : projectStatus.aimedStatus[info.aimedStatus].text
               }}</span>
             </div>
             <div style="margin-right: 30px" v-if="info.aimedStatus === '2'">
               <span class="subtitle">报名日期：</span>
               <span class="spantext">{{ info.gmtCreate }}</span>
             </div>
-            <div v-if="info.aimedStatus === '2'">
+            <div v-if="info.aimedStatus === '2' ">
               <span class="subtitle">方案提交截止日期：</span>
               <span class="spantext">{{ info.submitDeadline }}</span>
             </div>
             <!--项目已中标 -->
             <div v-if="info.aimedStatus === '3'">
               <span class="subtitle">合同签订日期：</span>
-              <span class="spantext">{{ info.submitDeadline }}</span>
+              <span class="spantext">{{ info.aggrementDate }}</span>
             </div>
             <!-- 已放弃-->
-            <div v-if="info.abandonDate">
+            <div v-if="info.aimedStatus === '1'">
               <span class="subtitle">放弃日期：</span>
               <span class="spantext">{{ info.abandonDate }}</span>
             </div>
             <!-- 已失效日期-->
-            <div v-if="info.realSubmitDeadline">
+            <div v-if="info.aimedStatus === '4'">
               <span class="subtitle">失效日期：</span>
               <span class="spantext">{{ info.realSubmitDeadline }}</span>
             </div>
@@ -93,8 +95,8 @@
         </a-row>
         <a-row>
           <a-col :span="24" style="display: flex">
-            <div class="subtitle">抵押物清单:</div>
-            <div class="sutitle-text">
+            <div class="subtitle">抵押物清单：</div>
+            <div>
               <p v-for="(i, index) in info.amcProjectCollaterals" :key="index">
                 {{index+1}}. {{i.collateralType|collateralType}}、{{i|area}}、{{i.collateralName}}
               </p>
@@ -106,11 +108,11 @@
           <div class="flex-style" v-if="info.aimedStatus === '3'">
             <div style="margin-right: 30px">
               <span class="subtitle">方案结束日期：</span>
-              <span class="spantext">{{}}</span>
+              <span class="spantext">{{dateOprate(info.aggrementDate,info.serviceTime)}}</span>
             </div>
             <div>
               <span class="subtitle">方案开始日期：</span>
-              <span class="spantext">{{}}</span>
+              <span class="spantext">{{info.aggrementDate }}</span>
             </div>
           </div>
           <div class="flex-style" v-if="info.aimedStatus != '3'">
@@ -123,23 +125,22 @@
             </div>
           </div>
         </div>
-        <div v-if="info.caseFileStatus === '0'" class="tips">
+        <div v-if="info.caseFileStatus === '0' && info.closeSubmitDeadline === '1'" class="tips">
           方案提交即将截止
         </div>
         <!-- 未中标黄色图标-->
         <div
-          v-if="info.amcBidFiles.length !== 0 && info.aimedStatus === '4'"
+          v-if="info.aimedStatus === '4'"
           class="absence_sign"
         >
           未中标
         </div>
-        <div class="submit-plan" v-if="info.amcBidFiles.length === 0">
+        <div class="submit-plan"  v-if="info.aimedStatus === '2' && info.caseFileStatus == '0'">
           <img src="@/assets/img/tempty.png" alt="" />
-          <p class="text" v-if="info.aimedStatus !== '4'">您暂未提交服务方案</p>
+          <p class="text" >您暂未提交服务方案</p>
           <button
             class="submitbtn"
-            @click="goSubmit"
-            v-if="info.aimedStatus !== '4'"
+            @click="goSubmit('add')"
           >
             去提交
           </button>
@@ -148,7 +149,7 @@
           <div class="serviceTime-aimBackPrice-row">
             <div>
               <span class="subtitle">服务期限：</span>
-              <span class="spantext">{{ info.serviceTime }}</span>
+              <span class="spantext">{{ info.serviceTime }}个月</span>
             </div>
             <div>
               <span class="subtitle">目标回款：</span>
@@ -158,32 +159,28 @@
           <div class="plan">
             <div class="subtitle">处置计划：</div>
           </div>
-          <div style="margin-top:24px ">
-            <a-steps :current="1">
-              <a-popover slot="progressDot" slot-scope="{ index, status, prefixCls }">
+          <div style="margin-top:24px" class="step-container">
+            <a-steps :current="20" >
+              <a-popover slot="progressDot"  slot-scope="item">
                 <template slot="content">
-                  <span>step {{ index }} status: {{ status }}</span>
+                  <span>{{ item.title }}</span>
                 </template>
-                <span :class="`${prefixCls}-icon-dot`" />
+                <span :class="`${item.prefixCls}-icon-dot`" />
               </a-popover>
-              <a-step title="申请执行" description="三个月" />
-              <a-step title="执行待定" description="6个月内" />
-              <a-step title="腾房完成" description="9个月" />
-              <a-step title="评估完成" description="12个月内" />
-              <a-step title="处置完成" description="18个月内" />
-              <a-step title="回款" description="24个月内" />
+              <a-step v-for="(item,index) in info.scheduleManagements" :key="index"  :title="item.dateMatters" :description="`${item.dateMonth}个月`" />
+
             </a-steps>
           </div>
           <div class="plan_scheme">
             <div class="subtitle">方案文档：<a>服务方案.doc</a></div>
-            <button class="modify_scheme" @click="goSubmit" v-if="info.caseFileStatus === '1'">
+            <button class="modify_scheme" @click="goSubmit('edit')" v-if="info.aimedStatus === '2' && info.caseFileStatus === '1'">
               修改服务方案
             </button>
           </div>
         </div>
       </a-card>
     </div>
-    <PlanModal :msgInfo="info" ref="planModal" />
+    <PlanModal :projectInfo="info" ref="planModal" />
   </div>
 </template>
 
@@ -205,34 +202,34 @@ export default {
       ],
       projectStatus: {
         aimedStatus: {
-          1: "已放弃",
-          2: "进行中",
-          3: "已中标",
-          4: "已失效",
+          1: {text:'已放弃',color:'#F5222D'},
+          2: {text:'进行中',color:'#fff'},
+          3: {text:'已中标',color:'#52C41A'},
+          4: {text:'已失效',color:'#F5222D'},
         },
         caseFileStatus: {
-          0: "方案待提交",
-          1: "方案已提交",
-          2: "方案审核中",
+          0: {text:'方案待提交',color:'#F5222D'},
+          1: {text:'方案已提交',color:'#52C41A'},
+          2: {text:'方案审核中',color:'#FAAD14'},
         },
       },
       tipStyle: {},
       info: {
-        abandonDate: "", //2020-12-29
+        abandonDate: "2020-12-29",
         aggrementDate: "2020-12-29",
         aimBackPrice: "999.99",
         aimedStatus: "4",
         amcBidFiles: [
-          // {
-          //   amcBidId: 0,
-          //   caseFileAddress: "",
-          //   gmtCreate: "2020-12-29",
-          //   gmtDelete: "2020-12-29",
-          //   gmtModify: "2020-12-29",
-          //   id: 0,
-          //   isDelete: "0",
-          //   serviceContractFileAddress: "",
-          // },
+          {
+            amcBidId: 0,
+            caseFileAddress: "",
+            gmtCreate: "2020-12-29",
+            gmtDelete: "2020-12-29",
+            gmtModify: "2020-12-29",
+            id: 0,
+            isDelete: "0",
+            serviceContractFileAddress: "",
+          },
         ],
         amcProjectCollaterals: [
           {
@@ -277,6 +274,7 @@ export default {
 
         ],
         caseFileStatus: "",
+        closeSubmitDeadline:'1',
         debtCaptial: "130.15",
         debtInterest: "120.2",
         debtor: "阿里巴巴集团",
@@ -285,9 +283,33 @@ export default {
         id: 0,
         isDeleted: "0",
         isLawsuit: "0",
-        realSubmitDeadline: "2020-12-29", //
+        realSubmitDeadline: "2020-12-29",
         recallDate: "2020-12-29",
         scheduleManagements: [
+          {
+            amcBidId: 0,
+            amcServiceUserId: 0,
+            dateDay: "2020-12-29",
+            dateMatters: "腾房完毕完毕",
+            dateMonth: 0,
+            gmtCreate: "2020-12-29",
+            gmtDelete: "2020-12-29",
+            gmtModify: "2020-12-29",
+            id: 0,
+            isDelete: "0",
+          },
+          {
+            amcBidId: 0,
+            amcServiceUserId: 0,
+            dateDay: "2020-12-29",
+            dateMatters: "腾房完毕完毕",
+            dateMonth: 0,
+            gmtCreate: "2020-12-29",
+            gmtDelete: "2020-12-29",
+            gmtModify: "2020-12-29",
+            id: 0,
+            isDelete: "0",
+          },
           {
             amcBidId: 0,
             amcServiceUserId: 0,
@@ -325,17 +347,40 @@ export default {
     }
   },
   methods: {
-    goSubmit() {
+    goSubmit(type) {
+      if(type === "edit"){
+        var servePlan = { //服务方案
+            serviceTime: "",
+            collectionTarget: "",
+            projectId: "",
+            plans: [],
+            documentAddress: "www.baidu.com",
+          };
+          servePlan.serviceTime = this.info.serviceTime;
+          servePlan.collectionTarget = this.info.aimBackPrice;
+          servePlan.projectId = this.info.id;
+          // servePlan.documentAddress = this.info.amcBidFiles[0].caseFileAddress;
+          this.info.scheduleManagements.forEach(item=>{
+            var plan = {};
+            plan.content = item.dateMatters;
+            plan.months = item.dateMonth;
+            servePlan.plans.push(plan);
+          })
+          window.localStorage.setItem("servePlan",JSON.stringify(servePlan));
+      }
       this.$refs.planModal.handleOpenModal();
     },
+    dateOprate(time,month){
+      var date = new Date(time);
+      date.toLocaleDateString();
+      date.setMonth(date.getMonth() + month);
+      return date.toLocaleDateString().replaceAll('/','-');
+    }
   },
-  computed: {
-
-  },
+  computed: {},
   created() {
-    console.log(this.$route.query.id);
-    var id = this.$route.query.id;
-    amcBidDetail(id).then((res) => {
+    var {id,type} = this.$route.query;
+    amcBidDetail(id,type).then((res) => {
       console.log(res);
       this.info = res.data;
     });
@@ -463,5 +508,18 @@ export default {
 .sutitle-text{
   margin-left: 10px;
   margin-top: -2px;
+}
+
+</style>
+<style lang="scss" >
+.step-container{
+  .ant-steps-item-title{
+    width: 70px;
+    color: #333333;
+    font-size: 14px;
+    white-space: nowrap;
+    text-overflow:ellipsis;
+    overflow:hidden;
+  }
 }
 </style>
