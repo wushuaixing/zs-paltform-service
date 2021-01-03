@@ -27,7 +27,7 @@ export default new Vuex.Store({
       window.localStorage.token = '';
     },
 		updateIdentity:(state,identity)=>{
-			state.info = Object.assign({},state.info,{identity})
+			state.info = Object.assign({},state.info,{identity,isSubmitCertify:1})
 	  },
   },
   actions: {

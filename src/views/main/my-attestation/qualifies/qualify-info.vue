@@ -80,7 +80,7 @@
 			<div class="info-item_list">
 				<div class="info-item_list-title">营业执照</div>
 				<div class="info-item_list-content">
-					<FileList :fileList="dataSource.businessLicense"/>
+					<FileList :fileList="dataSource.businessLicense" />
 				</div>
 			</div>
 			<div class="info-item_list">

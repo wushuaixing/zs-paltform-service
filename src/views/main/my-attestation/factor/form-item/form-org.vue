@@ -1,6 +1,6 @@
 <template>
   <a-form v-bind="formItemLayout" :form="form" autocomplete="off">
-    <div class="factor-form-subtitle">基本信息</div>
+    <div class="factor-form-subtitle"><span>基本信息</span></div>
     <a-form-item label="机构简介">
       <a-textarea v-decorator="field.intro.dec" v-bind="field.intro.other"/>
     </a-form-item>
@@ -39,7 +39,7 @@
     <a-form-item label="所控制的其他主体">
       <a-input v-decorator="field.otherMasterSubject.dec" v-bind="field.otherMasterSubject.other"/>
     </a-form-item>
-    <div class="factor-form-subtitle">擅长优势</div>
+    <div class="factor-form-subtitle"><span>擅长优势</span></div>
     <a-form-item label="擅长业务类型" class="form-item-row">
       <a-checkbox-group v-decorator="adv.goodCases.dec" v-bind="adv.goodCases.other">
         <a-row>
@@ -77,7 +77,7 @@
       <a-input v-decorator="adv.investmentBankProjectCase.dec" v-bind="adv.investmentBankProjectCase.other"/>
     </a-form-item>
 
-    <div class="factor-form-subtitle">投资意向</div>
+    <div class="factor-form-subtitle"><span>投资意向</span></div>
     <a-form-item label="是否有投资意向" class="form-item-row" :selfUpdate="false">
       <a-radio-group v-decorator="intention.hasInvestmentIntention.dec"
                      v-bind="intention.hasInvestmentIntention.other">
@@ -329,16 +329,15 @@ export default {
         setFieldsValue({[field]: str});
       }
     },
-    handleSubmit(e) {
-      e.preventDefault();
-      this.form.validateFields((err, data) => {
-        if (!err) {
-          console.log(this.processData(data));
-        } else {
-          console.log(err, data)
-        }
-      });
-    },
+	  handleSubmit(e) {
+		  (e || window.event).preventDefault();
+		  return new Promise((resolve,reject)=>{
+			  this.form.validateFields((err, data) => {
+				  if (!err)  resolve(this.processData(data));
+				  else reject(err)
+			  });
+		  });
+	  },
     // 处理当前数据
     processData(source = {}) {
       return Object.assign({}, source, {

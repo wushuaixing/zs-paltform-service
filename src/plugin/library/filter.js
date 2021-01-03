@@ -72,7 +72,6 @@ const areaArray = val=>{
 };
 Vue.filter('area',value=>{
 	if(value.length && Array.isArray(value)){
-		console.log(value);
 		return areaArray(value);
 	}
 	return value;

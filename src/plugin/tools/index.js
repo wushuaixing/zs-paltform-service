@@ -139,3 +139,16 @@ export const areaAnalysis = (str,single = true)=>{
 	const _str = (str || '').split(',').filter(i=>i);
 	return single ? _str : _str.map(i => i.split('/').filter(i=>i));
 };
+
+/**
+ * 构建指定数据的数据对象
+ * @param source
+ * @param field
+ * @returns {{}}
+ */
+export const buildSource = (source,field = [])=> {
+	if(!field.length) return {};
+	const _source = {};
+	field.forEach(i=>_source[i] = source[i] || null);
+	return _source;
+};

@@ -56,23 +56,7 @@ export default {
 </style>
 
 <style lang='scss'>
-.attest-form{
-  .ant-form-item-with-help{
-    margin-bottom: 0;
-  }
-  .ant-form-item-label,.ant-form-item-control{
-    line-height: 32px;
-  }
-  .ant-form-explain, .ant-form-extra{
-    margin-top: 0;
-    min-height: 25px;
-  }
-  .form-item-no-title{
-    .ant-form-item-label label:after{
-      content:' '
-    }
-  }
-}
+
 .qualifies-wrapper{
   height: 100%;
   background-color: #fff;
@@ -315,5 +299,22 @@ export default {
       }
     }
   }
+}
+.attest-form{
+	.ant-form-item-with-help{
+		margin-bottom: 0;
+	}
+	.ant-form-item-label,.ant-form-item-control{
+		line-height: 32px;
+	}
+	.ant-form-explain, .ant-form-extra{
+		margin-top: 0;
+		min-height: 25px;
+	}
+	.form-item-no-title{
+		.ant-form-item-label label:after{
+			content:' '
+		}
+	}
 }
 </style>

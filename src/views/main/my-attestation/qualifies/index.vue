@@ -65,9 +65,9 @@
               </template>
             </div>
             <ul class="status-title-attribute">
-              <li>当前要素认证状态：<b :class="info.class">{{info.desc}}</b></li>
+              <li>当前资质认证状态：<b :class="info.class">{{info.desc}}</b></li>
               <li v-if="statusInfo.qualifyModifyDate">
-                要素信息更新日期：{{statusInfo.qualifyModifyDate}}
+                资质信息更新日期：{{statusInfo.qualifyModifyDate}}
               </li>
             </ul>
           </div>
@@ -76,7 +76,6 @@
         <div class="qualifies-item qualifies-status" v-if="status(245)">
           <div class="status-content">
             <div>{{info.text}}</div>
-            <a-button type="primary" v-if="status(1)">立即前往要素认证</a-button>
             <a-button type="primary" v-if="status(2)" @click="checkQualifies" :loading="visibleLoading">
 							编辑并重新提交</a-button>
             <a-button type="primary" v-if="status(4)" @click="checkQualifies" :loading="visibleLoading">
@@ -161,7 +160,7 @@
   // 资质审核相关状态
   const qualifyStatus = {
     0:{ desc:"未认证", text:""},
-    1:{ desc:"认证审核中", text:"您尚未完成要素认证，继续完成要素认证，即可查看浙商资产招商项目！",class:'text-error'},
+    1:{ desc:"认证审核中", text:"您尚未完成资质认证，继续完成资质认证，即可查看浙商资产招商项目！",class:'text-error'},
     2:{ desc:"认证未通过", text:"您提交的资质认证信息未通过审核，未通过原因：",class:'text-dangerous'},
     3:{ desc:"审核通过", text:"",class:'text-success'},
     4:{ desc:"认证修改审核中", text:"您提交的资质认证信息修改正在审核中，请耐心等待审核结果",class:'text-error'},
@@ -321,13 +320,13 @@ export default {
 						...qualifyVO
 					};
 					this.spinning = false;
-				}else if(code === 80001){
+				} else if(code === 80001){
 					this.statusInfo = {
 						qualifyAuditStatus:0,
 						reasonOfNotPass:'',
 					};
 					this.spinning = false;
-				}else{
+				} else{
 					this.$error({
 						title: '提示',
 						content: '网络请求异常，请重新请求!',

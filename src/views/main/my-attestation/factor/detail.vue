@@ -2,7 +2,7 @@
 	<div class="qualifies-info-wrapper qualify-detail-wrapper">
 		<slot name="title"/>
 		<!--律师详情展示-->
-		<div class="info-item" data-label="我的要素认证信息-律师" v-if="!isLawyer">
+		<div class="info-item" data-label="我的要素认证信息-律师" v-if="isLawyer">
 			<div class="info-item_auction" v-if="isEdit">
 				<a-button @click="scrollIntoView('item_category_lawyer')">律师信息</a-button>
 				<a-button @click="scrollIntoView('item_category_office')">
@@ -11,15 +11,20 @@
 			</div>
 			<div class="info-item_category" id="item_category_lawyer" data-lable="律师信息">
 				<span class="title">律师信息</span>
-				<a-button type="link" icon="edit" v-if="isEdit">编辑我的要素信息</a-button>
-				<span class="date" v-else>提交日期：{{ dataSource.evolveType }}</span>
+				<a-button type="link" icon="edit" v-if="isEdit" @click="editElementInfo">编辑我的要素信息</a-button>
+				<span class="date" v-else>提交日期：{{ dataSource.createTime }}</span>
 			</div>
 			<div v-for="(item,index) in lawyerField" :key="index">
 				<div class="info-item_subtitle">{{item.title}}</div>
 				<div v-for="(i,_index) in item.children" :key="'lawyer'+_index">
 					<div class="info-item_list" v-if="toShow(i)">
 						<div class="info-item_list-title">{{i.label}}</div>
-						<div class="info-item_list-content">{{toProcess(i)||'-'}}</div>
+						<div class="info-item_list-content">
+							{{ !i.slot ?(toProcess(i)||'-') :""}}
+							<template v-if="i.slot==='file'">
+								<FileList :fileList="toProcess(i)" />
+							</template>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -28,7 +33,7 @@
 			</div>
 			<div class="info-item_img" v-if="noOffice">
 				<img :src="noFinished" alt="" style="width: 265px;"/>
-				<template v-if="!isEdit">
+				<template v-if="isEdit">
 					<div class="title" >您还未添加挂靠律师信息认证，请尽快添加！</div>
 					<a-button type="primary" @click="toAddOfficeInfo">立即添加</a-button>
 				</template>
@@ -37,7 +42,7 @@
 				<div v-for="(i,_index) in officeField" :key="'office'+_index">
 					<div class="info-item_list" v-if="toShow(i)">
 						<div class="info-item_list-title">{{i.label}}</div>
-						<div class="info-item_list-content">{{toProcess(i,dataSource.officeData)||'-'}}</div>
+						<div class="info-item_list-content">{{toProcess(i,officeData)||'-'}}</div>
 					</div>
 				</div>
 			</template>
@@ -64,94 +69,99 @@
 
 <script>
 	import { formItemLayout } from "../common/style";
-	import { areaAnalysis } from '@/plugin/tools/index';
+	import { areaAnalysis } from '@/plugin/tools';
+	import FileList from '@/components/file-list';
+
 	import noFinished from '@/assets/img/no-finished.png';
 
-	const _dataSource = {
-		lawData: {
-			area: "11,1101,110101",
-			areasOfGoodCases: "擅长业务区域",
-			badAssetsWorkExp: "执业经历（不良）",
-			competentCourt: "主要代理案件管辖法院",
-			familiarCourts: "熟悉法院",
-			formerWorkUnit: "曾就业律所",
-			graduateSchool: "毕业院校",
-			isInStorage: "1",
-			isWorkOfPublicSecurityOrgans: "1",
-			isWorkOther: "1",
-			major: "专业",
-			notBadAssetsWorkExp: "执业经历（非不良）",
-			otherGoodCases: "擅长其他业务类型",
-			otherResources: '1,4',
-			otherResourcesAdvantage: "其他社会资源优势",
-			workArea: "14,14/1404",
-			workRole: "兼职/任职职务",
-			workUnitName: "兼职任职单位",
-			workingTime: "2",
-			goodCases: '1,3,5',
-			otherResourcesDetail: '其他资源补充',
-			cooperatedAmc: '1,3',
-			cooperatedAmcDetail: "具体合作AMC",
-			cooperationIntention: '1,3,4,5,6,7,',
-			cooperationSituation: "其他AMC合作情况",
-			isCooperatedWithOtherAmc: "1",
-			isCooperatedWithZheshang: "1",
-			isCooperatedWithZheshangDetail: "是否曾于浙商合作补充",
-			once_col: "历史清收情况",
-			otherCooperationIntention: "合作意向补充",
-			typeOfCooperationCode: '1,3',
-			officeData: {
-				hasOtherOffice: "1",
-				isWorkForThreeYear: "1",
-				lawOfficeAddress: "律所地址",
-				lawOfficeInformation: "律所简介",
-				lawOfficeName: "律所名称",
-				lawOfficeQualify: "律所资质",
-				lawOfficeQualifyPerformance: "律所业绩介绍",
-				lawOfficeType: "1",
-				officeWorkAddress: "15/1505/150523",
-				otherOfficeStaffInfo: "分所人员情况",
-				otherOfficeWorkAddress: "15",
-				roleInLawOffice: "1",
-				totalTeamSize: "3434",
-			},
-		},
-		orgData: {
-			areasOfGoodCases: "13,14,15", //擅长业务区域
-			branchOfficeAddress: "15/1505",//分布地区
-			goodCases: "0,1,2,4,3", //擅长业务类型
-			hasInvestmentBankExperience: "1", //是否有投行项目经验
-			hasInvestmentIntention: "1", //是否有投资意向
-			headOfficeAddress: "11,1101,110101", //机构总部所在地
-			investmentArea: "11,1101,110101", //投资区域
-			investmentBankProjectCase: "423423",//历史投行项目案例
-			investmentExperience: "423423423", //以往投资经历
-			investmentPreferenceType: "1,5,9,4", //投资偏好类型
-			numberOfCompany: 432423, //公司总人数
-			numberOfTeams: 432423, //团队数
-			organizationInformation: "workingTime",//机构简介
-			organizationalStructureInformation: "423432",//组织架构描述
-			otherGoodCases: "432423",//擅长的其他业务类型
-			otherMasterSubject: "423432",//所控制的其他主体
-			otherResourcesAdvantage: "423432432",//其他社会资源优势
-			totalTeamSize: 423432,//团队总人数
-			workingTime: "0",//从业时间
-			cooperatedAmc: '1,3',
-			cooperatedAmcDetail: "具体合作AMC",
-			cooperationIntention: '1,3,4,5,6,7,',
-			cooperationSituation: "其他AMC合作情况",
-			isCooperatedWithOtherAmc: "1",
-			isCooperatedWithZheshang: "1",
-			isCooperatedWithZheshangDetail: "是否曾于浙商合作补充",
-			once_col: "历史清收情况",
-			otherCooperationIntention: "合作意向补充",
-			typeOfCooperationCode: '1,3',
-		},
-	};
+	// const _dataSource = {
+	// 	lawData: {
+	// 		area: "11,1101,110101",
+	// 		areasOfGoodCases: "擅长业务区域",
+	// 		badAssetsWorkExp: "执业经历（不良）",
+	// 		competentCourt: "主要代理案件管辖法院",
+	// 		familiarCourts: "熟悉法院",
+	// 		formerWorkUnit: "曾就业律所",
+	// 		graduateSchool: "毕业院校",
+	// 		isInStorage: "1",
+	// 		isWorkOfPublicSecurityOrgans: "1",
+	// 		isWorkOther: "1",
+	// 		major: "专业",
+	// 		notBadAssetsWorkExp: "执业经历（非不良）",
+	// 		otherGoodCases: "擅长其他业务类型",
+	// 		otherResources: '1,4',
+	// 		otherResourcesAdvantage: "其他社会资源优势",
+	// 		workArea: "14,14/1404",
+	// 		workRole: "兼职/任职职务",
+	// 		workUnitName: "兼职任职单位",
+	// 		workingTime: "2",
+	// 		goodCases: '1,3,5',
+	// 		otherResourcesDetail: '其他资源补充',
+	// 		cooperatedAmc: '1,3',
+	// 		cooperatedAmcDetail: "具体合作AMC",
+	// 		cooperationIntention: '1,3,4,5,6,7,',
+	// 		cooperationSituation: "其他AMC合作情况",
+	// 		isCooperatedWithOtherAmc: "1",
+	// 		isCooperatedWithZheshang: "1",
+	// 		isCooperatedWithZheshangDetail: "是否曾于浙商合作补充",
+	// 		once_col: "历史清收情况",
+	// 		otherCooperationIntention: "合作意向补充",
+	// 		typeOfCooperationCode: '1,3',
+	// 		officeData: {
+	// 			hasOtherOffice: "1",
+	// 			isWorkForThreeYear: "1",
+	// 			lawOfficeAddress: "律所地址",
+	// 			lawOfficeInformation: "律所简介",
+	// 			lawOfficeName: "律所名称",
+	// 			lawOfficeQualify: "律所资质",
+	// 			lawOfficeQualifyPerformance: "律所业绩介绍",
+	// 			lawOfficeType: "1",
+	// 			officeWorkAddress: "15/1505/150523",
+	// 			otherOfficeStaffInfo: "分所人员情况",
+	// 			otherOfficeWorkAddress: "15",
+	// 			roleInLawOffice: "1",
+	// 			totalTeamSize: "3434",
+	// 		},
+	// 	},
+	// 	orgData: {
+	// 		areasOfGoodCases: "13,14,15", //擅长业务区域
+	// 		branchOfficeAddress: "15/1505",//分布地区
+	// 		goodCases: "0,1,2,4,3", //擅长业务类型
+	// 		hasInvestmentBankExperience: "1", //是否有投行项目经验
+	// 		hasInvestmentIntention: "1", //是否有投资意向
+	// 		headOfficeAddress: "11,1101,110101", //机构总部所在地
+	// 		investmentArea: "11,1101,110101", //投资区域
+	// 		investmentBankProjectCase: "423423",//历史投行项目案例
+	// 		investmentExperience: "423423423", //以往投资经历
+	// 		investmentPreferenceType: "1,5,9,4", //投资偏好类型
+	// 		numberOfCompany: 432423, //公司总人数
+	// 		numberOfTeams: 432423, //团队数
+	// 		organizationInformation: "workingTime",//机构简介
+	// 		organizationalStructureInformation: "423432",//组织架构描述
+	// 		otherGoodCases: "432423",//擅长的其他业务类型
+	// 		otherMasterSubject: "423432",//所控制的其他主体
+	// 		otherResourcesAdvantage: "423432432",//其他社会资源优势
+	// 		totalTeamSize: 423432,//团队总人数
+	// 		workingTime: "0",//从业时间
+	// 		cooperatedAmc: '1,3',
+	// 		cooperatedAmcDetail: "具体合作AMC",
+	// 		cooperationIntention: '1,3,4,5,6,7,',
+	// 		cooperationSituation: "其他AMC合作情况",
+	// 		isCooperatedWithOtherAmc: "1",
+	// 		isCooperatedWithZheshang: "1",
+	// 		isCooperatedWithZheshangDetail: "是否曾于浙商合作补充",
+	// 		once_col: "历史清收情况",
+	// 		otherCooperationIntention: "合作意向补充",
+	// 		typeOfCooperationCode: '1,3',
+	// 	},
+	// };
 
 	export default {
 		name: 'FactorInfo',
 		nameComment: '要素信息展示',
+		components:{
+			FileList,
+		},
 		props: {
 			source: {},
 			isLawyer: {
@@ -225,7 +235,7 @@
 					title:"擅长优势",
 					children:[
 						{ label:"擅长业务类型", field:"goodCases",f:_multi, other:'otherGoodCases', origin:"lawAdvType" },
-						{ label:"经典案例 ", field:"classicCase" },
+						{ label:"经典案例 ", field:"classicCase" ,slot:'file'},
 						{ label:"擅长业务区域", field:"areasOfGoodCases" },
 						{ label:"主要代理案件管辖法院 ", field:"competentCourt" },
 						{ label:"熟悉法院 ", field:"familiarCourts" },
@@ -237,6 +247,7 @@
 			];
 			this.officeField = [
 				{ label:"律所名字", field:"lawOfficeName"},
+				{ label:"统一社会信用代码", field:"code"},
 				{ label:"律所地址", field:"lawOfficeAddress"},
 				{ label:"展业地域", field:"officeWorkAddress",f:_areas},
 				{ label:"律所类型", field:"lawOfficeType",f:_multi, origin:"lawType"},
@@ -293,14 +304,14 @@
 			// process 处理展示数据
 			toProcess(item,source){
 				const { field, f, origin, other, unit } = item;
-				const _source = source || this.dataSource;
+				const _source = source || this.dataSource || {};
 				const value = _source[field];
 				const _other = (other ? _source[other] : '') || unit;
 				return f ? f(value,_other,origin) : value;
 			},
 			// 是否展示元素
 			toShow(item,source){
-				const _source = source || this.dataSource;
+				const _source = source || this.dataSource || {};
 				return item.m && item.about ? item.m(_source[item.about]) : true;
 			},
 			//锚点跳转
@@ -309,18 +320,25 @@
 			},
 			//点击添加律所的信息
 			toAddOfficeInfo() {
-				console.log("添加律所的信息");
 				this.$emit('addOffice');
+			},
+			// editElementInfo
+			editElementInfo(){
+				this.$emit('editInfo');
 			}
 		},
 		computed:{
 			dataSource(){
-				// dataSource: _dataSource.lawData,
-					// dataSource1: _dataSource.orgData,
-				return this.source || _dataSource.lawData;
+				return this.source || {};
+			},
+			officeData(){
+				const data = this.source || {};
+				const _source = data.lawOffice || {};
+				if(data.roleInLawOffice) _source.roleInLawOffice = data.roleInLawOffice;
+				return _source;
 			},
 			noOffice(){
-				return Object.keys((this.source || {}).lawOffice || {}).length;
+				return !Object.keys(this.officeData).length;
 			},
 		}
 	}
