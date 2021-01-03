@@ -1,19 +1,34 @@
 <template>
   <div>
     <Breadcrumb :source="navData" icon="environment"></Breadcrumb>
-    <div class="biding-wrapper">
+    <a-spin v-if="loading" class="spin-wrapper" size="large"/>
+    <div v-else class="biding-wrapper">
       <div class="biding-wrapper-content">
         <div class="biding-query">
-          <a-form-model layout="inline" @submit="handleSubmit" @submit.native.prevent>
+          <a-form-model
+            layout="inline"
+            @submit="handleSubmit"
+            @submit.native.prevent
+          >
             <a-form-model-item>
-              <a-input v-model="params.debtor" placeholder="请输入债务人名称" class="custom-prefix-6" style="width: 500px">
-                <template slot="prefix" >
+              <a-input
+                v-model="params.debtor"
+                placeholder="请输入债务人名称"
+                class="custom-prefix-6"
+                style="width: 500px"
+              >
+                <template slot="prefix">
                   <div class="query-item-prefix">债务人名称</div>
                 </template>
               </a-input>
             </a-form-model-item>
             <a-form-model-item label="当前进展：" v-if="query.tabStatus === 1">
-              <a-select v-model="params.process" placeholder="请选择当前竞标进展" style="width: 180px" allowClear>
+              <a-select
+                v-model="params.process"
+                placeholder="请选择当前竞标进展"
+                style="width: 180px"
+                allowClear
+              >
                 <a-select-option :value="0">方案待提交</a-select-option>
                 <a-select-option :value="1">方案已提交</a-select-option>
               </a-select>
@@ -23,291 +38,484 @@
             </a-form-model-item>
           </a-form-model>
         </div>
-        <div class="biding-hr"/>
+        <div class="biding-hr" />
         <div class="biding-content">
           <a-tabs @change="handleTabChange" v-model="params.aimStatus">
             <a-tab-pane v-for="i in tabType" :key="i.id">
               <template slot="tab">
-                <a-badge :dot="i.dot"  :numberStyle="{width:'8px',height:'8px'}">{{i.title}}</a-badge>
+                <a-badge
+                  :dot="i.dot !== 1 && i.id !== 3"
+                  :numberStyle="{ width: '8px', height: '8px' }"
+                  >{{ i.title }}</a-badge
+                >
               </template>
             </a-tab-pane>
           </a-tabs>
           <div class="biding-content-table">
-            <a-table :columns="columns" v-bind="tabConfig" @change="handleTableChange">
-              <template slot="debtor" slot-scope="{debtor,isRead}">
-                <a-avatar v-if="!isRead&&isRead!==undefined" :size="8" style="background-color:#F5222D;margin-right:5px"/>
-                <span>{{debtor}}</span>
+            <a-table
+              :columns="columns"
+              :customRow="click"
+              v-bind="tabConfig"
+              @change="handleTableChange"
+            >
+              <template slot="debtor" slot-scope="{ debtor, isRead }">
+                <a-avatar
+                  v-if="!isRead && isRead !== undefined"
+                  :size="8"
+                  style="background-color: #f5222d; margin-right: 5px"
+                />
+                <span>{{ debtor }}</span>
               </template>
-              <template slot="amount" slot-scope="amount">{{amount|amountTh}}</template>
-              <template slot="security" slot-scope="{security}">{{security|guarantyType}}</template>
-              <template slot="process" slot-scope="{process}">
-                <a-avatar :size="6" :style="{backgroundColor: process===0 ? '#F5222D' : process===1 ? '#52C41A' : '#FAAD14',marginRight:'5px'}"/>
-                {{process|evolveType}}<br>
-                <div style="width:fit-content;color:#F5222D;border:1px #F5222D dashed" v-if="process===0">方案提交即将截止</div>
-              </template>
-              <template slot="datetime" slot-scope="time">{{time|timeFilter}}</template>
-              <template slot="businessTeam" slot-scope="team">
-                <div class="contactWay">
-                  <p>{{ team.businessTeam}}
-                  <p/>
-                  <p><span>{{ team.projectManager }}</span><span>{{ team.contact }}</span>
-                  <p/>
+              <template slot="amount" slot-scope="amount">{{
+                amount | amountTh
+              }}</template>
+              <template slot="security" slot-scope="{ security }">{{
+                security | guarantyType
+              }}</template>
+              <template
+                slot="process"
+                slot-scope="{ process, closeSubmitDeadline }"
+              >
+                <a-avatar
+                  :size="6"
+                  :style="{
+                    backgroundColor:
+                      process === 0
+                        ? '#F5222D'
+                        : process === 1
+                        ? '#52C41A'
+                        : '#FAAD14',
+                    marginRight: '5px',
+                  }"
+                />
+                {{ process | evolveType }}<br />
+                <div
+                  class="tipsInfo"
+                  v-if="closeSubmitDeadline === 1 && process === 0"
+                >
+                  方案提交即将截止
                 </div>
               </template>
-              <template slot="serviceTime" slot-scope="{serviceTime}">
+              <template slot="datetime" slot-scope="time">{{
+                time | timeFilter
+              }}</template>
+              <template slot="businessTeam" slot-scope="team">
+                <div class="contactWay">
+                  <p>{{ team.businessTeam }}</p>
+                  <p />
+                  <p>
+                    <span>{{ team.projectManager }}</span
+                    ><span>{{ team.contact }}</span>
+                  </p>
+                  <p />
+                </div>
+              </template>
+              <template
+                slot="serviceTime"
+                slot-scope="{ serviceTime, aggrementDate }"
+              >
                 <div class="deadline">
                   <p>{{ serviceTime }}个月</p>
-                  <p>({{ serviceTime }}到期)</p>
+                  <p>({{ dateOprate(aggrementDate, serviceTime) }}到期)</p>
                 </div>
               </template>
               <template slot="plan" slot-scope="plan">
                 <div class="plan">
                   <div v-if="plan.dateMatters">
-                    <p>{{ plan.dateDay|timeFilter }}前</p>
+                    <p>{{ plan.dateDay | timeFilter }}前</p>
                     <p>{{ plan.dateMatters }}</p>
                   </div>
                   <p v-else>服务到期</p>
                 </div>
               </template>
               <template slot="auction" slot-scope="item">
-                <a-button type="link" size="small" icon="file-text" @click="handleAuction(item,'view')">查看详情</a-button>
+                <a-button
+                  type="link"
+                  size="small"
+                  icon="file-text"
+                  @click="handleAuction(item, 'view')"
+                  >查看详情</a-button
+                >
                 <template v-if="query.tabStatus === 1">
-                  <a-divider type="vertical" style="margin:0"/>
-                  <a-tooltip title="方案提交已截止" v-if="!item.behind">
-                    <a-button type="link" size="small" icon="file-text" disabled class="common-table-disabled">方案报送</a-button>
+                  <a-divider type="vertical" style="margin: 0" />
+                  <a-button
+                    type="link"
+                    size="small"
+                    icon="file-text"
+                    v-if="item.process === 0"
+                    @click="handleAuction(item, 'sub')"
+                    >方案报送</a-button
+                  >
+                  <a-button
+                    type="link"
+                    size="small"
+                    icon="file-text"
+                    v-if="item.process === 1"
+                    @click="handleAuction(item, 'edit')"
+                    >方案修改</a-button
+                  >
+                  <a-tooltip title="方案提交已截止" v-if="item.process === 2">
+                    <a-button
+                      type="link"
+                      size="small"
+                      icon="file-text"
+                      disabled
+                      class="common-table-disabled"
+                      >方案修改</a-button
+                    >
                   </a-tooltip>
-                  <a-button type="link" size="small" icon="file-text" v-else @click="handleAuction(item,'sub')" >方案报送</a-button>
-                  <a-divider type="vertical" style="margin:0"/>
-                  <a-button type="link" size="small" icon="file-text" @click="handleAuction(item,'aba')">放弃竞标</a-button>
+                  <a-divider type="vertical" style="margin: 0" />
+                  <a-button
+                    type="link"
+                    size="small"
+                    icon="file-text"
+                    @click="handleAuction(item, 'aba')"
+                    >放弃竞标</a-button
+                  >
                 </template>
               </template>
             </a-table>
           </div>
         </div>
       </div>
-      <ProjectModal :projectInfo="projectInfo" :sign="'fail'" ref="failModal"/>
+      <ProjectModal :projectInfo="projectInfo" :sign="'fail'" ref="failModal" />
+      <PlanModal :projectInfo="projectInfo" ref="planModal" />
     </div>
-    <planModal/>
+    <div v-if="!isCertification===0" class="nothing">
+      <img class="nothing-pic" src="@/assets/img/tempty.png" alt="">
+      <div class="nothing-msg">您尚未完成资质认证，请先完成资质认证！</div>
+      <div class="nothing-btn">
+        <a-button type="primary" @click="goConfirm">
+          立即前往资质认证
+        </a-button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import Breadcrumb from '@/components/bread-crumb';
-import ProjectModal from '@/components/modal/project-modal';
-import planModal from "./Plan-modal";
-import { clearProto, disabledDate } from "@/plugin/tools";
+import Breadcrumb from "@/components/bread-crumb";
+import ProjectModal from "@/components/modal/project-modal";
+import PlanModal from "./Plan-modal";
+import { clearProto } from "@/plugin/tools";
 import { columns, colType } from "@/views/main/my-project/source";
-import {amcBidDetail, amcBiding ,amcBidAimed ,amcBidAbandon,amcBidInvalid,unreadInfo,changeUnRead} from "@/plugin/api/my-biding"
+import {
+  amcBidDetail,
+  amcBiding,
+  amcBidAimed,
+  amcBidAbandon,
+  amcBidInvalid,
+  unreadInfo,
+  changeUnRead,
+} from "@/plugin/api/my-biding";
 export default {
-  name: 'ToReview',
+  name: "ToReview",
   data() {
     return {
-      navData:[
-        {id:1,title:'服务商管理',path:'/provider/review'},
-        {id:2,title:'待审查',path:'/provider/review'},
+      loading:true,
+      navData: [
+        { id: 1, title: "我的项目", path: "/provider/review" },
+        { id: 2, title: "我的竞标", path: "/provider/review" },
       ],
-      tabType:[
-        { id:1, title:'进行中' ,dot:true},
-        { id:2, title:'已中标' ,dot:true},
-        { id:3, title:'已放弃' ,dot:false},
-        { id:4, title:'已失效' ,dot:true},
+      tabType: [
+        { id: 1, title: "进行中", dot: "" },
+        { id: 2, title: "已中标", dot: "" },
+        { id: 3, title: "已放弃", dot: "" },
+        { id: 4, title: "已失效", dot: "" },
       ],
-      http:{
-        1:amcBiding,  //进行中
-        2:amcBidAimed, //已中标
-        3:amcBidAbandon, //已放弃
-        4:amcBidInvalid  //已失效
+      http: {
+        1: amcBiding, //进行中
+        2: amcBidAimed, //已中标
+        3: amcBidAbandon, //已放弃
+        4: amcBidInvalid, //已失效
       },
       // 请求参数字段
-      params:{
+      params: {
         aimStatus: 1,
         page: 1,
         size: 10,
         sortField: "",
-        sortOrder: ""
+        sortOrder: "",
       },
-      query:{
-        username:"",
-        startTime:'',
-        endTime:'',
-        tabStatus:1,
-        orderType:'',
-        orderField:'',
+      query: {
+        username: "",
+        startTime: "",
+        endTime: "",
+        tabStatus: 1,
+        orderType: "",
+        orderField: "",
       },
-      tabConfig:{
-        dataSource:[{
-          businessTeam: "浙萧",
-          closeSubmitDeadline: 0,
-          contact: "17767790721",
-          debtCaptial: "199.12",
-          debtInterest: "31.30",
-          debtor: "杭州圣淘控股集团有限公司",
-          gmtCreate: "2020-12-29T03:04:13.000+0000",
-          gmtModify: "2020-12-29T03:04:13.000+0000",
-          id: 1343752189446983700,
-          isRead: 0,
-          process: 2,
-          projectManager: "王经理",
-          realSubmitDeadline: null,
-          security: "1",
-          submitDeadline: null,
-          advanceLast:false,
-          aggrementDate: "2020-12-29T03:04:13.000+0000",
-          aimBackPrice: "9999.99",
-          dateDay: "2020-12-29T03:04:13.000+0000",
-          dateMatters: "腾房完毕",
-          serviceTime: "2020-12-29T03:04:13.000+0000",
-          abandonDate:"2020-12-29T03:04:13.000+0000",
-          readSubmitDeadline:"2020-12-29T03:04:13.000+0000"
-        },{
-          businessTeam: "浙萧",
-          closeSubmitDeadline: 0,
-          contact: "17767790721",
-          debtCaptial: "199.12",
-          debtInterest: "31.30",
-          debtor: "杭州圣淘控股集团有限公司",
-          gmtCreate: "2020-12-29T03:04:13.000+0000",
-          gmtModify: "2020-12-29T03:04:13.000+0000",
-          id: 1343752189446983700,
-          isRead: 0,
-          process: 0,
-          projectManager: "王经理",
-          realSubmitDeadline: null,
-          security: "1",
-          submitDeadline: null,
-          advanceLast:false,
-          aggrementDate: "2020-12-29T03:04:13.000+0000",
-          aimBackPrice: "9999.99",
-          dateDay: "2020-12-29T03:04:13.000+0000",
-          dateMatters: "腾房完毕",
-          serviceTime: "2020-12-29T03:04:13.000+0000",
-          abandonDate:"2020-12-29T03:04:13.000+0000",
-          readSubmitDeadline:"2020-12-29T03:04:13.000+0000"
-        }],
-        size:'middle',
-        pagination:{
-          total:40,
-          showSizeChanger:true,
-          pageSizeOptions:['10', '20', '30', '40'],
-          showQuickJumper:true,
-          showTotal:val=>`共${val}条信息`,
+      tabConfig: {
+        dataSource: [
+          {
+            businessTeam: "浙萧",
+            closeSubmitDeadline: 0,
+            contact: "17767790721",
+            debtCaptial: "199.12",
+            debtInterest: "31.30",
+            debtor: "杭州圣淘控股集团有限公司",
+            gmtCreate: "2020-12-29",
+            gmtModify: "2020-12-29",
+            id: 1343752189446983700,
+            isRead: 0,
+            process: 2,
+            projectManager: "王经理",
+            realSubmitDeadline: null,
+            security: "1",
+            submitDeadline: null,
+            advanceLast: false,
+            aggrementDate: "2020-12-29",
+            aimBackPrice: "9999.99",
+            dateDay: "2020-12-29",
+            dateMatters: "腾房完毕",
+            serviceTime: "2020-12-29",
+            abandonDate: "2020-12-29",
+            readSubmitDeadline: "2020-12-29",
+          },
+          {
+            businessTeam: "浙萧",
+            closeSubmitDeadline: 0,
+            contact: "17767790721",
+            debtCaptial: "199.12",
+            debtInterest: "31.30",
+            debtor: "杭州圣淘控股集团有限公司",
+            gmtCreate: "2020-12-29",
+            gmtModify: "2020-12-29",
+            id: 1343752189446983700,
+            isRead: 0,
+            process: 0,
+            projectManager: "王经理",
+            realSubmitDeadline: null,
+            security: "1",
+            submitDeadline: null,
+            advanceLast: false,
+            aggrementDate: "2020-12-29",
+            aimBackPrice: "9999.99",
+            dateDay: "2020-12-29",
+            dateMatters: "腾房完毕",
+            serviceTime: "2020-12-29",
+            abandonDate: "2020-12-29",
+            readSubmitDeadline: "2020-12-29",
+          },
+        ],
+        size: "middle",
+        pagination: {
+          total: 40,
+          showSizeChanger: true,
+          pageSizeOptions: ["10", "20", "30", "40"],
+          showQuickJumper: true,
+          showTotal: (val) => `共${val}条信息`,
         },
       },
-      disabledDate,
-      projectInfo:{},
+      projectInfo: {},
     };
   },
-  components:{
+  components: {
     Breadcrumb,
     ProjectModal,
-    planModal,
+    PlanModal,
   },
   created() {
     this.getProjectList();
+    this.getUnreadInfo();
   },
-  methods:{
+  methods: {
     //获取项目列表
-    getProjectList(){
-      this.http[this.params.aimStatus](this.params).then(res=>{
-        if(res.code === 20000){
-          console.log(res)
+    getProjectList() {
+      this.http[this.params.aimStatus](this.params).then((res) => {
+        if (res.code === 20000) {
+          console.log(res);
+          this.loading = false;
           this.tabConfig.pagination.total = res.data.total;
           this.tabConfig.dataSource = res.data.list;
         }
-      })
+      });
     },
     //获取进行中,已中标,已失效是否已读状态
-    getUnreadInfo(){
-      unreadInfo().then(res=>{
-        console.log(res)
-      })
+    getUnreadInfo() {
+      unreadInfo().then((res) => {
+        console.log(res);
+        this.tabType[0].dot = res.data.goingUnRead;
+        this.tabType[1].dot = res.data.aimedUnRead;
+        this.tabType[3].dot = res.data.invalidUnRead;
+      });
     },
     // 搜索查询
-    handleSubmit(){
+    handleSubmit() {
+      this.loading = true;
       this.getProjectList();
     },
     // tab状态切换
-    handleTabChange(val){
+    handleTabChange(val) {
+      this.loading = true;
       this.query.tabStatus = val;
-      this.getProjectList()
+      this.getProjectList();
     },
     // 分页,排序
-    handleTableChange(pagination, filters, sorter){
+    handleTableChange(pagination, filters, sorter) {
       this.params.page = pagination.current;
       this.params.size = pagination.pageSize;
       this.params.sortField = sorter.field;
-      this.params.sortOrder = sorter.order ? sorter.order === "ascend" ? "ASC" : "DESC" : "";
+      this.params.sortOrder = sorter.order
+        ? sorter.order === "ascend"
+          ? "ASC"
+          : "DESC"
+        : "";
       this.getProjectList();
     },
+    //table添加行点击事件,点击未读变为已读
+    click(row) {
+      return {
+        on: {
+          click: () => {
+            changeUnRead(row.id).then((res) => {
+              console.log(res);
+            });
+          },
+        },
+      };
+    },
     // table操作列
-    handleAuction(item,type){
-      console.log(clearProto(item));
-      if (type === 'aba') {
-        amcBidDetail(item.id).then(res=>{
-          console.log(res)
-        if(res.code === 20000){
-          this.projectInfo = clearProto(res.data)
-          this.$refs.failModal.handleOpenModal();
+    handleAuction(item, type) {
+      if (type === "aba") {
+        amcBidDetail(item.id, this.params.aimStatus).then((res) => {
+        if (res.code === 20000) {
+          this.projectInfo = clearProto(res.data);
         }
-      })
+      });
+        this.$refs.failModal.handleOpenModal();
       }
-      if(type === 'view'){
-        changeUnRead(item.id).then(res=>{
-          console.log(res)
-        })
-        this.$router.push({path:"detail",query:{id:item.id}})
+      if (type === "view") {
+        this.$router.push({
+          path: "detail",
+          query: { id: item.id, type: this.params.aimStatus },
+        });
+      }
+      if (type === "sub" || type === "edit") {
+        
+        amcBidDetail(item.id, this.params.aimStatus).then((res) => {
+        if (res.code === 20000) {
+          this.projectInfo = clearProto(res.data);
+          if(type === "sub"){
+            window.localStorage.removeItem("servePlan")
+          }
+          if(type === "edit"){
+            var servePlan = { //服务方案
+              serviceTime: "",
+              collectionTarget: "",
+              projectId: "",
+              plans: [],
+              documentAddress: "www.baidu.com",
+            };
+            servePlan.serviceTime = this.projectInfo.serviceTime;
+            servePlan.collectionTarget = this.projectInfo.aimBackPrice;
+            servePlan.projectId = this.projectInfo.id;
+            // servePlan.documentAddress = this.projectInfo.amcBidFiles[0].caseFileAddress;
+            this.projectInfo.scheduleManagements.forEach(i=>{
+              var plan = {};
+              plan.content = i.dateMatters;
+              plan.months = i.dateMonth;
+              servePlan.plans.push(plan);
+            })
+            window.localStorage.setItem("servePlan",JSON.stringify(servePlan));
+          }
+        }
+      });
+        this.$refs.planModal.handleOpenModal();
       }
     },
-  },
-  computed:{
-    columns:function (){
-      return columns[colType[this.query.tabStatus]]
+    //计算方案结束日期
+    dateOprate(time, month) {
+      var date = new Date(time);
+      date.toLocaleDateString();
+      date.setMonth(date.getMonth() + month);
+      return date.toLocaleDateString().replaceAll("/", "-");
+    },
+    goConfirm(){
+      this.$router.push({name:'my-attestation/qualifies'})
     }
-  }
-}
+  },
+  computed: {
+    columns: function () {
+      return columns[colType[this.query.tabStatus]];
+    },
+    isCertification(){
+      return this.$store.getters.getInfo.isCertification;
+    }
+  },
+};
 </script>
 
 <style scoped lang="scss">
-.biding-wrapper{
+.spin-wrapper{
+  width: 100%;
+  padding-top: 10vh !important;
+}
+.nothing{
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  &-pic{
+    margin-top: 232px;
+  }
+  &-msg{
+    font-size: 14px;
+    font-weight: 500;
+    color: #666666;
+    margin-top: 12px;
+  }
+  &-btn{
+    margin-top: 24px;
+  }
+}
+.biding-wrapper {
   padding: 16px;
-  &-content{
+  &-content {
     background-color: #ffffff;
   }
-  .biding-query{
+  .biding-query {
     padding: 20px;
   }
-  .biding-hr{
+  .biding-hr {
     width: 100%;
     height: 16px;
     background-color: #f2f3f5;
   }
-  .biding-content{
-    &-table{
+  .biding-content {
+    &-table {
       padding: 4px 20px 20px;
     }
   }
 }
-.query-item-prefix{
+.query-item-prefix {
   font-size: 14px;
 }
-.content-action{
+.content-action {
   margin-bottom: 20px;
 }
-.content-action button{
+.content-action button {
   margin-right: 15px;
 }
 </style>
 <style lang="scss">
-.query-item-prefix{
+.query-item-prefix {
   height: 100%;
   width: 90px;
-  text-align:center;
+  text-align: center;
   border-right: 1px solid #ddd;
 }
-.custom-prefix-6 input{
-  padding-left: 113px!important;
+.custom-prefix-6 input {
+  padding-left: 113px !important;
 }
-.common-table-disabled{
-  cursor: pointer!important;
+.common-table-disabled {
+  cursor: pointer !important;
+}
+.tipsInfo {
+  width: fit-content;
+  color: #f5222d;
+  border: 1px #f5222d dashed;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

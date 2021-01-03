@@ -104,8 +104,8 @@ export const columns = {
 		basCol.guaranty,
 		{
 			title:'失效日期',
-			dataIndex: 'readSubmitDeadline',
-			key: 'readSubmitDeadline',
+			dataIndex: 'invalidDate',
+			key: 'invalidDate',
 			sorter: true,
 			scopedSlots: { customRender: 'datetime' },
 		},
