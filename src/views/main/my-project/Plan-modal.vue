@@ -9,7 +9,12 @@
   >
     <template slot="footer">
       <a-button key="back" @click="handleCancel"> 取消 </a-button>
-      <a-button key="submit" v-if="!servePlan" type="primary" @click="handleModify('add')">
+      <a-button
+        key="submit"
+        v-if="!servePlan"
+        type="primary"
+        @click="handleModify('add')"
+      >
         确认提交
       </a-button>
       <a-button
@@ -24,27 +29,32 @@
     <div class="plan-modal-wrapper">
       <div class="basic-info">
         <div class="title" style="margin-top: 32px">债权基本信息</div>
-        <div  class="content">
+        <div class="content">
           <a-row>
             <a-col :span="8">
-              <span>债务人名称：</span><span>{{projectInfo.debtor}}</span>
+              <span>债务人名称：</span><span>{{ projectInfo.debtor }}</span>
             </a-col>
             <a-col :span="8">
-              <span>债务人注册地：</span><span>{{projectInfo.debtorAddress}}</span>
+              <span>债务人注册地：</span
+              ><span>{{ projectInfo.debtorAddress }}</span>
             </a-col>
             <a-col :span="8">
-              <span>当前诉讼状态：</span><span>{{projectInfo.isLawsuit|isLawsuitType}}</span>
+              <span>当前诉讼状态：</span
+              ><span>{{ projectInfo.isLawsuit | isLawsuitType }}</span>
             </a-col>
           </a-row>
           <a-row>
             <a-col :span="8">
-              <span>债权本金：</span><span>{{projectInfo.debtCaptial | amountTh}}万元</span>
+              <span>债权本金：</span
+              ><span>{{ projectInfo.debtCaptial | amountTh }}万元</span>
             </a-col>
             <a-col :span="8">
-              <span>债权利息：</span><span>{{projectInfo.debtInterest|amountTh}}万元</span>
+              <span>债权利息：</span
+              ><span>{{ projectInfo.debtInterest | amountTh }}万元</span>
             </a-col>
             <a-col :span="8">
-              <span>担保方式：</span><span>{{projectInfo.security | guarantyType}}</span>
+              <span>担保方式：</span
+              ><span>{{ projectInfo.security | guarantyType }}</span>
             </a-col>
           </a-row>
         </div>
@@ -87,6 +97,7 @@
             v-for="(item, index) in form.plans"
             :label="index === 0 ? '处置计划' : '    '"
             :key="index"
+            prop="plans"
           >
             <div>
               <span>从签约日期起</span>
@@ -152,7 +163,11 @@
               >
             </div>
             <div v-else>
-              <a>服务方案.doc</a>
+              <a
+                >服务方案.doc<a-icon
+                  @click.stop="form.documentAddress = ''"
+                  type="close"
+              /></a>
             </div>
           </a-form-model-item>
         </a-form-model>
@@ -164,7 +179,7 @@
 <script>
 import { getArea } from "@/plugin/tools";
 import Deploy from "@/plugin/tools/qiniu-deploy";
-import {submitServicePlan,modifyCase} from "@/plugin/api/my-biding"
+import { submitServicePlan, modifyCase } from "@/plugin/api/my-biding";
 export default {
   name: "MsgInfoModal",
   nameComment: "查看抵质押物清单弹窗",
@@ -210,6 +225,7 @@ export default {
         documentAddress: [
           {
             required: true,
+            message: "",
           },
         ],
       },
@@ -231,18 +247,18 @@ export default {
         plans: [
           {
             content: "",
-            months: '',
+            months: "",
           },
           {
             content: "",
-            months: '',
+            months: "",
           },
           {
             content: "",
-            months: '',
+            months: "",
           },
         ],
-        projectId: "1343816091497205760",
+        projectId: "",
         documentAddress: "www.baidu.com",
       },
     };
@@ -260,39 +276,47 @@ export default {
     handleCancel() {
       this.visible = false;
     },
-    handleModify(type){
-      this.$refs.ruleForm.validate(validate=>{
-        console.log(validate);
-        
-      })
-      if(type === 'add'){
-        submitServicePlan(this.form).then(res=>{
+    handleModify(type) {
+      this.$refs.ruleForm.validateField(
+        ["serviceTime", "collectionTarget"],
+        (error) => {
+          console.log(error);
+          if (error) {
+            return false;
+          } else {
+            // var plansRequired = this.form.plans.every((item) =>item.content !== '' && !item.months !== '');
+            // console.log(plansRequired);
+          }
+        }
+      );
+      if (type === "add") {
+        submitServicePlan(this.form).then((res) => {
           console.log(res);
-          if(res.code === 20000){
+          if (res.code === 20000) {
             this.$message.success("方案提交成功");
             this.visible = false;
-          }else{
+          } else {
             this.$message.error("方案提交失败");
           }
-        })
+        });
       }
-      if(type === 'edit'){
+      if (type === "edit") {
         var _this = this;
         this.$confirm({
-          title:'确定要修改已提交的方案吗?',
-          content:'请确认修改后的方案核心要素信息与方案文档保持一致！',
-          onOk(){
-            modifyCase(_this.form).then(res=>{
-              console.log(res)
-              if(res.code === 20000){
+          title: "确定要修改已提交的方案吗?",
+          content: "请确认修改后的方案核心要素信息与方案文档保持一致！",
+          onOk() {
+            modifyCase(_this.form).then((res) => {
+              console.log(res);
+              if (res.code === 20000) {
                 _this.$message.success("修改成功");
                 _this.visible = false;
-              }else{
+              } else {
                 _this.$message.error("修改失败");
               }
-            })
-          }
-        })
+            });
+          },
+        });
       }
     },
     removeDomain(item) {
@@ -302,16 +326,17 @@ export default {
       }
     },
     addDomain() {
-      if(this.form.plans.length === 20) return this.$message.info("处置计划最多只能添加20条");
+      if (this.form.plans.length === 20)
+        return this.$message.info("处置计划最多只能添加20条");
       this.form.plans.push({
-        content: '',
-        months: '',
+        content: "",
+        months: "",
       });
     },
   },
-  created(){
+  created() {
     this.servePlan = JSON.parse(window.localStorage.getItem("servePlan"));
-    if(this.servePlan){
+    if (this.servePlan) {
       this.form = this.servePlan;
     }
   },
@@ -329,7 +354,7 @@ export default {
   .plan-modal-wrapper {
     .content {
       margin-left: 20px;
-      .ant-row{
+      .ant-row {
         margin-top: 24px;
       }
     }
@@ -390,7 +415,8 @@ export default {
     }
   }
 }
-.ant-modal-confirm-btns{
-  margin: 0 auto;
+.ant-modal-confirm-btns {
+  margin-right: 50%;
+  transform: translateX(50%);
 }
 </style>
