@@ -110,15 +110,19 @@
 						this.loading = false;
 						if( res.code === 20000 ){
 							this.$emit('toTellRes',res)
+						}else{
+							this.$message.error(res.data || "网络请求错误！");
 						}
 					});
 					return data;
-				}).catch(({code})=>{
-					const firstErrorField = code.errors[0].field;
-					if(firstErrorField){
-						document.getElementById(firstErrorField).scrollIntoView(true);
-						const h = document.documentElement.scrollTop;
-						document.documentElement.scrollTo(0,h - 100);
+				}).catch((err)=>{
+					if(Object.keys(err)){
+						const firstErrorField = err[Object.keys(err)[0]].errors[0].field;
+						if(firstErrorField){
+							document.getElementById(firstErrorField).scrollIntoView(true);
+							const h = document.documentElement.scrollTop;
+							document.documentElement.scrollTo(0,h - 100);
+						}
 					}
 					this.loading = false;
 				})

@@ -51,7 +51,7 @@
 		<div class="info-item" data-label="我的要素认证信息-机构" v-else>
 			<div class="info-item_category">
 				<span class="title">机构信息</span>
-				<a-button type="link" icon="edit" v-if="isEdit">编辑我的要素信息</a-button>
+				<a-button type="link" icon="edit" v-if="isEdit" @click="editElementInfo" :loading="loading">编辑我的要素信息</a-button>
 				<span class="date" v-else>提交日期：{{ dataSource.createTime || '-' }}</span>
 			</div>
 			<div v-for="(item,index) in orgField" :key="index">
@@ -175,6 +175,7 @@
 		},
 		data() {
 			return {
+				loading:false,
 				noFinished,
 				formItemLayout,
 				lawyerField:[],
@@ -324,7 +325,11 @@
 			},
 			// editElementInfo
 			editElementInfo(){
+				this.loading = true;
 				this.$emit('editInfo');
+				setTimeout(()=>{
+					this.loading = false;
+				},300);
 			}
 		},
 		computed:{

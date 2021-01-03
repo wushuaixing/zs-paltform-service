@@ -114,13 +114,10 @@
 </template>
 
 <script>
-import {baseWidth, textarea} from "@/views/main/my-attestation/common/style";
-import {
-  areaOption,
-  expOption,
-  hisCoo,
-  orgAdvType
-} from "@/views/main/my-attestation/common/source";
+import { baseWidth, textarea } from "@/views/main/my-attestation/common/style";
+import { areaOption, expOption, hisCoo, orgAdvType } from "@/views/main/my-attestation/common/source";
+import { buildSource } from "@/plugin/tools";
+const field = ["areasOfGoodCases","branchOfficeAddress","goodCases","hasInvestmentBankExperience","hasInvestmentIntention","headOfficeAddress","investmentArea","investmentBankProjectCase","investmentExperience","investmentPreferenceType","numberOfCompany","numberOfTeams","organizationInformation","organizationalStructureInformation","otherGoodCases","otherMasterSubject","otherResourcesAdvantage","totalTeamSize","workingTime"];
 
 export default {
   name: 'FormOrg',
@@ -305,7 +302,7 @@ export default {
   },
   mounted() {
     if (Object.keys(this.source || {}).length) {
-      this.resetFormValue(this.source);
+      this.resetFormValue(buildSource(this.source,field));
     }
   },
   methods: {

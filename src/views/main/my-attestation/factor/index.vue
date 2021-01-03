@@ -48,13 +48,14 @@
         <!-- 要素认证状态 -->
         <div class="qualifies-info" v-if="status(1)">
           <div class="info-image-status">
-            <img src="../../../../assets/img/blank_nodata.png" alt="">
+            <img src="../../../../assets/img/no_data.png" alt="">
             <p class="image-status-remark">您要提交的要素认证信息正在审核中 ，请您耐心等待</p>
             <a-button @click="getFactorLog" type="primary" :loading="visibleLoading">查看我提交的资质认证</a-button>
           </div>
         </div>
         <!-- 要素信息展示 -->
-        <DetailInfo v-if="status(3456)" :is-lawyer="identity === 1" :source="dataSource" isEdit @editInfo="handleEdit"/>
+        <DetailInfo v-if="status(3456)" :is-lawyer="identity === 1" :source="dataSource"
+										isEdit @editInfo="handleEdit" @addOffice="handleAddOffice"/>
 				<div class="qualifies-info" v-if="status(9)">
 					<div class="info-image-status">
 						<img src="../../../../assets/img/no-finished.png" alt="" style="width: 400px;">
@@ -94,7 +95,15 @@
 				</div>
 			</template>
 		</a-modal>
-
+		<a-modal v-model="modalVisibleOffice" title="律所信息认证" :maskClosable="false" :width="1000" class="factor-modal-wrapper">
+			<FormItemOffice />
+			<template slot="footer">
+				<div style="text-align: center" >
+					<a-button key="submit" type="primary">确认修改并提交</a-button>
+					<a-button key="back" @click="modalVisibleOffice = false" style="margin-left: 30px">关闭</a-button>
+				</div>
+			</template>
+		</a-modal>
 	</div>
 </template>
 
@@ -103,6 +112,7 @@
 // import { FormOrg, FormLaw, FormLawOff } from './form';
 import DetailInfo from './detail';
 import FormItem from './form-item';
+import FormItemOffice from './form-item/form-office';
 import { factor } from "@/plugin/api/attest";
 import IconLaw from '@/assets/img/lawyer.png';
 import IconOrg from '@/assets/img/org.png';
@@ -123,14 +133,16 @@ export default {
   nameComment: '要素认证',
   components:{
 	  DetailInfo,
-	  FormItem
+	  FormItem,
+	  FormItemOffice,
   },
   data() {
     return {
-      spinning: false,
+      spinning: true,
 			loading: false,
 	    visibleLoading: false,
 	    modalVisible: false,
+	    modalVisibleOffice: false,
 	    onlyEdit:false,
 	    modalStep: 0,
       identity: '',
@@ -148,6 +160,7 @@ export default {
     // 判断数据当前状态
     status(rule){
       const { elementAuditStatus: q} = this.statusInfo;
+      if(rule === '') return false;
       return  rule.toString() ? new RegExp(q).test(rule) : q;
     },
 	  // 查询记录表中，当前最新记录
@@ -217,6 +230,11 @@ export default {
 		  this.modalStep = 0;
 		  this.modalVisible = false;
 	  },
+		// 添加律所信息
+	  handleAddOffice(){
+			console.log('handleAddOffice');
+			this.modalVisibleOffice = true;
+		},
 	  // 提交我的资质信息
 	  handleSubmit(val){
 		  console.log(val);
@@ -232,9 +250,9 @@ export default {
 	  },
 	  // 编辑我的资质信息 - 仅编辑
 	  handleEdit(){
+		  this.modalVisible = true;
 		  this.dataSourceLog = {...this.dataSource};
 		  this.modalStep = 1;
-		  this.modalVisible = true;
 		  this.onlyEdit = false;
 	  },
 	  // 放弃修改
@@ -251,11 +269,12 @@ export default {
   },
   computed:{
     info() {
-      const { reasonOfNotPass, elementAuditStatus, remindBaseTime} = this.statusInfo;
+      const { reasonOfNotPass, elementAuditStatus} = this.statusInfo;
+	    // remindBaseTime
       return {
         ...factorStatus[elementAuditStatus],
         text:(factorStatus[elementAuditStatus] || {}).text + (reasonOfNotPass || ''),
-        halfStatus: !remindBaseTime,
+        halfStatus: false,
       };
     },
 	  mine(){
@@ -281,6 +300,7 @@ export default {
 		    reasonOfNotPass: '',
 		    remindBaseTime: '',
 	    };
+	    this.spinning = false;
 		}
   },
 }
