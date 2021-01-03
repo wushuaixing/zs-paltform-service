@@ -1,5 +1,5 @@
 <template>
-  <a-form v-bind="formItemLayout" :form="form" autocomplete="off" class="attest-form">
+  <a-form v-bind="formItemLayout" :form="form" autocomplete="off" class="attest-form" selfUpdate>
 		<a-form-item label="律所名称">
 			<a-input v-decorator="firms.name.dec" v-bind="firms.name.other"/>
 		</a-form-item>
@@ -35,7 +35,7 @@
 				</a-row>
 			</a-radio-group>
 		</a-form-item>
-		<a-form-item label="是否存在分所" class="form-item-row">
+		<a-form-item label="是否存在分所" class="form-item-row" :selfUpdate="false">
 			<a-radio-group v-decorator="firms.is.dec" v-bind="firms.is.other">
 				<a-row>
 					<a-col :span="6">

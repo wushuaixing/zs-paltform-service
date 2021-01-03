@@ -39,6 +39,9 @@ const factor = {
 	// 添加律师要素认证
 	lawyerAdd:params=>request.post('/service/amcElement/lawyer/add',params),
 
+	// 添加律师要素认证
+	officeAdd:params=>request.post('/service/amcElement/lawyer/addOffice',params),
+
 	// 机构要素查询
 	org:()=>request.get('/service/amcElement/organization'),
 

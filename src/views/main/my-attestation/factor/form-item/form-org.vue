@@ -1,5 +1,5 @@
 <template>
-  <a-form v-bind="formItemLayout" :form="form" autocomplete="off">
+  <a-form v-bind="formItemLayout" :form="form" autocomplete="off" selfUpdate>
     <div class="factor-form-subtitle"><span>基本信息</span></div>
     <a-form-item label="机构简介">
       <a-textarea v-decorator="field.intro.dec" v-bind="field.intro.other"/>

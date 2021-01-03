@@ -1,5 +1,5 @@
 <template>
-  <a-form v-bind="formItemLayout" :form="form" autocomplete="off" class="attest-form">
+  <a-form v-bind="formItemLayout" :form="form" autocomplete="off" class="attest-form" selfUpdate>
     <!-- 历史合作情况 -->
     <div class="factor-form-subtitle"><span>历史合作情况</span></div>
     <a-form-item label="是否曾与浙商合作" class="form-item-row" :selfUpdate="false">
@@ -35,7 +35,7 @@
         <a-textarea v-decorator="history.col.dec" v-bind="history.col.other"/>
       </a-form-item>
 		</div>
-		<a-form-item label="是否曾与其他AMC合作" class="form-item-row">
+		<a-form-item label="是否曾与其他AMC合作" class="form-item-row" :selfUpdate="false">
 			<a-radio-group v-decorator="history.is.dec" v-bind="history.is.other">
 				<a-row>
 					<a-col :span="6">

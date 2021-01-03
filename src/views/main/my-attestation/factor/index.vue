@@ -4,7 +4,7 @@
     <template v-if="!spinning">
       <!-- 填写相关要素信息 -->
 			<div v-if="identity && status(0)">
-				<FormItem :dataSource="dataSource" :is-lawyer="identity === 1">
+				<FormItem :dataSource="dataSource" :is-lawyer="identity === 1" @toTellRes="handleSubmit">
 					<div class="qualifies-item qualifies-status" slot="title">
 						<div class="item-title status-title">
 							<div class="status-title-identity">
@@ -95,11 +95,12 @@
 				</div>
 			</template>
 		</a-modal>
-		<a-modal v-model="modalVisibleOffice" title="律所信息认证" :maskClosable="false" :width="1000" class="factor-modal-wrapper">
-			<FormItemOffice />
+		<a-modal v-model="modalVisibleOffice" title="律所信息认证" :maskClosable="false" :width="1000">
+			<FormItemOffice ref="OfficeFormRef"/>
 			<template slot="footer">
 				<div style="text-align: center" >
-					<a-button key="submit" type="primary">确认修改并提交</a-button>
+					<a-button key="submit" type="primary" :loading="auctionLoading" @click="toAddOffice">
+						确认修改并提交</a-button>
 					<a-button key="back" @click="modalVisibleOffice = false" style="margin-left: 30px">关闭</a-button>
 				</div>
 			</template>
@@ -143,6 +144,7 @@ export default {
 	    visibleLoading: false,
 	    modalVisible: false,
 	    modalVisibleOffice: false,
+			auctionLoading:false,
 	    onlyEdit:false,
 	    modalStep: 0,
       identity: '',
@@ -154,6 +156,7 @@ export default {
       },
 			dataSource: {},
 			dataSourceLog: {},
+			logId:'',
     };
   },
   methods:{
@@ -188,9 +191,10 @@ export default {
 		  factor.element().then(({data = {},code})=>{
 			  if(code === 20000){
 				  const {
-					  elementCondition, element = {}, organizationElementVO = {},
+					  elementCondition, element = {}, organizationElementVO = {},logId
 				  } = (data['lawyerElementDetail'] || data['organizationElementDetail']) || {};
 				  this.statusInfo = elementCondition || {};
+				  this.logId = logId;
 				  this.dataSource = {
 					  ...element,
 					  ...organizationElementVO,
@@ -232,8 +236,32 @@ export default {
 	  },
 		// 添加律所信息
 	  handleAddOffice(){
-			console.log('handleAddOffice');
+			console.log('handleAddOffice',this.logId);
 			this.modalVisibleOffice = true;
+		},
+		toAddOffice(){
+			const office = this.$refs.OfficeFormRef;
+			if(office){
+				office.handleSubmit().then(data=>{
+					this.auctionLoading = true;
+					factor.officeAdd({
+						elementId:this.logId,
+						roleInLawOffice:data.roleInLawOffice,
+						lawOffice:data
+					}).then(res=>{
+						if(res.code === 20000){
+							this.$message.success('律所信息添加成功！',1,()=>{
+								this.modalVisibleOffice = false;
+								this.queryFactor();
+							})
+						}else{
+							this.$message.error('网络请求错误！')
+						}
+					}).finally(()=>{
+						this.auctionLoading = false;
+					})
+				})
+			}
 		},
 	  // 提交我的资质信息
 	  handleSubmit(val){
@@ -262,7 +290,7 @@ export default {
 				  this.$message.success('当前认证修改申请，已放弃');
 				  this.queryQualify();
 			  }else{
-				  this.$message.error('操作失败，请稍后操作！1');
+				  this.$message.error('操作失败，请稍后操作！');
 			  }
 		  })
 	  },
