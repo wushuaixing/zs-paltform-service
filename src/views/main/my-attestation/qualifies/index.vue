@@ -43,7 +43,8 @@
               <img :src="icon.org" alt="" style="height: 32px;vertical-align: top;">
               <span style="margin-left: 10px">机构</span>
             </template>
-            <a-button style="float:right" @click="stepBack">上一步</a-button>
+            <a-button style="float:right;width: 80px;" @click="stepBack">
+							<span style="font-size:14px;">上一步</span></a-button>
           </div>
         </div>
       </FillForm>
@@ -64,9 +65,9 @@
               </template>
             </div>
             <ul class="status-title-attribute">
-              <li>当前要素认证状态：<b :class="info.class">{{info.desc}}</b></li>
+              <li>当前资质认证状态：<b :class="info.class">{{info.desc}}</b></li>
               <li v-if="statusInfo.qualifyModifyDate">
-                要素信息更新日期：{{statusInfo.qualifyModifyDate}}
+                资质信息更新日期：{{statusInfo.qualifyModifyDate}}
               </li>
             </ul>
           </div>
@@ -75,12 +76,13 @@
         <div class="qualifies-item qualifies-status" v-if="status(245)">
           <div class="status-content">
             <div>{{info.text}}</div>
-            <a-button type="primary" v-if="status(1)">立即前往要素认证</a-button>
-            <a-button type="primary" v-if="status(2)" @click="checkQualifies" :loading="visibleLoading">编辑并重新提交</a-button>
-            <a-button type="primary" v-if="status(4)" @click="checkQualifies" :loading="visibleLoading">查看我提交的认证修改信息</a-button>
+            <a-button type="primary" v-if="status(2)" @click="checkQualifies" :loading="visibleLoading">
+							编辑并重新提交</a-button>
+            <a-button type="primary" v-if="status(4)" @click="checkQualifies" :loading="visibleLoading">
+							查看我提交的认证修改信息</a-button>
             <a-space v-if="status(5)">
-              <a-button type="primary">编辑并重新提交</a-button>
-              <a-button >放弃修改</a-button>
+              <a-button type="primary" @click="checkQualifies" :loading="visibleLoading">编辑并重新提交</a-button>
+              <a-button @click="handleDrop">放弃修改</a-button>
             </a-space>
           </div>
         </div>
@@ -91,32 +93,32 @@
           </div>
           <QualifyInfo :source="source" :is-lawyer="identity === 1"/>
           <div class="info-item" data-label="当前联络人信息" v-if="identity === 2">
-              <div class="info-item_title">当前联络人信息</div>
-              <div class="info-item_list info-item_edit">
-                <div class="info-item_list-title ele-important">联络人姓名</div>
-                <div class="info-item_list-content">
-                  <template v-if="!editStatus">
-                    <span>{{source.contact}}</span>
-                    <a-button size="small" type="link" icon="edit" @click="toEditContacts(1)"></a-button>
-                  </template>
-                  <a-space v-else>
-                    <a-input placeholder="请输入联络人姓名"  style="width: 150px;" v-model="contacts_name"/>
-                    <a-button size="small" type="primary" @click="handleUpdateName"><a-icon type="check" /></a-button>
-                    <a-button size="small" @click="toEditContacts(0)"><a-icon type="close" /></a-button>
-                  </a-space>
-                </div>
-              </div>
-              <div class="info-item_list" style="margin-top: 0">
-                <div class="info-item_list-title">手机号码</div>
-                <div class="info-item_list-content">{{source.phone}}
-                  <span class="remark">若需要更改联络人手机号码请至个人中心更改绑定手机号</span>
-                </div>
-              </div>
-            </div>
+						<div class="info-item_title">当前联络人信息</div>
+						<div class="info-item_list info-item_edit">
+							<div class="info-item_list-title ele-important">联络人姓名</div>
+							<div class="info-item_list-content">
+								<template v-if="!editStatus">
+									<span>{{source.contact}}</span>
+									<a-button size="small" type="link" icon="edit" @click="toEditContacts(1)"></a-button>
+								</template>
+								<a-space v-else>
+									<a-input placeholder="请输入联络人姓名"  style="width: 150px;" v-model="contacts_name"/>
+									<a-button size="small" type="primary" @click="handleUpdateName"><a-icon type="check" /></a-button>
+									<a-button size="small" @click="toEditContacts(0)"><a-icon type="close" /></a-button>
+								</a-space>
+							</div>
+						</div>
+						<div class="info-item_list" style="margin-top: 0">
+							<div class="info-item_list-title">手机号码</div>
+							<div class="info-item_list-content">{{source.phone}}
+								<span class="remark">若需要更改联络人手机号码请至个人中心更改绑定手机号</span>
+							</div>
+						</div>
+					</div>
         </div>
         <div class="qualifies-info" v-if="status(1)">
           <div class="info-image-status">
-            <img src="../../../../assets/img/blank_nodata.png" alt="">
+            <img src="../../../../assets/img/no_data.png" alt="">
             <p class="image-status-remark">您要提交的资质认证信息正在审核中 ，请您耐心等待</p>
             <a-button @click="checkQualifies" type="primary" :loading="visibleLoading">查看我提交的资质认证</a-button>
           </div>
@@ -158,7 +160,7 @@
   // 资质审核相关状态
   const qualifyStatus = {
     0:{ desc:"未认证", text:""},
-    1:{ desc:"认证审核中", text:"您尚未完成要素认证，继续完成要素认证，即可查看浙商资产招商项目！",class:'text-error'},
+    1:{ desc:"认证审核中", text:"您尚未完成资质认证，继续完成资质认证，即可查看浙商资产招商项目！",class:'text-error'},
     2:{ desc:"认证未通过", text:"您提交的资质认证信息未通过审核，未通过原因：",class:'text-dangerous'},
     3:{ desc:"审核通过", text:"",class:'text-success'},
     4:{ desc:"认证修改审核中", text:"您提交的资质认证信息修改正在审核中，请耐心等待审核结果",class:'text-error'},
@@ -250,6 +252,7 @@ export default {
             ...qualifyVO
           };
           this.visible = true;
+          this.modalStep = 0;
         }else{
           this.$message.error('网络请求异常，请重新请求!');
         }
@@ -264,31 +267,78 @@ export default {
     },
     // 关闭弹窗
     handleModalClose(){
-      this.visible = false;
+			this.modalStep = 0;
+			this.visible = false;
       this.$nextTick(()=>{
-        this.modalStep = 0;
       });
     },
     // 提交我的资质信息
     handleSubmit(val){
       console.log(val);
 			this.$message.success('资质认证提交成功！');
-			this.handleModalClose()
-    },
+			this.queryQualify();
+			this.handleModalClose();
+		},
     // 编辑我的资质信息 - 查看且编辑
     handleEditInfo(e){
       const { fillFromRef } = this.$refs;
       console.log(this.$refs.fillFromRef);
       fillFromRef.handleSubmit(e);
-
     },
     // 编辑我的资质信息 - 仅编辑
     handleEdit(){
-      this.modalStep = 1;
-      this.visible = true;
-      this.onlyEdit = false;
-      this.sourceLog = this.source;
-    }
+      this.sourceLog = {...this.source};
+			this.modalStep = 1;
+			this.visible = true;
+			this.onlyEdit = false;
+    },
+		// 放弃修改
+		handleDrop(){
+			qualifies.dropModify().then(res=>{
+				if(res.code === 20000){
+					this.$message.success('当前认证修改申请，已放弃');
+					this.queryQualify();
+				}else{
+					this.$message.error('操作失败，请稍后操作！');
+				}
+			}).catch(()=>{
+				this.$message.error('操作失败，请稍后操作！');
+			})
+		},
+		// 查询当前服务商的机构属性
+		queryQualify(){
+			qualifies.qualify().then(({data = {},code})=>{
+				if(code === 20000){
+					const {
+						contact, logId, phone,qualifyCondition, qualify = {},qualifyVO = {},
+					} = (data['lawyerQualifyDetail'] || data['organizationQualifyDetail']) || {};
+					this.statusInfo = qualifyCondition || {};
+					this.contacts_name = contact;
+					this.source = {
+						contact,logId,phone,
+						...qualify,
+						...qualifyVO
+					};
+					this.spinning = false;
+				} else if(code === 80001){
+					this.statusInfo = {
+						qualifyAuditStatus:0,
+						reasonOfNotPass:'',
+					};
+					this.spinning = false;
+				} else{
+					this.$error({
+						title: '提示',
+						content: '网络请求异常，请重新请求!',
+					});
+				}
+			}).catch(()=>{
+				this.$error({
+					title: '提示',
+					content: '网络请求异常，请重新请求!',
+				});
+			})
+		}
   },
   computed:{
     info() {
@@ -307,37 +357,7 @@ export default {
     // console.log(isSubmitCertify);
     this.identity = this.$store.getters.getInfo.identity;
     // 查询当前服务商的机构属性
-    qualifies.qualify().then(({data = {},code})=>{
-      if(code === 20000){
-        const {
-          contact, logId, phone,qualifyCondition, qualify = {},qualifyVO = {},
-        } = (data['lawyerQualifyDetail'] || data['organizationQualifyDetail']) || {};
-        this.statusInfo = qualifyCondition || {};
-        this.contacts_name = contact;
-        this.source = {
-          contact,logId,phone,
-          ...qualify,
-          ...qualifyVO
-        };
-        this.spinning = false;
-      }else if(code === 80001){
-        this.statusInfo = {
-          qualifyAuditStatus:0,
-          reasonOfNotPass:'',
-        };
-        this.spinning = false;
-      }else{
-        this.$error({
-          title: '提示',
-          content: '网络请求异常，请重新请求!',
-        });
-      }
-    }).catch(()=>{
-      this.$error({
-        title: '提示',
-        content: '网络请求异常，请重新请求!',
-      });
-    })
+		this.queryQualify();
   },
 
 }

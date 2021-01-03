@@ -1,4 +1,4 @@
-import {area} from "@/assets/area";
+import { area } from "@/assets/area";
 import {getDownLoadToken} from "@/plugin/api/base";
 
 /**
@@ -105,6 +105,11 @@ export const fileListRuleAsync = (str)=>{
  * @returns string
  */
 export const getArea = (provinceCode, cityCode, areaCode) => {
+	// TODO {
+	//    1. 参数的有误判断；
+	//    2. 二参数的逻辑实现；
+	//    3. ForEach的循环参数的是否判断；
+	//  }
 	let areaParams = [];
 	area.forEach((province) => {
 		if (parseInt(provinceCode) === province.id) {
@@ -122,4 +127,28 @@ export const getArea = (provinceCode, cityCode, areaCode) => {
 		})
 	});
 	return areaParams.join("");
+};
+
+/**
+ * 省市区结构-反解析
+ * @param str
+ * @param single
+ */
+export const areaAnalysis = (str,single = true)=>{
+	if(!str) return [];
+	const _str = (str || '').split(',').filter(i=>i);
+	return single ? _str : _str.map(i => i.split('/').filter(i=>i));
+};
+
+/**
+ * 构建指定数据的数据对象
+ * @param source
+ * @param field
+ * @returns {{}}
+ */
+export const buildSource = (source,field = [])=> {
+	if(!field.length) return {};
+	const _source = {};
+	field.forEach(i=>_source[i] = source[i] || null);
+	return _source;
 };
