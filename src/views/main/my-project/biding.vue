@@ -527,4 +527,18 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.biding-content-table{
+  table{
+    border-bottom: 1px #E8E8E8 solid;
+  }
+  tr{
+    height: 72px;
+    td{
+      border-bottom: none;
+    }
+  }
+   tr:nth-child(2n){
+      background: #FAFAFA;
+   }
+}
 </style>
