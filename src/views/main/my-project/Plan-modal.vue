@@ -109,7 +109,6 @@
                 style="
                   width: 235px;
                   height: 32px;
-                  border-radius: 0px;
                   margin: 0 8px;
                 "
               />
@@ -120,7 +119,6 @@
                 style="
                   width: 235px;
                   height: 32px;
-                  border-radius: 0px;
                   margin: 0 8px;
                 "
                 placeholder="阶段性目标,如腾房(30字以内)"
@@ -151,6 +149,7 @@
                 v-decorator="decorator"
                 v-bind="upload.bind"
                 v-on="upload.on"
+                @change="handleUpload"
               >
                 <a-button> <a-icon type="upload" />上传文件</a-button>
               </a-upload>
@@ -169,7 +168,7 @@
             </div>
             <div v-else>
               <a
-                >服务方案.doc<a-icon
+                >{{fileName}}<a-icon
                   @click.stop="form.documentAddress = ''"
                   type="close"
               /></a>
@@ -191,6 +190,7 @@ export default {
   data() {
     return {
       visible: false,
+      fileName:"服务方案.doc",
       formItemLayout: {
         labelCol: {
           xs: { span: 24 },
@@ -271,7 +271,7 @@ export default {
           },
         ],
         projectId: "",
-        documentAddress: "www.baidu.com",
+        documentAddress: "",
       },
     };
   },
@@ -345,6 +345,13 @@ export default {
         months: "",
       });
     },
+    handleUpload(info){
+      if(info.file.status === "done"){
+        console.log(info.file)
+        this.form.documentAddress = info.file.response.key;
+        this.fileName = info.file.name;
+      }
+    }
   },
   created() {
     this.servePlan = JSON.parse(window.localStorage.getItem("servePlan"));
@@ -416,7 +423,6 @@ export default {
       .plan-ipt {
         width: 240px;
         height: 32px;
-        border-radius: 0px;
         margin: 0 8px;
       }
     }

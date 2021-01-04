@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="biding-main">
     <Breadcrumb :source="navData" icon="environment"></Breadcrumb>
     <a-spin v-if="loading" class="spin-wrapper" size="large"/>
     <div v-else class="biding-wrapper">
@@ -38,7 +38,6 @@
             </a-form-model-item>
           </a-form-model>
         </div>
-        <div class="biding-hr" />
         <div class="biding-content">
           <a-tabs @change="handleTabChange" v-model="params.aimStatus">
             <a-tab-pane v-for="i in tabType" :key="i.id">
@@ -102,12 +101,10 @@
               <template slot="businessTeam" slot-scope="team">
                 <div class="contactWay">
                   <p>{{ team.businessTeam }}</p>
-                  <p />
                   <p>
                     <span>{{ team.projectManager }}</span
                     ><span>{{ team.contact }}</span>
                   </p>
-                  <p />
                 </div>
               </template>
               <template
@@ -214,8 +211,8 @@ export default {
     return {
       loading:true,
       navData: [
-        { id: 1, title: "我的项目", path: "/provider/review" },
-        { id: 2, title: "我的竞标", path: "/provider/review" },
+        { id: 1, title: "我的项目", path: "biding" },
+        { id: 2, title: "我的竞标", path: "biding" },
       ],
       tabType: [
         { id: 1, title: "进行中", dot: "" },
@@ -392,7 +389,7 @@ export default {
         });
       }
       if (type === "sub" || type === "edit") {
-        
+
         amcBidDetail(item.id, this.params.aimStatus).then((res) => {
         if (res.code === 20000) {
           this.projectInfo = clearProto(res.data);
@@ -410,13 +407,13 @@ export default {
             servePlan.serviceTime = this.projectInfo.serviceTime;
             servePlan.collectionTarget = this.projectInfo.aimBackPrice;
             servePlan.projectId = this.projectInfo.id;
-            // servePlan.documentAddress = this.projectInfo.amcBidFiles[0].caseFileAddress;
+            servePlan.documentAddress = this.projectInfo.amcBidFiles[0].caseFileAddress;
             this.projectInfo.scheduleManagements.forEach(i=>{
               var plan = {};
               plan.content = i.dateMatters;
               plan.months = i.dateMonth;
               servePlan.plans.push(plan);
-            })
+            });
             window.localStorage.setItem("servePlan",JSON.stringify(servePlan));
           }
         }
@@ -447,6 +444,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.biding-main{
+  padding: 16px;
+}
 .spin-wrapper{
   width: 100%;
   padding-top: 10vh !important;
@@ -469,17 +469,11 @@ export default {
   }
 }
 .biding-wrapper {
-  padding: 16px;
   &-content {
     background-color: #ffffff;
   }
   .biding-query {
     padding: 20px;
-  }
-  .biding-hr {
-    width: 100%;
-    height: 16px;
-    background-color: #f2f3f5;
   }
   .biding-content {
     &-table {
@@ -495,6 +489,21 @@ export default {
 }
 .content-action button {
   margin-right: 15px;
+}
+.contactWay{
+  p{
+    margin: 0;
+  }
+}
+.deadline{
+  p{
+    margin: 0;
+  }
+}
+.plan{
+  p{
+    margin: 0;
+  }
 }
 </style>
 <style lang="scss">
@@ -517,5 +526,19 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.biding-content-table{
+  table{
+    border-bottom: 1px #E8E8E8 solid;
+  }
+  tr{
+    height: 72px;
+    td{
+      border-bottom: none;
+    }
+  }
+   tr:nth-child(2n){
+      background: #FAFAFA;
+   }
 }
 </style>
