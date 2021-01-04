@@ -1,7 +1,7 @@
 <template>
   <div class="qualifies-form-wrapper attest-form">
 		<slot name="title"/>
-		<div style="padding: 10px 24px 0" class="factor-form-wrapper">
+		<div :style="noPadding?'padding:0':'padding: 10px 24px 0'" class="factor-form-wrapper">
 			<!-- 要素信息：律师信息 -->
 			<FormLaw ref="LawFormRef" :source="dataSource" v-if="isLawyer" />
 			<!-- 要素信息：机构信息 -->
@@ -79,7 +79,15 @@
 			noSubmit:{
 				type: Boolean,
 				default: false,
-			}
+			},
+			noPadding:{
+				type: Boolean,
+				default: false,
+			},
+			onlyData:{
+				type:Boolean,
+				default:false
+			},
 		},
 		computed:{
 			officeSource(){
@@ -97,7 +105,6 @@
 				this.loading = true;
 				const api = this.isLawyer ? lawyerElement => factor.lawyerAdd({lawyerElement}) : factor.orgAdd;
 				const { OrgFormRef, OfficeFormRef, PublicFormRef, LawFormRef } = this.$refs;
-				console.log(this.visible);
 				return Promise.all(this.isLawyer ? [
 					LawFormRef.handleSubmit(e), PublicFormRef.handleSubmit(e), this.visible && OfficeFormRef.handleSubmit(e)
 				] : [
@@ -106,7 +113,7 @@
 					const lawOffice = this.visible ? { lawOffice:_officeData} : {};
 					const data = { ..._base,..._public,...lawOffice,
 						roleInLawOffice:(_officeData || {}).roleInLawOffice};
-					api(data).then(res=>{
+					if(!this.onlyData) api(data).then(res=>{
 						this.loading = false;
 						if( res.code === 20000 ){
 							this.$emit('toTellRes',res)

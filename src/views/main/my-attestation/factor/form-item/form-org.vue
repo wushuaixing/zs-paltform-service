@@ -91,7 +91,8 @@
         </a-row>
       </a-radio-group>
     </a-form-item>
-    <template v-if="isFirst?getValue(intention.hasInvestmentIntention.dec[0]) ==='1': source.hasInvestmentIntention ">
+    <template v-if="isFirst?getValue(intention.hasInvestmentIntention.dec[0]) ==='1'
+    : (source||{}).hasInvestmentIntention ">
       <a-form-item label="投资偏好类型" class="form-item-row" :selfUpdate="false">
         <a-checkbox-group v-decorator="intention.investmentPreferenceType.dec"
                           v-bind="intention.investmentPreferenceType.other">

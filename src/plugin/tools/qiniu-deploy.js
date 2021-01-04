@@ -1,7 +1,7 @@
 import { getUploadToken, getDownLoadToken } from "@/plugin/api/base";
 import { message } from "ant-design-vue";
 
-const action = 'http://up-z2.qiniup.com/';
+const action = 'http://upload.qiniup.com/';
 
 let uploadToken = '';
 

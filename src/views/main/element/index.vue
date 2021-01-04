@@ -1,41 +1,171 @@
 <template>
-	<a-modal v-model="visible" title="资质、要素信息确认及完善" on-ok="handleOk" :maskClosable="false">
-		<p>Some contents...</p>
-		<p>Some contents...</p>
-		<p>Some contents...</p>
-		<p>Some contents...</p>
-		<p>Some contents...</p>
-		<template slot="footer">
-			<a-button key="back" @click="handleCancel">Return</a-button>
-			<a-button key="submit" type="primary" :loading="loading" @click="handleOk">Submit</a-button>
-		</template>
+	<a-modal v-model="visible" title="资质、要素信息确认及完善" on-ok="handleOk"
+					 :maskClosable="false" width="1000px" :closable="false" :keyboard="false" class="element-modal-wrapper">
+		<a-spin :spinning="spinning" tip="数据请求中..." size="large">
+			<div style="height: 30vh" v-if="spinning"></div>
+		</a-spin>
+		<div v-if="!spinning">
+			<h3>资质信息确认及完善</h3>
+			<FormQualify :userType="identity === 1 ?'lawyer':'org'" :noAuction="false" ref="QualifyFormRef" onlyData :source="source.qualify"/>
+			<h3>要素信息确认及完善</h3>
+			<div class="info-item_category" id="item_category_office">
+				<span class="title">{{identity === 1 ?'律所信息':'机构信息'}}</span>
+			</div>
+			<FormFactor :isLawyer="identity === 1" noSubmit noPadding ref="FactorFormRef" onlyData :source="source.factor"/>
+		</div>
+		<div slot="footer" style="text-align: center">
+			<a-button type="primary" :loading="loading" @click="handleSubmit" :disabled="spinning">确认无误并提交</a-button>
+		</div>
 	</a-modal>
 </template>
 
 <script>
+
+	import FormQualify from '../my-attestation/qualifies/fill-form';
+	import FormFactor from '../my-attestation/factor/form-item';
+	import { perfectInfo } from "@/plugin/api/attest";
+
+	const qualifyData = (data)=>{
+		const { contact, logId, phone, qualify = {},qualifyVO = {} } = data || {};
+		return {
+			contact,logId,phone,
+			...qualify,
+			...qualifyVO
+		};
+	};
+
+	const factorData = (data)=>{
+		const { element = {}, organizationElementVO = {} } = data || {};
+		return {
+			...element,
+			...organizationElementVO,
+		}
+	};
 	export default {
 		name:'Element',
 		nameComment:"资质|要素信息确认及完善",
 		data(){
 			return{
 				visible:false,
+				loading:false,
+				spinning:true,
+				identity:'',
+				source:{
+					factor:{},
+					qualify:{}
+				},
+
+			}
+		},
+		components:{
+			FormQualify,
+			FormFactor
+		},
+		created(){
+			const info = this.$store.getters.getInfo;
+			this.identity = info.identity;
+			if(info.registerType === 1 && info.isConfirmInfo === 0){
+				this.visible = true;
 			}
 		},
 		methods:{
-			handleOk() {
+			handleSubmit() {
+				const { QualifyFormRef, FactorFormRef } = this.$refs;
+				Promise.all([QualifyFormRef.handleSubmit(),FactorFormRef.handleSubmit()]).then(data=>{
+					console.log(data);
+				});
 				this.loading = true;
 				setTimeout(() => {
-					this.visible = false;
 					this.loading = false;
 				}, 3000);
 			},
-			handleCancel() {
-				this.visible = false;
+			handleProcess(data) {
+				this.source = {
+					qualify:qualifyData(data._qualify),
+					factor:factorData(data._factor),
+				};
+				console.log(this.source);
 			},
+		},
+		mounted(){
+			if(this.visible){
+				perfectInfo.info(this.identity).then(res=>{
+					if(res.code === 20000){
+						this.handleProcess(res.data);
+					}else{
+						this.$message.error(res.message)
+					}
+				}).finally(()=>{
+					this.spinning = false;
+				})
+			}
 		}
 	}
 </script>
 
-<style scoped>
-
+<style lang="scss">
+	.element-modal-wrapper{
+		.factor-form-classTitle{
+			display: flex;
+			justify-content: space-between;
+			padding: 5px;
+			border-bottom: 1px solid $border-base;
+			margin-bottom: 25px;
+			.classTitle_subtitle{
+				font-size: 16px;
+				line-height: 32px;
+				span{
+					margin-left: 10px;
+				}
+			}
+		}
+		.info-item_category{
+			height: 50px;
+			line-height: 50px;
+			display: flex;
+			justify-content: space-between;
+			border-bottom: 1px solid $border-base;
+			margin-bottom: 20px;
+			button{
+				line-height: 50px;
+			}
+			.title{
+				font-size: 16px;
+				font-weight: bold;
+				color: $text-title;
+			}
+		}
+		.attest-form{
+			.ant-form-item-with-help{
+				margin-bottom: 0;
+			}
+			.ant-form-item-label,.ant-form-item-control{
+				line-height: 32px;
+				.ant-checkbox-group, .ant-radio-group{
+					line-height:inherit;
+				}
+			}
+			.ant-form-explain, .ant-form-extra{
+				margin-top: 0;
+				min-height: 25px;
+			}
+			.form-item-no-title{
+				.ant-form-item-label label:after{
+					content:' '
+				}
+			}
+		}
+		.factor-form-subtitle{
+			text-align: left;
+			padding: 10px 0;
+			span{
+				display: block;
+				padding-left: 10px;
+				border-left: 4px solid $common-base;
+				font-size: 16px;
+				line-height: 20px;
+				height: 20px;
+			}
+		}
+	}
 </style>
