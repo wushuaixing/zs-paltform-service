@@ -21,5 +21,3 @@ export const getCaptcha = params => request.post('/service/auth/getCaptcha','',{
 // 退出登录
 export const logout = () => request.post('/service/auth/logout' );
 
-
-

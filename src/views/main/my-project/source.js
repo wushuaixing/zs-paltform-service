@@ -82,7 +82,7 @@ export const columns = {
 		},
 		{
 			title: '本阶段计划',
-			key: 'plan',
+			key: 'dateMatters',
 			scopedSlots: { customRender: 'plan' },
 		},
 		basCol.auction,
@@ -92,8 +92,8 @@ export const columns = {
 		basCol.guaranty,
 		{
 			title:'放弃日期',
-			dataIndex: 'abaDate',
-			key: 'abaDate',
+			dataIndex: 'abandonDate',
+			key: 'abandonDate',
 			sorter: true,
 			scopedSlots: { customRender: 'datetime' },
 		},
@@ -104,8 +104,8 @@ export const columns = {
 		basCol.guaranty,
 		{
 			title:'失效日期',
-			dataIndex: 'failDate',
-			key: 'failDate',
+			dataIndex: 'invalidDate',
+			key: 'invalidDate',
 			sorter: true,
 			scopedSlots: { customRender: 'datetime' },
 		},

@@ -56,23 +56,7 @@ export default {
 </style>
 
 <style lang='scss'>
-.attest-form{
-  .ant-form-item-with-help{
-    margin-bottom: 0;
-  }
-  .ant-form-item-label,.ant-form-item-control{
-    line-height: 32px;
-  }
-  .ant-form-explain, .ant-form-extra{
-    margin-top: 0;
-    min-height: 25px;
-  }
-  .form-item-no-title{
-    .ant-form-item-label label:after{
-      content:' '
-    }
-  }
-}
+
 .qualifies-wrapper{
   height: 100%;
   background-color: #fff;
@@ -137,6 +121,7 @@ export default {
         }
         button{
           min-width: 144px;
+					margin-right: 10px;
         }
       }
     }
@@ -148,7 +133,7 @@ export default {
         margin: 0 auto;
         text-align: center;
         img{
-          width:100%;
+          width:80%;
         }
         .image-status-remark{
           margin: 25px 0;
@@ -272,7 +257,6 @@ export default {
       font-size: 14px;
       color: $text-remark;
       span{
-        vertical-align: text-top;
         font-size: 16px;
         color: $text-title;
       }
@@ -284,6 +268,12 @@ export default {
       height: 25px;
       line-height: 25px;
     }
+		&_subtitle{
+			font-size: 14px;
+			height: 25px;
+			line-height: 25px;
+			color: $text-title;
+		}
     &_list{
       margin:22px 0;
       display: flex;
@@ -309,5 +299,22 @@ export default {
       }
     }
   }
+}
+.attest-form{
+	.ant-form-item-with-help{
+		margin-bottom: 0;
+	}
+	.ant-form-item-label,.ant-form-item-control{
+		line-height: 32px;
+	}
+	.ant-form-explain, .ant-form-extra{
+		margin-top: 0;
+		min-height: 25px;
+	}
+	.form-item-no-title{
+		.ant-form-item-label label:after{
+			content:' '
+		}
+	}
 }
 </style>

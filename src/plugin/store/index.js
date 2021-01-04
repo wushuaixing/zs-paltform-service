@@ -25,8 +25,10 @@ export default new Vuex.Store({
       state.info = {};
       state.isLogin = false;
       window.localStorage.token = '';
-
-    }
+    },
+		updateIdentity:(state,identity)=>{
+			state.info = Object.assign({},state.info,{identity,isSubmitCertify:1})
+	  },
   },
   actions: {
     updateInfo:(context,source)=>{
@@ -36,6 +38,9 @@ export default new Vuex.Store({
       context.commit('updateInfo',source);
       context.commit('updateLoginStates');
     },
+	  updateIdentity:(context,identity)=>{
+		  context.commit('updateIdentity',identity)
+	  },
   },
   modules: {
   }

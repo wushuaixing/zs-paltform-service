@@ -1,5 +1,8 @@
 import areaSource  from '@/assets/js/address';
+
+// 地区-选项
 export const areaOption = areaSource;
+
 // 擅长业务类型
 export const orgAdvType = [
 	{ id: 1, label: '工业', value: 1 },
@@ -52,6 +55,7 @@ export const lawAdvType = [
 	{id:21,value:21, label:"投行业务"},
 	{id:0, value:0, label:"其他"},
 ];
+
 // 擅长-其他资源
 export const lawAdvList = [
 	{ id: 1, label: '仲裁', value: '1' },
@@ -60,22 +64,24 @@ export const lawAdvList = [
 	{ id: 4, label: '公证', value: '4' },
 	{ id: 0, label: '其他', value: '0' },
 ];
+
 // 从业不良时间经验
 export const expOption = [
-	{ id: 0, label: '暂未有实际项目落地', value: '0' },
 	{ id: 1, label: '1年以内', value: '1' },
 	{ id: 2, label: '1-3年', value: '2' },
 	{ id: 3, label: '3年以上', value: '3' },
+	{ id: 0, label: '暂未有实际项目落地', value: '0' },
 ];
-// 历史合作四大
+
+// 历史合作amc
 export const hisFour = [
 	{ id: 1, label: '东方', value: '1' },
 	{ id: 2, label: '长城', value: '2' },
 	{ id: 3, label: '华融', value: '3' },
 	{ id: 4, label: '信达', value: '4' },
 	{ id: 0, label: '地方持牌AMC', value: '0' },
-
 ];
+
 // 过往合作类型
 export const typeOfCooperation = [
 	{ id: 1, label: '配资收购', value: '1' },
@@ -83,6 +89,7 @@ export const typeOfCooperation = [
 	{ id: 3, label: '债权清收', value: '3' },
 	{ id: 0, label: '其他（投行等）', value: '0' },
 ];
+
 // 后续期望合作方向 - 合作意向
 export const cooIntent = [
 	{ id: 1, label: '合作清收', value: '1' },
@@ -91,7 +98,6 @@ export const cooIntent = [
 	{ id: 4, label: '介绍投资人', value: '4' },
 	{ id: 5, label: '担保类项目', value: '5' },
 	{ id: 0, label: '其他', value: '0' },
-
 ];
 
 // 律所信息 - 担任职务
@@ -102,8 +108,15 @@ export const lawDuty = [
 	{ id: 4, label: '其他', value: '0' },
 ];
 
-// 律所信息 - 担任职务
+// 律所信息 - 律所类型
 export const lawType = [
 	{ id: 1, label: '公司制', value: '1' },
 	{ id: 2, label: '合伙制', value: '2' },
+];
+
+// 是否其他+
+export const isOther = [
+	{ id: 1, label: '是', value: '1' },
+	{ id: 2, label: '否', value: '2' },
+	{ id: 0, label: '其他', value: '0' },
 ];

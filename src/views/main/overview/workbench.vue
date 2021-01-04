@@ -120,7 +120,7 @@ export default {
     getListData(value) {
       let listData = [];
       for (let i = 0; i < this.data.length; i++) {
-        let dateStr = `${value.year()}-${(value.month() + 1).toString().padStart(2, 0)}-${value.date().toString().padStart(2, 0)}`
+        let dateStr = `${value.year()}-${(value.month() + 1).toString().padStart(2, 0)}-${value.date().toString().padStart(2, 0)}`;
         if (dateStr === this.data[i].dateDay) {
           this.data[i].matters.forEach( item => {
             var obj = { type: "warning", content: item.dateMatters };
@@ -133,22 +133,18 @@ export default {
     // 修改表单
     onPanelChange(value) {
       // console.log(value);
-      console.log(value.slice(0,8) + '01',value.slice(0,8) + '31')
+      console.log(value.slice(0,8) + '01',value.slice(0,8) + '31');
       this.schedule.endDate = value.slice(0,8) + '01';
       this.schedule.startDate = value.slice(0,8) + '31';
-      getCalendar(
-        {'startDate': this.schedule.endDate,
+      getCalendar({
+				'startDate': this.schedule.endDate,
         'endDate': this.schedule.startDate
-        }).then((res) => {
-      console.log(res);
-      console.log(res.data)
-      if (res.code !== 20000) return this.$message.error("获取日历事项失败");
-      this.data = res.data
-    })
-    },
-    onChange(date, dateString) {
-      console.log(date.format('yyyy-MM'), dateString);
-      this.getCalendarData ()
+			}).then((res) => {
+				// console.log(res);
+				// console.log(res.data)
+				if (res.code !== 20000) return this.$message.error("获取日历事项失败");
+				this.data = res.data
+			})
     },
     // 获取日历事项
     async getCalendarData () {
@@ -173,10 +169,10 @@ export default {
     //echarts饼图
     async initECharts () {
       let myChart = echarts.init(document.getElementById("main"));
-      const res = await getEcharts()
-      if (res.code !== 20000) return this.$message.error('获取图表数据失败') 
+      const res = await getEcharts();
+      if (res.code !== 20000) return this.$message.error('获取图表数据失败');
       console.log(res);
-      this.echarts = res.data
+      this.echarts = res.data;
       let option = {
       // color: ['red', 'blue','green','skyblue','pink'],
         tooltip: {
@@ -240,7 +236,6 @@ export default {
 
 <style scoped lang="scss">
 $leftWidth: 450px;
-$background: #e9e9e9;
 .workbench-wrapper {
   // width: 1440px;
   height: 100%;
@@ -257,7 +252,7 @@ $background: #e9e9e9;
     &-left {
       float: left;
       width: $leftWidth;
-      border-right: 10px solid $background;
+      border-right: 10px solid $background-base;
     }
     &-right {
       margin-left: $leftWidth;
@@ -271,11 +266,11 @@ $background: #e9e9e9;
       border-bottom: 1px solid #E9E9E9;
     }
     &-border {
-      border-bottom: 10px solid $background;
+      border-bottom: 10px solid $background-base;
     }
     &-title {
       padding: 20px 24px;
-      border-bottom: 1px solid $background;
+      // border-bottom: 1px solid $background;
       line-height: 1.5;
       font-size: 16px;
       font-family: PingFangSC-Medium, PingFang SC;
@@ -284,7 +279,7 @@ $background: #e9e9e9;
     }
     &-project {
       padding: 20px 24px;
-      border-bottom: 1px solid $background;
+      // border-bottom: 1px solid $background;
       font-size: 16px;
       font-family: PingFangSC-Medium, PingFang SC;
       font-weight: 600;

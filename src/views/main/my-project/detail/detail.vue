@@ -1,151 +1,395 @@
 <template>
   <div class="project-detail">
+    <a-spin v-if="loading" class="spin-wrapper" size="large"/>
     <div
       style="background: #ececec; padding: 16px"
       class="project-detail-content"
+      v-else
     >
       <Breadcrumb :source="navData" icon="environment"></Breadcrumb>
       <a-card :bordered="false" style="width: 100%; height: 810px">
+        <div class="head flex-style">
+          <div class="ctitle">项目基本信息</div>
+          <div class="right flex-style">
+            <div style="margin-right: 30px">
+              <span class="subtitle">项目状态：</span>
+              <span class="spantext" :style="{color:info.aimedStatus === '2'
+              ? projectStatus.caseFileStatus[info.caseFileStatus].color
+              : projectStatus.aimedStatus[info.aimedStatus].color}">{{
+                info.aimedStatus === "2"
+                  ? projectStatus.caseFileStatus[info.caseFileStatus].text
+                  : projectStatus.aimedStatus[info.aimedStatus].text
+              }}</span>
+            </div>
+            <div style="margin-right: 30px" v-if="info.aimedStatus === '2'">
+              <span class="subtitle">报名日期：</span>
+              <span class="spantext">{{ info.gmtCreate }}</span>
+            </div>
+            <div v-if="info.aimedStatus === '2' ">
+              <span class="subtitle">方案提交截止日期：</span>
+              <span class="spantext">{{ info.submitDeadline }}</span>
+            </div>
+            <!--项目已中标 -->
+            <div v-if="info.aimedStatus === '3'">
+              <span class="subtitle">合同签订日期：</span>
+              <span class="spantext">{{ info.aggrementDate }}</span>
+            </div>
+            <!-- 已放弃-->
+            <div v-if="info.aimedStatus === '1'">
+              <span class="subtitle">放弃日期：</span>
+              <span class="spantext">{{ info.abandonDate }}</span>
+            </div>
+            <!-- 已失效日期-->
+            <div v-if="info.aimedStatus === '4'">
+              <span class="subtitle">失效日期：</span>
+              <span class="spantext">{{ info.realSubmitDeadline }}</span>
+            </div>
+          </div>
+        </div>
         <a-row>
-          <a-col :span="12">
-            <div class="ctitle">项目基本信息</div>
-          </a-col>
-          <a-col :span="4">
-            <div class="subtitle">
-              项目状态：<span class="spantext">{{info.aimedStatus==='2'?projectStatus.caseFileStatus[info.caseFileStatus]:projectStatus.aimedStatus[info.aimedStatus]}}</span>
+          <a-col :span="8">
+            <div>
+              <span class="subtitle">债务人名称：</span
+              ><span class="spantext">{{ info.debtor }}</span>
             </div>
           </a-col>
-          <a-col :span="4">
-            <div class="subtitle">
-              报名日期：<span class="spantext">{{}}</span>
+          <a-col :span="8">
+            <div>
+              <span class="subtitle">当前诉讼状态：</span
+              ><span class="spantext">{{
+                info.isLawsuit | isLawsuitType
+              }}</span>
             </div>
           </a-col>
-          <a-col :span="4">
-            <div class="subtitle">
-              方案提交截止日期：<span class="spantext">{{}}</span>
+          <a-col :span="8">
+            <div style="text-align: right; margin-right: 60px">
+              <span class="subtitle">担保方式：</span
+              ><span class="spantext">{{ info.security | guarantyType }}</span>
             </div>
           </a-col>
         </a-row>
         <a-row>
           <a-col :span="8">
-            <div class="subtitle">
-              债务人名称：<span class="spantext">{{info.debtor}}</span>
+            <div>
+              <span class="subtitle">债权本金：</span
+              ><span class="spantext"
+                >{{ info.debtCaptial | amountTh }}万元</span>
             </div>
           </a-col>
           <a-col :span="8">
-            <div class="subtitle">
-              当前诉讼状态：<span class="spantext">{{info.isLawsuit|isLawsuitType}}</span>
-            </div>
-          </a-col>
-          <a-col :span="8">
-            <div class="subtitle">
-              担保方式：<span class="spantext">{{info.security|guarantyType}}</span>
-            </div>
-          </a-col>
-        </a-row>
-        <a-row>
-          <a-col :span="8">
-            <div class="subtitle">
-              债权本金：<span class="spantext">{{info.debtCaptial|amountTh}}</span>
-            </div>
-          </a-col>
-          <a-col :span="8">
-            <div class="subtitle">
-              债权利息：<span class="spantext">{{info.debtInterest|amountTh}}</span>
+            <div>
+              <span class="subtitle">债权利息：</span
+              ><span class="spantext"
+                >{{ info.debtInterest | amountTh }}万元</span
+              >
             </div>
           </a-col>
         </a-row>
         <a-row>
           <a-col :span="24">
-            <div class="subtitle">
-              保证人清单：<span class="spantext">{{info.amcProjectGuarantors.guarantorName}}</span>
+            <div>
+              <span class="subtitle">保证人清单：</span
+              ><span class="spantext">{{
+                info.amcProjectGuarantors | guarantorsList
+              }}</span>
             </div>
           </a-col>
         </a-row>
         <a-row>
           <a-col :span="24" style="display: flex">
-            <div class="subtitle">抵押物清单:</div>
+            <div class="subtitle">抵押物清单：</div>
             <div>
-              <p v-for="(i,index) in info.amcProjectCollaterals" :key="index">{{index+1}}.{{i.collateralType}},{{i.provinceCode+i.cityCode+i.areaCode}}</p>
+              <p v-for="(i, index) in info.amcProjectCollaterals" :key="index">
+                {{index+1}}. {{i.collateralType|collateralType}}、{{i|area}}、{{i.collateralName}}
+              </p>
             </div>
           </a-col>
         </a-row>
-        <a-row>
-          <a-col :span="24">
-            <div class="ctitle">我提交的服务方案</div>
-          </a-col>
-        </a-row>
-        <div><a-tag color="#f50">方案提交即将截止</a-tag></div>
-        <div class="submit-plan">
+        <div class="flex-style" style="margin-top: 24px">
+          <div class="ctitle">我提交的服务方案</div>
+          <div class="flex-style" v-if="info.aimedStatus === '3'">
+            <div style="margin-right: 30px">
+              <span class="subtitle">方案结束日期：</span>
+              <span class="spantext">{{dateOprate(info.aggrementDate,info.serviceTime)}}</span>
+            </div>
+            <div>
+              <span class="subtitle">方案开始日期：</span>
+              <span class="spantext">{{info.aggrementDate }}</span>
+            </div>
+          </div>
+          <div class="flex-style" v-if="info.aimedStatus !== '3'">
+            <div
+              style="margin-right: 30px"
+              v-if="info.caseFileStatus === '1' || info.caseFileStatus === '2'"
+            >
+              <span class="subtitle">方案最后更新日期：</span
+              ><span class="spantext">{{ info.serviceCaseUpdateTime }}</span>
+            </div>
+          </div>
+        </div>
+        <div v-if="info.caseFileStatus === '0' && info.closeSubmitDeadline === '1'" class="tips">
+          方案提交即将截止
+        </div>
+        <!-- 未中标黄色图标-->
+        <div
+          v-if="info.aimedStatus === '4'"
+          class="absence_sign"
+        >
+          未中标
+        </div>
+        <div class="submit-plan"  v-if="info.aimedStatus === '2' && info.caseFileStatus == '0'">
           <img src="@/assets/img/tempty.png" alt="" />
-          <p class="text">您暂未提交服务方案</p>
-          <button class="submitbtn">去提交</button>
+          <p class="text" >您暂未提交服务方案</p>
+          <button
+            class="submitbtn"
+            @click="goSubmit('add')"
+          >
+            去提交
+          </button>
+        </div>
+        <div v-else>
+          <div class="serviceTime-aimBackPrice-row">
+            <div>
+              <span class="subtitle">服务期限：</span>
+              <span class="spantext">{{ info.serviceTime }}个月</span>
+            </div>
+            <div>
+              <span class="subtitle">目标回款：</span>
+              <span class="spantext">{{ info.aimBackPrice }}万元</span>
+            </div>
+          </div>
+          <div class="plan">
+            <div class="subtitle">处置计划：</div>
+          </div>
+          <div style="margin-top:24px" class="step-container">
+            <a-steps :current="20" >
+              <a-popover slot="progressDot"  slot-scope="item">
+                <template slot="content">
+                  <span>{{ item.title }}</span>
+                </template>
+                <span :class="`${item.prefixCls}-icon-dot`" />
+              </a-popover>
+              <a-step v-for="(item,index) in info.scheduleManagements" :key="index"  :title="item.dateMatters" :description="`${item.dateMonth}个月内`" />
+
+            </a-steps>
+          </div>
+          <div class="plan_scheme">
+            <div class="subtitle">方案文档：<a>服务方案.doc</a></div>
+            <button class="modify_scheme" @click="goSubmit('edit')" v-if="info.aimedStatus === '2' && info.caseFileStatus === '1'">
+              修改服务方案
+            </button>
+          </div>
         </div>
       </a-card>
     </div>
+    <PlanModal :projectInfo="info" ref="planModal" />
   </div>
 </template>
 
 <script>
+
+import  {getArea} from "@/plugin/tools"
+import {queryOptions} from "@/views/investment-center/source"
 import { amcBidDetail } from "@/plugin/api/my-biding";
 import Breadcrumb from "@/components/bread-crumb";
+import PlanModal from "../Plan-modal.vue";
+
 export default {
   data() {
     return {
+      loading:true,
       navData: [
         { id: 1, title: "服务商管理", path: "/provider/review" },
         { id: 2, title: "待审查", path: "/provider/review" },
         { id: 3, title: "项目详情", path: "/provider/review" },
       ],
-      projectStatus:{
-        aimedStatus:{
-            '1':'已放弃',
-            '2':'进行中',
-            '3':'已中标',
-            '4':'未中标'
+      projectStatus: {
+        aimedStatus: {
+          1: {text:'已放弃',color:'#F5222D'},
+          2: {text:'进行中',color:'#fff'},
+          3: {text:'已中标',color:'#52C41A'},
+          4: {text:'已失效',color:'#F5222D'},
         },
-        caseFileStatus:{
-            '0':'方案待提交',
-            '1':'方案已提交',
-            '2':'方案审核中'
-        }
+        caseFileStatus: {
+          0: {text:'方案待提交',color:'#F5222D'},
+          1: {text:'方案已提交',color:'#52C41A'},
+          2: {text:'方案审核中',color:'#FAAD14'},
+        },
       },
+      tipStyle: {},
       info: {
-        abandonDate: '',
-        aggrementDate: '',
-        aimBackPrice: '',
-        aimedStatus: '',
-        amcBidFiles: '',
-        amcProjectCollaterals: '',
-        amcProjectGuarantors: '',
-        caseFileStatus: '',
-        debtCaptial: '',
-        debtInterest: '',
-        debtor: '',
-        debtorAddress: '',
-        gmtCreate: '',
-        id: '',
-        isDeleted: '',
-        isLawsuit: '',
-        realSubmitDeadline: '',
-        recallDate: '',
-        scheduleManagements: '',
-        security: '',
-        serviceCaseUpdateTime: '',
-        serviceTime: '',
-        submitDeadline: '',
+        abandonDate: "2020-12-29",
+        aggrementDate: "2020-12-29",
+        aimBackPrice: "999.99",
+        aimedStatus: "4",
+        amcBidFiles: [
+          {
+            amcBidId: 0,
+            caseFileAddress: "",
+            gmtCreate: "2020-12-29",
+            gmtDelete: "2020-12-29",
+            gmtModify: "2020-12-29",
+            id: 0,
+            isDelete: "0",
+            serviceContractFileAddress: "",
+          },
+        ],
+        amcProjectCollaterals: [
+          {
+            amcProjectId: 0,
+            areaCode: 330104,
+            cityCode: 3301,
+            collateralName: "抵押物名称",
+            collateralType: 1,
+            gmtCreate: "2020-12-29",
+            gmtDeleted: "2020-12-29",
+            gmtModify: "2020-12-29",
+            id: 0,
+            isDeleted: "0",
+            provinceCode: 33,
+          },
+          {
+            amcProjectId: 0,
+            areaCode: 330104,
+            cityCode: 3301,
+            collateralName: "抵押物名称",
+            collateralType: 1,
+            gmtCreate: "2020-12-29",
+            gmtDeleted: "2020-12-29",
+            gmtModify: "2020-12-29",
+            id: 0,
+            isDeleted: "0",
+            provinceCode: 33,
+          },
+        ],
+        amcProjectGuarantors: [
+          {
+            amcProjectId: 0,
+            gmtCreate: "2020-12-29",
+            gmtDeleted: "2020-12-29",
+            gmtModify: "2020-12-29",
+            guarantorCard: "11111111111111",
+            guarantorName: "马云",
+            guarantorPhone: "10086",
+            id: 0,
+            isDeleted: "0",
+          },
+
+        ],
+        caseFileStatus: "",
+        closeSubmitDeadline:'1',
+        debtCaptial: "130.15",
+        debtInterest: "120.2",
+        debtor: "阿里巴巴集团",
+        debtorAddress: "杭州市西湖区",
+        gmtCreate: "2020-12-29",
+        id: 0,
+        isDeleted: "0",
+        isLawsuit: "0",
+        realSubmitDeadline: "2020-12-29",
+        recallDate: "2020-12-29",
+        scheduleManagements: [
+          {
+            amcBidId: 0,
+            amcServiceUserId: 0,
+            dateDay: "2020-12-29",
+            dateMatters: "腾房完毕完毕",
+            dateMonth: 0,
+            gmtCreate: "2020-12-29",
+            gmtDelete: "2020-12-29",
+            gmtModify: "2020-12-29",
+            id: 0,
+            isDelete: "0",
+          },
+          {
+            amcBidId: 0,
+            amcServiceUserId: 0,
+            dateDay: "2020-12-29",
+            dateMatters: "腾房完毕完毕",
+            dateMonth: 0,
+            gmtCreate: "2020-12-29",
+            gmtDelete: "2020-12-29",
+            gmtModify: "2020-12-29",
+            id: 0,
+            isDelete: "0",
+          },
+          {
+            amcBidId: 0,
+            amcServiceUserId: 0,
+            dateDay: "2020-12-29",
+            dateMatters: "腾房完毕",
+            dateMonth: 0,
+            gmtCreate: "2020-12-29",
+            gmtDelete: "2020-12-29",
+            gmtModify: "2020-12-29",
+            id: 0,
+            isDelete: "0",
+          },
+        ],
+        security: "2",
+        serviceCaseUpdateTime: "2020-12-29",
+        serviceTime: "2020-12-29",
+        submitDeadline: "2020-12-29",
       },
     };
   },
   components: {
     Breadcrumb,
+    PlanModal,
   },
-  methods: {},
+  filters: {
+    guarantorsList: (arr = []) => {
+      return arr.map((i) => i.guarantorName).join("、");
+    },
+    area:(params) => {
+      return getArea(params.provinceCode,params.cityCode,params.areaCode);
+    },
+    collateralType:(val)=>{
+      if(!val)return"-";
+      return queryOptions[1].list.find(i=>val === i.value).label;
+    }
+  },
+  methods: {
+    goSubmit(type) {
+      if(type === "add"){
+        window.localStorage.removeItem("servePlan")
+      }
+      if(type === "edit"){
+        var servePlan = { //服务方案
+            serviceTime: "",
+            collectionTarget: "",
+            projectId: "",
+            plans: [],
+            documentAddress: "www.baidu.com",
+          };
+          servePlan.serviceTime = this.info.serviceTime;
+          servePlan.collectionTarget = this.info.aimBackPrice;
+          servePlan.projectId = this.info.id;
+          // servePlan.documentAddress = this.info.amcBidFiles[0].caseFileAddress;
+          this.info.scheduleManagements.forEach(item=>{
+            var plan = {};
+            plan.content = item.dateMatters;
+            plan.months = item.dateMonth;
+            servePlan.plans.push(plan);
+          })
+          window.localStorage.setItem("servePlan",JSON.stringify(servePlan));
+      }
+      this.$refs.planModal.handleOpenModal();
+    },
+    //计算方案结束日期
+    dateOprate(time,month){
+      var date = new Date(time);
+      date.toLocaleDateString();
+      date.setMonth(date.getMonth() + month);
+      return date.toLocaleDateString().replaceAll('/','-');
+    }
+  },
+  computed: {},
   created() {
-    console.log(this.$route.query.id);
-    var id = this.$route.query.id;
-    amcBidDetail(id).then((res) => {
+    var {id,type} = this.$route.query;
+    amcBidDetail(id,type).then((res) => {
       console.log(res);
+      this.loading = false;
       this.info = res.data;
     });
   },
@@ -157,16 +401,26 @@ export default {
   padding: 0;
   margin: 0;
 }
-.project-detail{
+.spin-wrapper{
+  width: 100%;
+  padding-top: 10vh!important;
+}
+.project-detail {
   &-content {
-    .ant-row ~ .ant-row {
+    .ant-row {
       margin-top: 24px;
     }
+    .flex-style {
+      display: flex;
+      justify-content: space-between;
+    }
+
     .submit-plan {
       width: 265px;
       margin: 0 auto;
       text-align: center;
       margin-top: 60px;
+
       .text {
         font-size: 14px;
         font-weight: 400;
@@ -174,6 +428,7 @@ export default {
         line-height: 22px;
         margin-top: 12px;
       }
+
       .submitbtn {
         width: 74px;
         height: 32px;
@@ -186,24 +441,96 @@ export default {
         margin-top: 24px;
       }
     }
+
     .ctitle {
       font-size: 18px;
       font-weight: 600;
       color: #262626;
       line-height: 20px;
     }
+
     .subtitle {
       font-size: 14px;
       font-weight: 500;
       color: #333333;
       line-height: 14px;
-      .spantest {
-        font-size: 14px;
-        font-weight: 400;
-        color: #666666;
-        line-height: 14px;
-      }
     }
+
+    .spantest {
+      font-size: 14px;
+      font-weight: 400;
+      color: #666666;
+      line-height: 14px;
+    }
+  }
+}
+
+.serviceTime-aimBackPrice-row {
+  margin-top: 24px;
+  display: flex;
+
+  div ~ div {
+    margin-left: 30px;
+  }
+}
+
+.plan {
+  margin-top: 24px;
+
+  .step {
+    margin-top: 24px;
+  }
+}
+
+.plan_scheme {
+  margin-top: 24px;
+
+  .modify_scheme {
+    display: block;
+    margin: 70px auto;
+    width: 116px;
+    height: 32px;
+    background-color: #008cb0;
+    font-size: 14px;
+    color: #ffffff;
+    border: 0;
+  }
+}
+.tips {
+  width: 104px;
+  height: 22px;
+  font-size: 12px;
+  text-align: center;
+  line-height: 22px;
+  border-radius: 2px;
+  border: 1px dashed #f5222d;
+  margin-top: 4px;
+  color: #f5222d;
+}
+.absence_sign {
+  width: 44px;
+  height: 22px;
+  color: #faad14;
+  font-size: 12px;
+  border: 1px dashed #faad14;
+  border-radius: 2px;
+  margin-top: 4px;
+}
+.sutitle-text{
+  margin-left: 10px;
+  margin-top: -2px;
+}
+
+</style>
+<style lang="scss" >
+.step-container{
+  .ant-steps-item-title{
+    width: 70px;
+    color: #333333;
+    font-size: 14px;
+    white-space: nowrap;
+    text-overflow:ellipsis;
+    overflow:hidden;
   }
 }
 </style>
