@@ -169,11 +169,11 @@
               >
             </div>
             <div v-else>
-              <a
-                >{{fileName}}<a-icon
-                  @click.stop="form.documentAddress = ''"
+              <a :href="url"
+                >{{form.documentAddress}}</a><a-icon style="padding:10px;color:#008CB0"
+                  @click="form.documentAddress = ''"
                   type="close"
-              /></a>
+              />
             </div>
           </a-form-model-item>
         </a-form-model>
@@ -186,13 +186,14 @@
 import { getArea } from "@/plugin/tools";
 import Deploy, { getValueFromEvent } from "@/plugin/tools/qiniu-deploy";
 import { submitServicePlan, modifyCase } from "@/plugin/api/my-biding";
+import {getDownLoadToken} from "@/plugin/api/base"
 export default {
   name: "MsgInfoModal",
   nameComment: "查看抵质押物清单弹窗",
   data() {
     return {
       visible: false,
-      fileName:"服务方案.doc",
+      url:'',
       formItemLayout: {
         labelCol: {
           xs: { span: 24 },
@@ -351,7 +352,13 @@ export default {
       if(info.file.status === "done"){
         console.log(info.file)
         this.form.documentAddress = info.file.response.key;
-        this.fileName = info.file.name;
+        getDownLoadToken(info.file.response.key).then(res=>{
+          if(res.code === 20000){
+            this.url = res.data;
+          }else{
+            return false;
+          }
+        })
       }
     }
   },
@@ -360,6 +367,13 @@ export default {
     if (this.servePlan) {
       this.form = this.servePlan;
     }
+    getDownLoadToken(this.form.documentAddress).then(res=>{
+      if(res.code === 20000){
+        this.url = res.data;
+      }else{
+        return false;
+      }
+    })
   },
   filters: {
     area: (params) => {
