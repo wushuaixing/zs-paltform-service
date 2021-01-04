@@ -48,7 +48,7 @@
         </div>
         <a-row>
           <a-col :span="8">
-            <div>
+            <div style="padding-left:10px">
               <span class="subtitle">债务人名称：</span
               ><span class="spantext">{{ info.debtor }}</span>
             </div>
@@ -70,7 +70,7 @@
         </a-row>
         <a-row>
           <a-col :span="8">
-            <div>
+            <div style="padding-left:10px">
               <span class="subtitle">债权本金：</span
               ><span class="spantext"
                 >{{ info.debtCaptial | amountTh }}万元</span>
@@ -87,7 +87,7 @@
         </a-row>
         <a-row>
           <a-col :span="24">
-            <div>
+            <div style="padding-left:10px">
               <span class="subtitle">保证人清单：</span
               ><span class="spantext">{{
                 info.amcProjectGuarantors | guarantorsList
@@ -97,7 +97,7 @@
         </a-row>
         <a-row>
           <a-col :span="24" style="display: flex">
-            <div class="subtitle">抵押物清单：</div>
+            <div class="subtitle" style="padding-left:10px">抵押物清单：</div>
             <div>
               <p v-for="(i, index) in info.amcProjectCollaterals" :key="index">
                 {{index+1}}. {{i.collateralType|collateralType}}、{{i|area}}、{{i.collateralName}}
@@ -149,7 +149,7 @@
         </div>
         <div v-else>
           <div class="serviceTime-aimBackPrice-row">
-            <div>
+            <div style="padding-left:10px">
               <span class="subtitle">服务期限：</span>
               <span class="spantext">{{ info.serviceTime }}个月</span>
             </div>
@@ -158,7 +158,7 @@
               <span class="spantext">{{ info.aimBackPrice }}万元</span>
             </div>
           </div>
-          <div class="plan">
+          <div class="plan" style="padding-left:10px">
             <div class="subtitle">处置计划：</div>
           </div>
           <div style="margin-top:24px" class="step-container">
@@ -174,7 +174,7 @@
             </a-steps>
           </div>
           <div class="plan_scheme">
-            <div class="subtitle">方案文档：<a>服务方案.doc</a></div>
+            <div class="subtitle" style="padding-left:10px">方案文档：<a>服务方案.doc</a></div>
             <button class="modify_scheme" @click="goSubmit('edit')" v-if="info.aimedStatus === '2' && info.caseFileStatus === '1'">
               修改服务方案
             </button>
@@ -199,9 +199,9 @@ export default {
     return {
       loading:true,
       navData: [
-        { id: 1, title: "服务商管理", path: "/provider/review" },
-        { id: 2, title: "待审查", path: "/provider/review" },
-        { id: 3, title: "项目详情", path: "/provider/review" },
+        { id: 1, title: "我的项目", path: "biding" },
+        { id: 2, title: "我的竞标", path: "biding" },
+        { id: 3, title: "项目详情", path: "detail" },
       ],
       projectStatus: {
         aimedStatus: {
@@ -365,7 +365,7 @@ export default {
           servePlan.serviceTime = this.info.serviceTime;
           servePlan.collectionTarget = this.info.aimBackPrice;
           servePlan.projectId = this.info.id;
-          // servePlan.documentAddress = this.info.amcBidFiles[0].caseFileAddress;
+          servePlan.documentAddress = this.info.amcBidFiles[0].caseFileAddress;
           this.info.scheduleManagements.forEach(item=>{
             var plan = {};
             plan.content = item.dateMatters;
