@@ -1,4 +1,4 @@
-import { area } from "@/assets/area";
+import {area} from "@/assets/area";
 import {getDownLoadToken} from "@/plugin/api/base";
 
 /**
@@ -64,10 +64,10 @@ export const removeObjectNullVal = (obj) => {
  * 获取fileList
  * @param str
  */
-export const fileListRule = (str)=>{
-	if(!str) return [];
-	if(!Array.isArray(JSON.parse(str))) return [];
-	return JSON.parse(str).map(i=>({
+export const fileListRule = (str) => {
+	if (!str) return [];
+	if (!Array.isArray(JSON.parse(str))) return [];
+	return JSON.parse(str).map(i => ({
 		...i,
 		status: 'done',
 	}))
@@ -77,21 +77,21 @@ export const fileListRule = (str)=>{
  * 获取fileList - async
  * @param str
  */
-export const fileListRuleAsync = (str)=>{
-	if(!str) return [];
-	if(!Array.isArray(JSON.parse(str))) return [];
-	return Promise.all(JSON.parse(str).map(async i=>{
-			if (i.viewUrl) return i;
-			else{
-				return getDownLoadToken(i.hash || i.url).then(res=>{
-					if(res.code === 20000) {
-						i.viewUrl = res.data;
-						i.url = res.data;
-						i.status = 'done';
-					}
-					return i;
-				});
-			}
+export const fileListRuleAsync = (str) => {
+	if (!str) return [];
+	if (!Array.isArray(JSON.parse(str))) return [];
+	return Promise.all(JSON.parse(str).map(async i => {
+		if (i.viewUrl) return i;
+		else {
+			return getDownLoadToken(i.hash || i.url).then(res => {
+				if (res.code === 20000) {
+					i.viewUrl = res.data;
+					i.url = res.data;
+					i.status = 'done';
+				}
+				return i;
+			});
+		}
 		// ...i,
 		// status: 'done',
 	}))
@@ -134,10 +134,10 @@ export const getArea = (provinceCode, cityCode, areaCode) => {
  * @param str
  * @param single
  */
-export const areaAnalysis = (str,single = true)=>{
-	if(!str) return [];
-	const _str = (str || '').split(',').filter(i=>i);
-	return single ? _str : _str.map(i => i.split('/').filter(i=>i));
+export const areaAnalysis = (str, single = true) => {
+	if (!str) return [];
+	const _str = (str || '').split(',').filter(i => i);
+	return single ? _str : _str.map(i => i.split('/').filter(i => i));
 };
 
 /**
@@ -146,9 +146,9 @@ export const areaAnalysis = (str,single = true)=>{
  * @param field
  * @returns {{}}
  */
-export const buildSource = (source,field = [])=> {
-	if(!field.length) return {};
+export const buildSource = (source, field = []) => {
+	if (!field.length) return {};
 	const _source = {};
-	field.forEach(i=>_source[i] = source[i] || null);
+	field.forEach(i => _source[i] = source[i] || null);
 	return _source;
 };

@@ -18,7 +18,7 @@
         </a-row>
       </a-radio-group>
     </a-form-item>
-    <div v-show="getValue(history.once.dec[0]) ==='1'">
+    <div v-if="getValue(history.once.dec[0]) ==='1'">
       <a-form-item label="过往合作类型" class="form-item-row" selfUpdate>
         <a-checkbox-group v-decorator="history.coo.dec" v-bind="history.coo.other">
           <a-row>
@@ -47,7 +47,7 @@
 				</a-row>
 			</a-radio-group>
 		</a-form-item>
-		<div v-show="getValue(history.is.dec[0]) ==='1'">
+		<div v-if="getValue(history.is.dec[0]) ==='1'">
 			<a-form-item label="历史合作AMC" class="form-item-row" selfUpdate>
         <a-checkbox-group v-decorator="history.type.dec" v-bind="history.type.other">
           <a-row>
@@ -181,7 +181,7 @@ export default {
 		  (e || window.event).preventDefault();
 		  return new Promise((resolve,reject)=>{
 			  this.form.validateFields((err, data) => {
-				  if (!err)  resolve(this.processData(data));
+				  if (!err) resolve(this.processData(data));
 				  else reject(err)
 			  });
 		  });
@@ -195,13 +195,36 @@ export default {
       })
     },
     resetFormValue(source) {
-      const fieldValues = {
-        ...source,
-        cooperatedAmc: (source.cooperatedAmc || '').split(','),
-        cooperationIntention: (source.cooperationIntention || '').split(','),
-        typeOfCooperationCode: (source.typeOfCooperationCode || '').split(','),
-      };
-      this.form.setFieldsValue({...fieldValues});
+	    const { isCooperatedWithOtherAmc,isCooperatedWithZheshangDetail,isCooperatedWithZheshang,cooperationIntention,
+		    typeOfCooperationCode,
+		    cooperationTeam,
+		    liquidationSituation,
+		    cooperatedAmc,
+		    cooperatedAmcDetail,
+		    cooperationSituation,
+				 } = source;
+	    this.form.setFieldsValue({
+		    isCooperatedWithOtherAmc,
+		    isCooperatedWithZheshangDetail,
+		    isCooperatedWithZheshang,
+		    cooperationIntention: (cooperationIntention || '').split(','),
+	    });
+	    this.$nextTick(()=> {
+				if(isCooperatedWithZheshang === '1'){
+			    this.form.setFieldsValue({
+				    typeOfCooperationCode:(typeOfCooperationCode || '').split(','),
+				    cooperationTeam,
+				    liquidationSituation,
+			    });
+				}
+		    if(isCooperatedWithOtherAmc === '1'){
+			    this.form.setFieldsValue({
+				    cooperatedAmc:(cooperatedAmc || '').split(','),
+				    cooperatedAmcDetail,
+				    cooperationSituation,
+			    });
+		    }
+	    });
     },
   },
 }

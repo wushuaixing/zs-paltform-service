@@ -49,10 +49,10 @@
         </a-row>
       </a-radio-group>
     </a-form-item>
-		<a-form-item label="兼职/任职单位名称" v-if="isWorkOther()" >
+		<a-form-item label="兼职/任职单位名称" v-if="isWorkOther()" :selfUpdate="false">
 			<a-input v-decorator="field.avoSite.dec" v-bind="field.avoSite.other"/>
 		</a-form-item>
-		<a-form-item label="兼职/任职职务" v-if="isWorkOther()">
+		<a-form-item label="兼职/任职职务" v-if="isWorkOther()" :selfUpdate="false">
 			<a-input v-decorator="field.avoPost.dec" v-bind="field.avoPost.other"/>
 		</a-form-item>
     <a-form-item label="曾就业律所/单位">
@@ -399,7 +399,7 @@ export default {
       })
     },
     async resetFormValue(source) {
-      const { classicCase } = source;
+      const { classicCase,workUnitName,workRole } = source;
       const fieldValues = {
         ...source,
 	      classicCase: await fileListRuleAsync(classicCase),
@@ -407,7 +407,14 @@ export default {
         area: (source.area || '').split(',').map(i => Number(i)),
         otherResources: (source.otherResources || '').split(','),
       };
+	    delete fieldValues.workUnitName;
+	    delete fieldValues.workRole;
       this.form.setFieldsValue({...fieldValues});
+      this.$nextTick(()=>{
+				if(source.isWorkOther === '1') {
+					this.form.setFieldsValue({workUnitName,workRole});
+	      }
+      })
     },
   },
   async mounted() {

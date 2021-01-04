@@ -9,9 +9,9 @@
 			<FormQualify :userType="identity === 1 ?'lawyer':'org'" :noAuction="false" ref="QualifyFormRef" onlyData :source="source.qualify"/>
 			<h3>要素信息确认及完善</h3>
 			<div class="info-item_category" id="item_category_office">
-				<span class="title">{{identity === 1 ?'律所信息':'机构信息'}}</span>
+				<span class="title">{{identity === 1 ?'律师信息':'机构信息'}}</span>
 			</div>
-			<FormFactor :isLawyer="identity === 1" noSubmit noPadding ref="FactorFormRef" onlyData :source="source.factor"/>
+			<FormFactor :isLawyer="identity === 1" noSubmit noPadding ref="FactorFormRef" onlyData :dataSource="source.factor"/>
 		</div>
 		<div slot="footer" style="text-align: center">
 			<a-button type="primary" :loading="loading" @click="handleSubmit" :disabled="spinning">确认无误并提交</a-button>
@@ -33,7 +33,6 @@
 			...qualifyVO
 		};
 	};
-
 	const factorData = (data)=>{
 		const { element = {}, organizationElementVO = {} } = data || {};
 		return {
@@ -41,6 +40,7 @@
 			...organizationElementVO,
 		}
 	};
+
 	export default {
 		name:'Element',
 		nameComment:"资质|要素信息确认及完善",
@@ -54,7 +54,6 @@
 					factor:{},
 					qualify:{}
 				},
-
 			}
 		},
 		components:{
@@ -71,20 +70,32 @@
 		methods:{
 			handleSubmit() {
 				const { QualifyFormRef, FactorFormRef } = this.$refs;
-				Promise.all([QualifyFormRef.handleSubmit(),FactorFormRef.handleSubmit()]).then(data=>{
-					console.log(data);
+				Promise.all([QualifyFormRef.handleSubmit(),FactorFormRef.handleSubmit()])
+					.then(([qualifyVO,elementVO])=>{
+						const params = {
+							qualifyVO,
+							elementVO: this.identity === 1 ? { lawyerElement: elementVO } : elementVO
+						};
+						const api = this.identity === 1 ? perfectInfo.lawyer : perfectInfo.org;
+						this.loading = true;
+						api(params).then(res=>{
+							if(res.code === 20000){
+								this.$message.success('信息提交成功！',1,()=>{
+									window.location.reload();
+								});
+							}else{
+								this.$message.error('网络请求失败！');
+							}
+					}).finally(()=>{
+						this.loading = false;
+					});
 				});
-				this.loading = true;
-				setTimeout(() => {
-					this.loading = false;
-				}, 3000);
 			},
 			handleProcess(data) {
 				this.source = {
 					qualify:qualifyData(data._qualify),
 					factor:factorData(data._factor),
 				};
-				console.log(this.source);
 			},
 		},
 		mounted(){
@@ -142,7 +153,7 @@
 			.ant-form-item-label,.ant-form-item-control{
 				line-height: 32px;
 				.ant-checkbox-group, .ant-radio-group{
-					line-height:inherit;
+					line-height:32px;
 				}
 			}
 			.ant-form-explain, .ant-form-extra{
@@ -157,7 +168,7 @@
 		}
 		.factor-form-subtitle{
 			text-align: left;
-			padding: 10px 0;
+			padding: 10px 0 20px;
 			span{
 				display: block;
 				padding-left: 10px;

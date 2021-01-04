@@ -71,9 +71,8 @@
         </a-row>
       </a-radio-group>
     </a-form-item>
-    <!--      <template v-if="getValue(adv.isHasBankExperience.dec[0]) ==='1'">-->
-    <!--      </template>-->
-    <a-form-item label="历史投行项目案例">
+
+    <a-form-item label="历史投行项目案例" v-if="getValue(intention.isHasBankExperience.dec[0]) ==='1'">
       <a-input v-decorator="adv.investmentBankProjectCase.dec" v-bind="adv.investmentBankProjectCase.other"/>
     </a-form-item>
 
@@ -91,8 +90,7 @@
         </a-row>
       </a-radio-group>
     </a-form-item>
-    <template v-if="isFirst?getValue(intention.hasInvestmentIntention.dec[0]) ==='1'
-    : (source||{}).hasInvestmentIntention ">
+    <template v-if="getValue(intention.hasInvestmentIntention.dec[0]) ==='1'">
       <a-form-item label="投资偏好类型" class="form-item-row" :selfUpdate="false">
         <a-checkbox-group v-decorator="intention.investmentPreferenceType.dec"
                           v-bind="intention.investmentPreferenceType.other">
@@ -347,15 +345,27 @@ export default {
     },
 
     resetFormValue(source) {
-      const fieldValues = {
-        ...source,
+	    const { investmentPreferenceType,investmentArea,investmentExperience,investmentBankProjectCase,..._source } = source;
+			const fieldValues = {
+        ..._source,
         goodCases: (source.goodCases || '').split(',').map(i => Number(i)),
         headOfficeAddress: (source.headOfficeAddress || '').split(',').map(i => Number(i)),
-        investmentPreferenceType: (source.investmentPreferenceType || '').split(',').map(i => Number(i)),
-        investmentArea: (source.investmentArea || '').split(',').map(i => Number(i)),
       };
-      console.log(fieldValues);
       this.form.setFieldsValue({...fieldValues});
+	    this.$nextTick(()=>{
+		    if(source.hasInvestmentIntention === '1') {
+			    this.form.setFieldsValue({
+				    investmentExperience,
+				    investmentArea: (investmentArea || '').split(',').map(i => Number(i)),
+				    investmentPreferenceType: (investmentPreferenceType || '').split(',').map(i => Number(i)),
+			    });
+		    }
+		    if(source.isHasBankExperience === '1') {
+			    this.form.setFieldsValue({
+				    investmentBankProjectCase,
+			    });
+		    }
+	    })
     },
   },
 }
