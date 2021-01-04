@@ -11,7 +11,6 @@
                   <a-badge :status="MATTER_TYPE[item.code].text" />
                   <span class="thing">{{ MATTER_TYPE[item.code].name}}</span>
                   <span class="message">{{item.message}}</span>
-                  <!-- <router-link :to="MATTER_TYPE[item.code].path">立即前往</router-link> -->
                    <a-button type="link" @click="onTarget(MATTER_TYPE[item.code].path, item.projectId)" >立即前往</a-button>
                 </li>
               </ul>
@@ -132,16 +131,13 @@ export default {
     },
     // 修改表单
     onPanelChange(value) {
-      // console.log(value);
-      console.log(value.slice(0,8) + '01',value.slice(0,8) + '31');
+      // console.log(value.slice(0,8) + '01',value.slice(0,8) + '31');
       this.schedule.endDate = value.slice(0,8) + '01';
       this.schedule.startDate = value.slice(0,8) + '31';
       getCalendar({
 				'startDate': this.schedule.endDate,
         'endDate': this.schedule.startDate
 			}).then((res) => {
-				// console.log(res);
-				// console.log(res.data)
 				if (res.code !== 20000) return this.$message.error("获取日历事项失败");
 				this.data = res.data
 			})
@@ -152,17 +148,13 @@ export default {
       let baseDate = time.slice(0,7).replace("/","-");
       let startDate = baseDate + '-' + "01";
       let endDate = baseDate + '-' + "31";
-      console.log(startDate,endDate);
       const res = await getCalendar({startDate,endDate})
-      console.log(res);
-      console.log(res.data)
       if (res.code !== 20000) return this.$message.error("获取日历事项失败");
       this.data = res.data
     },
     // 待办事项
     async getList() {
       const res = await getTODoList();
-      console.log(res);
       if (res.code !== 20000) return 
         this.list = res.data
     },
@@ -171,7 +163,6 @@ export default {
       let myChart = echarts.init(document.getElementById("main"));
       const res = await getEcharts();
       if (res.code !== 20000) return this.$message.error('获取图表数据失败');
-      console.log(res);
       this.echarts = res.data;
       let option = {
       // color: ['red', 'blue','green','skyblue','pink'],
@@ -223,13 +214,13 @@ export default {
     this.initECharts()
   },
   watch: {
-    // $route(to){
-    //   if(to.path === 'overview') {
-    //     this.getCalendarData()
-    //     this.getList()
-    //     // this.initECharts()
-    //   }
-    // }
+    $route(to){
+      if(to.path === 'overview') {
+        this.getCalendarData()
+        this.getList()
+        // this.initECharts()
+      }
+    }
   }
 }
 </script>
@@ -270,7 +261,7 @@ $leftWidth: 450px;
     }
     &-title {
       padding: 20px 24px;
-      // border-bottom: 1px solid $background;
+      border-bottom: 1px solid #E9E9E9;
       line-height: 1.5;
       font-size: 16px;
       font-family: PingFangSC-Medium, PingFang SC;
