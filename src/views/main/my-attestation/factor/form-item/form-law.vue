@@ -134,7 +134,7 @@ import {
   areaOption, expOption, lawAdvList, lawAdvType
 } from "@/views/main/my-attestation/common/source";
 import Deploy, {getFileList, getValueFromEvent} from '@/plugin/tools/qiniu-deploy';
-import { fileListRuleAsync, buildSource } from "@/plugin/tools";
+import { fileListRuleAsync, buildSource, areaAnalysis } from "@/plugin/tools";
 const field = ["area","areasOfGoodCases","badAssetsWorkExp","competentCourt","familiarCourts","formerWorkUnit","graduateSchool","isInStorage","isWorkOfPublicSecurityOrgans","isWorkOther","major","notBadAssetsWorkExp","otherGoodCases","otherResources","otherResourcesAdvantage","workArea","workRole","workUnitName","workingTime","goodCases","otherResourcesDetail","classicCase"];
 
 export default {
@@ -410,6 +410,7 @@ export default {
 	    delete fieldValues.workUnitName;
 	    delete fieldValues.workRole;
       this.form.setFieldsValue({...fieldValues});
+	    this.field.involve.other.value = areaAnalysis(source.workArea,false);
       this.$nextTick(()=>{
 				if(source.isWorkOther === '1') {
 					this.form.setFieldsValue({workUnitName,workRole});

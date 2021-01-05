@@ -72,7 +72,7 @@
       </a-radio-group>
     </a-form-item>
 
-    <a-form-item label="历史投行项目案例" v-if="getValue(intention.isHasBankExperience.dec[0]) ==='1'">
+    <a-form-item label="历史投行项目案例" v-if="getValue(adv.isHasBankExperience.dec[0]) ==='1'">
       <a-input v-decorator="adv.investmentBankProjectCase.dec" v-bind="adv.investmentBankProjectCase.other"/>
     </a-form-item>
 
@@ -115,7 +115,7 @@
 <script>
 import { baseWidth, textarea } from "@/views/main/my-attestation/common/style";
 import { areaOption, expOption, hisCoo, orgAdvType } from "@/views/main/my-attestation/common/source";
-import { buildSource } from "@/plugin/tools";
+import { buildSource, areaAnalysis } from "@/plugin/tools";
 const field = ["areasOfGoodCases","branchOfficeAddress","goodCases","hasInvestmentBankExperience","hasInvestmentIntention","headOfficeAddress","investmentArea","investmentBankProjectCase","investmentExperience","investmentPreferenceType","numberOfCompany","numberOfTeams","organizationInformation","organizationalStructureInformation","otherGoodCases","otherMasterSubject","otherResourcesAdvantage","totalTeamSize","workingTime"];
 
 export default {
@@ -156,6 +156,7 @@ export default {
             clearable: true,
             options: areaOption,
             size: "small",
+						value:[],
             // collapseTags:true,
             props: {
               value: 'id',
@@ -250,6 +251,7 @@ export default {
             clearable: true,
             options: areaOption,
             size: "small",
+						value:[],
             // collapseTags:true,
             props: {
               value: 'id',
@@ -352,15 +354,17 @@ export default {
         headOfficeAddress: (source.headOfficeAddress || '').split(',').map(i => Number(i)),
       };
       this.form.setFieldsValue({...fieldValues});
+	    this.field.involve.other.value = areaAnalysis(source.branchOfficeAddress,false);
+	    this.adv.involve.other.value = areaAnalysis(source.areasOfGoodCases,false);
 	    this.$nextTick(()=>{
 		    if(source.hasInvestmentIntention === '1') {
 			    this.form.setFieldsValue({
 				    investmentExperience,
-				    investmentArea: (investmentArea || '').split(',').map(i => Number(i)),
+				    investmentArea: (investmentArea || '').split(',').map(i => Number(i)).filter(i=>i),
 				    investmentPreferenceType: (investmentPreferenceType || '').split(',').map(i => Number(i)),
 			    });
 		    }
-		    if(source.isHasBankExperience === '1') {
+		    if(source.hasInvestmentBankExperience === '1') {
 			    this.form.setFieldsValue({
 				    investmentBankProjectCase,
 			    });
