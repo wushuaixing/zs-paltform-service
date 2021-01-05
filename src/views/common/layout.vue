@@ -70,8 +70,8 @@
       }
     },
     created() {
-      const { pathname } = window.location;
-      if(/center/.test(pathname))this.selectedKey = 'b';
+      const { hash } = window.location;
+      if(/^#\/center/.test(hash))this.selectedKey = 'b';
       if(!this.$store.state.isLogin){
         getInfo().then(res=>{
           this.loading = false;

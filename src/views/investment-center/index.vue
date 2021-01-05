@@ -11,7 +11,7 @@
           <div class="content">
             <div class="part" v-for="(item,index) in queryOptions" :key="item.code">
               <div class="label">{{ item.label }}</div>
-              <a-radio-group v-model="queryParams[item.code]" @change="getTableList" button-style="solid">
+              <a-radio-group v-model="queryParams[item.code]" @change="getTableList('signUp')" button-style="solid">
                 <a-radio-button v-for="childItem in (item.isCollapsed?item.list:item.list.slice(0,item.sliceKey))"
                                 :value="childItem.value" :key="childItem.value">
                   {{ childItem.label }}
@@ -35,11 +35,18 @@
             <template slot="amount" slot-scope="amount">{{ amount|amountTh }}</template>
             <template slot="security" slot-scope="{security}">{{ SECURITY_TYPE[security] }}</template>
             <template slot="collateralType" slot-scope="{amcProjectCollaterals}">
-              <span v-for="item in amcProjectCollaterals" :key="item.id"
-                    :style="{marginRight:'5px'}">{{ item.collateralType| collateralType }}</span>
+              <div v-if="amcProjectCollaterals&&amcProjectCollaterals.length" class="collateral-type">
+                 <span v-for="item in amcProjectCollaterals" :key="item.id"
+                       :class="handleTypeColor(item.collateralType)">{{ item.collateralType| collateralType }}</span>
+              </div>
+              <span v-else>-</span>
+
             </template>
             <template slot="area" slot-scope="{amcProjectCollaterals}">
-              <p v-for="item in amcProjectCollaterals" :key="item.id">{{ item|area }}</p>
+              <template v-if="amcProjectCollaterals&&amcProjectCollaterals.length">
+                <p v-for="item in amcProjectCollaterals" :key="item.id">{{ item|area }}</p>
+              </template>
+              <span v-else>-</span>
             </template>
             <template slot="auction" slot-scope="item">
               <a-button type="link" size="small" @click="handleAuction(item,'view')">查看抵押物清单</a-button>
@@ -53,7 +60,8 @@
         </div>
       </div>
       <AttestationOmission v-else :attestation="isAttestationOmission===1?'资质认证':'要素认证'"/>
-      <ProjectModal :projectInfo="projectInfo" :sign="'signUp'" ref="signUpModal" @handleSignUp="getTableList"/>
+      <ProjectModal :projectInfo="projectInfo" :sign="'signUp'" ref="signUpModal"
+                    @handleSignUp="getTableList('signUp')"/>
       <MsgInfoModal ref="msgInfoModal" :msgInfo="projectInfo"/>
     </div>
   </a-layout>
@@ -107,8 +115,11 @@ export default {
     this.getTableList();
   },
   methods: {
-    getTableList() {
-      this.loading = true;
+    getTableList(signs) {
+      if (signs !== 'signUp') {
+        this.loading = true;
+      }
+
       amcProjectListApi(removeObjectNullVal(this.queryParams)).then((res) => {
         if (res.code === 20000) {
           const data = res.data;
@@ -138,7 +149,7 @@ export default {
       params.page = pagination.current;
       params.sortOrder = SORTER_TYPE[sorter.order];
       this.queryParams = params;
-      this.getTableList();
+      this.getTableList('signUp');
     },
 
     /**
@@ -152,7 +163,11 @@ export default {
       } else {
         this.queryOptions[index].isCollapsed = false;
       }
+    },
+    handleTypeColor(val) {
+      return queryOptions[1].list.find(i => val === i.value).color;
     }
+
   },
   filters: {
     //地区
@@ -207,11 +222,11 @@ export default {
       }
 
       .label {
-        min-width: 108px;
+        min-width: 116px;
       }
 
       .collapse {
-        min-width: 112px;
+        min-width: 44px;
         text-align: right;
         margin-left: auto;
         color: #666;
@@ -222,11 +237,12 @@ export default {
     .ant-radio-button-wrapper {
       border: none;
       box-shadow: none;
-      height: 22px;
-      line-height: 22px;
+      height: 24px;
+      line-height: 24px;
       border-radius: 2px;
       transition: none;
-      margin-bottom: 8px;
+      margin: 0 16px 8px 0;
+      min-width: 60px;
     }
 
     .ant-radio-button-wrapper::before {
@@ -236,6 +252,56 @@ export default {
 
   .table-wrapper {
     padding: 0 24px;
+
+    .ant-table-body {
+      tr {
+        th {
+          padding: 15px 8px;
+        }
+
+        td {
+          padding: 15px 8px;
+        }
+      }
+    }
+
+    .collateral-type {
+      span {
+        min-width: 64px;
+        padding: 0 8px;
+        height: 20px;
+        line-height: 20px;
+        font-size: 12px;
+        display: inline-block;
+        text-align: center;
+        border-radius: 2px;
+        margin-right: 3px;
+      }
+    }
+
+    .orange {
+      color: #FA541C;
+      background-color: #FFBB96;
+      border: 1px solid #F2F4F7;
+    }
+
+    .violet {
+      color: #AD99F9;
+      background-color: #F0ECFF;
+      border: 1px solid #AD99F9;
+    }
+
+    .cyan {
+      color: #6BDECD;
+      background: #ECFFFE;
+      border: 1px solid #6BDECD;
+    }
+
+    .blue {
+      color: #5A79DE;
+      background: rgba(231, 247, 255, 0.58);
+      border: 1px solid #5A79DE;
+    }
 
     .total-tips {
       font-size: 14px;
