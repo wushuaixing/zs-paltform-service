@@ -190,7 +190,7 @@ export default {
   nameComment: "查看抵质押物清单弹窗",
   data() {
     return {
-      visible: true,
+      visible: false,
       url:'',
       formItemLayout: {
         labelCol: {
