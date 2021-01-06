@@ -558,12 +558,12 @@ export default {
   table{
     border-bottom: 1px #E8E8E8 solid;
   }
-  tr{
-    height: 72px;
-    td{
-      border-bottom: none;
-    }
+  tr >td,tr >th{
+		border-bottom: none;
   }
+	tbody > tr{
+		height: 72px;
+	}
    tr:nth-child(2n){
       background: #FAFAFA;
    }
