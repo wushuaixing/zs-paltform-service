@@ -20,12 +20,17 @@
       <div class="item-wrapper">
         <div class="item-project item-format">竞标项目进度概览</div>
         <!-- 未添加项目 -->
-        <div class="empty" v-if="isShowEcharts">
+        <!-- <div class="empty" v-if="echarts.myProjectsNum ===0 && echarts.myProjectCaseUnSubmit===0 && echarts.myProjectsReview ===0 && echarts.myProjectsAimed===0 &&echarts.myProjectsInvalid===0 &&echarts.myProjectAbandon ===0" >
+          <a-empty description>
+            <slot name="description">您还没有已开始的项目，去<router-link to="/center">服务商项目招商中心</router-link>添加第一个项目</slot>
+          </a-empty>
+        </div> -->
+         <div class="empty" v-show="!isShowEcharts">
           <a-empty description>
             <slot name="description">您还没有已开始的项目，去<router-link to="/center">服务商项目招商中心</router-link>添加第一个项目</slot>
           </a-empty>
         </div>
-        <div class="item-content item-format" v-else>
+        <div class="item-content item-format"  v-show="isShowEcharts">
           <div class="total">我的项目总数：{{echarts.myProjectsNum}}</div>
           <div class="data-display">
             <!-- 饼图显示 -->
@@ -110,9 +115,7 @@ export default {
   },
   computed: {
     isShowEcharts(){
-      for (let key in this.echarts){
-        return this.echarts[key] !== 0 ? false : true;
-      }
+     return Object.values(this.echarts).some(i=>i!==0)
     }
   },
   methods: {
@@ -162,6 +165,7 @@ export default {
     async initECharts () {
       let myChart = echarts.init(document.getElementById("main"));
       const res = await getEcharts();
+      console.log(res);
       if (res.code !== 20000) return this.$message.error('获取图表数据失败');
       this.echarts = res.data;
       let option = {
