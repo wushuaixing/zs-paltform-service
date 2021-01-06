@@ -154,8 +154,8 @@ import { fileListRuleAsync } from "@/plugin/tools";
 import Deploy,{ getValueFromEvent, getFileList } from '@/plugin/tools/qiniu-deploy';
 
 const formItemLayout = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 16 },
+  labelCol: { span: 6 },
+  wrapperCol: { span: 18 },
 };
 
 const baseWidth = { style:{width:'442px'}};
@@ -198,6 +198,10 @@ export default {
       type:Boolean,
       default:true
     },
+		onlyData:{
+			type:Boolean,
+			default:false
+		}
   },
   data() {
     const validateCard = (rule, value, callback) => {
@@ -488,17 +492,21 @@ export default {
     },
     // 确认无误并提交
     handleSubmit(e) {
-      e.preventDefault();
-      this.form.validateFields((err, values) => {
-        if (!err) {
-          console.log('Received values of form: ', values);
-          this.toUpdateInfo(values)
-        }
-      });
+      (e || window.event).preventDefault();
+      return new Promise(resolve => {
+	      this.form.validateFields((err, values) => {
+		      if (!err) {
+			      // console.log('Received values of form: ', values);
+			      const source = this.processData(values);
+			      if(!this.onlyData) this.toUpdateInfo(source);
+			      resolve(source)
+		      }
+	      });
+			})
+
     },
     // 变更认证信息
-    toUpdateInfo(source){
-      const _source = this.processData(source);
+    toUpdateInfo(_source){
       const addApi = this.userType === 'lawyer' ? qualifies.lawyerAdd : qualifies.orgAdd;
       addApi(_source).then(res=>{
         if(res.code === 20000 ){
@@ -631,7 +639,7 @@ export default {
       .ant-form-item-control{
         position: absolute;
         top: -162px;
-        left:33.333%;
+        left:25%;
       }
     }
   }

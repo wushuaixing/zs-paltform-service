@@ -7,8 +7,6 @@
         <div class="biding-query">
           <a-form-model
             layout="inline"
-            @submit="handleSubmit"
-            @submit.native.prevent
           >
             <a-form-model-item>
               <a-input
@@ -34,7 +32,8 @@
               </a-select>
             </a-form-model-item>
             <a-form-model-item>
-              <a-button type="primary" html-type="submit">查询</a-button>
+              <a-button type="primary" html-type="submit" @click="reset">重置</a-button>
+              <a-button style="margin-left:16px" type="primary" html-type="submit" @click="handleSubmit">查询</a-button>
             </a-form-model-item>
           </a-form-model>
         </div>
@@ -296,6 +295,14 @@ export default {
       this.loading = true;
       this.getProjectList();
     },
+    //重置
+    reset(){
+      this.params.debtor = '';
+      this.params.process = '';
+      this.params.page = 1;
+      this.params.size = 10;
+      this.getProjectList();
+    },
     // tab状态切换
     handleTabChange(val) {
       this.loading = true;
@@ -372,7 +379,7 @@ export default {
               plan.content = i.dateMatters;
               plan.months = i.dateMonth;
               servePlan.plans.push(plan);
-            })
+            });
             window.localStorage.setItem("servePlan",JSON.stringify(servePlan));
             this.$refs.planModal.handleOpenModal();
           }

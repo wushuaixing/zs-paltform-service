@@ -109,7 +109,6 @@
                 style="
                   width: 235px;
                   height: 32px;
-                  border-radius: 0px;
                   margin: 0 8px;
                 "
               />
@@ -120,7 +119,6 @@
                 style="
                   width: 235px;
                   height: 32px;
-                  border-radius: 0px;
                   margin: 0 8px;
                 "
                 placeholder="阶段性目标,如腾房(30字以内)"
@@ -439,7 +437,6 @@ export default {
       .plan-ipt {
         width: 240px;
         height: 32px;
-        border-radius: 0px;
         margin: 0 8px;
       }
     }

@@ -1,25 +1,21 @@
 <template>
   <div class="factor-wrapper qualifies-wrapper">
-    <a-spin :spinning="spinning" class="spin-wrapper" tip="Loading......" />
+    <a-spin :spinning="spinning" class="spin-wrapper" tip="Loading......"/>
     <template v-if="!spinning">
       <!-- 填写相关要素信息 -->
-      <div v-if="identity && status(0)">
-        <FormItem :dataSource="dataSource" :is-lawyer="identity === 1">
-          <div class="qualifies-item qualifies-status" slot="title">
-            <div class="item-title status-title">
-              <div class="status-title-identity">
-                <span>我的服务商身份：</span>
-                <img
-                  :src="mine.icon"
-                  alt=""
-                  style="height: 32px; vertical-align: top"
-                />
-                <span style="margin-left: 10px">{{ mine.text }}</span>
-              </div>
-            </div>
-          </div>
-        </FormItem>
-      </div>
+			<div v-if="identity && status(0)">
+				<FormItem :dataSource="dataSource" :is-lawyer="identity === 1" @toTellRes="handleSubmit">
+					<div class="qualifies-item qualifies-status" slot="title">
+						<div class="item-title status-title">
+							<div class="status-title-identity">
+								<span>我的服务商身份：</span>
+								<img :src="mine.icon" alt="" style="height: 32px;vertical-align: top;">
+								<span style="margin-left: 10px">{{mine.text}}</span>
+							</div>
+						</div>
+					</div>
+				</FormItem>
+			</div>
       <!-- 要素相关审核 展示 -->
       <template v-if="identity && !status(0)">
         <!-- 要素认证信息 -->
@@ -27,364 +23,315 @@
           <div class="item-title status-title">
             <div class="status-title-identity">
               <span>我的服务商身份：</span>
-              <img
-                :src="mine.icon"
-                alt=""
-                style="height: 32px; vertical-align: top"
-              />
-              <span style="margin-left: 10px">{{ mine.text }}</span>
+							<img :src="mine.icon" alt="" style="height: 32px;vertical-align: top;">
+							<span style="margin-left: 10px">{{mine.text}}</span>
             </div>
             <ul class="status-title-attribute">
-              <li>
-                当前要素认证状态：<b :class="info.class">{{ info.desc }}</b>
-              </li>
-              <li v-if="statusInfo.elementModifyDate">
-                要素信息更新日期：{{ statusInfo.elementModifyDate }}
-              </li>
+              <li>当前要素认证状态：<b :class="info.class">{{info.desc}}</b></li>
+              <li v-if="statusInfo.elementModifyDate">要素信息更新日期：{{statusInfo.elementModifyDate}}</li>
             </ul>
           </div>
         </div>
         <!-- 要素认证提醒 -->
-        <div
-          class="qualifies-item qualifies-status"
-          v-if="status(245) || info.halfStatus"
-        >
+        <div class="qualifies-item qualifies-status" v-if="status(245) || info.halfStatus">
           <div class="status-content" v-if="status(245)">
-            <div>{{ info.text }}</div>
-            <a-button @click="getFactorLog" type="primary" :loading="loading">{{
-              info.btn
-            }}</a-button>
-            <a-button v-if="status(5)" @click="handleDrop">放弃修改</a-button>
+            <div>{{info.text}}</div>
+						<a-button @click="getFactorLog" type="primary" :loading="loading">{{info.btn}}</a-button>
+						<a-button v-if="status(5)" @click="handleDrop">放弃修改</a-button>
           </div>
           <div class="status-content" v-if="info.halfStatus">
-            <div>
-              您已有半年未更新要素认证信息，若要素认证信息发生变化，请及时进行更新！
-            </div>
-            <a-button type="primary">立即更新</a-button>
-            <a-button @click="handleDrop">放弃修改</a-button>
+            <div>您已有半年未更新要素认证信息，若要素认证信息发生变化，请及时进行更新！</div>
+						<a-button type="primary">立即更新</a-button>
+						<a-button @click="handleDrop">放弃修改</a-button>
           </div>
         </div>
         <!-- 要素认证状态 -->
         <div class="qualifies-info" v-if="status(1)">
           <div class="info-image-status">
-            <img src="../../../../assets/img/blank_nodata.png" alt="" />
-            <p class="image-status-remark">
-              您要提交的要素认证信息正在审核中 ，请您耐心等待
-            </p>
-            <a-button
-              @click="getFactorLog"
-              type="primary"
-              :loading="visibleLoading"
-              >查看我提交的资质认证</a-button
-            >
+            <img src="../../../../assets/img/no_data.png" alt="">
+            <p class="image-status-remark">您要提交的要素认证信息正在审核中 ，请您耐心等待</p>
+            <a-button @click="getFactorLog" type="primary" :loading="visibleLoading">查看我提交的资质认证</a-button>
           </div>
         </div>
         <!-- 要素信息展示 -->
-        <DetailInfo
-          v-if="status(3456)"
-          :is-lawyer="identity === 1"
-          :source="dataSource"
-          isEdit
-          @editInfo="handleEdit"
-        />
-        <div class="qualifies-info" v-if="status(9)">
-          <div class="info-image-status">
-            <img
-              src="../../../../assets/img/no-finished.png"
-              alt=""
-              style="width: 400px"
-            />
-            <p class="image-status-remark">网络请求异常，请稍后重试!</p>
-          </div>
-        </div>
+        <DetailInfo v-if="status(3456)" :is-lawyer="identity === 1" :source="dataSource"
+										isEdit @editInfo="handleEdit" @addOffice="handleAddOffice"/>
+				<div class="qualifies-info" v-if="status(9)">
+					<div class="info-image-status">
+						<img src="../../../../assets/img/no-finished.png" alt="" style="width: 400px;">
+						<p class="image-status-remark">网络请求异常，请稍后重试!</p>
+					</div>
+				</div>
+
       </template>
-      <div class="qualifies-info" v-if="status(99)">
-        <div class="info-image-status" style="margin-top: 180px">
-          <img
-            src="../../../../assets/img/no-finished.png"
-            alt=""
-            style="width: 265px"
-          />
-          <p class="image-status-remark">
-            您尚未完成资质认证，请先完成资质认证！
-          </p>
-          <router-link to="/attest/qualifies">
-            <a-button type="primary">立即前往资质认证</a-button>
-          </router-link>
-        </div>
-      </div>
+			<div class="qualifies-info" v-if="status(99)">
+				<div class="info-image-status" style="margin-top: 180px">
+					<img src="../../../../assets/img/no-finished.png" alt="" style="width: 265px;">
+					<p class="image-status-remark">您尚未完成资质认证，请先完成资质认证！</p>
+					<router-link to="/attest/qualifies">
+						<a-button type="primary">立即前往资质认证</a-button>
+					</router-link>
+				</div>
+			</div>
     </template>
-    <a-modal
-      v-model="modalVisible"
-      :title="modalTitle"
-      :maskClosable="false"
-      :width="1000"
-      class="factor-modal-wrapper"
-    >
-      <DetailInfo
-        :source="dataSourceLog"
-        :is-lawyer="identity === 1"
-        v-if="modalStep === 0"
-      />
-      <FormItem
-        :isLawyer="identity === 1"
-        v-if="modalStep === 1"
-        noSubmit
-        :onlyUpdateOffice="!!dataSourceLog.lawOffice"
-        :dataSource="dataSourceLog"
-        @toTellRes="handleSubmit"
-        ref="fillFromRef"
-      />
-      <template slot="footer">
-        <div style="text-align: center" v-if="modalStep === 0">
-          <a-space>
-            <a-button key="submit" type="primary" @click="modalStep = 1"
-              >修改并重新提交</a-button
-            >
-            <a-button key="back" @click="handleModalClose">关闭</a-button>
-            <a-button style="margin-left: 30px; visibility: hidden"
-              >关闭</a-button
-            >
-          </a-space>
-        </div>
-        <div style="text-align: center" v-if="modalStep === 1">
-          <a-space>
-            <a-button key="submit" type="primary" @click="handleEditInfo"
-              >确认修改并提交</a-button
-            >
-            <a-button key="back" @click="modalStep = 0" v-show="onlyEdit"
-              >取消</a-button
-            >
-            <a-button
-              key="back"
-              @click="handleModalClose"
-              style="margin-left: 30px"
-              >关闭</a-button
-            >
-          </a-space>
-        </div>
-      </template>
-    </a-modal>
-  </div>
+		<a-modal v-model="modalVisible" :title="modalTitle" :maskClosable="false" :width="1000" class="factor-modal-wrapper">
+			<DetailInfo :source="dataSourceLog" :is-lawyer="identity === 1" v-if="modalStep===0"/>
+			<FormItem :isLawyer="identity === 1" v-if="modalStep===1" noSubmit :onlyUpdateOffice="!!dataSourceLog.lawOffice"
+								:dataSource="dataSourceLog" @toTellRes="handleSubmit" ref="fillFromRef"/>
+			<template slot="footer">
+				<div style="text-align: center" v-if="modalStep === 0">
+					<a-space>
+						<a-button key="submit" type="primary" @click="modalStep = 1">修改并重新提交</a-button>
+						<a-button key="back" @click="handleModalClose">关闭</a-button>
+						<a-button style="margin-left: 30px;visibility: hidden">关闭</a-button>
+					</a-space>
+				</div>
+				<div style="text-align: center" v-if="modalStep === 1">
+					<a-space>
+						<a-button key="submit" type="primary" @click="handleEditInfo">确认修改并提交</a-button>
+						<a-button key="back" @click="modalStep=0" v-show="onlyEdit">取消</a-button>
+						<a-button key="back" @click="handleModalClose" style="margin-left: 30px">关闭</a-button>
+					</a-space>
+				</div>
+			</template>
+		</a-modal>
+		<a-modal v-model="modalVisibleOffice" title="律所信息认证" :maskClosable="false" :width="1000">
+			<FormItemOffice ref="OfficeFormRef"/>
+			<template slot="footer">
+				<div style="text-align: center" >
+					<a-button key="submit" type="primary" :loading="auctionLoading" @click="toAddOffice">
+						确认修改并提交</a-button>
+					<a-button key="back" @click="modalVisibleOffice = false" style="margin-left: 30px">关闭</a-button>
+				</div>
+			</template>
+		</a-modal>
+	</div>
 </template>
 
 <script>
+
 // import { FormOrg, FormLaw, FormLawOff } from './form';
-import DetailInfo from "./detail";
-import FormItem from "./form-item";
+import DetailInfo from './detail';
+import FormItem from './form-item';
+import FormItemOffice from './form-item/form-office';
 import { factor } from "@/plugin/api/attest";
-import IconLaw from "@/assets/img/lawyer.png";
-import IconOrg from "@/assets/img/org.png";
+import IconLaw from '@/assets/img/lawyer.png';
+import IconOrg from '@/assets/img/org.png';
 
 // 要素审核相关状态
 const factorStatus = {
-  0: { desc: "未认证", text: "" },
-  1: { desc: "认证审核中", text: "", class: "text-error" },
-  2: {
-    desc: "认证未通过",
-    text: "您提交的要素认证信息未通过审核，未通过原因：",
-    class: "text-dangerous",
-    btn: "编辑并重新提交",
-  },
-  3: { desc: "认证审核通过", text: "", class: "text-success" },
-  4: {
-    desc: "认证修改审核中",
-    text: "您提交的要素认证信息修改正在审核中，请耐心等待审核结果",
-    class: "text-error",
-    btn: "查看我提交的认证修改信息",
-  },
-  5: {
-    desc: "认证修改未通过",
-    text: "您提交的要素认证信息修改未通过审核，未通过原因：",
-    class: "text-dangerous",
-    btn: "编辑并重新提交",
-  },
-  6: { desc: "认证修改审核通过", text: "", class: "text-success" },
+  0:{ desc:"未认证", text:""},
+  1:{ desc:"认证审核中", text:"",class:'text-error'},
+  2:{ desc:"认证未通过", text:"您提交的要素认证信息未通过审核，未通过原因：",class:'text-dangerous',btn:'编辑并重新提交'},
+  3:{ desc:"认证审核通过", text:"",class:'text-success'},
+  4:{ desc:"认证修改审核中", text:"您提交的要素认证信息修改正在审核中，请耐心等待审核结果",class:'text-error',btn:'查看我提交的认证修改信息'},
+  5:{ desc:"认证修改未通过", text:"您提交的要素认证信息修改未通过审核，未通过原因：",class:'text-dangerous',btn:'编辑并重新提交'},
+  6:{ desc:"认证修改审核通过", text:"",class:'text-success'},
 };
 
 export default {
-  name: "factor",
-  nameComment: "要素认证",
-  components: {
-    DetailInfo,
-    FormItem,
+  name: 'factor',
+  nameComment: '要素认证',
+  components:{
+	  DetailInfo,
+	  FormItem,
+	  FormItemOffice,
   },
   data() {
     return {
-      spinning: false,
-      loading: false,
-      visibleLoading: false,
-      modalVisible: false,
-      onlyEdit: false,
-      modalStep: 0,
-      identity: "",
-      statusInfo: {
+      spinning: true,
+			loading: false,
+	    visibleLoading: false,
+	    modalVisible: false,
+	    modalVisibleOffice: false,
+			auctionLoading:false,
+	    onlyEdit:false,
+	    modalStep: 0,
+      identity: '',
+      statusInfo:{
         elementAuditStatus: 0,
-        elementModifyDate: "",
-        reasonOfNotPass: "",
-        remindBaseTime: "",
+        elementModifyDate: '',
+        reasonOfNotPass: '',
+        remindBaseTime: '',
       },
-      dataSource: {},
-      dataSourceLog: {},
+			dataSource: {},
+			dataSourceLog: {},
+			logId:'',
     };
   },
-  methods: {
+  methods:{
     // 判断数据当前状态
-    status(rule) {
-      const { elementAuditStatus: q } = this.statusInfo;
-      return rule.toString() ? new RegExp(q).test(rule) : q;
+    status(rule){
+      const { elementAuditStatus: q} = this.statusInfo;
+      if(rule === '') return false;
+      return  rule.toString() ? new RegExp(q).test(rule) : q;
     },
-    // 查询记录表中，当前最新记录
-    getFactorLog() {
-      this.visibleLoading = true;
-      const api = this.identity === 1 ? factor.lawyerLog : factor.orgLog;
-      api()
-        .then(({ data = {}, code }) => {
-          if (code === 20000) {
-            const { element = {}, organizationElementVO = {} } = data || {};
-            this.dataSourceLog = {
-              ...element,
-              ...organizationElementVO,
-            };
-            this.modalVisible = true;
-            this.modalStep = 0;
-          } else {
-            this.$message.error("网络请求异常，请重新请求!");
-          }
-        })
-        .finally(() => {
-          this.visibleLoading = false;
-        });
-    },
-    // 查询当前服务商的要素属性状态
-    queryFactor() {
-      factor
-        .element()
-        .then(({ data = {}, code }) => {
-          if (code === 20000) {
-            const {
-              elementCondition,
-              element = {},
-              organizationElementVO = {},
-            } =
-              data["lawyerElementDetail"] ||
-              data["organizationElementDetail"] ||
-              {};
-            this.statusInfo = elementCondition || {};
-            this.dataSource = {
-              ...element,
-              ...organizationElementVO,
-              ...elementCondition,
-            };
-            this.spinning = false;
-          } else if (code === 80001) {
-            this.statusInfo = {
-              elementAuditStatus: 0,
-              elementModifyDate: "",
-              reasonOfNotPass: "",
-              remindBaseTime: "",
-            };
-            this.spinning = false;
-          } else {
-            this.$error({
-              title: "提示",
-              content: "网络请求异常，请重新请求!",
-            });
-            this.statusInfo = {
-              elementAuditStatus: 9,
-              elementModifyDate: "",
-              reasonOfNotPass: "",
-              remindBaseTime: "",
-            };
-          }
-        })
-        .catch(() => {
-          this.$error({
-            title: "提示",
-            content: "网络请求异常，请重新请求!",
-          });
-        });
-    },
-    // 关闭弹窗
-    handleModalClose() {
-      this.modalStep = 0;
-      this.modalVisible = false;
-    },
-    // 提交我的资质信息
-    handleSubmit(val) {
-      console.log(val);
-      this.$message.success("要素认证提交成功！");
-      this.queryFactor();
-      this.handleModalClose();
-    },
-    // 编辑我的资质信息 - 查看且编辑
-    handleEditInfo(e) {
-      const { fillFromRef } = this.$refs;
-      console.log(this.$refs.fillFromRef);
-      fillFromRef.handleSubmit(e);
-    },
-    // 编辑我的资质信息 - 仅编辑
-    handleEdit() {
-      this.dataSourceLog = { ...this.dataSource };
-      this.modalStep = 1;
-      this.modalVisible = true;
-      this.onlyEdit = false;
-    },
-    // 放弃修改
-    handleDrop() {
-      factor.dropModify().then((res) => {
-        if (res.code === 20000) {
-          this.$message.success("当前认证修改申请，已放弃");
-          this.queryQualify();
-        } else {
-          this.$message.error("操作失败，请稍后操作！1");
-        }
-      });
-    },
+	  // 查询记录表中，当前最新记录
+	  getFactorLog(){
+		  this.visibleLoading = true;
+		  const api = this.identity === 1 ? factor.lawyerLog : factor.orgLog;
+		  api().then(({data = {},code})=>{
+			  if(code === 20000){
+				  const { element = {},organizationElementVO = {} } = data || {};
+				  this.dataSourceLog = {
+					  ...element,
+					  ...organizationElementVO
+				  };
+				  this.modalVisible = true;
+				  this.modalStep = 0;
+			  }else{
+				  this.$message.error('网络请求异常，请重新请求!');
+			  }
+		  }).finally(()=>{
+			  this.visibleLoading = false;
+		  })
+	  },
+	  // 查询当前服务商的要素属性状态
+	  queryFactor(){
+		  factor.element().then(({data = {},code})=>{
+			  if(code === 20000){
+				  const {
+					  elementCondition, element = {}, organizationElementVO = {},logId
+				  } = (data['lawyerElementDetail'] || data['organizationElementDetail']) || {};
+				  this.statusInfo = elementCondition || {};
+				  this.logId = logId;
+				  this.dataSource = {
+					  ...element,
+					  ...organizationElementVO,
+						...elementCondition,
+				  };
+				  this.spinning = false;
+
+			  } else if(code === 80001){
+				  this.statusInfo = {
+					  elementAuditStatus: 0,
+					  elementModifyDate: '',
+					  reasonOfNotPass: '',
+					  remindBaseTime: '',
+				  };
+				  this.spinning = false;
+			  } else{
+				  this.$error({
+					  title: '提示',
+					  content: '网络请求异常，请重新请求!',
+				  });
+				  this.statusInfo = {
+					  elementAuditStatus: 9,
+					  elementModifyDate: '',
+					  reasonOfNotPass: '',
+					  remindBaseTime: '',
+				  };
+			  }
+		  }).catch(()=>{
+			  this.$error({
+				  title: '提示',
+				  content: '网络请求异常，请重新请求!',
+			  });
+		  })
+	  },
+	  // 关闭弹窗
+	  handleModalClose(){
+		  this.modalStep = 0;
+		  this.modalVisible = false;
+	  },
+		// 添加律所信息
+	  handleAddOffice(){
+			console.log('handleAddOffice',this.logId);
+			this.modalVisibleOffice = true;
+		},
+		toAddOffice(){
+			const office = this.$refs.OfficeFormRef;
+			if(office){
+				office.handleSubmit().then(data=>{
+					this.auctionLoading = true;
+					factor.officeAdd({
+						elementId:this.logId,
+						roleInLawOffice:data.roleInLawOffice,
+						lawOffice:data
+					}).then(res=>{
+						if(res.code === 20000){
+							this.$message.success('律所信息添加成功！',1,()=>{
+								this.modalVisibleOffice = false;
+								this.queryFactor();
+							})
+						}else{
+							this.$message.error('网络请求错误！')
+						}
+					}).finally(()=>{
+						this.auctionLoading = false;
+					})
+				})
+			}
+		},
+	  // 提交我的资质信息
+	  handleSubmit(val){
+		  console.log(val);
+		  this.$message.success('要素认证提交成功！');
+		  this.queryFactor();
+		  this.handleModalClose();
+	  },
+	  // 编辑我的资质信息 - 查看且编辑
+	  handleEditInfo(e){
+		  const { fillFromRef } = this.$refs;
+		  console.log(this.$refs.fillFromRef);
+		  fillFromRef.handleSubmit(e);
+	  },
+	  // 编辑我的资质信息 - 仅编辑
+	  handleEdit(){
+		  this.modalVisible = true;
+		  this.dataSourceLog = {...this.dataSource};
+		  this.modalStep = 1;
+		  this.onlyEdit = false;
+	  },
+	  // 放弃修改
+	  handleDrop(){
+		  factor.dropModify().then(res=>{
+			  if(res.code === 20000){
+				  this.$message.success('当前认证修改申请，已放弃');
+				  this.queryQualify();
+			  }else{
+				  this.$message.error('操作失败，请稍后操作！');
+			  }
+		  })
+	  },
   },
-  computed: {
+  computed:{
     info() {
-      const {
-        reasonOfNotPass,
-        elementAuditStatus,
-        remindBaseTime,
-      } = this.statusInfo;
+      const { reasonOfNotPass, elementAuditStatus} = this.statusInfo;
+	    // remindBaseTime
       return {
         ...factorStatus[elementAuditStatus],
-        text:
-          (factorStatus[elementAuditStatus] || {}).text +
-          (reasonOfNotPass || ""),
-        halfStatus: !remindBaseTime,
+        text:(factorStatus[elementAuditStatus] || {}).text + (reasonOfNotPass || ''),
+        halfStatus: false,
       };
     },
-    mine() {
-      return {
-        icon: this.identity === 1 ? IconLaw : IconOrg,
-        text: this.identity === 1 ? "律师" : "机构",
-      };
-    },
-    modalTitle() {
-      return this.modalStep === 0
-        ? "我提交的认证信息"
-        : "我提交的认证信息-编辑";
-    },
+	  mine(){
+			return {
+				icon: this.identity === 1 ? IconLaw : IconOrg,
+				text: this.identity === 1 ? '律师' : '机构',
+			}
+		},
+	  modalTitle(){
+		  return this.modalStep === 0 ? "我提交的认证信息" : "我提交的认证信息-编辑";
+	  },
   },
   mounted() {
-    const info = this.$store.getters.getInfo;
+		const info = this.$store.getters.getInfo;
     this.identity = info.identity;
     console.log(info);
-    if (info.isSubmitCertify) {
-      this.queryFactor();
-    } else {
-      this.statusInfo = {
-        elementAuditStatus: 99,
-        elementModifyDate: "",
-        reasonOfNotPass: "",
-        remindBaseTime: "",
-      };
-    }
+    if(info.isSubmitCertify){
+	    this.queryFactor();
+    }else{
+	    this.statusInfo = {
+		    elementAuditStatus: 99,
+		    elementModifyDate: '',
+		    reasonOfNotPass: '',
+		    remindBaseTime: '',
+	    };
+	    this.spinning = false;
+		}
   },
-};
+}
 
 // const _dataSource = {
 // 	lawData: {
@@ -548,19 +495,19 @@ export default {
 }
 </style>
 <style lang='scss'>
-.factor-form-wrapper {
+.factor-form-wrapper{
   padding: 20px;
-  .badge-dot {
-    width: 15px;
-    height: 15px;
-    display: inline-block;
-    border-radius: 50%;
-    background: red;
-  }
-  .factor-form-subtitle {
+	.badge-dot{
+		width: 15px;
+		height: 15px;
+		display: inline-block;
+		border-radius: 50%;
+		background: red;
+	}
+  .factor-form-subtitle{
     text-align: left;
     padding: 10px 0;
-    span {
+    span{
       display: block;
       padding-left: 10px;
       border-left: 4px solid $common-base;
@@ -569,41 +516,43 @@ export default {
       height: 20px;
     }
   }
-  .factor-form-classTitle {
+  .factor-form-classTitle-wrapper{
+
+  }
+  .factor-form-classTitle{
     display: flex;
     justify-content: space-between;
     padding: 5px;
     border-bottom: 1px solid $border-base;
     margin-bottom: 25px;
-    .classTitle_subtitle {
+    .classTitle_subtitle{
       font-size: 16px;
       line-height: 32px;
-      span {
+      span{
         margin-left: 10px;
       }
     }
   }
-  .form-item-row {
-    .ant-form-item-children {
+  .form-item-row{
+    .ant-form-item-children{
       display: block;
-      .ant-radio-group,
-      .ant-checkbox-group {
+      .ant-radio-group,.ant-checkbox-group{
         display: block;
       }
     }
-    .ant-row {
+    .ant-row{
       line-height: 32px;
     }
   }
-  .form-item-no-title {
-    .ant-form-item-label label:after {
-      content: " ";
+  .form-item-no-title{
+    .ant-form-item-label label:after{
+      content:' '
     }
   }
 }
-.factor-modal-wrapper {
-  .ant-modal-body {
-    padding: 0;
-  }
-}
+	.factor-modal-wrapper{
+		.ant-modal-body{
+			padding: 0;
+		}
+	}
 </style>

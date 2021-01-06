@@ -184,14 +184,12 @@ export default {
       nextStep:false,
       // 联系人编辑状态
       editStatus:false,
-      contacts:{
-        name:'言殁岚',
-        phone:'17137246841'
-      },
+      contacts:{},
       // 相关资质信息
       source:{},
       sourceLog:{},
       contacts_name:'',
+	    contacts_name_remark:'',
       icon:{
         law:IconLaw,
         org:IconOrg,
@@ -225,16 +223,25 @@ export default {
     },
     // 更新联系人名称[机构联系人]
     handleUpdateName(){
-      if(!this.contacts_name) return this.$message.error('联系名称不能为空！');
-      this.contacts.name = this.contacts_name;
-      this.editStatus = false;
+	    if(!this.contacts_name) return this.$message.error('联系名称不能为空！');
+	    if(this.contacts_name === this.contacts_name_remark) return this.$message.error('联系人名称相同！');
+			qualifies.modifyContact(this.contacts_name).then(res=>{
+				if(res.code === 20000){
+					this.source.contact = this.contacts_name;
+					this.contacts_name_remark = this.contacts_name;
+					this.$message.success('联系人名称修改成功！');
+					this.editStatus = false;
+				}else{
+					this.$message.error('网络请求失败');
+				}
+			});
     },
     toEditContacts(bol){
       if(bol){
         this.editStatus = true;
       }else{
         this.editStatus = false;
-        this.contacts_name = '';
+        this.contacts_name = this.contacts_name_remark;
       }
     },
     // 查看资质状态
@@ -314,6 +321,7 @@ export default {
 					} = (data['lawyerQualifyDetail'] || data['organizationQualifyDetail']) || {};
 					this.statusInfo = qualifyCondition || {};
 					this.contacts_name = contact;
+					this.contacts_name_remark = contact;
 					this.source = {
 						contact,logId,phone,
 						...qualify,

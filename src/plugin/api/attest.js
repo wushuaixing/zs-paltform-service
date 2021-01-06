@@ -20,10 +20,14 @@ const qualifies = {
 	orgLog:()=>request.get('/service/amcQualify/organization/log'),
 
 	// 添加机构资质认证
-	orgAdd:params=>request.post('/service/amcQualify/organization/add',params),
+	orgAdd: params=>request.post('/service/amcQualify/organization/add',params),
 
 	// 放弃修改
 	dropModify:()=>request.put('/service/amcQualify/dropModify'),
+
+	// 修改联系人名称
+	modifyContact: params => request.post('/service/amcQualify/modifyContact?contact=' + (params || '')),
+
 };
 
 const factor = {
@@ -38,6 +42,9 @@ const factor = {
 
 	// 添加律师要素认证
 	lawyerAdd:params=>request.post('/service/amcElement/lawyer/add',params),
+
+	// 添加律师要素认证
+	officeAdd:params=>request.post('/service/amcElement/lawyer/addOffice',params),
 
 	// 机构要素查询
 	org:()=>request.get('/service/amcElement/organization'),
@@ -56,4 +63,32 @@ const factor = {
 
 };
 
-export { qualifies, factor };
+const perfectInfo = {
+	// 查询基本信息
+	info:(identity)=>request.all( identity === 1 ?
+		[factor.lawyerLog(),qualifies.lawyerLog()] : [factor.orgLog(),qualifies.orgLog()]
+	).then(([res1,res2])=>{
+		if((res1.code === 20000 || res1.code === 80001) && (res2.code === 20000 || res2.code === 80001) ){
+			return {
+				code: 20000,
+				data:{
+					_factor:res1.data || {},
+					_qualify:res2.data || {},
+				}
+			}
+		}
+		return {
+			code: 20001,
+			message:'网络请求错误！'
+		}
+	}),
+
+	// 机构完善开户信息
+	org:params=>request.post('/service/amcServiceUser/completeOrgInfo',params),
+
+	// 律师完善开户信息
+	lawyer:params=>request.post('/service/amcServiceUser/completeLawyerInfo',params),
+};
+
+
+export { qualifies, factor, perfectInfo };

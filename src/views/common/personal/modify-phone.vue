@@ -4,7 +4,7 @@
       <a-modal
         :bodyStyle="{ display: 'flex', justifyContent: 'center' }"
         :centered="true"
-        :getContainer="()=>$refs.container"
+        :getContainer="() => $refs.container"
         :maskStyle="{ background: 'rgba(0, 0, 0, 0.5)' }"
         v-model="visible"
         title="修改绑定手机号"
@@ -18,7 +18,7 @@
           v-if="step !== 3"
         >
           <a-form-model-item v-if="step === 1" label="原账号" prop="phone">
-            <a-input placeholder="请输入原账号" :maxLength="11" v-model.trim="form.phone" />
+            <div>{{ getInfo.phone }}</div>
           </a-form-model-item>
           <a-form-model-item v-else label="新账号" prop="phone">
             <a-input
@@ -28,7 +28,11 @@
             />
           </a-form-model-item>
           <a-form-model-item label="验证码" prop="code">
-            <a-input placeholder="请输入短信验证码" :maxLength="6" v-model.trim="form.code">
+            <a-input
+              placeholder="请输入短信验证码"
+              :maxLength="6"
+              v-model.trim="form.code"
+            >
               <div slot="suffix" class="verify-code" @click="sendVerifyCode">
                 获取验证码<span v-if="countdown">({{ countdown }}s)</span>
               </div>
@@ -82,6 +86,7 @@ import {
   newPhoneCode,
   bindNewPhone,
 } from "@/plugin/api/personal";
+import { mapGetters } from "vuex";
 export default {
   data() {
     //自定义手机号校验规则
@@ -121,85 +126,107 @@ export default {
       wrapperCol: { span: 14 },
     };
   },
+  computed: {
+    ...mapGetters(["getInfo"]),
+  },
   methods: {
     showModal() {
       this.visible = true;
     },
     sendVerifyCode() {
-      this.$refs.ruleForm.validateField("phone", (validate) => {
-        if (validate) {
-          return false;
-        } else {
-          //60秒倒计时阶段不可发送验证码
-          if (this.countdown) return;
-          this.countdown = 60;
-          this.timer = setInterval(() => {
-            this.countdown--;
-            if (this.countdown === 0) clearInterval(this.timer);
-          }, 1000);
-          //step==1,原账号发送验证码
-          if (this.step === 1) {
-            oldPhoneCode(this.form.phone).then((res) => {
-              console.log(res);
-              if (res.code === 20000) this.$message.success("验证码发送成功");
-              if (res.code !== 20000) this.$message.error("验证码发送失败");
-            });
-          }
-          //step==2,新手机号发送验证码
-          if (this.step === 2) {
+      //step==1,原账号发送验证码
+      if (this.step === 1) {
+        if (this.countdown) return;
+        this.countdown = 60;
+        this.timer = setInterval(() => {
+          this.countdown--;
+          if (this.countdown === 0) clearInterval(this.timer);
+        }, 1000);
+        oldPhoneCode(this.getInfo.phone).then((res) => {
+          console.log(res);
+          if (res.code === 20000) this.$message.success("验证码发送成功");
+          if (res.code !== 20000) this.$message.error("验证码发送失败");
+        });
+      }
+      if (this.step === 2) {
+        console.log(111)
+        this.$refs.ruleForm.validateField("phone", (error) => {
+          if (error) {
+            console.log(error);
+            return false;
+          } else {
+            //60秒倒计时阶段不可发送验证码
+            if (this.countdown) return;
+            this.countdown = 60;
+            this.timer = setInterval(() => {
+              this.countdown--;
+              if (this.countdown === 0) clearInterval(this.timer);
+            }, 1000);
+            //step==2,新手机号发送验证码
             newPhoneCode(this.form.phone).then((res) => {
               console.log(res);
               if (res.code === 20000) this.$message.success("验证码发送成功");
               if (res.code !== 20000) this.$message.error("验证码发送失败");
             });
           }
-        }
-      });
+        });
+      }
     },
     goNext() {
       if (this.step === 3) {
         this.visible = false;
         this.step = 1;
       }
-      this.$refs.ruleForm.validate((validate) => {
-        console.log(validate);
-      });
       //step==1,验证原手机号
       if (this.step === 1) {
-        verifyOldPhone(this.form.code, this.form.phone).then((res) => {
-          console.log(res);
-          if (res.code === 20000) {
-            this.$message.success("验证通过");
-            this.form.phone = "";
-            this.form.code = "";
-            clearInterval(this.timer);
-            this.countdown = null;
-            this.step++;
+        this.$refs.ruleForm.validateField("code",error=>{
+          if(error){
+            return false;
+          }else{
+            verifyOldPhone(this.form.code, this.getInfo.phone).then((res) => {
+              console.log(res);
+              if (res.code === 20000) {
+                this.$message.success("验证通过");
+                this.form.code = "";
+                clearInterval(this.timer);
+                this.countdown = null;
+                this.step++;
+              }
+              if (res.code === 20001) this.$message.error("验证失败");
+              if (res.code === 30003) this.$message.error("验证码错误");
+              if (res.code === 30006) this.$message.error("账号被锁定");
+              if (res.code === 30009) this.$message.error("手机号不存在");
+            });
           }
-          if (res.code === 20001) this.$message.error("验证失败");
-          if (res.code === 30003) this.$message.error("验证码错误");
-          if (res.code === 30006) this.$message.error("账号被锁定");
-          if (res.code === 30009) this.$message.error("手机号不存在");
-        });
+        })
       }
-      //step==2,绑定新手机
       if (this.step === 2) {
-        bindNewPhone(this.form.code, this.form.phone).then((res) => {
-          console.log(res);
-          if (res.code === 20000) {
-            this.$message.success("绑定新手机号成功");
-            this.form.phone = "";
-            this.form.code = "";
-            clearInterval(this.timer);
-            this.countdown = null;
-            this.step++;
+        this.$refs.ruleForm.validate((validate) => {
+          console.log(validate);
+          if (validate) {
+            //step==2,绑定新手机
+            if (this.step === 2) {
+              bindNewPhone(this.form.code, this.form.phone).then((res) => {
+                console.log(res);
+                if (res.code === 20000) {
+                  this.$message.success("绑定新手机号成功");
+                  this.form.phone = "";
+                  this.form.code = "";
+                  clearInterval(this.timer);
+                  this.countdown = null;
+                  this.step++;
+                }
+                if (res.code === 20001) this.$message.error("验证新手机号失败");
+                if (res.code === 30003) this.$message.error("验证码错误");
+                if (res.code === 30006) this.$message.error("账号被锁定");
+                if (res.code === 30008) this.$message.error("该手机号已被注册");
+              });
+            }
+          } else {
+            return false;
           }
-          if (res.code === 20001) this.$message.error("验证新手机号失败");
-          if (res.code === 30003) this.$message.error("验证码错误");
-          if (res.code === 30006) this.$message.error("账号被锁定");
-          if (res.code === 30008) this.$message.error("该手机号已被注册");
-        });
-      }
+        })
+      };
     },
   },
 };
@@ -214,7 +241,7 @@ export default {
 }
 .next-btn {
   padding: 6px 16px;
-  background: #cccccc;
+  background: #008CB1;
   border-radius: 2px;
   font-size: 14px;
   font-weight: 400;
@@ -224,8 +251,8 @@ export default {
 }
 </style>
 <style lang="scss">
-.personal-main{
-  .container{
+.personal-main {
+  .container {
     .ant-modal-root {
       .ant-modal-content {
         width: 600px;
@@ -294,5 +321,4 @@ export default {
     }
   }
 }
-
 </style>
