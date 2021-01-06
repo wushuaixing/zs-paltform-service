@@ -45,24 +45,24 @@ export const MATTER_TYPE =
         text:'warning',
         path: 'project/biding'
     },
-    10:{
-        name:'[竞标成功提醒] : ',
-        text:'success',
-        path: 'project/detail'
-    },
-    11:{
-        name:'[竞标失效提醒] : ',
-        text:'Error',
-        path: 'project/detail'
-    },
-    12:{
-        name:'[竞标失效提醒] : ',
-        text:'Error',
-        path: 'project/detail'
-    },
-    13:{
-        name:'[竞标失效提醒] : ',
-        text:'Error',
-        path: 'project/detail'
-    }
+    // 10:{
+    //     name:'[竞标成功提醒] : ',
+    //     text:'success',
+    //     path: 'project/detail'
+    // },
+    // 11:{
+    //     name:'[竞标失效提醒] : ',
+    //     text:'Error',
+    //     path: 'project/detail'
+    // },
+    // 12:{
+    //     name:'[竞标失效提醒] : ',
+    //     text:'Error',
+    //     path: 'project/detail'
+    // },
+    // 13:{
+    //     name:'[竞标失效提醒] : ',
+    //     text:'Error',
+    //     path: 'project/detail'
+    // }
 }

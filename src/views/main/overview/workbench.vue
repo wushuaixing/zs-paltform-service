@@ -11,7 +11,6 @@
                   <a-badge :status="MATTER_TYPE[item.code].text" />
                   <span class="thing">{{ MATTER_TYPE[item.code].name}}</span>
                   <span class="message">{{item.message}}</span>
-                  <!-- <router-link :to="MATTER_TYPE[item.code].path">立即前往</router-link> -->
                    <a-button type="link" @click="onTarget(MATTER_TYPE[item.code].path, item.projectId)" >立即前往</a-button>
                 </li>
               </ul>
@@ -21,12 +20,17 @@
       <div class="item-wrapper">
         <div class="item-project item-format">竞标项目进度概览</div>
         <!-- 未添加项目 -->
-        <div class="empty" v-if="isShowEcharts">
+        <!-- <div class="empty" v-if="echarts.myProjectsNum ===0 && echarts.myProjectCaseUnSubmit===0 && echarts.myProjectsReview ===0 && echarts.myProjectsAimed===0 &&echarts.myProjectsInvalid===0 &&echarts.myProjectAbandon ===0" >
+          <a-empty description>
+            <slot name="description">您还没有已开始的项目，去<router-link to="/center">服务商项目招商中心</router-link>添加第一个项目</slot>
+          </a-empty>
+        </div> -->
+         <div class="empty" v-show="!isShowEcharts">
           <a-empty description>
             <slot name="description">您还没有已开始的项目，去<router-link to="/center">服务商项目招商中心</router-link>添加第一个项目</slot>
           </a-empty>
         </div>
-        <div class="item-content item-format" v-else>
+        <div class="item-content item-format"  v-show="isShowEcharts">
           <div class="total">我的项目总数：{{echarts.myProjectsNum}}</div>
           <div class="data-display">
             <!-- 饼图显示 -->
@@ -111,9 +115,7 @@ export default {
   },
   computed: {
     isShowEcharts(){
-      for (let key in this.echarts){
-        return this.echarts[key] === 0;
-      }
+     return Object.values(this.echarts).some(i=>i!==0)
     }
   },
   methods: {
@@ -132,7 +134,6 @@ export default {
     },
     // 修改表单
     onPanelChange(value) {
-      // console.log(value);
       // console.log(value.slice(0,8) + '01',value.slice(0,8) + '31');
       this.schedule.endDate = value.slice(0,8) + '01';
       this.schedule.startDate = value.slice(0,8) + '31';
@@ -140,8 +141,6 @@ export default {
 				'startDate': this.schedule.endDate,
         'endDate': this.schedule.startDate
 			}).then((res) => {
-				// console.log(res);
-				// console.log(res.data)
 				if (res.code !== 20000) return this.$message.error("获取日历事项失败");
 				this.data = res.data
 			})
@@ -152,26 +151,22 @@ export default {
       let baseDate = time.slice(0,7).replace("/","-");
       let startDate = baseDate + '-' + "01";
       let endDate = baseDate + '-' + "31";
-      // console.log(startDate,endDate);
-      const res = await getCalendar({startDate,endDate});
-      // console.log(res);
-      // console.log(res.data)
+      const res = await getCalendar({startDate,endDate})
       if (res.code !== 20000) return this.$message.error("获取日历事项失败");
       this.data = res.data
     },
     // 待办事项
     async getList() {
       const res = await getTODoList();
-      console.log(res);
-      if (res.code !== 20000) return;
+      if (res.code !== 20000) return
         this.list = res.data
     },
     //echarts饼图
     async initECharts () {
       let myChart = echarts.init(document.getElementById("main"));
       const res = await getEcharts();
+      console.log(res);
       if (res.code !== 20000) return this.$message.error('获取图表数据失败');
-      // console.log(res);
       this.echarts = res.data;
       let option = {
       // color: ['red', 'blue','green','skyblue','pink'],
@@ -207,7 +202,7 @@ export default {
             ]
           }
         ]
-      };
+      }
     myChart.setOption(option);
     },
     // 根据详情路由跳转
@@ -216,20 +211,20 @@ export default {
     }
   },
   created () {
-    this.getCalendarData();
+    this.getCalendarData()
     this.getList()
   },
   mounted() {
     this.initECharts()
   },
   watch: {
-    // $route(to){
-    //   if(to.path === 'overview') {
-    //     this.getCalendarData()
-    //     this.getList()
-    //     // this.initECharts()
-    //   }
-    // }
+    $route(to){
+      if(to.path === 'overview') {
+        this.getCalendarData()
+        this.getList()
+        // this.initECharts()
+      }
+    }
   }
 }
 </script>
@@ -270,9 +265,10 @@ $leftWidth: 450px;
     }
     &-title {
       padding: 20px 24px;
-      // border-bottom: 1px solid $background;
+      border-bottom: 1px solid #E9E9E9;
       line-height: 1.5;
       font-size: 16px;
+      font-family: PingFangSC-Medium, PingFang SC;
       font-weight: 600;
       color: #262626;
     }
@@ -280,6 +276,7 @@ $leftWidth: 450px;
       padding: 20px 24px;
       // border-bottom: 1px solid $background;
       font-size: 16px;
+      font-family: PingFangSC-Medium, PingFang SC;
       font-weight: 600;
       color: #333333;
       line-height: 16px;
@@ -325,6 +322,7 @@ $leftWidth: 450px;
       span {
         height: 20px;
         font-size: 14px;
+        font-family: PingFangSC-Regular, PingFang SC;
         font-weight: 400;
         color: #333333;
         line-height: 20px;
@@ -335,6 +333,7 @@ $leftWidth: 450px;
       margin-top: 10px;
       height: 16px;
       font-size: 14px;
+      font-family: PingFangSC-Medium, PingFang SC;
       font-weight: 600;
       color: #333333;
       line-height: 16px;
@@ -366,6 +365,7 @@ $leftWidth: 450px;
     /deep/.ant-badge-status-text {
       height: 17px;
       font-size: 12px;
+      font-family: PingFangSC-Regular, PingFang SC;
       font-weight: 400;
       color: #999999;
       line-height: 17px;
@@ -389,6 +389,7 @@ $leftWidth: 450px;
     /deep/.ant-badge-status-text {
       height: 12px;
       font-size: 12px;
+      font-family: PingFangSC-Regular, PingFang SC;
       font-weight: 400;
       color: #666666;
       line-height: 12px;
@@ -410,8 +411,8 @@ $leftWidth: 450px;
   }
   #main{
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 0px;
+    left: 0px;
     width: 150px;
     height: 150px;
   }
@@ -421,6 +422,7 @@ $leftWidth: 450px;
     line-height: 22px;
     font-weight: 600;
     letter-spacing: 0.5px;
+    font-family: PingFangSC-Medium, PingFang SC;
     font-size: 14px;
   }
   /deep/.ant-btn {
