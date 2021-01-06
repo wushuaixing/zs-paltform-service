@@ -1,7 +1,15 @@
 <template>
   <div class="biding-main">
     <Breadcrumb :source="navData" icon="environment"></Breadcrumb>
-    <a-spin v-if="loading" class="spin-wrapper" size="large"/>
+    <div v-if="isCertification===0" class="nothing">
+      <img class="nothing-pic" src="@/assets/img/tempty.png" alt="">
+      <div class="nothing-msg">您尚未完成资质认证，请先完成资质认证！</div>
+      <div class="nothing-btn">
+        <a-button type="primary" @click="goConfirm">
+          立即前往资质认证
+        </a-button>
+      </div>
+    </div>
     <div v-else class="biding-wrapper">
       <div class="biding-wrapper-content">
         <div class="biding-query">
@@ -176,15 +184,6 @@
       </div>
       <ProjectModal :projectInfo="projectInfo" :sign="'fail'" ref="failModal" />
       <PlanModal :projectInfo="projectInfo" ref="planModal" />
-    </div>
-    <div v-if="!isCertification===0" class="nothing">
-      <img class="nothing-pic" src="@/assets/img/tempty.png" alt="">
-      <div class="nothing-msg">您尚未完成资质认证，请先完成资质认证！</div>
-      <div class="nothing-btn">
-        <a-button type="primary" @click="goConfirm">
-          立即前往资质认证
-        </a-button>
-      </div>
     </div>
   </div>
 </template>
