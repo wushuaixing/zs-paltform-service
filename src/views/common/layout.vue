@@ -75,7 +75,6 @@
       if(!this.$store.state.isLogin){
         getInfo().then(res=>{
           this.loading = false;
-          console.log(res.data);
           if(res.code === 20000){
             this.$store.commit('updateInfo', res.data);
           }else{

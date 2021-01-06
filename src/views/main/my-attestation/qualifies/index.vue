@@ -126,9 +126,11 @@
       </template>
     </template>
     <a-modal v-model="visible" :title="modalTitle" :maskClosable="false" :width="1000">
-      <QualifyInfo :source="sourceLog" :is-lawyer="identity === 1" no-title no-date  v-if="modalStep===0"/>
+      <QualifyInfo :source="sourceLog" :is-lawyer="identity === 1" no-date
+									 v-if="modalStep===0" :status="statusInfoLog.qualifyAuditStatus"/>
       <FillForm :userType="identity === 1?'lawyer':'org'" v-if="modalStep===1" :noAuction="false"
-                :source="sourceLog" @toTellRes="handleSubmit" ref="fillFromRef"/>
+                :source="sourceLog" @toTellRes="handleSubmit" ref="fillFromRef"
+								:status="statusInfoLog.qualifyAuditStatus"/>
       <template slot="footer">
         <div style="text-align: center" v-if="modalStep===0">
           <a-space>
@@ -194,7 +196,8 @@ export default {
         law:IconLaw,
         org:IconOrg,
       },
-      statusInfo:{}
+	    statusInfo:{},
+	    statusInfoLog:{}
     };
   },
   created(){},
@@ -251,9 +254,10 @@ export default {
       api().then(({data = {},code})=>{
         if(code === 20000){
           const {
-            contact, logId, phone, qualify = {},qualifyVO = {},
+            contact, logId, phone, qualify = {},qualifyVO = {}
           } = data || {};
-          this.sourceLog = {
+	        this.statusInfoLog = {...this.statusInfo};
+	        this.sourceLog = {
             contact,logId,phone,
             ...qualify,
             ...qualifyVO
@@ -269,7 +273,7 @@ export default {
     },
     // 判断数据当前状态
     status(rule){
-      const { qualifyAuditStatus: q} = this.statusInfo;
+      const { qualifyAuditStatus: q } = this.statusInfo;
       return  rule.toString() ? new RegExp(q).test(rule) : q;
     },
     // 关闭弹窗
@@ -280,8 +284,8 @@ export default {
       });
     },
     // 提交我的资质信息
-    handleSubmit(val){
-      console.log(val);
+    handleSubmit(){
+      // console.log(val);
 			this.$message.success('资质认证提交成功！');
 			this.queryQualify();
 			this.handleModalClose();
@@ -289,12 +293,13 @@ export default {
     // 编辑我的资质信息 - 查看且编辑
     handleEditInfo(e){
       const { fillFromRef } = this.$refs;
-      console.log(this.$refs.fillFromRef);
+      // console.log(this.$refs.fillFromRef);
       fillFromRef.handleSubmit(e);
     },
     // 编辑我的资质信息 - 仅编辑
     handleEdit(){
-      this.sourceLog = {...this.source};
+	    this.sourceLog = {...this.source};
+	    this.statusInfoLog = {...this.statusInfo};
 			this.modalStep = 1;
 			this.visible = true;
 			this.onlyEdit = false;
