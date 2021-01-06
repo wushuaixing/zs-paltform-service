@@ -7,8 +7,6 @@
         <div class="biding-query">
           <a-form-model
             layout="inline"
-            @submit="handleSubmit"
-            @submit.native.prevent
           >
             <a-form-model-item>
               <a-input
@@ -34,7 +32,8 @@
               </a-select>
             </a-form-model-item>
             <a-form-model-item>
-              <a-button type="primary" html-type="submit">查询</a-button>
+              <a-button type="primary" html-type="submit" @click="reset">重置</a-button>
+              <a-button style="margin-left:16px" type="primary" html-type="submit" @click="handleSubmit">查询</a-button>
             </a-form-model-item>
           </a-form-model>
         </div>
@@ -244,58 +243,7 @@ export default {
         orderField: "",
       },
       tabConfig: {
-        dataSource: [
-          {
-            businessTeam: "浙萧",
-            closeSubmitDeadline: 0,
-            contact: "17767790721",
-            debtCaptial: "199.12",
-            debtInterest: "31.30",
-            debtor: "杭州圣淘控股集团有限公司",
-            gmtCreate: "2020-12-29",
-            gmtModify: "2020-12-29",
-            id: 1343752189446983700,
-            isRead: 0,
-            process: 2,
-            projectManager: "王经理",
-            realSubmitDeadline: null,
-            security: "1",
-            submitDeadline: null,
-            advanceLast: false,
-            aggrementDate: "2020-12-29",
-            aimBackPrice: "9999.99",
-            dateDay: "2020-12-29",
-            dateMatters: "腾房完毕",
-            serviceTime: "2020-12-29",
-            abandonDate: "2020-12-29",
-            readSubmitDeadline: "2020-12-29",
-          },
-          {
-            businessTeam: "浙萧",
-            closeSubmitDeadline: 0,
-            contact: "17767790721",
-            debtCaptial: "199.12",
-            debtInterest: "31.30",
-            debtor: "杭州圣淘控股集团有限公司",
-            gmtCreate: "2020-12-29",
-            gmtModify: "2020-12-29",
-            id: 1343752189446983700,
-            isRead: 0,
-            process: 0,
-            projectManager: "王经理",
-            realSubmitDeadline: null,
-            security: "1",
-            submitDeadline: null,
-            advanceLast: false,
-            aggrementDate: "2020-12-29",
-            aimBackPrice: "9999.99",
-            dateDay: "2020-12-29",
-            dateMatters: "腾房完毕",
-            serviceTime: "2020-12-29",
-            abandonDate: "2020-12-29",
-            readSubmitDeadline: "2020-12-29",
-          },
-        ],
+        dataSource: [],
         size: "middle",
         pagination: {
           total: 40,
@@ -326,21 +274,34 @@ export default {
           this.loading = false;
           this.tabConfig.pagination.total = res.data.total;
           this.tabConfig.dataSource = res.data.list;
+        }else{
+          this.$message.error("获取项目列表失败,请重新加载")
         }
       });
     },
     //获取进行中,已中标,已失效是否已读状态
     getUnreadInfo() {
       unreadInfo().then((res) => {
-        console.log(res);
-        this.tabType[0].dot = res.data.goingUnRead;
-        this.tabType[1].dot = res.data.aimedUnRead;
-        this.tabType[3].dot = res.data.invalidUnRead;
+        if(res.code === 20000){
+          this.tabType[0].dot = res.data.goingUnRead;
+          this.tabType[1].dot = res.data.aimedUnRead;
+          this.tabType[3].dot = res.data.invalidUnRead;
+        }else{
+          console.log("error")
+        }
       });
     },
     // 搜索查询
     handleSubmit() {
       this.loading = true;
+      this.getProjectList();
+    },
+    //重置
+    reset(){
+      this.params.debtor = '';
+      this.params.process = '';
+      this.params.page = 1;
+      this.params.size = 10;
       this.getProjectList();
     },
     // tab状态切换
@@ -375,22 +336,26 @@ export default {
     },
     // table操作列
     handleAuction(item, type) {
+      //放弃竞标
       if (type === "aba") {
         amcBidDetail(item.id, this.params.aimStatus).then((res) => {
         if (res.code === 20000) {
           this.projectInfo = clearProto(res.data);
+          this.$refs.failModal.handleOpenModal();
+        }else{
+          return this.$message.error("获取项目信息失败!")
         }
       });
-        this.$refs.failModal.handleOpenModal();
       }
+      //查看详情
       if (type === "view") {
         this.$router.push({
           path: "detail",
           query: { id: item.id, type: this.params.aimStatus },
         });
       }
+      //方案报送/方案修改
       if (type === "sub" || type === "edit") {
-
         amcBidDetail(item.id, this.params.aimStatus).then((res) => {
         if (res.code === 20000) {
           this.projectInfo = clearProto(res.data);
@@ -403,12 +368,13 @@ export default {
               collectionTarget: "",
               projectId: "",
               plans: [],
-              documentAddress: "www.baidu.com",
-            };
+              documentAddress: "",
+            },length = this.projectInfo.amcBidFiles.length;
             servePlan.serviceTime = this.projectInfo.serviceTime;
             servePlan.collectionTarget = this.projectInfo.aimBackPrice;
             servePlan.projectId = this.projectInfo.id;
-            servePlan.documentAddress = this.projectInfo.amcBidFiles[0].caseFileAddress;
+
+            servePlan.documentAddress = this.projectInfo.amcBidFiles[length - 1].caseFileAddress;
             this.projectInfo.scheduleManagements.forEach(i=>{
               var plan = {};
               plan.content = i.dateMatters;
@@ -416,10 +382,12 @@ export default {
               servePlan.plans.push(plan);
             });
             window.localStorage.setItem("servePlan",JSON.stringify(servePlan));
+            this.$refs.planModal.handleOpenModal();
           }
+        }else{
+          return this.$message.error("获取项目详情失败!...")
         }
       });
-        this.$refs.planModal.handleOpenModal();
       }
     },
     //计算方案结束日期

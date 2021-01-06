@@ -169,8 +169,8 @@
                 </template>
                 <span :class="`${item.prefixCls}-icon-dot`" />
               </a-popover>
-              <a-step v-for="(item,index) in info.scheduleManagements" :key="index"  :title="item.dateMatters" :description="`${item.dateMonth}个月内`" />
-
+              <a-step v-for="(item,index) in info.scheduleManagements" :key="index"  :title="item.dateMatters" :description="info.aimedStatus==='3'?`${item.dateDay}前`:`${item.dateMonth}个月内`" />
+              
             </a-steps>
           </div>
           <div class="plan_scheme">
@@ -218,118 +218,30 @@ export default {
       },
       tipStyle: {},
       info: {
-        abandonDate: "2020-12-29",
-        aggrementDate: "2020-12-29",
-        aimBackPrice: "999.99",
-        aimedStatus: "4",
-        amcBidFiles: [
-          {
-            amcBidId: 0,
-            caseFileAddress: "",
-            gmtCreate: "2020-12-29",
-            gmtDelete: "2020-12-29",
-            gmtModify: "2020-12-29",
-            id: 0,
-            isDelete: "0",
-            serviceContractFileAddress: "",
-          },
-        ],
-        amcProjectCollaterals: [
-          {
-            amcProjectId: 0,
-            areaCode: 330104,
-            cityCode: 3301,
-            collateralName: "抵押物名称",
-            collateralType: 1,
-            gmtCreate: "2020-12-29",
-            gmtDeleted: "2020-12-29",
-            gmtModify: "2020-12-29",
-            id: 0,
-            isDeleted: "0",
-            provinceCode: 33,
-          },
-          {
-            amcProjectId: 0,
-            areaCode: 330104,
-            cityCode: 3301,
-            collateralName: "抵押物名称",
-            collateralType: 1,
-            gmtCreate: "2020-12-29",
-            gmtDeleted: "2020-12-29",
-            gmtModify: "2020-12-29",
-            id: 0,
-            isDeleted: "0",
-            provinceCode: 33,
-          },
-        ],
-        amcProjectGuarantors: [
-          {
-            amcProjectId: 0,
-            gmtCreate: "2020-12-29",
-            gmtDeleted: "2020-12-29",
-            gmtModify: "2020-12-29",
-            guarantorCard: "11111111111111",
-            guarantorName: "马云",
-            guarantorPhone: "10086",
-            id: 0,
-            isDeleted: "0",
-          },
-
-        ],
+        abandonDate: "",
+        aggrementDate: "",
+        aimBackPrice: "",
+        aimedStatus: "",
+        amcBidFiles: [],
+        amcProjectCollaterals: [],
+        amcProjectGuarantors: [],
         caseFileStatus: "",
-        closeSubmitDeadline:'1',
-        debtCaptial: "130.15",
-        debtInterest: "120.2",
-        debtor: "阿里巴巴集团",
-        debtorAddress: "杭州市西湖区",
-        gmtCreate: "2020-12-29",
-        id: 0,
-        isDeleted: "0",
-        isLawsuit: "0",
-        realSubmitDeadline: "2020-12-29",
-        recallDate: "2020-12-29",
-        scheduleManagements: [
-          {
-            amcBidId: 0,
-            amcServiceUserId: 0,
-            dateDay: "2020-12-29",
-            dateMatters: "腾房完毕完毕",
-            dateMonth: 0,
-            gmtCreate: "2020-12-29",
-            gmtDelete: "2020-12-29",
-            gmtModify: "2020-12-29",
-            id: 0,
-            isDelete: "0",
-          },
-          {
-            amcBidId: 0,
-            amcServiceUserId: 0,
-            dateDay: "2020-12-29",
-            dateMatters: "腾房完毕完毕",
-            dateMonth: 0,
-            gmtCreate: "2020-12-29",
-            gmtDelete: "2020-12-29",
-            gmtModify: "2020-12-29",
-            id: 0,
-            isDelete: "0",
-          },
-          {
-            amcBidId: 0,
-            amcServiceUserId: 0,
-            dateDay: "2020-12-29",
-            dateMatters: "腾房完毕",
-            dateMonth: 0,
-            gmtCreate: "2020-12-29",
-            gmtDelete: "2020-12-29",
-            gmtModify: "2020-12-29",
-            id: 0,
-            isDelete: "0",
-          },
-        ],
-        security: "2",
-        serviceCaseUpdateTime: "2020-12-29",
-        serviceTime: "2020-12-29",
-        submitDeadline: "2020-12-29",
+        closeSubmitDeadline:'',
+        debtCaptial: "",
+        debtInterest: "",
+        debtor: "",
+        debtorAddress: "",
+        gmtCreate: "",
+        id: '',
+        isDeleted: "",
+        isLawsuit: "",
+        realSubmitDeadline: "",
+        recallDate: "",
+        scheduleManagements: [],
+        security: "",
+        serviceCaseUpdateTime: "",
+        serviceTime: "",
+        submitDeadline: "",
       },
     };
   },
@@ -360,12 +272,12 @@ export default {
             collectionTarget: "",
             projectId: "",
             plans: [],
-            documentAddress: "www.baidu.com",
-          };
+            documentAddress: "",
+          },length = this.info.amcBidFiles.length;
           servePlan.serviceTime = this.info.serviceTime;
           servePlan.collectionTarget = this.info.aimBackPrice;
           servePlan.projectId = this.info.id;
-          servePlan.documentAddress = this.info.amcBidFiles[0].caseFileAddress;
+          servePlan.documentAddress = this.info.amcBidFiles[length - 1].caseFileAddress;
           this.info.scheduleManagements.forEach(item=>{
             var plan = {};
             plan.content = item.dateMatters;
@@ -389,8 +301,12 @@ export default {
     var {id,type} = this.$route.query;
     amcBidDetail(id,type).then((res) => {
       console.log(res);
-      this.loading = false;
-      this.info = res.data;
+      if(res.code === 20000){
+        this.loading = false;
+        this.info = res.data;
+      }else{
+        this.$message.error("获取项目详情失败,请刷新页面")
+      }
     });
   },
 };

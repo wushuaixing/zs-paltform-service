@@ -149,7 +149,7 @@ export default {
 .save-btn {
   width: 60px;
   height: 32px;
-  background: #cccccc;
+  background: #008CB1;
   border-radius: 2px;
   font-size: 14px;
   font-weight: 400;
