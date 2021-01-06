@@ -359,7 +359,8 @@ export default {
         if (res.code === 20000) {
           this.projectInfo = clearProto(res.data);
           if(type === "sub"){
-            window.localStorage.removeItem("servePlan")
+            window.localStorage.removeItem("servePlan");
+            this.$refs.planModal.handleOpenModal();
           }
           if(type === "edit"){
             var servePlan = { //服务方案
