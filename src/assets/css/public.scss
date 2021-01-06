@@ -13,3 +13,12 @@
 .text-dangerous{
   color: $common-dangerous;
 }
+.common-text-subtitle{
+  border-left: 4px solid $common-base;
+  padding-left: 8px;
+  height: 22px;
+  line-height: 22px;
+  font-weight: bold;
+  font-size: 16px;
+  margin: 10px 0;
+}

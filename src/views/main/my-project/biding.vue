@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="biding-main">
     <Breadcrumb :source="navData" icon="environment"></Breadcrumb>
     <a-spin v-if="loading" class="spin-wrapper" size="large"/>
     <div v-else class="biding-wrapper">
@@ -7,8 +7,6 @@
         <div class="biding-query">
           <a-form-model
             layout="inline"
-            @submit="handleSubmit"
-            @submit.native.prevent
           >
             <a-form-model-item>
               <a-input
@@ -34,11 +32,11 @@
               </a-select>
             </a-form-model-item>
             <a-form-model-item>
-              <a-button type="primary" html-type="submit">查询</a-button>
+              <a-button type="primary" html-type="submit" @click="reset">重置</a-button>
+              <a-button style="margin-left:16px" type="primary" html-type="submit" @click="handleSubmit">查询</a-button>
             </a-form-model-item>
           </a-form-model>
         </div>
-        <div class="biding-hr" />
         <div class="biding-content">
           <a-tabs @change="handleTabChange" v-model="params.aimStatus">
             <a-tab-pane v-for="i in tabType" :key="i.id">
@@ -57,6 +55,7 @@
               :customRow="click"
               v-bind="tabConfig"
               @change="handleTableChange"
+							class="frame-content-table"
             >
               <template slot="debtor" slot-scope="{ debtor, isRead }">
                 <a-avatar
@@ -102,12 +101,10 @@
               <template slot="businessTeam" slot-scope="team">
                 <div class="contactWay">
                   <p>{{ team.businessTeam }}</p>
-                  <p />
                   <p>
                     <span>{{ team.projectManager }}</span
                     ><span>{{ team.contact }}</span>
                   </p>
-                  <p />
                 </div>
               </template>
               <template
@@ -214,8 +211,8 @@ export default {
     return {
       loading:true,
       navData: [
-        { id: 1, title: "我的项目", path: "/provider/review" },
-        { id: 2, title: "我的竞标", path: "/provider/review" },
+        { id: 1, title: "我的项目", path: "biding" },
+        { id: 2, title: "我的竞标", path: "biding" },
       ],
       tabType: [
         { id: 1, title: "进行中", dot: "" },
@@ -246,58 +243,7 @@ export default {
         orderField: "",
       },
       tabConfig: {
-        dataSource: [
-          {
-            businessTeam: "浙萧",
-            closeSubmitDeadline: 0,
-            contact: "17767790721",
-            debtCaptial: "199.12",
-            debtInterest: "31.30",
-            debtor: "杭州圣淘控股集团有限公司",
-            gmtCreate: "2020-12-29",
-            gmtModify: "2020-12-29",
-            id: 1343752189446983700,
-            isRead: 0,
-            process: 2,
-            projectManager: "王经理",
-            realSubmitDeadline: null,
-            security: "1",
-            submitDeadline: null,
-            advanceLast: false,
-            aggrementDate: "2020-12-29",
-            aimBackPrice: "9999.99",
-            dateDay: "2020-12-29",
-            dateMatters: "腾房完毕",
-            serviceTime: "2020-12-29",
-            abandonDate: "2020-12-29",
-            readSubmitDeadline: "2020-12-29",
-          },
-          {
-            businessTeam: "浙萧",
-            closeSubmitDeadline: 0,
-            contact: "17767790721",
-            debtCaptial: "199.12",
-            debtInterest: "31.30",
-            debtor: "杭州圣淘控股集团有限公司",
-            gmtCreate: "2020-12-29",
-            gmtModify: "2020-12-29",
-            id: 1343752189446983700,
-            isRead: 0,
-            process: 0,
-            projectManager: "王经理",
-            realSubmitDeadline: null,
-            security: "1",
-            submitDeadline: null,
-            advanceLast: false,
-            aggrementDate: "2020-12-29",
-            aimBackPrice: "9999.99",
-            dateDay: "2020-12-29",
-            dateMatters: "腾房完毕",
-            serviceTime: "2020-12-29",
-            abandonDate: "2020-12-29",
-            readSubmitDeadline: "2020-12-29",
-          },
-        ],
+        dataSource: [],
         size: "middle",
         pagination: {
           total: 40,
@@ -328,21 +274,34 @@ export default {
           this.loading = false;
           this.tabConfig.pagination.total = res.data.total;
           this.tabConfig.dataSource = res.data.list;
+        }else{
+          this.$message.error("获取项目列表失败,请重新加载")
         }
       });
     },
     //获取进行中,已中标,已失效是否已读状态
     getUnreadInfo() {
       unreadInfo().then((res) => {
-        console.log(res);
-        this.tabType[0].dot = res.data.goingUnRead;
-        this.tabType[1].dot = res.data.aimedUnRead;
-        this.tabType[3].dot = res.data.invalidUnRead;
+        if(res.code === 20000){
+          this.tabType[0].dot = res.data.goingUnRead;
+          this.tabType[1].dot = res.data.aimedUnRead;
+          this.tabType[3].dot = res.data.invalidUnRead;
+        }else{
+          console.log("error")
+        }
       });
     },
     // 搜索查询
     handleSubmit() {
       this.loading = true;
+      this.getProjectList();
+    },
+    //重置
+    reset(){
+      this.params.debtor = '';
+      this.params.process = '';
+      this.params.page = 1;
+      this.params.size = 10;
       this.getProjectList();
     },
     // tab状态切换
@@ -377,22 +336,26 @@ export default {
     },
     // table操作列
     handleAuction(item, type) {
+      //放弃竞标
       if (type === "aba") {
         amcBidDetail(item.id, this.params.aimStatus).then((res) => {
         if (res.code === 20000) {
           this.projectInfo = clearProto(res.data);
+          this.$refs.failModal.handleOpenModal();
+        }else{
+          return this.$message.error("获取项目信息失败!")
         }
       });
-        this.$refs.failModal.handleOpenModal();
       }
+      //查看详情
       if (type === "view") {
         this.$router.push({
           path: "detail",
           query: { id: item.id, type: this.params.aimStatus },
         });
       }
+      //方案报送/方案修改
       if (type === "sub" || type === "edit") {
-        
         amcBidDetail(item.id, this.params.aimStatus).then((res) => {
         if (res.code === 20000) {
           this.projectInfo = clearProto(res.data);
@@ -405,23 +368,26 @@ export default {
               collectionTarget: "",
               projectId: "",
               plans: [],
-              documentAddress: "www.baidu.com",
-            };
+              documentAddress: "",
+            },length = this.projectInfo.amcBidFiles.length;
             servePlan.serviceTime = this.projectInfo.serviceTime;
             servePlan.collectionTarget = this.projectInfo.aimBackPrice;
             servePlan.projectId = this.projectInfo.id;
-            // servePlan.documentAddress = this.projectInfo.amcBidFiles[0].caseFileAddress;
+
+            servePlan.documentAddress = this.projectInfo.amcBidFiles[length - 1].caseFileAddress;
             this.projectInfo.scheduleManagements.forEach(i=>{
               var plan = {};
               plan.content = i.dateMatters;
               plan.months = i.dateMonth;
               servePlan.plans.push(plan);
-            })
+            });
             window.localStorage.setItem("servePlan",JSON.stringify(servePlan));
+            this.$refs.planModal.handleOpenModal();
           }
+        }else{
+          return this.$message.error("获取项目详情失败!...")
         }
       });
-        this.$refs.planModal.handleOpenModal();
       }
     },
     //计算方案结束日期
@@ -447,6 +413,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.biding-main{
+  padding: 16px;
+}
 .spin-wrapper{
   width: 100%;
   padding-top: 10vh !important;
@@ -469,21 +438,16 @@ export default {
   }
 }
 .biding-wrapper {
-  padding: 16px;
   &-content {
     background-color: #ffffff;
   }
   .biding-query {
-    padding: 20px;
-  }
-  .biding-hr {
-    width: 100%;
-    height: 16px;
-    background-color: #f2f3f5;
+    padding: 20px 20px 5px 20px;
   }
   .biding-content {
+		padding: 0 20px;
     &-table {
-      padding: 4px 20px 20px;
+      padding: 4px 0;
     }
   }
 }
@@ -496,8 +460,48 @@ export default {
 .content-action button {
   margin-right: 15px;
 }
+.contactWay{
+  p{
+    margin: 0;
+  }
+}
+.deadline{
+  p{
+    margin: 0;
+  }
+}
+.plan{
+  p{
+    margin: 0;
+  }
+}
 </style>
 <style lang="scss">
+	.frame-content-table{
+		.ant-table-body{
+			tr > th, tr > td {
+				border-bottom: none;
+				&:first-child{
+					padding-left: 16px;
+				}
+				&:last-child{
+					padding-right: 16px;
+				}
+			}
+
+		}
+		.ant-table-thead > tr > th{
+			background-color: #F5F5F5;
+			//background: #FAFAFA;
+		}
+		.ant-table-tbody > tr:nth-child(2n){
+			background: #FAFAFA;
+		}
+		.frame-table-bold{
+			font-weight: bold;
+			color: #333333;
+		}
+	}
 .query-item-prefix {
   height: 100%;
   width: 90px;
@@ -517,5 +521,19 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.biding-content-table{
+  table{
+    border-bottom: 1px #E8E8E8 solid;
+  }
+  tr >td,tr >th{
+		border-bottom: none;
+  }
+	tbody > tr{
+		height: 72px;
+	}
+   tr:nth-child(2n){
+      background: #FAFAFA;
+   }
 }
 </style>

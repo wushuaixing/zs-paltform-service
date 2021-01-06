@@ -126,9 +126,11 @@
       </template>
     </template>
     <a-modal v-model="visible" :title="modalTitle" :maskClosable="false" :width="1000">
-      <QualifyInfo :source="sourceLog" :is-lawyer="identity === 1" no-title no-date  v-if="modalStep===0"/>
+      <QualifyInfo :source="sourceLog" :is-lawyer="identity === 1" no-date
+									 v-if="modalStep===0" :status="statusInfoLog.qualifyAuditStatus"/>
       <FillForm :userType="identity === 1?'lawyer':'org'" v-if="modalStep===1" :noAuction="false"
-                :source="sourceLog" @toTellRes="handleSubmit" ref="fillFromRef"/>
+                :source="sourceLog" @toTellRes="handleSubmit" ref="fillFromRef"
+								:status="statusInfoLog.qualifyAuditStatus"/>
       <template slot="footer">
         <div style="text-align: center" v-if="modalStep===0">
           <a-space>
@@ -184,19 +186,18 @@ export default {
       nextStep:false,
       // 联系人编辑状态
       editStatus:false,
-      contacts:{
-        name:'言殁岚',
-        phone:'17137246841'
-      },
+      contacts:{},
       // 相关资质信息
       source:{},
       sourceLog:{},
       contacts_name:'',
+	    contacts_name_remark:'',
       icon:{
         law:IconLaw,
         org:IconOrg,
       },
-      statusInfo:{}
+	    statusInfo:{},
+	    statusInfoLog:{}
     };
   },
   created(){},
@@ -225,16 +226,25 @@ export default {
     },
     // 更新联系人名称[机构联系人]
     handleUpdateName(){
-      if(!this.contacts_name) return this.$message.error('联系名称不能为空！');
-      this.contacts.name = this.contacts_name;
-      this.editStatus = false;
+	    if(!this.contacts_name) return this.$message.error('联系名称不能为空！');
+	    if(this.contacts_name === this.contacts_name_remark) return this.$message.error('联系人名称相同！');
+			qualifies.modifyContact(this.contacts_name).then(res=>{
+				if(res.code === 20000){
+					this.source.contact = this.contacts_name;
+					this.contacts_name_remark = this.contacts_name;
+					this.$message.success('联系人名称修改成功！');
+					this.editStatus = false;
+				}else{
+					this.$message.error('网络请求失败');
+				}
+			});
     },
     toEditContacts(bol){
       if(bol){
         this.editStatus = true;
       }else{
         this.editStatus = false;
-        this.contacts_name = '';
+        this.contacts_name = this.contacts_name_remark;
       }
     },
     // 查看资质状态
@@ -244,9 +254,10 @@ export default {
       api().then(({data = {},code})=>{
         if(code === 20000){
           const {
-            contact, logId, phone, qualify = {},qualifyVO = {},
+            contact, logId, phone, qualify = {},qualifyVO = {}
           } = data || {};
-          this.sourceLog = {
+	        this.statusInfoLog = {...this.statusInfo};
+	        this.sourceLog = {
             contact,logId,phone,
             ...qualify,
             ...qualifyVO
@@ -262,7 +273,7 @@ export default {
     },
     // 判断数据当前状态
     status(rule){
-      const { qualifyAuditStatus: q} = this.statusInfo;
+      const { qualifyAuditStatus: q } = this.statusInfo;
       return  rule.toString() ? new RegExp(q).test(rule) : q;
     },
     // 关闭弹窗
@@ -273,8 +284,8 @@ export default {
       });
     },
     // 提交我的资质信息
-    handleSubmit(val){
-      console.log(val);
+    handleSubmit(){
+      // console.log(val);
 			this.$message.success('资质认证提交成功！');
 			this.queryQualify();
 			this.handleModalClose();
@@ -282,12 +293,13 @@ export default {
     // 编辑我的资质信息 - 查看且编辑
     handleEditInfo(e){
       const { fillFromRef } = this.$refs;
-      console.log(this.$refs.fillFromRef);
+      // console.log(this.$refs.fillFromRef);
       fillFromRef.handleSubmit(e);
     },
     // 编辑我的资质信息 - 仅编辑
     handleEdit(){
-      this.sourceLog = {...this.source};
+	    this.sourceLog = {...this.source};
+	    this.statusInfoLog = {...this.statusInfo};
 			this.modalStep = 1;
 			this.visible = true;
 			this.onlyEdit = false;
@@ -314,6 +326,7 @@ export default {
 					} = (data['lawyerQualifyDetail'] || data['organizationQualifyDetail']) || {};
 					this.statusInfo = qualifyCondition || {};
 					this.contacts_name = contact;
+					this.contacts_name_remark = contact;
 					this.source = {
 						contact,logId,phone,
 						...qualify,

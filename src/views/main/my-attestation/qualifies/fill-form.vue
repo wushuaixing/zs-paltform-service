@@ -3,6 +3,9 @@
     <slot name="title"/>
     <div style="height: 10px"/>
     <a-form v-bind="formItemLayout" :form="form" autocomplete="off" v-if="userType ==='org'" selfUpdate>
+
+			<div class="common-text-subtitle" style="margin-bottom: 20px" v-if="statusNeed">我的资质认证信息</div>
+
 			<a-form-item :label="org.name.label">
 				<a-input v-decorator="org.name.dec" v-bind="org.name.other"/>
 			</a-form-item>
@@ -52,9 +55,29 @@
           </div>
         </div>
       </a-form-item>
+			<template v-if="statusNeed">
+				<div class="common-text-subtitle" style="margin-bottom: 20px">资质更改证明</div>
+				<a-form-item label="资质更改证据材料">
+					<div style="width: 300px">
+						<a-upload v-decorator="material.dec" v-bind="{...upload.bind, listType:'text'}" v-on="upload.on">
+							<a-button>
+								<a-icon type="upload"/>
+								点击上传
+							</a-button>
+							<span class="text-remark" style="font-size: 12px;margin-left: 10px;vertical-align: bottom;">
+						*支持jpg、pdf格式
+						</span>
+						</a-upload>
+					</div>
+				</a-form-item>
+			</template>
+
     </a-form>
     <a-form v-bind="formItemLayout" :form="form" autocomplete="off" v-if="userType ==='lawyer'" selfUpdate>
-      <a-form-item :label="law.name.label">
+
+			<div class="common-text-subtitle" style="margin-bottom: 20px" v-if="statusNeed">我的资质认证信息</div>
+
+			<a-form-item :label="law.name.label">
         <a-input v-decorator="law.name.dec" v-bind="law.name.other"/>
         <span class="normal">{{ username }}</span>
       </a-form-item>
@@ -133,7 +156,24 @@
           </div>
         </div>
       </a-form-item>
-    </a-form >
+
+			<template v-if="statusNeed">
+				<div class="common-text-subtitle" style="margin-bottom: 20px">资质更改证明</div>
+				<a-form-item label="资质更改证据材料">
+					<div style="width: 300px">
+						<a-upload v-decorator="material.dec" v-bind="{...upload.bind, listType:'text'}" v-on="upload.on">
+							<a-button>
+								<a-icon type="upload"/>
+								点击上传
+							</a-button>
+							<span class="text-remark" style="font-size: 12px;margin-left: 10px;vertical-align: bottom;">
+							*支持jpg、pdf格式
+							</span>
+						</a-upload>
+					</div>
+				</a-form-item>
+			</template>
+		</a-form >
     <a-form-item label=" " v-bind="formItemLayout" class="form-item-no-title" v-if="noAuction">
       <a-space >
         <a-button type="primary" @click="handleSubmit" v-if="append">确认无误并提交</a-button>
@@ -154,8 +194,8 @@ import { fileListRuleAsync } from "@/plugin/tools";
 import Deploy,{ getValueFromEvent, getFileList } from '@/plugin/tools/qiniu-deploy';
 
 const formItemLayout = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 16 },
+  labelCol: { span: 6 },
+  wrapperCol: { span: 18 },
 };
 
 const baseWidth = { style:{width:'442px'}};
@@ -198,6 +238,14 @@ export default {
       type:Boolean,
       default:true
     },
+		onlyData:{
+			type:Boolean,
+			default:false
+		},
+		status:{
+			type:Number,
+			default:1,
+		}
   },
   data() {
     const validateCard = (rule, value, callback) => {
@@ -435,8 +483,14 @@ export default {
             ]
           }],
         },
-
       },
+	    material: {
+		    dec: ['qualifyMaterial', {
+			    rules: [{ required: true, message: '请选择上传资质更改证明' },],
+			    valuePropName: 'fileList',
+			    getValueFromEvent,
+		    }],
+	    },
       upload:{
         on:{
           ...Deploy.event
@@ -488,17 +542,21 @@ export default {
     },
     // 确认无误并提交
     handleSubmit(e) {
-      e.preventDefault();
-      this.form.validateFields((err, values) => {
-        if (!err) {
-          console.log('Received values of form: ', values);
-          this.toUpdateInfo(values)
-        }
-      });
+      (e || window.event).preventDefault();
+      return new Promise(resolve => {
+	      this.form.validateFields((err, values) => {
+		      if (!err) {
+			      // console.log('Received values of form: ', values);
+			      const source = this.processData(values);
+			      if(!this.onlyData) this.toUpdateInfo(source);
+			      resolve(source)
+		      }
+	      });
+			})
+
     },
     // 变更认证信息
-    toUpdateInfo(source){
-      const _source = this.processData(source);
+    toUpdateInfo(_source){
       const addApi = this.userType === 'lawyer' ? qualifies.lawyerAdd : qualifies.orgAdd;
       addApi(_source).then(res=>{
         if(res.code === 20000 ){
@@ -570,7 +628,10 @@ export default {
     username(){
       return this.$store.getters.getInfo.username;
     },
-  },
+		statusNeed(){
+			return this.status >= 3;
+		}
+   },
   async mounted(){
     // console.log(this.$store.getters.getInfo.username);
     const lawyerName = this.$store.getters.getInfo.username;
@@ -631,7 +692,7 @@ export default {
       .ant-form-item-control{
         position: absolute;
         top: -162px;
-        left:33.333%;
+        left:25%;
       }
     }
   }

@@ -47,11 +47,11 @@
 				</a-row>
 			</a-radio-group>
 		</a-form-item>
-		<a-form-item label="分所展业地域" v-show="hasOtherOffice()">
+		<a-form-item label="分所展业地域" v-if="hasOtherOffice()">
 			<el-cascader v-bind="firms.part.other" v-on="firms.part.on"/>
 			<a-input v-decorator="firms.part.dec" style="display: none"/>
 		</a-form-item>
-		<a-form-item label="分所人员情况"  v-show="hasOtherOffice()">
+		<a-form-item label="分所人员情况"  v-if="hasOtherOffice()">
 			<a-textarea v-decorator="firms.partInfo.dec" v-bind="firms.partInfo.other"/>
 		</a-form-item>
 		<a-form-item label="律所清收团队人数">
@@ -82,7 +82,7 @@
 <script>
 import { baseWidth, formItemLayout, textarea } from "@/views/main/my-attestation/common/style";
 import { areaOption, lawDuty, lawType } from "@/views/main/my-attestation/common/source";
-import { buildSource } from "@/plugin/tools";
+import { buildSource, areaAnalysis } from "@/plugin/tools";
 const field = ["hasOtherOffice","isWorkForThreeYear","lawOfficeAddress","lawOfficeInformation","lawOfficeName","lawOfficeQualify","lawOfficeQualifyPerformance","lawOfficeType","officeWorkAddress","otherOfficeStaffInfo","otherOfficeWorkAddress","roleInLawOffice","totalTeamSize","code"];
 export default {
   name: 'FormOffice',
@@ -123,6 +123,7 @@ export default {
             clearable: true,
             options: areaOption,
             size: "small",
+						value:[],
             // collapseTags:true,
             props: {
               value: 'id',
@@ -169,6 +170,7 @@ export default {
             clearable: true,
             options: areaOption,
             size: "small",
+						value:[],
             // collapseTags:true,
             props: {
               value: 'id',
@@ -281,12 +283,25 @@ export default {
       })
     },
     resetFormValue(source) {
+			const { otherOfficeWorkAddress, otherOfficeStaffInfo, ..._source } = source;
       const fieldValues = {
-        ...source,
-        officeWorkAddress: source.officeWorkAddress,//展业地区待处理
-        otherOfficeWorkAddress: source.otherOfficeWorkAddress,//分布展业地区待处理
+        ..._source,
+        // officeWorkAddress: source.officeWorkAddress,//展业地区待处理
+        // otherOfficeWorkAddress: source.otherOfficeWorkAddress,//分布展业地区待处理
       };
+      // TODO 展业地区:相关方法
       this.form.setFieldsValue({...fieldValues});
+	    this.firms.involve.other.value = areaAnalysis(source.officeWorkAddress,false);
+
+	    this.$nextTick(()=>{
+		    if(source.hasOtherOffice === '1') {
+			    this.form.setFieldsValue({
+						otherOfficeStaffInfo,
+				    otherOfficeWorkAddress
+			    });
+			    this.firms.part.other.value = areaAnalysis(otherOfficeWorkAddress,false);
+		    }
+	    })
     },
   },
 

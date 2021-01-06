@@ -109,7 +109,6 @@
                 style="
                   width: 235px;
                   height: 32px;
-                  border-radius: 0px;
                   margin: 0 8px;
                 "
               />
@@ -120,7 +119,6 @@
                 style="
                   width: 235px;
                   height: 32px;
-                  border-radius: 0px;
                   margin: 0 8px;
                 "
                 placeholder="阶段性目标,如腾房(30字以内)"
@@ -151,6 +149,7 @@
                 v-decorator="decorator"
                 v-bind="upload.bind"
                 v-on="upload.on"
+                @change="handleUpload"
               >
                 <a-button> <a-icon type="upload" />上传文件</a-button>
               </a-upload>
@@ -168,11 +167,11 @@
               >
             </div>
             <div v-else>
-              <a
-                >服务方案.doc<a-icon
-                  @click.stop="form.documentAddress = ''"
+              <a :href="url"
+                >{{form.documentAddress}}</a><a-icon style="padding:10px;color:#008CB0"
+                  @click="form.documentAddress = ''"
                   type="close"
-              /></a>
+              />
             </div>
           </a-form-model-item>
         </a-form-model>
@@ -185,12 +184,14 @@
 import { getArea } from "@/plugin/tools";
 import Deploy, { getValueFromEvent } from "@/plugin/tools/qiniu-deploy";
 import { submitServicePlan, modifyCase } from "@/plugin/api/my-biding";
+import {getDownLoadToken} from "@/plugin/api/base"
 export default {
   name: "MsgInfoModal",
   nameComment: "查看抵质押物清单弹窗",
   data() {
     return {
       visible: false,
+      url:'',
       formItemLayout: {
         labelCol: {
           xs: { span: 24 },
@@ -271,7 +272,7 @@ export default {
           },
         ],
         projectId: "",
-        documentAddress: "www.baidu.com",
+        documentAddress: "",
       },
     };
   },
@@ -302,6 +303,7 @@ export default {
       if (this.form.documentAddress === "")
         return this.$message.error("请上传服务方案文档");
       if (type === "add") {
+        this.form.projectId = this.projectInfo.id;
         submitServicePlan(this.form).then((res) => {
           console.log(res);
           if (res.code === 20000) {
@@ -345,12 +347,32 @@ export default {
         months: "",
       });
     },
+    handleUpload(info){
+      if(info.file.status === "done"){
+        console.log(info.file)
+        this.form.documentAddress = info.file.response.key;
+        getDownLoadToken(info.file.response.key).then(res=>{
+          if(res.code === 20000){
+            this.url = res.data;
+          }else{
+            return false;
+          }
+        })
+      }
+    }
   },
   created() {
     this.servePlan = JSON.parse(window.localStorage.getItem("servePlan"));
     if (this.servePlan) {
       this.form = this.servePlan;
     }
+    getDownLoadToken(this.form.documentAddress).then(res=>{
+      if(res.code === 20000){
+        this.url = res.data;
+      }else{
+        return false;
+      }
+    })
   },
   filters: {
     area: (params) => {
@@ -416,7 +438,6 @@ export default {
       .plan-ipt {
         width: 240px;
         height: 32px;
-        border-radius: 0px;
         margin: 0 8px;
       }
     }
