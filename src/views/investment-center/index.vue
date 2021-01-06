@@ -6,7 +6,7 @@
         <img :src="img.logo" alt="">
         <span>浙商资产服务项目招商</span>
       </div>
-      <div v-if="!isAttestationOmission">
+      <div v-if="isAttestationOmission === 'success'">
         <div class="query-wrapper">
           <div class="content">
             <div class="part" v-for="(item,index) in queryOptions" :key="item.code">
@@ -52,7 +52,7 @@
           </a-table>
         </div>
       </div>
-      <AttestationOmission v-else :attestation="isAttestationOmission===1?'资质认证':'要素认证'"/>
+      <AttestationOmission v-else :attestation="isAttestationOmission==='qualifie'?'资质认证':'要素认证'"/>
       <ProjectModal :projectInfo="projectInfo" :sign="'signUp'" ref="signUpModal" @handleSignUp="getTableList"/>
       <MsgInfoModal ref="msgInfoModal" :msgInfo="projectInfo"/>
     </div>
@@ -105,6 +105,16 @@ export default {
   },
   created() {
     this.getTableList();
+  },
+  mounted() {
+    const {isCertification, isConfirmElements} = this.$store.getters.getInfo;
+    if (isCertification && isConfirmElements) {
+      this.isAttestationOmission = 'success';
+    } else if (isCertification) {
+      this.isAttestationOmission = 'factor';
+    } else {
+      this.isAttestationOmission = 'qualifie';
+    }
   },
   methods: {
     getTableList() {
