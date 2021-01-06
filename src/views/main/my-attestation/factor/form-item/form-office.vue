@@ -82,7 +82,7 @@
 <script>
 import { baseWidth, formItemLayout, textarea } from "@/views/main/my-attestation/common/style";
 import { areaOption, lawDuty, lawType } from "@/views/main/my-attestation/common/source";
-import { buildSource } from "@/plugin/tools";
+import { buildSource, areaAnalysis } from "@/plugin/tools";
 const field = ["hasOtherOffice","isWorkForThreeYear","lawOfficeAddress","lawOfficeInformation","lawOfficeName","lawOfficeQualify","lawOfficeQualifyPerformance","lawOfficeType","officeWorkAddress","otherOfficeStaffInfo","otherOfficeWorkAddress","roleInLawOffice","totalTeamSize","code"];
 export default {
   name: 'FormOffice',
@@ -123,6 +123,7 @@ export default {
             clearable: true,
             options: areaOption,
             size: "small",
+						value:[],
             // collapseTags:true,
             props: {
               value: 'id',
@@ -169,6 +170,7 @@ export default {
             clearable: true,
             options: areaOption,
             size: "small",
+						value:[],
             // collapseTags:true,
             props: {
               value: 'id',
@@ -284,17 +286,20 @@ export default {
 			const { otherOfficeWorkAddress, otherOfficeStaffInfo, ..._source } = source;
       const fieldValues = {
         ..._source,
-        officeWorkAddress: source.officeWorkAddress,//展业地区待处理
+        // officeWorkAddress: source.officeWorkAddress,//展业地区待处理
         // otherOfficeWorkAddress: source.otherOfficeWorkAddress,//分布展业地区待处理
       };
       // TODO 展业地区:相关方法
       this.form.setFieldsValue({...fieldValues});
+	    this.firms.involve.other.value = areaAnalysis(source.officeWorkAddress,false);
+
 	    this.$nextTick(()=>{
 		    if(source.hasOtherOffice === '1') {
 			    this.form.setFieldsValue({
-						otherOfficeWorkAddress,
-						otherOfficeStaffInfo
+						otherOfficeStaffInfo,
+				    otherOfficeWorkAddress
 			    });
+			    this.firms.part.other.value = areaAnalysis(otherOfficeWorkAddress,false);
 		    }
 	    })
     },

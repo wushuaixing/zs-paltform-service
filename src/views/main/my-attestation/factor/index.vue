@@ -74,7 +74,7 @@
 				</div>
 			</div>
     </template>
-		<a-modal v-model="modalVisible" :title="modalTitle" :maskClosable="false" :width="1000" class="factor-modal-wrapper">
+		<a-modal v-model="modalVisible" :title="modalTitle" :maskClosable="false" :width="1000" class="factor-modal-wrapper" :keyboard="false">
 			<DetailInfo :source="dataSourceLog" :is-lawyer="identity === 1" v-if="modalStep===0"/>
 			<FormItem :isLawyer="identity === 1" v-if="modalStep===1" noSubmit :onlyUpdateOffice="!!dataSourceLog.lawOffice"
 								:dataSource="dataSourceLog" @toTellRes="handleSubmit" ref="fillFromRef"/>

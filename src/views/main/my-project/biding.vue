@@ -63,6 +63,7 @@
               :customRow="click"
               v-bind="tabConfig"
               @change="handleTableChange"
+							class="frame-content-table"
             >
               <template slot="debtor" slot-scope="{ debtor, isRead }">
                 <a-avatar
@@ -440,11 +441,12 @@ export default {
     background-color: #ffffff;
   }
   .biding-query {
-    padding: 20px;
+    padding: 20px 20px 5px 20px;
   }
   .biding-content {
+		padding: 0 20px;
     &-table {
-      padding: 4px 20px 20px;
+      padding: 4px 0;
     }
   }
 }
@@ -474,6 +476,31 @@ export default {
 }
 </style>
 <style lang="scss">
+	.frame-content-table{
+		.ant-table-body{
+			tr > th, tr > td {
+				border-bottom: none;
+				&:first-child{
+					padding-left: 16px;
+				}
+				&:last-child{
+					padding-right: 16px;
+				}
+			}
+
+		}
+		.ant-table-thead > tr > th{
+			background-color: #F5F5F5;
+			//background: #FAFAFA;
+		}
+		.ant-table-tbody > tr:nth-child(2n){
+			background: #FAFAFA;
+		}
+		.frame-table-bold{
+			font-weight: bold;
+			color: #333333;
+		}
+	}
 .query-item-prefix {
   height: 100%;
   width: 90px;
@@ -498,12 +525,12 @@ export default {
   table{
     border-bottom: 1px #E8E8E8 solid;
   }
-  tr{
-    height: 72px;
-    td{
-      border-bottom: none;
-    }
+  tr >td,tr >th{
+		border-bottom: none;
   }
+	tbody > tr{
+		height: 72px;
+	}
    tr:nth-child(2n){
       background: #FAFAFA;
    }

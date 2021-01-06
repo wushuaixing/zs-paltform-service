@@ -112,7 +112,7 @@ export default {
   computed: {
     isShowEcharts(){
       for (let key in this.echarts){
-        return this.echarts[key] !== 0 ? false : true;
+        return this.echarts[key] === 0;
       }
     }
   },
@@ -133,7 +133,7 @@ export default {
     // 修改表单
     onPanelChange(value) {
       // console.log(value);
-      console.log(value.slice(0,8) + '01',value.slice(0,8) + '31');
+      // console.log(value.slice(0,8) + '01',value.slice(0,8) + '31');
       this.schedule.endDate = value.slice(0,8) + '01';
       this.schedule.startDate = value.slice(0,8) + '31';
       getCalendar({
@@ -152,10 +152,10 @@ export default {
       let baseDate = time.slice(0,7).replace("/","-");
       let startDate = baseDate + '-' + "01";
       let endDate = baseDate + '-' + "31";
-      console.log(startDate,endDate);
-      const res = await getCalendar({startDate,endDate})
-      console.log(res);
-      console.log(res.data)
+      // console.log(startDate,endDate);
+      const res = await getCalendar({startDate,endDate});
+      // console.log(res);
+      // console.log(res.data)
       if (res.code !== 20000) return this.$message.error("获取日历事项失败");
       this.data = res.data
     },
@@ -163,7 +163,7 @@ export default {
     async getList() {
       const res = await getTODoList();
       console.log(res);
-      if (res.code !== 20000) return
+      if (res.code !== 20000) return;
         this.list = res.data
     },
     //echarts饼图
@@ -171,7 +171,7 @@ export default {
       let myChart = echarts.init(document.getElementById("main"));
       const res = await getEcharts();
       if (res.code !== 20000) return this.$message.error('获取图表数据失败');
-      console.log(res);
+      // console.log(res);
       this.echarts = res.data;
       let option = {
       // color: ['red', 'blue','green','skyblue','pink'],
@@ -207,7 +207,7 @@ export default {
             ]
           }
         ]
-      }
+      };
     myChart.setOption(option);
     },
     // 根据详情路由跳转
@@ -216,7 +216,7 @@ export default {
     }
   },
   created () {
-    this.getCalendarData()
+    this.getCalendarData();
     this.getList()
   },
   mounted() {
@@ -273,7 +273,6 @@ $leftWidth: 450px;
       // border-bottom: 1px solid $background;
       line-height: 1.5;
       font-size: 16px;
-      font-family: PingFangSC-Medium, PingFang SC;
       font-weight: 600;
       color: #262626;
     }
@@ -281,7 +280,6 @@ $leftWidth: 450px;
       padding: 20px 24px;
       // border-bottom: 1px solid $background;
       font-size: 16px;
-      font-family: PingFangSC-Medium, PingFang SC;
       font-weight: 600;
       color: #333333;
       line-height: 16px;
@@ -327,7 +325,6 @@ $leftWidth: 450px;
       span {
         height: 20px;
         font-size: 14px;
-        font-family: PingFangSC-Regular, PingFang SC;
         font-weight: 400;
         color: #333333;
         line-height: 20px;
@@ -338,7 +335,6 @@ $leftWidth: 450px;
       margin-top: 10px;
       height: 16px;
       font-size: 14px;
-      font-family: PingFangSC-Medium, PingFang SC;
       font-weight: 600;
       color: #333333;
       line-height: 16px;
@@ -370,7 +366,6 @@ $leftWidth: 450px;
     /deep/.ant-badge-status-text {
       height: 17px;
       font-size: 12px;
-      font-family: PingFangSC-Regular, PingFang SC;
       font-weight: 400;
       color: #999999;
       line-height: 17px;
@@ -394,7 +389,6 @@ $leftWidth: 450px;
     /deep/.ant-badge-status-text {
       height: 12px;
       font-size: 12px;
-      font-family: PingFangSC-Regular, PingFang SC;
       font-weight: 400;
       color: #666666;
       line-height: 12px;
@@ -416,8 +410,8 @@ $leftWidth: 450px;
   }
   #main{
     position: absolute;
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
     width: 150px;
     height: 150px;
   }
@@ -427,7 +421,6 @@ $leftWidth: 450px;
     line-height: 22px;
     font-weight: 600;
     letter-spacing: 0.5px;
-    font-family: PingFangSC-Medium, PingFang SC;
     font-size: 14px;
   }
   /deep/.ant-btn {
