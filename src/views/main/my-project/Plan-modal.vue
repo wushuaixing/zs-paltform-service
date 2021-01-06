@@ -303,6 +303,7 @@ export default {
       if (this.form.documentAddress === "")
         return this.$message.error("请上传服务方案文档");
       if (type === "add") {
+        this.form.projectId = this.projectInfo.id;
         submitServicePlan(this.form).then((res) => {
           console.log(res);
           if (res.code === 20000) {
