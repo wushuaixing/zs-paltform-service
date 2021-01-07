@@ -38,24 +38,24 @@
               <div id="main"></div>
             </div>
             <div class="schemeProcess">
-              <a-badge color="#c23531" text="方案待提交" />
+              <a-badge color="#E283FF" text="方案待提交" />
               <span>{{echarts.myProjectCaseUnSubmit}}</span>
               <br />
-              <a-badge text="方案已提交" color="#2f4554"/>
+              <a-badge text="方案已提交" color="#F6CB16"/>
               <span>{{echarts.myProjectCaseSubmitted}}</span>
               <br />
-              <a-badge text="方案审批中" color="#61a0a8" />
+              <a-badge text="方案审批中" color="#5ECB4D" />
               <span>{{echarts.myProjectsReview}}</span>
               <br />
             </div>
             <div class="schemeStatus">
-              <a-badge text="中标" color="#d48265"/>
+              <a-badge text="中标" color="#5ECB4D"/>
               <span>{{echarts.myProjectsAimed}}</span>
               <br />
-              <a-badge text="失效" color="#91c7ae"/>
+              <a-badge text="失效" color="#F6CB16"/>
               <span>{{echarts.myProjectsInvalid}}</span>
               <br />
-              <a-badge text="放弃" color="#749f83"/>
+              <a-badge text="放弃" color="#F5222D"/>
               <span>{{echarts.myProjectAbandon}}</span>
             </div>
           </div>
@@ -169,7 +169,7 @@ export default {
       if (res.code !== 20000) return this.$message.error('获取图表数据失败');
       this.echarts = res.data;
       let option = {
-      // color: ['red', 'blue','green','skyblue','pink'],
+      color: ['#E283FF', '#F6CB16','#5ECB4D','#5ECB4D','#F6CB16','#F5222D'],
         tooltip: {
             trigger: 'item',
         },
@@ -185,7 +185,7 @@ export default {
             emphasis: {
                 label: {
                     show: true,
-                    fontSize: '16',
+                    fontSize: '14',
                     fontWeight: 'bold'
                 }
             },
