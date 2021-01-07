@@ -264,8 +264,10 @@ export default {
         }
         .ant-modal-body {
           padding: 0;
+          padding-bottom: 24px;
           .ant-form-item {
             margin-top: 24px;
+            height: 32px;
             .ant-form-item-control-wrapper {
               .ant-form-item-control {
                 width: 388px;

@@ -5,8 +5,17 @@
       <img class="nothing-pic" src="@/assets/img/tempty.png" alt="">
       <div class="nothing-msg">您尚未完成资质认证，请先完成资质认证！</div>
       <div class="nothing-btn">
-        <a-button type="primary" @click="goConfirm">
+        <a-button type="primary" @click="goConfirm('certifi')">
           立即前往资质认证
+        </a-button>
+      </div>
+    </div>
+    <div v-else-if="isConfirmElements===0" class="nothing">
+      <img class="nothing-pic" src="@/assets/img/tempty.png" alt="">
+      <div class="nothing-msg">您尚未完成要素认证，请先完成要素认证！</div>
+      <div class="nothing-btn">
+        <a-button type="primary" @click="goConfirm('ele')">
+          立即前往要素认证
         </a-button>
       </div>
     </div>
@@ -397,8 +406,9 @@ export default {
       date.setMonth(date.getMonth() + month);
       return date.toLocaleDateString().replaceAll("/", "-");
     },
-    goConfirm(){
-      this.$router.push({name:'my-attestation/qualifies'})
+    goConfirm(type){
+      if(type === "certifi")this.$router.push({name:'my-attestation/qualifies'});
+      if(type === "ele")this.$router.push({name:'my-attestation/factor'})
     }
   },
   computed: {
@@ -407,6 +417,9 @@ export default {
     },
     isCertification(){
       return this.$store.getters.getInfo.isCertification;
+    },
+    isConfirmElements(){
+      return this.$store.getters.getInfo.isConfirmElements;
     }
   },
 };
