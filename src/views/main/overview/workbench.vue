@@ -158,7 +158,7 @@ export default {
     // 待办事项
     async getList() {
       const res = await getTODoList();
-      if (res.code !== 20000) return 
+      if (res.code !== 20000) return
         this.list = res.data
     },
     //echarts饼图
@@ -202,7 +202,7 @@ export default {
             ]
           }
         ]
-      };
+      }
     myChart.setOption(option);
     },
     // 根据详情路由跳转
@@ -211,7 +211,7 @@ export default {
     }
   },
   created () {
-    this.getCalendarData();
+    this.getCalendarData()
     this.getList()
   },
   mounted() {
@@ -268,6 +268,7 @@ $leftWidth: 450px;
       border-bottom: 1px solid #E9E9E9;
       line-height: 1.5;
       font-size: 16px;
+      font-family: PingFangSC-Medium, PingFang SC;
       font-weight: 600;
       color: #262626;
     }
@@ -275,6 +276,7 @@ $leftWidth: 450px;
       padding: 20px 24px;
       // border-bottom: 1px solid $background;
       font-size: 16px;
+      font-family: PingFangSC-Medium, PingFang SC;
       font-weight: 600;
       color: #333333;
       line-height: 16px;
@@ -320,6 +322,7 @@ $leftWidth: 450px;
       span {
         height: 20px;
         font-size: 14px;
+        font-family: PingFangSC-Regular, PingFang SC;
         font-weight: 400;
         color: #333333;
         line-height: 20px;
@@ -330,6 +333,7 @@ $leftWidth: 450px;
       margin-top: 10px;
       height: 16px;
       font-size: 14px;
+      font-family: PingFangSC-Medium, PingFang SC;
       font-weight: 600;
       color: #333333;
       line-height: 16px;
@@ -361,6 +365,7 @@ $leftWidth: 450px;
     /deep/.ant-badge-status-text {
       height: 17px;
       font-size: 12px;
+      font-family: PingFangSC-Regular, PingFang SC;
       font-weight: 400;
       color: #999999;
       line-height: 17px;
@@ -384,6 +389,7 @@ $leftWidth: 450px;
     /deep/.ant-badge-status-text {
       height: 12px;
       font-size: 12px;
+      font-family: PingFangSC-Regular, PingFang SC;
       font-weight: 400;
       color: #666666;
       line-height: 12px;
@@ -405,8 +411,8 @@ $leftWidth: 450px;
   }
   #main{
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 0px;
+    left: 0px;
     width: 150px;
     height: 150px;
   }
@@ -416,6 +422,7 @@ $leftWidth: 450px;
     line-height: 22px;
     font-weight: 600;
     letter-spacing: 0.5px;
+    font-family: PingFangSC-Medium, PingFang SC;
     font-size: 14px;
   }
   /deep/.ant-btn {

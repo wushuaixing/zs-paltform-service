@@ -1,7 +1,15 @@
 <template>
   <div class="biding-main">
     <Breadcrumb :source="navData" icon="environment"></Breadcrumb>
-    <a-spin v-if="loading" class="spin-wrapper" size="large"/>
+    <div v-if="isCertification===0" class="nothing">
+      <img class="nothing-pic" src="@/assets/img/tempty.png" alt="">
+      <div class="nothing-msg">您尚未完成资质认证，请先完成资质认证！</div>
+      <div class="nothing-btn">
+        <a-button type="primary" @click="goConfirm">
+          立即前往资质认证
+        </a-button>
+      </div>
+    </div>
     <div v-else class="biding-wrapper">
       <div class="biding-wrapper-content">
         <div class="biding-query">
@@ -178,15 +186,6 @@
       <ProjectModal :projectInfo="projectInfo" :sign="'fail'" ref="failModal" />
       <PlanModal :projectInfo="projectInfo" ref="planModal" />
     </div>
-    <div v-if="!isCertification===0" class="nothing">
-      <img class="nothing-pic" src="@/assets/img/tempty.png" alt="">
-      <div class="nothing-msg">您尚未完成资质认证，请先完成资质认证！</div>
-      <div class="nothing-btn">
-        <a-button type="primary" @click="goConfirm">
-          立即前往资质认证
-        </a-button>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -360,7 +359,8 @@ export default {
         if (res.code === 20000) {
           this.projectInfo = clearProto(res.data);
           if(type === "sub"){
-            window.localStorage.removeItem("servePlan")
+            window.localStorage.removeItem("servePlan");
+            this.$refs.planModal.handleOpenModal();
           }
           if(type === "edit"){
             var servePlan = { //服务方案

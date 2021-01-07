@@ -25,7 +25,7 @@
                 <div @click="handleModifyPwd" v-if="isSetPassword===1"><a-icon type="user" />修改登录密码</div>
               </a-menu-item>
               <a-menu-item key="3">
-                <router-link to="/login"><a-icon type="user" />退出登录</router-link>
+                <div @click="doLogout"><a-icon type="user" />退出登录</div>
               </a-menu-item>
             </a-menu>
             <a-button type="link" icon="down" style="color:#fff;">Hi，{{username}}</a-button>
@@ -45,6 +45,7 @@
   import ModifyPhoneModal from "./personal/modify-phone"
   import ModifyPwdModal from "./personal/modify-password"
   import SetPwdModal from "./personal/set-password"
+  import {logout} from "@/plugin/api/login"
   export default {
     data() {
       return {
@@ -67,6 +68,15 @@
       },
       handleSetPwd(){
         this.$refs.setPwd.showModal()
+      },
+      doLogout(){
+        logout().then(res=>{
+          if(res.code === 20000){
+            this.$router.push('/login');
+          }else{
+            this.$message.error("网络错误");
+          }
+        })
       }
     },
     created() {
