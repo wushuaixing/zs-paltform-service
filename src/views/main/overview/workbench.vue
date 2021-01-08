@@ -39,24 +39,25 @@
             </div>
             <div class="schemeProcess">
               <a-badge color="#E283FF" text="方案待提交" />
-              <span>{{echarts.myProjectCaseUnSubmit}}</span>
+              <!-- <a-button type="link" @click="onTarget(MATTER_TYPE[item.code].path, item.projectId)" >{{echarts.myProjectCaseUnSubmit}}</a-button> -->
+              <router-link to="/project/biding">{{echarts.myProjectCaseUnSubmit}}</router-link>
               <br />
               <a-badge text="方案已提交" color="#F6CB16"/>
-              <span>{{echarts.myProjectCaseSubmitted}}</span>
+              <router-link to="/project/biding">{{echarts.myProjectCaseSubmitted}}</router-link>
               <br />
               <a-badge text="方案审批中" color="#5ECB4D" />
-              <span>{{echarts.myProjectsReview}}</span>
+              <router-link to="/project/biding">{{echarts.myProjectsReview}}</router-link>
               <br />
             </div>
             <div class="schemeStatus">
               <a-badge text="中标" color="#5ECB4D"/>
-              <span>{{echarts.myProjectsAimed}}</span>
+              <router-link to="/project/biding">{{echarts.myProjectsAimed}}</router-link>
               <br />
               <a-badge text="失效" color="#F6CB16"/>
-              <span>{{echarts.myProjectsInvalid}}</span>
+              <router-link to="/project/biding">{{echarts.myProjectsInvalid}}</router-link>
               <br />
               <a-badge text="放弃" color="#F5222D"/>
-              <span>{{echarts.myProjectAbandon}}</span>
+              <router-link to="/project/biding">{{echarts.myProjectAbandon}}</router-link>
             </div>
           </div>
         </div>
@@ -176,7 +177,7 @@ export default {
         series: [
           {
             type: 'pie',
-            radius: ['50%', '70%'],
+            radius: ['40%', '70%'],
             // avoidLabelOverlap: false,
             label: {
                 show: false,
@@ -328,6 +329,10 @@ $leftWidth: 450px;
         line-height: 20px;
       }
     }
+      /deep/.ant-badge-status-dot {
+        width: 8px;
+        height: 8px;
+      }
     .total {
       padding: 0 14px;
       margin-top: 10px;
