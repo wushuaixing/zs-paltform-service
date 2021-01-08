@@ -145,7 +145,8 @@ export default {
         oldPhoneCode(this.getInfo.phone).then((res) => {
           console.log(res);
           if (res.code === 20000) this.$message.success("验证码发送成功");
-          if (res.code !== 20000) this.$message.error("验证码发送失败");
+          if (res.code === 30002) this.$message.error("请勿重新发送验证码")
+          if (res.code !== 20000 && res.code !== 30002) this.$message.error("验证码发送失败");
         });
       }
       if (this.step === 2) {
@@ -166,7 +167,8 @@ export default {
             newPhoneCode(this.form.phone).then((res) => {
               console.log(res);
               if (res.code === 20000) this.$message.success("验证码发送成功");
-              if (res.code !== 20000) this.$message.error("验证码发送失败");
+              if (res.code === 30002) this.$message.error("请勿重新发送验证码")
+              if (res.code !== 20000 && res.code !== 30002) this.$message.error("验证码发送失败");
             });
           }
         });

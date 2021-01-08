@@ -70,11 +70,18 @@
         this.$refs.setPwd.showModal()
       },
       doLogout(){
-        logout().then(res=>{
-          if(res.code === 20000){
-            this.$router.push('/login');
-          }else{
-            this.$message.error("网络错误");
+        let _this = this;
+        this.$confirm({
+          title:"是否退出登录?",
+          centered:true,
+          onOk(){
+            logout().then(res=>{
+              if(res.code === 20000){
+                _this.$router.push('/login');
+              }else{
+                _this.$message.error("退出登录失败");
+              }
+            })
           }
         })
       }
@@ -147,5 +154,9 @@
 .spin-wrapper{
   width: 100%;
   padding-top: 10vh!important;
+}
+.ant-modal-confirm-btns{
+  margin-right: 50%;
+  transform: translateX(50%);
 }
 </style>

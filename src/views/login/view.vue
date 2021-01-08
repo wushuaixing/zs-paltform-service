@@ -206,7 +206,7 @@ export default {
           if (res.code === 20000) {
             this.imgCode.url = res.data.captcha;
           } else {
-            this.$message.error("图片验证码失败");
+            this.$message.error("获取图片验证码失败");
           }
         })
         .finally(() => {
@@ -292,7 +292,11 @@ export default {
                 }
               }, 1000);
             } else {
-              this.$message.error("验证码发送失败");
+              if(res.code === 30002){
+                this.$message.error("请勿重复发送验证码")
+              }else{
+                this.$message.error("验证码发送失败");
+              }
               this.code.disabled = false;
             }
           });

@@ -49,7 +49,7 @@
               :maxLength="6"
               placeholder="请输入验证码"
             >
-              <div slot="suffix" @click="sendVerifyCode" class="phonecode">
+              <div slot="suffix" @click="sendVerifyCode" class="phonecode" :style="{color:countdown?'':'#008CB0'}">
                 获取验证码 <span v-if="countdown">({{ countdown }}s)</span>
               </div>
             </a-input>
@@ -63,6 +63,7 @@
             >
           </a-form-model-item>
         </a-form-model>
+        <div class="login" @click="goLogin">使用已有账号登录</div>
       </div>
       <!-- 注册成功 -->
       <div class="register-success-block" v-else>
@@ -76,10 +77,9 @@
           <div class="verify-prompt">
             为了更精准地给您推送优质项目，请您尽快进行服务商要素认证
           </div>
-          <div class="login-attestation">登陆并前往资质认证</div>
+          <div class="login-attestation" @click="goLogin">登陆并前往资质认证</div>
         </div>
       </div>
-      <div class="login" @click="goLogin">使用已有账号登录</div>
     </div>
   </div>
 </template>
@@ -168,7 +168,8 @@ export default {
           registerCode(this.form.phone).then((res) => {
             console.log(res);
             if (res.code === 20000) this.$message.success("验证码发送成功");
-            if (res.code !== 20000) this.$message.error("验证码发送失败");
+            if (res.code === 30002) this.$message.error("请勿重新发送验证码")
+            if (res.code !== 20000 && res.code !== 30002) this.$message.error("验证码发送失败");
           });
         }
       });
