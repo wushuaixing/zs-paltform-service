@@ -77,7 +77,7 @@
           <div class="verify-prompt">
             为了更精准地给您推送优质项目，请您尽快进行服务商要素认证
           </div>
-          <div class="login-attestation" @click="goLogin">登陆并前往资质认证</div>
+          <div class="login-attestation" @click="goLogin">登录并前往资质认证</div>
         </div>
       </div>
     </div>

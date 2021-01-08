@@ -6,6 +6,7 @@
         :centered="true"
         :getContainer="() => $refs.container"
         :maskStyle="{ background: 'rgba(0, 0, 0, 0.5)' }"
+        :maskClosable="false"
         v-model="visible"
         title="修改登录密码"
       >

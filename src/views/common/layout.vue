@@ -21,11 +21,11 @@
                 <div @click="handleModifyPhone"><a-icon type="user" />修改绑定手机号</div>
               </a-menu-item>
               <a-menu-item key="2">
-                <div @click="handleSetPwd" v-if="isSetPassword===0"><a-icon type="user" />设置登录密码</div>
-                <div @click="handleModifyPwd" v-if="isSetPassword===1"><a-icon type="user" />修改登录密码</div>
+                <div @click="handleSetPwd" v-if="isSetPassword===0"><a-icon type="lock" />设置登录密码</div>
+                <div @click="handleModifyPwd" v-if="isSetPassword===1"><a-icon type="lock" />修改登录密码</div>
               </a-menu-item>
               <a-menu-item key="3">
-                <div @click="doLogout"><a-icon type="user" />退出登录</div>
+                <div @click="doLogout"><a-icon type="poweroff" />退出登录</div>
               </a-menu-item>
             </a-menu>
             <a-button type="link" icon="down" style="color:#fff;">Hi，{{username}}</a-button>
