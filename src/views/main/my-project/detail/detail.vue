@@ -267,7 +267,7 @@ export default {
         window.localStorage.removeItem("servePlan")
       }
       if(type === "edit"){
-        var servePlan = { //服务方案
+        var servePlan = {
             serviceTime: "",
             collectionTarget: "",
             projectId: "",

@@ -115,9 +115,6 @@ export default {
       this.visible = false;
     },
     check() {
-      // if (this.form.newPassword === "") {
-      //   this.$refs.ruleForm.resetFields();
-      // }
       //长度6-20位校验
       const lengthCheck = (value) => !(value.length < 6 || value.length > 20);
       //校验是否有数字
