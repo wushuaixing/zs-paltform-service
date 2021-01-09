@@ -580,12 +580,14 @@ export default {
     processData(source = {}){
       if(this.userType === 'org') {
         return Object.assign({},source,{
+	        qualifyMaterial:getFileList(source.qualifyMaterial),
 					businessLicense:getFileList(source.businessLicense),
 					confidentialityCommitmentLetter:getFileList(source.confidentialityCommitmentLetter),
         })
       }else{
         const _source = Object.assign({},source,{
-          frontOfCard:getFileList(source.frontOfCard),
+	        qualifyMaterial:getFileList(source.qualifyMaterial),
+	        frontOfCard:getFileList(source.frontOfCard),
 					backOfCard:getFileList(source.backOfCard),
 					qualificationCertificate:getFileList(source.qualificationCertificate),
 					confidentialityCommitmentLetter:getFileList(source.confidentialityCommitmentLetter),
