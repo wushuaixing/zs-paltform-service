@@ -203,7 +203,7 @@ import Breadcrumb from "@/components/bread-crumb";
 import ProjectModal from "@/components/modal/project-modal";
 import PlanModal from "./Plan-modal";
 import { clearProto } from "@/plugin/tools";
-import { columns, colType } from "@/views/main/my-project/source";
+import { columns} from "@/views/main/my-project/source";
 import {
   amcBidDetail,
   amcBiding,
@@ -217,7 +217,6 @@ export default {
   name: "ToReview",
   data() {
     return {
-      loading:true,
       navData: [
         { id: 1, title: "我的项目", path: "biding" },
         { id: 2, title: "我的竞标", path: "biding" },
@@ -263,6 +262,7 @@ export default {
         },
       },
       projectInfo: {},
+      sortOrder:''
     };
   },
   components: {
@@ -280,7 +280,6 @@ export default {
       this.http[this.params.aimStatus](this.params).then((res) => {
         if (res.code === 20000) {
           console.log(res);
-          this.loading = false;
           this.tabConfig.pagination.total = res.data.total;
           this.tabConfig.dataSource = res.data.list;
         }else{
@@ -302,7 +301,6 @@ export default {
     },
     // 搜索查询
     handleSubmit() {
-      this.loading = true;
       this.getProjectList();
     },
     //重置
@@ -311,11 +309,12 @@ export default {
       this.params.process = '';
       this.params.page = 1;
       this.params.size = 10;
+      this.sortOrder = false;
       this.getProjectList();
     },
     // tab状态切换
     handleTabChange(val) {
-      this.loading = true;
+      this.sortOrder = false;
       this.query.tabStatus = val;
       this.getProjectList();
     },
@@ -324,6 +323,7 @@ export default {
       this.params.page = pagination.current;
       this.params.size = pagination.pageSize;
       this.params.sortField = sorter.field;
+      this.sortOrder = sorter.order;
       this.params.sortOrder = sorter.order
         ? sorter.order === "ascend"
           ? "ASC"
@@ -388,8 +388,11 @@ export default {
     }
   },
   computed: {
-    columns: function () {
-      return columns[colType[this.query.tabStatus]];
+    columns(){
+      return columns({
+        type:this.params.aimStatus,
+        sortOrder:this.sortOrder
+      })
     },
     isCertification(){
       return this.$store.getters.getInfo.isCertification;
