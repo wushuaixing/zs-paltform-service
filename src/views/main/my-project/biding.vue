@@ -251,6 +251,7 @@ export default {
         orderField: "",
       },
       tabConfig: {
+        rowKey:'id',
         dataSource: [],
         size: "middle",
         pagination: {
@@ -367,32 +368,7 @@ export default {
         amcBidDetail(item.id, this.params.aimStatus).then((res) => {
         if (res.code === 20000) {
           this.projectInfo = clearProto(res.data);
-          if(type === "sub"){
-            window.localStorage.removeItem("servePlan");
-            this.$refs.planModal.handleOpenModal();
-          }
-          if(type === "edit"){
-            var servePlan = { //服务方案
-              serviceTime: "",
-              collectionTarget: "",
-              projectId: "",
-              plans: [],
-              documentAddress: "",
-            },length = this.projectInfo.amcBidFiles.length;
-            servePlan.serviceTime = this.projectInfo.serviceTime;
-            servePlan.collectionTarget = this.projectInfo.aimBackPrice;
-            servePlan.projectId = this.projectInfo.id;
-
-            servePlan.documentAddress = this.projectInfo.amcBidFiles[length - 1].caseFileAddress;
-            this.projectInfo.scheduleManagements.forEach(i=>{
-              var plan = {};
-              plan.content = i.dateMatters;
-              plan.months = i.dateMonth;
-              servePlan.plans.push(plan);
-            });
-            window.localStorage.setItem("servePlan",JSON.stringify(servePlan));
-            this.$refs.planModal.handleOpenModal();
-          }
+          this.$refs.PlanModal.handleOpenModal()
         }else{
           return this.$message.error("获取项目详情失败!...")
         }
@@ -419,7 +395,7 @@ export default {
       return this.$store.getters.getInfo.isCertification;
     },
     isConfirmElements(){
-      return this.$store.getters.getInfo.isConfirmElements;
+      return this.$store.getters.getInfo.isCertification;
     }
   },
 };

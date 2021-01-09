@@ -76,7 +76,7 @@
           >
             <a-input-number
               placeholder="请输入服务期限"
-              v-model.trim="form.serviceTime"
+              v-model.trim="projectInfo.serviceTime"
               :precision="0"
               style="width: 246px"
               :max="120"
@@ -90,6 +90,7 @@
               placeholder="请输入回款目标"
               v-model.trim="form.aimBackPrice"
               :precision="2"
+              :min="0"
               style="width: 246px"
             />
             <span class="unit">万元</span>
@@ -106,6 +107,7 @@
                 v-model.trim="item.dateMonth"
                 class="plan-ipt"
                 :precision="0"
+                :min="1"
                 style="
                   width: 235px;
                   height: 32px;
@@ -181,7 +183,7 @@
 </template>
 
 <script>
-import { getArea } from "@/plugin/tools";
+import { getArea} from "@/plugin/tools";
 import Deploy, { getValueFromEvent } from "@/plugin/tools/qiniu-deploy";
 import { submitServicePlan, modifyCase } from "@/plugin/api/my-biding";
 import {getDownLoadToken} from "@/plugin/api/base"
@@ -271,7 +273,7 @@ export default {
             dateMonth: "",
           },
         ],
-        id: "",
+        id:"",
         caseFileAddress	: "",
       },
     };
@@ -281,6 +283,21 @@ export default {
       type: Object,
       default: () => {},
     },
+  },
+  watch:{
+    projectInfo:{
+      handler:function(){
+        this.form.id = this.projectInfo.id;
+        if(this.projectInfo.caseFileStatus !== '0'){
+          this.form.aimBackPrice = this.projectInfo.aimBackPrice;
+          this.form.serviceTime = this.projectInfo.serviceTime;
+          this.form.scheduleManagements = this.projectInfo.scheduleManagements;
+          let length = this.projectInfo.amcBidFiles.length;
+          this.form.caseFileAddress = this.projectInfo.amcBidFiles[length - 1].caseFileAddress
+        }
+      },
+      deep:true
+    }
   },
   methods: {
     handleOpenModal() {
@@ -362,10 +379,6 @@ export default {
     }
   },
   created() {
-    this.servePlan = JSON.parse(window.localStorage.getItem("servePlan"));
-    if (this.servePlan) {
-      this.form = this.servePlan;
-    }
     getDownLoadToken(this.form.caseFileAddress).then(res=>{
       if(res.code === 20000){
         this.url = res.data;
