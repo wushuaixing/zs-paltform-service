@@ -110,7 +110,7 @@
               </template>
             </div>
           </a-form-model>
-          <a-button type="primary" block @click="handleSubmit" size="large"
+          <a-button type="primary" block @click="handleSubmit" size="large" :loading="loading"
             >登 录</a-button
           >
           <div style="text-align: right; margin-top: 24px">
@@ -148,6 +148,7 @@ export default {
         phoneCode: "",
         pictureCode: "",
       },
+	    loading:false,
       code: {
         text: "获取验证码",
         disabled: false,
@@ -214,6 +215,7 @@ export default {
         });
     },
     toLogin() {
+			this.loading = true;
       const phone = this.params.phone;
       api
         .accountStatus({ phone })
@@ -256,7 +258,11 @@ export default {
             if (res.code === 30009) return this.$message.error("手机号未注册,请先进行注册");
             if (res.code === 30010) return this.$message.error("图片验证码错误");
           }
-        });
+        })
+				.finally(()=>{
+					this.loading = false;
+				})
+			;
     },
     // 点击登录操作
     handleSubmit() {

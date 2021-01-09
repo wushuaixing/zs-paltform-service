@@ -68,7 +68,6 @@ export const getFileList = val => {
 			return {
 				uid:i.uid,
 				name:i.name,
-				type:i.type,
 				hash:(i.response) ? i.response.hash : i.hash
 			}
 		});
