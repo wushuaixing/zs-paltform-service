@@ -395,7 +395,7 @@ export default {
       return this.$store.getters.getInfo.isCertification;
     },
     isConfirmElements(){
-      return this.$store.getters.getInfo.isCertification;
+      return this.$store.getters.getInfo.isConfirmElements;
     }
   },
 };
