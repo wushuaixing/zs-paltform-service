@@ -5,7 +5,7 @@
         <img :src="img.logo" alt="">
         <span>浙商资产服务项目招商</span>
       </div>
-      <div v-if="isAttestationOmission !== 'success'">
+      <div v-if="isAttestationOmission === 'success'">
         <div class="query-wrapper">
           <div class="content">
             <div class="part" v-for="(item,index) in queryOptions" :key="item.code">
