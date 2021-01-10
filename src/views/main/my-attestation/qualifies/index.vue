@@ -167,7 +167,7 @@
     3:{ desc:"审核通过", text:"",class:'text-success'},
     4:{ desc:"认证修改审核中", text:"您提交的资质认证信息修改正在审核中，请耐心等待审核结果",class:'text-warning'},
     5:{ desc:"认证修改未通过", text:"您提交的资质认证信息修改未通过审核，未通过原因：",class:'text-dangerous'},
-    6:{ desc:"认证修改审核通过", text:"",class:'text-success'},
+    6:{ desc:"审核通过", text:"",class:'text-success'},
   };
 
 export default {
