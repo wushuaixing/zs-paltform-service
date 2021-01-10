@@ -76,7 +76,7 @@ export const getFileList = val => {
 			// 	hash:(i.response) ? i.response.hash : i.hash
 			// }
 		});
-		return JSON.stringify(res);
+		return JSON.stringify(res.filter(i=>i));
 	}
 	return '';
 };

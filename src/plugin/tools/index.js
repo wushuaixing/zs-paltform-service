@@ -99,6 +99,7 @@ export const fileListRuleAsync = (str) => {
 			const _i = {
 				name: i.split('_')[2] || i,
 				uid:i,
+				hash:i
 			};
 			return getDownLoadToken(i).then(res => {
 				if (res.code === 20000) {
