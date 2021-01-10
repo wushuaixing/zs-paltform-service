@@ -1,5 +1,5 @@
-import { getUploadToken, getDownLoadToken } from "@/plugin/api/base";
-import { message } from "ant-design-vue";
+import {getDownLoadToken, getUploadToken} from "@/plugin/api/base";
+import {message} from "ant-design-vue";
 
 const action = 'http://up.qiniup.com/';
 
@@ -65,11 +65,13 @@ export const getValueFromEvent = e =>{
 export const getFileList = val => {
 	if (Array.isArray(val)) {
 		const res = val.filter(i=>i.status === 'done').map(i=>{
-			return {
-				uid:i.uid,
-				name:i.name,
-				hash:(i.response) ? i.response.hash : i.hash
-			}
+			// const name = i.name || (i.name.split('_'))[3] || i;
+			return (i.response) ? i.response.hash : i.hash;
+			// return {
+			// 	uid:i.uid,
+			// 	// name,
+			// 	hash:(i.response) ? i.response.hash : i.hash
+			// }
 		});
 		return JSON.stringify(res);
 	}

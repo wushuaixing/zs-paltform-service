@@ -61,16 +61,30 @@ export const removeObjectNullVal = (obj) => {
 };
 
 /**
- * 获取fileList
+ * 获取fileList 解析文件格式
  * @param str
  */
 export const fileListRule = (str) => {
 	if (!str) return [];
 	if (!Array.isArray(JSON.parse(str))) return [];
-	return JSON.parse(str).map(i => ({
-		...i,
-		status: 'done',
-	}))
+	return JSON.parse(str).map(i => {
+		if(typeof i === 'string'){
+			return {
+				uid: i,
+				hash:i,
+				name :(i.split('_'))[2] || i,
+				status: 'done',
+			}
+		}else{
+			const name = i.name || (i.name.split('_'))[2] || i;
+			return {
+				...i,
+				name,
+				status: 'done',
+			}
+		}
+
+	})
 };
 
 /**
