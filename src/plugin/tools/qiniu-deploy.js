@@ -11,7 +11,7 @@ let uploadToken = '';
  * @returns {*|Promise<void>|PromiseLike<T>|Promise<T>}
  */
 const beforeUpload = (e) => {
-	console.log('beforeUpload');
+	// console.log('beforeUpload');
 	return getUploadToken().then(res=>{
 		if(res.code === 20000) {
 			uploadToken = res.data;
@@ -33,7 +33,7 @@ const preview = file =>{
 	if(status !== 'done') {
 		message.error('该文件不支持预览');
 	}else{
-		console.log(file);
+		// console.log(file);
 		if(file.viewUrl) return window.open(file.viewUrl);
 		const fileKey = response.hash ? response.hash : file.hash;
 		getDownLoadToken(fileKey).then(res=>{
@@ -51,7 +51,7 @@ const preview = file =>{
  * @returns {*}
  */
 export const getValueFromEvent = e =>{
-	console.log('Upload event:', e);
+	// console.log('Upload event:', e);
 	if (Array.isArray(e)) {
 		return e;
 	}
