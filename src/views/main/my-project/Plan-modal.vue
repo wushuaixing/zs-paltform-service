@@ -327,6 +327,9 @@ export default {
           if (res.code === 20000) {
             this.$message.success("方案提交成功");
             this.visible = false;
+            if(this.$route.query){
+              this.$parent.getProjectDetail();
+            }
           } else {
             this.$message.error("方案提交失败,请检查信息是否填写完整");
           }
