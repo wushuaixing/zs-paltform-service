@@ -89,16 +89,15 @@
         </a-row>
       </a-checkbox-group>
     </a-form-item>
-    <a-form-item label="经典案例">
+    <a-form-item label="经典案例" :selfUpdate="false">
       <div style="width: 300px">
         <a-upload v-decorator="adv.case.dec" v-bind="upload.bind" v-on="upload.on">
-          <a-button>
-            <a-icon type="upload"/>
-            点击上传
-          </a-button>
-          <span class="text-remark" style="font-size: 12px;margin-left: 10px;vertical-align: bottom;">
+					<div v-if="!(getValue(adv.case.dec[0])||[]).length">
+						<a-button icon="upload">点击上传</a-button>
+						<span class="text-remark" style="font-size: 12px;margin-left: 10px;vertical-align: bottom;">
 						*支持pdf、word格式
-						</span>
+					</span>
+					</div>
         </a-upload>
       </div>
     </a-form-item>
