@@ -48,9 +48,9 @@
                 <a-select-option :value="1">方案已提交</a-select-option>
               </a-select>
             </a-form-model-item>
-            <a-form-model-item>
-              <a-button type="primary" html-type="submit" @click="reset">重置</a-button>
-              <a-button style="margin-left:16px" type="primary" html-type="submit" @click="handleSubmit">查询</a-button>
+            <a-form-model-item class="btns">
+              <a-button type="primary" class="reset-btn" html-type="submit" @click="reset">重置</a-button>
+              <a-button style="margin-left:16px" class="search-btn" type="primary" html-type="submit" @click="handleSubmit">查询</a-button>
             </a-form-model-item>
           </a-form-model>
         </div>
@@ -376,7 +376,7 @@ export default {
         amcBidDetail(item.id, this.params.aimStatus).then((res) => {
         if (res.code === 20000) {
           this.projectInfo = clearProto(res.data);
-          this.$refs.PlanModal.handleOpenModal()
+          this.$refs.planModal.handleOpenModal()
         }else{
           return this.$message.error("获取项目详情失败!...")
         }
@@ -502,6 +502,20 @@ export default {
 			color: #333333;
 		}
 	}
+.btns{
+  .reset-btn{
+    background-color: #fff;
+    color: #666666;
+    border: 1px solid #dddddd;
+    border-radius: 2px;
+    font-size: 14px;
+  }
+  .search-btn{
+    font-size: 14px;
+    background: #008CB0;
+    border-radius: 2px;
+  }
+}
 .query-item-prefix {
   height: 100%;
   width: 90px;
