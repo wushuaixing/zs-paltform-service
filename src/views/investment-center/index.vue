@@ -133,7 +133,7 @@ export default {
       amcProjectListApi(removeObjectNullVal(this.queryParams)).then((res) => {
         if (res.code === 20000) {
           const data = res.data;
-          this.total = data.total;
+          this.pagination.total = data.total;
           this.amcProjectInfo = data.list;
         } else {
           message.warning(res.message);
