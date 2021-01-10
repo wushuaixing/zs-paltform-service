@@ -76,7 +76,7 @@
           >
             <a-input-number
               placeholder="请输入服务期限"
-              v-model.trim="projectInfo.serviceTime"
+              v-model.trim="form.serviceTime"
               :precision="0"
               style="width: 246px"
               :max="120"
@@ -192,7 +192,7 @@ export default {
   nameComment: "查看抵质押物清单弹窗",
   data() {
     return {
-      visible: false,
+      visible: true,
       url:'',
       formItemLayout: {
         labelCol: {
@@ -305,6 +305,7 @@ export default {
     },
     handleCancel() {
       this.visible = false;
+      this.$parent.getProjectDetail();
     },
     handleModify(type) {
       if(!this.form.serviceTime || !this.form.aimBackPrice)return false;
@@ -342,6 +343,9 @@ export default {
               if (res.code === 20000) {
                 _this.$message.success("修改成功");
                 _this.visible = false;
+                if(_this.$route.query){
+                  _this.$parent.getProjectDetail();
+                }
               } else {
                 _this.$message.error("修改失败,请检查信息是否填写完整");
               }

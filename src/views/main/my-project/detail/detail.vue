@@ -271,20 +271,23 @@ export default {
       date.toLocaleDateString();
       date.setMonth(date.getMonth() + month);
       return date.toLocaleDateString().replaceAll('/','-');
+    },
+    getProjectDetail(){
+      let {id,type} = this.$route.query;
+      amcBidDetail(id,type).then((res) => {
+        console.log(res);
+        if(res.code === 20000){
+          this.loading = false;
+          this.info = res.data;
+        }else{
+          this.$message.error("获取项目详情失败,请刷新页面")
+        }
+      });
     }
   },
   computed: {},
   created() {
-    var {id,type} = this.$route.query;
-    amcBidDetail(id,type).then((res) => {
-      console.log(res);
-      if(res.code === 20000){
-        this.loading = false;
-        this.info = res.data;
-      }else{
-        this.$message.error("获取项目详情失败,请刷新页面")
-      }
-    });
+    this.getProjectDetail();
   },
 };
 </script>

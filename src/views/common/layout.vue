@@ -75,7 +75,7 @@
           centered:true,
           onOk(){
             this.$router.push('/login');
-            logout().then()
+            logout()
           }
         })
       }
