@@ -70,18 +70,13 @@
         this.$refs.setPwd.showModal()
       },
       doLogout(){
-        let _this = this;
+        let _this = this
         this.$confirm({
           title:"是否退出登录?",
           centered:true,
           onOk(){
-            logout().then(res=>{
-              if(res.code === 20000){
-                _this.$router.push('/login');
-              }else{
-                _this.$message.error("退出登录失败");
-              }
-            })
+            _this.$router.push('/login');
+            logout()
           }
         })
       }

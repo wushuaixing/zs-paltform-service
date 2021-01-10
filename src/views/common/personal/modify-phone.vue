@@ -34,7 +34,7 @@
               :maxLength="6"
               v-model.trim="form.code"
             >
-              <div slot="suffix" class="verify-code" @click="sendVerifyCode">
+              <div slot="suffix" class="verify-code" @click="sendVerifyCode" :style="{color:countdown?'':'#008CB0'}">
                 获取验证码<span v-if="countdown">({{ countdown }}s)</span>
               </div>
             </a-input>
@@ -81,6 +81,7 @@
 
 <script>
 /*eslint-disable*/
+import {getInfo} from "@/plugin/api/base"
 import {
   oldPhoneCode,
   verifyOldPhone,
@@ -127,12 +128,23 @@ export default {
       wrapperCol: { span: 14 },
     };
   },
+  watch:{
+    visible:function(){
+      if(this.visible === false) {
+        this.$refs.ruleForm.resetFields();
+        this.step = 1;
+      }
+    }
+  },
   computed: {
     ...mapGetters(["getInfo"]),
   },
   methods: {
     showModal() {
       this.visible = true;
+    },
+    onCancel(){
+      console.log(11)
     },
     sendVerifyCode() {
       //step==1,原账号发送验证码
@@ -151,7 +163,6 @@ export default {
         });
       }
       if (this.step === 2) {
-        console.log(111)
         this.$refs.ruleForm.validateField("phone", (error) => {
           if (error) {
             console.log(error);
@@ -179,6 +190,7 @@ export default {
       if (this.step === 3) {
         this.visible = false;
         this.step = 1;
+        return false
       }
       //step==1,验证原手机号
       if (this.step === 1) {
@@ -205,7 +217,6 @@ export default {
       }
       if (this.step === 2) {
         this.$refs.ruleForm.validate((validate) => {
-          console.log(validate);
           if (validate) {
             //step==2,绑定新手机
             if (this.step === 2) {
@@ -218,6 +229,7 @@ export default {
                   clearInterval(this.timer);
                   this.countdown = null;
                   this.step++;
+                  this.$store.commit('updateInfo', res.data)
                 }
                 if (res.code === 20001) this.$message.error("验证新手机号失败");
                 if (res.code === 30003) this.$message.error("验证码错误");
@@ -238,7 +250,6 @@ export default {
 .verify-code {
   font-size: 14px;
   font-weight: 400;
-  color: #008cb0;
   line-height: 20px;
   cursor: pointer;
 }
