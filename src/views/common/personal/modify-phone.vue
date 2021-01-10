@@ -34,7 +34,7 @@
               :maxLength="6"
               v-model.trim="form.code"
             >
-              <div slot="suffix" class="verify-code" @click="sendVerifyCode">
+              <div slot="suffix" class="verify-code" @click="sendVerifyCode" :style="{color:countdown?'':'#008CB0'}">
                 获取验证码<span v-if="countdown">({{ countdown }}s)</span>
               </div>
             </a-input>
@@ -250,7 +250,6 @@ export default {
 .verify-code {
   font-size: 14px;
   font-weight: 400;
-  color: #008cb0;
   line-height: 20px;
   cursor: pointer;
 }

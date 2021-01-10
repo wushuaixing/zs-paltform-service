@@ -133,8 +133,7 @@ export default {
     //点击下一步注册
     doRegister() {
       this.$refs.ruleForm.validate((validate) => {
-        console.log(validate);
-        if (!validate) return this.$message.error("必填信息不能为空");
+        if (!validate) return false;
         authRegister(this.form)
           .then((res) => {
             console.log(res);
