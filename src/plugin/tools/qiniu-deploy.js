@@ -10,15 +10,18 @@ let uploadToken = '';
  * @param e
  * @returns {*|Promise<void>|PromiseLike<T>|Promise<T>}
  */
-const beforeUpload = e => getUploadToken().then(res=>{
-	if(res.code === 20000) {
-		uploadToken = res.data;
-		return e;
-	}else{
-		message.error('获取上传凭证失败!');
-		return new Promise.reject()
-	}
-});
+const beforeUpload = (e) => {
+	console.log('beforeUpload');
+	return getUploadToken().then(res=>{
+		if(res.code === 20000) {
+			uploadToken = res.data;
+			return e;
+		}else{
+			message.error('获取上传凭证失败!');
+			return Promise.reject()
+		}
+	});
+};
 
 /**
  * 点击预览时的方法
