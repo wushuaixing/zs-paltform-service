@@ -61,16 +61,30 @@ export const removeObjectNullVal = (obj) => {
 };
 
 /**
- * 获取fileList
+ * 获取fileList 解析文件格式
  * @param str
  */
 export const fileListRule = (str) => {
 	if (!str) return [];
 	if (!Array.isArray(JSON.parse(str))) return [];
-	return JSON.parse(str).map(i => ({
-		...i,
-		status: 'done',
-	}))
+	return JSON.parse(str).map(i => {
+		if(typeof i === 'string'){
+			return {
+				uid: i,
+				hash:i,
+				name :(i.split('_'))[2] || i,
+				status: 'done',
+			}
+		}else{
+			const name = i.name || (i.name.split('_'))[2] || i;
+			return {
+				...i,
+				name,
+				status: 'done',
+			}
+		}
+
+	})
 };
 
 /**
@@ -81,17 +95,33 @@ export const fileListRuleAsync = (str) => {
 	if (!str) return [];
 	if (!Array.isArray(JSON.parse(str))) return [];
 	return Promise.all(JSON.parse(str).map(async i => {
-		if (i.viewUrl) return i;
-		else {
-			return getDownLoadToken(i.hash || i.url).then(res => {
+		if(typeof i === 'string'){
+			const _i = {
+				name: i.split('_')[2] || i,
+				uid:i,
+			};
+			return getDownLoadToken(i).then(res => {
 				if (res.code === 20000) {
-					i.viewUrl = res.data;
-					i.url = res.data;
-					i.status = 'done';
+					_i.viewUrl = res.data;
+					if(!/.(pdf|doc[x|])$/.test(i)) _i.url = res.data;
+					_i.status = 'done';
 				}
-				return i;
+				return _i;
 			});
+		}else{
+			if (i.viewUrl) return i;
+			else {
+				return getDownLoadToken(i.hash).then(res => {
+					if (res.code === 20000) {
+						i.viewUrl = res.data;
+						if(!/.(pdf|doc[x|])$/.test(i.hash)) i.url = res.data;
+						i.status = 'done';
+					}
+					return i;
+				});
+			}
 		}
+
 		// ...i,
 		// status: 'done',
 	}))

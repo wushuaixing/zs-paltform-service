@@ -142,7 +142,7 @@
           <p class="text" >您暂未提交服务方案</p>
           <button
             class="submitbtn"
-            @click="goSubmit('add')"
+            @click="goSubmit"
           >
             去提交
           </button>
@@ -175,7 +175,7 @@
           </div>
           <div class="plan_scheme">
             <div class="subtitle" style="padding-left:10px">方案文档：<a>服务方案.doc</a></div>
-            <button class="modify_scheme" @click="goSubmit('edit')" v-if="info.aimedStatus === '2' && info.caseFileStatus === '1'">
+            <button class="modify_scheme" @click="goSubmit" v-if="info.aimedStatus === '2' && info.caseFileStatus === '1'">
               修改服务方案
             </button>
           </div>
@@ -262,30 +262,7 @@ export default {
     }
   },
   methods: {
-    goSubmit(type) {
-      if(type === "add"){
-        window.localStorage.removeItem("servePlan")
-      }
-      if(type === "edit"){
-        var servePlan = { //服务方案
-            serviceTime: "",
-            collectionTarget: "",
-            projectId: "",
-            plans: [],
-            documentAddress: "",
-          },length = this.info.amcBidFiles.length;
-          servePlan.serviceTime = this.info.serviceTime;
-          servePlan.collectionTarget = this.info.aimBackPrice;
-          servePlan.projectId = this.info.id;
-          servePlan.documentAddress = this.info.amcBidFiles[length - 1].caseFileAddress;
-          this.info.scheduleManagements.forEach(item=>{
-            var plan = {};
-            plan.content = item.dateMatters;
-            plan.months = item.dateMonth;
-            servePlan.plans.push(plan);
-          })
-          window.localStorage.setItem("servePlan",JSON.stringify(servePlan));
-      }
+    goSubmit() {
       this.$refs.planModal.handleOpenModal();
     },
     //计算方案结束日期

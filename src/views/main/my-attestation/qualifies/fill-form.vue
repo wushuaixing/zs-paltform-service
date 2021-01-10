@@ -30,10 +30,10 @@
       <a-form-item :label="org.buEmail.label">
         <a-input v-decorator="org.buEmail.dec" v-bind="org.buEmail.other"/>
       </a-form-item>
-      <a-form-item :label="org.license.label">
+      <a-form-item :label="org.license.label" :selfUpdate="false">
         <div class="fill-form-upload-wrapper">
           <a-upload v-decorator="org.license.dec" v-bind="upload.bind" v-on="upload.on">
-            <div class="upload-container">
+            <div class="upload-container" v-if="!getValue(org.license.dec[0],1)">
               <a-icon type="plus" />
             </div>
           </a-upload>
@@ -42,10 +42,10 @@
           </div>
         </div>
       </a-form-item>
-      <a-form-item :label="org.letter.label">
+      <a-form-item :label="org.letter.label" :selfUpdate="false">
         <div class="fill-form-upload-wrapper">
           <a-upload v-decorator="org.letter.dec" v-bind="upload.bind" v-on="upload.on">
-            <div class="upload-container">
+            <div class="upload-container" v-if="!getValue(org.letter.dec[0],1)">
               <a-icon type="plus" />
             </div>
           </a-upload>
@@ -57,16 +57,15 @@
       </a-form-item>
 			<template v-if="statusNeed">
 				<div class="common-text-subtitle" style="margin-bottom: 20px">资质更改证明</div>
-				<a-form-item label="资质更改证据材料">
+				<a-form-item label="资质更改证据材料" :selfUpdate="false">
 					<div style="width: 300px">
 						<a-upload v-decorator="material.dec" v-bind="{...upload.bind, listType:'text'}" v-on="upload.on">
-							<a-button>
-								<a-icon type="upload"/>
-								点击上传
-							</a-button>
-							<span class="text-remark" style="font-size: 12px;margin-left: 10px;vertical-align: bottom;">
-						*支持jpg、pdf格式
-						</span>
+							<template v-if="!getValue(material.dec[0],1)">
+								<a-button icon="upload">点击上传</a-button>
+								<span class="text-remark" style="font-size: 12px;margin-left: 10px;vertical-align: bottom;">
+									<span>*支持jpg、pdf格式</span>
+								</span>
+							</template>
 						</a-upload>
 					</div>
 				</a-form-item>
@@ -76,7 +75,6 @@
     <a-form v-bind="formItemLayout" :form="form" autocomplete="off" v-if="userType ==='lawyer'" selfUpdate>
 
 			<div class="common-text-subtitle" style="margin-bottom: 20px" v-if="statusNeed">我的资质认证信息</div>
-
 			<a-form-item :label="law.name.label">
         <a-input v-decorator="law.name.dec" v-bind="law.name.other"/>
         <span class="normal">{{ username }}</span>
@@ -131,10 +129,10 @@
           <div class="upload-text">证件正面（人像面）</div>
         </div>
       </a-form-item>
-      <a-form-item :label="law.cert.label">
+      <a-form-item :label="law.cert.label" :selfUpdate="false">
         <div class="fill-form-upload-wrapper">
           <a-upload v-decorator="law.cert.dec" v-bind="upload.bind" v-on="upload.on" >
-            <div class="upload-container">
+            <div class="upload-container" v-if="!getValue(law.cert.dec[0],1)">
               <a-icon type="plus" />
             </div>
           </a-upload>
@@ -143,10 +141,10 @@
           </div>
         </div>
       </a-form-item>
-      <a-form-item :label="law.letter.label">
+      <a-form-item :label="law.letter.label" :selfUpdate="false">
         <div class="fill-form-upload-wrapper">
           <a-upload v-decorator="law.letter.dec" v-bind="upload.bind" v-on="upload.on" >
-            <div class="upload-container">
+            <div class="upload-container" v-if="!getValue(law.letter.dec[0],1)">
               <a-icon type="plus" />
             </div>
           </a-upload>
@@ -159,16 +157,15 @@
 
 			<template v-if="statusNeed">
 				<div class="common-text-subtitle" style="margin-bottom: 20px">资质更改证明</div>
-				<a-form-item label="资质更改证据材料">
+				<a-form-item label="资质更改证据材料" :selfUpdate="false">
 					<div style="width: 300px">
 						<a-upload v-decorator="material.dec" v-bind="{...upload.bind, listType:'text'}" v-on="upload.on">
-							<a-button>
-								<a-icon type="upload"/>
-								点击上传
-							</a-button>
-							<span class="text-remark" style="font-size: 12px;margin-left: 10px;vertical-align: bottom;">
-							*支持jpg、pdf格式
-							</span>
+							<template v-if="!getValue(material.dec[0],1)">
+								<a-button icon="upload">点击上传</a-button>
+								<span class="text-remark" style="font-size: 12px;margin-left: 10px;vertical-align: bottom;">
+									<span>*支持jpg、pdf格式</span>
+								</span>
+							</template>
 						</a-upload>
 					</div>
 				</a-form-item>

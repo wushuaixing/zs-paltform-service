@@ -1,5 +1,5 @@
-import { getUploadToken, getDownLoadToken } from "@/plugin/api/base";
-import { message } from "ant-design-vue";
+import {getDownLoadToken, getUploadToken} from "@/plugin/api/base";
+import {message} from "ant-design-vue";
 
 const action = 'http://up.qiniup.com/';
 
@@ -10,15 +10,18 @@ let uploadToken = '';
  * @param e
  * @returns {*|Promise<void>|PromiseLike<T>|Promise<T>}
  */
-const beforeUpload = e => getUploadToken().then(res=>{
-	if(res.code === 20000) {
-		uploadToken = res.data;
-		return e;
-	}else{
-		message.error('获取上传凭证失败!');
-		return new Promise.reject()
-	}
-});
+const beforeUpload = (e) => {
+	// console.log('beforeUpload');
+	return getUploadToken().then(res=>{
+		if(res.code === 20000) {
+			uploadToken = res.data;
+			return e;
+		}else{
+			message.error('获取上传凭证失败!');
+			return Promise.reject()
+		}
+	});
+};
 
 /**
  * 点击预览时的方法
@@ -30,7 +33,7 @@ const preview = file =>{
 	if(status !== 'done') {
 		message.error('该文件不支持预览');
 	}else{
-		console.log(file);
+		// console.log(file);
 		if(file.viewUrl) return window.open(file.viewUrl);
 		const fileKey = response.hash ? response.hash : file.hash;
 		getDownLoadToken(fileKey).then(res=>{
@@ -48,7 +51,7 @@ const preview = file =>{
  * @returns {*}
  */
 export const getValueFromEvent = e =>{
-	console.log('Upload event:', e);
+	// console.log('Upload event:', e);
 	if (Array.isArray(e)) {
 		return e;
 	}
@@ -65,11 +68,13 @@ export const getValueFromEvent = e =>{
 export const getFileList = val => {
 	if (Array.isArray(val)) {
 		const res = val.filter(i=>i.status === 'done').map(i=>{
-			return {
-				uid:i.uid,
-				name:i.name,
-				hash:(i.response) ? i.response.hash : i.hash
-			}
+			// const name = i.name || (i.name.split('_'))[3] || i;
+			return (i.response) ? i.response.hash : i.hash;
+			// return {
+			// 	uid:i.uid,
+			// 	// name,
+			// 	hash:(i.response) ? i.response.hash : i.hash
+			// }
 		});
 		return JSON.stringify(res);
 	}
