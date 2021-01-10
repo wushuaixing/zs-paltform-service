@@ -107,6 +107,16 @@ export default {
       wrapperCol: { span: 14 },
     };
   },
+  watch:{
+    visible:function(){
+      if(this.visible === false) {
+        this.$refs.ruleForm.resetFields();
+        for(let i = 0;i < this.passwordCheck.length;i ++){
+          this.passwordCheck[i] = false;
+        }
+      }
+    }
+  },
   methods: {
     showModal() {
       this.visible = true;

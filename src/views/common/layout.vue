@@ -70,11 +70,12 @@
         this.$refs.setPwd.showModal()
       },
       doLogout(){
+        let _this = this
         this.$confirm({
           title:"是否退出登录?",
           centered:true,
           onOk(){
-            this.$router.push('/login');
+            _this.$router.push('/login');
             logout()
           }
         })

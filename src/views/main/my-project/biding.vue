@@ -204,6 +204,7 @@ import ProjectModal from "@/components/modal/project-modal";
 import PlanModal from "./Plan-modal";
 import { clearProto } from "@/plugin/tools";
 import { columns} from "@/views/main/my-project/source";
+import { getInfo } from "@/plugin/api/base"
 import {
   amcBidDetail,
   amcBiding,
@@ -273,6 +274,13 @@ export default {
   created() {
     this.getProjectList();
     this.getUnreadInfo();
+    getInfo().then(res=>{
+      if(res.code === 20000){
+        this.$store.commit('updateInfo', res.data);
+      }else{
+        return false;
+      }
+    })
   },
   methods: {
     //获取项目列表
@@ -395,12 +403,10 @@ export default {
       })
     },
     isCertification(){
-      // return this.$store.getters.getInfo.isCertification;
-      return 1;
+      return this.$store.getters.getInfo.isCertification;
     },
     isConfirmElements(){
-      // return this.$store.getters.getInfo.isConfirmElements;
-      return 1;
+      return this.$store.getters.getInfo.isConfirmElements;
     }
   },
 };
