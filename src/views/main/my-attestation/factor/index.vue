@@ -273,7 +273,6 @@ export default {
 	  // 编辑我的资质信息 - 查看且编辑
 	  handleEditInfo(e){
 		  const { fillFromRef } = this.$refs;
-		  console.log(this.$refs.fillFromRef);
 		  fillFromRef.handleSubmit(e);
 	  },
 	  // 编辑我的资质信息 - 仅编辑
@@ -288,7 +287,7 @@ export default {
 		  factor.dropModify().then(res=>{
 			  if(res.code === 20000){
 				  this.$message.success('当前认证修改申请，已放弃');
-				  this.queryQualify();
+				  this.queryFactor();
 			  }else{
 				  this.$message.error('操作失败，请稍后操作！');
 			  }
