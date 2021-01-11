@@ -89,21 +89,22 @@
         </a-row>
       </a-checkbox-group>
     </a-form-item>
-    <a-form-item label="经典案例">
+    <a-form-item label="经典案例" :selfUpdate="false">
       <div style="width: 300px">
         <a-upload v-decorator="adv.case.dec" v-bind="upload.bind" v-on="upload.on">
-          <a-button>
-            <a-icon type="upload"/>
-            点击上传
-          </a-button>
-          <span class="text-remark" style="font-size: 12px;margin-left: 10px;vertical-align: bottom;">
+					<div v-if="!(getValue(adv.case.dec[0])||[]).length">
+						<a-button icon="upload">点击上传</a-button>
+						<span class="text-remark" style="font-size: 12px;margin-left: 10px;vertical-align: bottom;">
 						*支持pdf、word格式
-						</span>
+					</span>
+					</div>
         </a-upload>
       </div>
     </a-form-item>
     <a-form-item label="擅长业务区域">
-      <a-textarea v-decorator="adv.area.dec" v-bind="adv.area.other"/>
+			<el-cascader v-bind="adv.area.other" @change="val=>handleEleCas(val,adv.area.dec[0])"
+									 @visible-change="val=>this.visible = val"/>
+			<a-input v-decorator="adv.area.dec" style="display: none"/>
     </a-form-item>
     <a-form-item label="主要代理案件管辖法院">
       <a-input v-decorator="adv.court.dec" v-bind="adv.court.other"/>
@@ -276,13 +277,16 @@ export default {
         area: {
           dec: ['areasOfGoodCases', {rules: [{required: true, message: '擅长业务区域不能为空'}]}],
           other: {
-            options: areaOption,
-            getPopupContainer: e => e.parentElement,
-            fieldNames: {
-              value: 'id',
-              label: 'name',
-              children: 'children'
-            },
+	          clearable: true,
+	          options: areaOption,
+	          size: "small",
+	          // collapseTags:true,
+	          props: {
+		          value: 'id',
+		          label: 'name',
+		          multiple: true,
+		          checkStrictly: true,
+	          },
             placeholder: '请选择擅长业务区域',
             ...baseWidth,
           }
@@ -358,12 +362,11 @@ export default {
         setFields({
           [field]: {
             value: undefined,
-            errors: [new Error('主要涉业地区不能为空')]
+            errors: [new Error('地区不能为空')]
           }
         })
       } else {
         const str = (val.map(i => i.join('/')).toString());
-        console.log(str);
         setFieldsValue({[field]: str});
       }
     },
@@ -395,11 +398,11 @@ export default {
 	      classicCase: getFileList(source.classicCase),
         otherResources: (source.otherResources || []).join(','),
         area: (source.area || []).join(','),
-        goodCases: (source.goodCases || []).join(','),
+	      goodCases: (source.goodCases || []).join(','),
       })
     },
     async resetFormValue(source) {
-      const { classicCase,workUnitName,workRole } = source;
+      const { classicCase,workUnitName,workRole,areasOfGoodCases } = source;
       const fieldValues = {
         ...source,
 	      classicCase: await fileListRuleAsync(classicCase),
@@ -411,6 +414,7 @@ export default {
 	    delete fieldValues.workRole;
       this.form.setFieldsValue({...fieldValues});
 	    this.field.involve.other.value = areaAnalysis(source.workArea,false);
+	    this.adv.area.other.value = areaAnalysis(areasOfGoodCases,false);
       this.$nextTick(()=>{
 				if(source.isWorkOther === '1') {
 					this.form.setFieldsValue({workUnitName,workRole});

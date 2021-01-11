@@ -21,11 +21,11 @@
                 <div @click="handleModifyPhone"><a-icon type="user" />修改绑定手机号</div>
               </a-menu-item>
               <a-menu-item key="2">
-                <div @click="handleSetPwd" v-if="isSetPassword===0"><a-icon type="user" />设置登录密码</div>
-                <div @click="handleModifyPwd" v-if="isSetPassword===1"><a-icon type="user" />修改登录密码</div>
+                <div @click="handleSetPwd" v-if="isSetPassword===0"><a-icon type="lock" />设置登录密码</div>
+                <div @click="handleModifyPwd" v-if="isSetPassword===1"><a-icon type="lock" />修改登录密码</div>
               </a-menu-item>
               <a-menu-item key="3">
-                <div @click="doLogout"><a-icon type="user" />退出登录</div>
+                <div @click="doLogout"><a-icon type="poweroff" />退出登录</div>
               </a-menu-item>
             </a-menu>
             <a-button type="link" icon="down" style="color:#fff;">Hi，{{username}}</a-button>
@@ -70,11 +70,13 @@
         this.$refs.setPwd.showModal()
       },
       doLogout(){
-        logout().then(res=>{
-          if(res.code === 20000){
-            this.$router.push('/login');
-          }else{
-            this.$message.error("网络错误");
+        let _this = this
+        this.$confirm({
+          title:"是否退出登录?",
+          centered:true,
+          onOk(){
+            _this.$router.push('/login');
+            logout()
           }
         })
       }
@@ -147,5 +149,9 @@
 .spin-wrapper{
   width: 100%;
   padding-top: 10vh!important;
+}
+.ant-modal-confirm-btns{
+  margin-right: 50%;
+  transform: translateX(50%);
 }
 </style>

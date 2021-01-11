@@ -11,7 +11,7 @@
       <a-button key="back" @click="handleCancel"> 取消 </a-button>
       <a-button
         key="submit"
-        v-if="!servePlan"
+        v-if="projectInfo.caseFileStatus==='0'"
         type="primary"
         @click="handleModify('add')"
       >
@@ -85,27 +85,29 @@
             <span class="unit">个月</span>
             <span class="tips">*请将服务期限换算成月数填写，请填写正整数</span>
           </a-form-model-item>
-          <a-form-model-item label="回款目标" prop="collectionTarget">
+          <a-form-model-item label="回款目标" prop="aimBackPrice">
             <a-input-number
               placeholder="请输入回款目标"
-              v-model.trim="form.collectionTarget"
+              v-model.trim="form.aimBackPrice"
               :precision="2"
+              :min="0"
               style="width: 246px"
             />
             <span class="unit">万元</span>
           </a-form-model-item>
           <a-form-model-item
-            v-for="(item, index) in form.plans"
+            v-for="(item, index) in form.scheduleManagements"
             :label="index === 0 ? '处置计划' : '    '"
             :key="index"
-            prop="plans"
+            prop="scheduleManagements"
           >
             <div>
               <span>从签约日期起</span>
               <a-input-number
-                v-model.trim="item.months"
+                v-model.trim="item.dateMonth"
                 class="plan-ipt"
                 :precision="0"
+                :min="1"
                 style="
                   width: 235px;
                   height: 32px;
@@ -114,7 +116,7 @@
               />
               <span>个月内完成</span>
               <a-input
-                v-model.trim="item.content"
+                v-model.trim="item.dateMatters"
                 :maxLength="30"
                 style="
                   width: 235px;
@@ -125,10 +127,10 @@
                 class="plan-ipt"
               />
               <a-icon
-                v-if="form.plans.length > 1"
+                v-if="form.scheduleManagements.length > 1"
                 class="dynamic-delete-button"
                 type="minus-circle"
-                :disabled="form.plans.length === 1"
+                :disabled="form.scheduleManagements.length === 1"
                 @click="removeDomain(item)"
               />
             </div>
@@ -141,10 +143,10 @@
           <div class="title">服务方案完整文档</div>
           <a-form-model-item
             label="服务方案文档"
-            prop="documentAddress"
+            prop="caseFileAddress"
             style="margin-top: 30px"
           >
-            <div style="display: flex" v-if="!form.documentAddress">
+            <div style="display: flex" v-if="!form.caseFileAddress">
               <a-upload
                 v-decorator="decorator"
                 v-bind="upload.bind"
@@ -168,8 +170,8 @@
             </div>
             <div v-else>
               <a :href="url"
-                >{{form.documentAddress}}</a><a-icon style="padding:10px;color:#008CB0"
-                  @click="form.documentAddress = ''"
+                >{{form.caseFileAddress}}</a><a-icon style="padding:10px;color:#008CB0"
+                  @click="form.caseFileAddress = ''"
                   type="close"
               />
             </div>
@@ -181,7 +183,7 @@
 </template>
 
 <script>
-import { getArea } from "@/plugin/tools";
+import { getArea} from "@/plugin/tools";
 import Deploy, { getValueFromEvent } from "@/plugin/tools/qiniu-deploy";
 import { submitServicePlan, modifyCase } from "@/plugin/api/my-biding";
 import {getDownLoadToken} from "@/plugin/api/base"
@@ -216,19 +218,19 @@ export default {
             trigger: "blur",
           },
         ],
-        collectionTarget: [
+        aimBackPrice: [
           {
             required: true,
             message: "请输入回款目标",
             trigger: "blur",
           },
         ],
-        plans: [
+        scheduleManagements: [
           {
             required: true,
           },
         ],
-        documentAddress: [
+        caseFileAddress: [
           {
             required: true,
             message: "",
@@ -255,24 +257,24 @@ export default {
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       form: {
-        serviceTime: '',
-        collectionTarget: "",
-        plans: [
+        serviceTime: "",
+        aimBackPrice: "",
+        scheduleManagements: [
           {
-            content: "",
-            months: "",
+            dateMatters: "",
+            dateMonth: "",
           },
           {
-            content: "",
-            months: "",
+            dateMatters: "",
+            dateMonth: "",
           },
           {
-            content: "",
-            months: "",
+            dateMatters: "",
+            dateMonth: "",
           },
         ],
-        projectId: "",
-        documentAddress: "",
+        id:"",
+        caseFileAddress	: "",
       },
     };
   },
@@ -282,33 +284,52 @@ export default {
       default: () => {},
     },
   },
+  watch:{
+    projectInfo:{
+      handler:function(){
+        this.form.id = this.projectInfo.id;
+        if(this.projectInfo.caseFileStatus !== '0'){
+          this.form.aimBackPrice = this.projectInfo.aimBackPrice;
+          this.form.serviceTime = this.projectInfo.serviceTime;
+          this.form.scheduleManagements = this.projectInfo.scheduleManagements;
+          let length = this.projectInfo.amcBidFiles.length;
+          this.form.caseFileAddress = this.projectInfo.amcBidFiles[length - 1].caseFileAddress
+        }
+      },
+      deep:true
+    }
+  },
   methods: {
     handleOpenModal() {
       this.visible = true;
     },
     handleCancel() {
       this.visible = false;
+      this.$parent.getProjectDetail();
     },
     handleModify(type) {
-      if(!this.form.serviceTime || !this.form.collectionTarget)return false;
-      for (let i = 0; i < this.form.plans.length; i++) {
-        let arr = this.form.plans.filter(
-          (item) => item.months === this.form.plans[i].months
+      if(!this.form.serviceTime || !this.form.aimBackPrice)return false;
+      for (let i = 0; i < this.form.scheduleManagements.length; i++) {
+        let arr = this.form.scheduleManagements.filter(
+          (item) => item.dateMonth === this.form.scheduleManagements[i].dateMonth
         );
         if (arr.length !== 1)
           return this.$message.error(
             "您填写了重复的计划时间，同一时间阶段的计划请填写在一个阶段性目标中！"
           );
       }
-      if (this.form.documentAddress === "")
+      if (this.form.caseFileAddress === "")
         return this.$message.error("请上传服务方案文档");
       if (type === "add") {
-        this.form.projectId = this.projectInfo.id;
+        this.form.id = this.projectInfo.id;
         submitServicePlan(this.form).then((res) => {
           console.log(res);
           if (res.code === 20000) {
             this.$message.success("方案提交成功");
             this.visible = false;
+            if(this.$route.query){
+              this.$parent.getProjectDetail();
+            }
           } else {
             this.$message.error("方案提交失败,请检查信息是否填写完整");
           }
@@ -325,6 +346,9 @@ export default {
               if (res.code === 20000) {
                 _this.$message.success("修改成功");
                 _this.visible = false;
+                if(_this.$route.query){
+                  _this.$parent.getProjectDetail();
+                }
               } else {
                 _this.$message.error("修改失败,请检查信息是否填写完整");
               }
@@ -334,23 +358,23 @@ export default {
       }
     },
     removeDomain(item) {
-      let index = this.form.plans.indexOf(item);
+      let index = this.form.scheduleManagements.indexOf(item);
       if (index !== -1) {
-        this.form.plans.splice(index, 1);
+        this.form.scheduleManagements.splice(index, 1);
       }
     },
     addDomain() {
-      if (this.form.plans.length === 20)
+      if (this.form.scheduleManagements.length === 20)
         return this.$message.info("处置计划最多只能添加20条");
-      this.form.plans.push({
-        content: "",
-        months: "",
+      this.form.scheduleManagements.push({
+        dateMatters: "",
+        dateMonth: "",
       });
     },
     handleUpload(info){
       if(info.file.status === "done"){
         console.log(info.file)
-        this.form.documentAddress = info.file.response.key;
+        this.form.caseFileAddress = info.file.response.key;
         getDownLoadToken(info.file.response.key).then(res=>{
           if(res.code === 20000){
             this.url = res.data;
@@ -362,11 +386,7 @@ export default {
     }
   },
   created() {
-    this.servePlan = JSON.parse(window.localStorage.getItem("servePlan"));
-    if (this.servePlan) {
-      this.form = this.servePlan;
-    }
-    getDownLoadToken(this.form.documentAddress).then(res=>{
+    getDownLoadToken(this.form.caseFileAddress).then(res=>{
       if(res.code === 20000){
         this.url = res.data;
       }else{

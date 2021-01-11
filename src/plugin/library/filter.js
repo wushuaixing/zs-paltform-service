@@ -19,7 +19,12 @@ Vue.filter('amountTh', (val)=>{
 
 Vue.filter('guarantyType', (val)=>{
 	if (!val) return '-';
-	return val === 1 ? '担保' : '抵押+担保';
+	let guarantyObj = {
+		1:'抵押',
+		2:'担保',
+		3:'抵押+担保'
+	}
+	return guarantyObj[val];
 });
 
 Vue.filter('timeFilter', (val)=>{

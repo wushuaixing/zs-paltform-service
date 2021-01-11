@@ -6,6 +6,7 @@
         :centered="true"
         :getContainer="() => $refs.container"
         :maskStyle="{ background: 'rgba(0, 0, 0, 0.5)' }"
+        :maskClosable="false"
         v-model="visible"
         title="修改登录密码"
       >
@@ -106,6 +107,16 @@ export default {
       wrapperCol: { span: 14 },
     };
   },
+  watch:{
+    visible:function(){
+      if(this.visible === false) {
+        this.$refs.ruleForm.resetFields();
+        for(let i = 0;i < this.passwordCheck.length;i ++){
+          this.passwordCheck[i] = false;
+        }
+      }
+    }
+  },
   methods: {
     showModal() {
       this.visible = true;
@@ -114,9 +125,6 @@ export default {
       this.visible = false;
     },
     check() {
-      // if (this.form.newPassword === "") {
-      //   this.$refs.ruleForm.resetFields();
-      // }
       //长度6-20位校验
       const lengthCheck = (value) => !(value.length < 6 || value.length > 20);
       //校验是否有数字

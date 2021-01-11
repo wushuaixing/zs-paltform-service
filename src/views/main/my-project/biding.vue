@@ -5,8 +5,17 @@
       <img class="nothing-pic" src="@/assets/img/tempty.png" alt="">
       <div class="nothing-msg">您尚未完成资质认证，请先完成资质认证！</div>
       <div class="nothing-btn">
-        <a-button type="primary" @click="goConfirm">
+        <a-button type="primary" @click="goConfirm('certifi')">
           立即前往资质认证
+        </a-button>
+      </div>
+    </div>
+    <div v-else-if="isConfirmElements===0" class="nothing">
+      <img class="nothing-pic" src="@/assets/img/tempty.png" alt="">
+      <div class="nothing-msg">您尚未完成要素认证，请先完成要素认证！</div>
+      <div class="nothing-btn">
+        <a-button type="primary" @click="goConfirm('ele')">
+          立即前往要素认证
         </a-button>
       </div>
     </div>
@@ -39,9 +48,9 @@
                 <a-select-option :value="1">方案已提交</a-select-option>
               </a-select>
             </a-form-model-item>
-            <a-form-model-item>
-              <a-button type="primary" html-type="submit" @click="reset">重置</a-button>
-              <a-button style="margin-left:16px" type="primary" html-type="submit" @click="handleSubmit">查询</a-button>
+            <a-form-model-item class="btns">
+              <a-button type="primary" class="reset-btn" html-type="submit" @click="reset">重置</a-button>
+              <a-button style="margin-left:16px" class="search-btn" type="primary" html-type="submit" @click="handleSubmit">查询</a-button>
             </a-form-model-item>
           </a-form-model>
         </div>
@@ -194,7 +203,8 @@ import Breadcrumb from "@/components/bread-crumb";
 import ProjectModal from "@/components/modal/project-modal";
 import PlanModal from "./Plan-modal";
 import { clearProto } from "@/plugin/tools";
-import { columns, colType } from "@/views/main/my-project/source";
+import { columns} from "@/views/main/my-project/source";
+import { getInfo } from "@/plugin/api/base"
 import {
   amcBidDetail,
   amcBiding,
@@ -208,7 +218,6 @@ export default {
   name: "ToReview",
   data() {
     return {
-      loading:true,
       navData: [
         { id: 1, title: "我的项目", path: "biding" },
         { id: 2, title: "我的竞标", path: "biding" },
@@ -242,6 +251,7 @@ export default {
         orderField: "",
       },
       tabConfig: {
+        rowKey:'id',
         dataSource: [],
         size: "middle",
         pagination: {
@@ -253,6 +263,7 @@ export default {
         },
       },
       projectInfo: {},
+      sortOrder:''
     };
   },
   components: {
@@ -263,6 +274,13 @@ export default {
   created() {
     this.getProjectList();
     this.getUnreadInfo();
+    getInfo().then(res=>{
+      if(res.code === 20000){
+        this.$store.commit('updateInfo', res.data);
+      }else{
+        return false;
+      }
+    })
   },
   methods: {
     //获取项目列表
@@ -270,7 +288,6 @@ export default {
       this.http[this.params.aimStatus](this.params).then((res) => {
         if (res.code === 20000) {
           console.log(res);
-          this.loading = false;
           this.tabConfig.pagination.total = res.data.total;
           this.tabConfig.dataSource = res.data.list;
         }else{
@@ -292,7 +309,6 @@ export default {
     },
     // 搜索查询
     handleSubmit() {
-      this.loading = true;
       this.getProjectList();
     },
     //重置
@@ -301,11 +317,12 @@ export default {
       this.params.process = '';
       this.params.page = 1;
       this.params.size = 10;
+      this.sortOrder = false;
       this.getProjectList();
     },
     // tab状态切换
     handleTabChange(val) {
-      this.loading = true;
+      this.sortOrder = false;
       this.query.tabStatus = val;
       this.getProjectList();
     },
@@ -314,6 +331,7 @@ export default {
       this.params.page = pagination.current;
       this.params.size = pagination.pageSize;
       this.params.sortField = sorter.field;
+      this.sortOrder = sorter.order;
       this.params.sortOrder = sorter.order
         ? sorter.order === "ascend"
           ? "ASC"
@@ -358,32 +376,7 @@ export default {
         amcBidDetail(item.id, this.params.aimStatus).then((res) => {
         if (res.code === 20000) {
           this.projectInfo = clearProto(res.data);
-          if(type === "sub"){
-            window.localStorage.removeItem("servePlan");
-            this.$refs.planModal.handleOpenModal();
-          }
-          if(type === "edit"){
-            var servePlan = { //服务方案
-              serviceTime: "",
-              collectionTarget: "",
-              projectId: "",
-              plans: [],
-              documentAddress: "",
-            },length = this.projectInfo.amcBidFiles.length;
-            servePlan.serviceTime = this.projectInfo.serviceTime;
-            servePlan.collectionTarget = this.projectInfo.aimBackPrice;
-            servePlan.projectId = this.projectInfo.id;
-
-            servePlan.documentAddress = this.projectInfo.amcBidFiles[length - 1].caseFileAddress;
-            this.projectInfo.scheduleManagements.forEach(i=>{
-              var plan = {};
-              plan.content = i.dateMatters;
-              plan.months = i.dateMonth;
-              servePlan.plans.push(plan);
-            });
-            window.localStorage.setItem("servePlan",JSON.stringify(servePlan));
-            this.$refs.planModal.handleOpenModal();
-          }
+          this.$refs.planModal.handleOpenModal()
         }else{
           return this.$message.error("获取项目详情失败!...")
         }
@@ -397,16 +390,23 @@ export default {
       date.setMonth(date.getMonth() + month);
       return date.toLocaleDateString().replaceAll("/", "-");
     },
-    goConfirm(){
-      this.$router.push({name:'my-attestation/qualifies'})
+    goConfirm(type){
+      if(type === "certifi")this.$router.push({name:'my-attestation/qualifies'});
+      if(type === "ele")this.$router.push({name:'my-attestation/factor'})
     }
   },
   computed: {
-    columns: function () {
-      return columns[colType[this.query.tabStatus]];
+    columns(){
+      return columns({
+        type:this.params.aimStatus,
+        sortOrder:this.sortOrder
+      })
     },
     isCertification(){
       return this.$store.getters.getInfo.isCertification;
+    },
+    isConfirmElements(){
+      return this.$store.getters.getInfo.isConfirmElements;
     }
   },
 };
@@ -502,6 +502,20 @@ export default {
 			color: #333333;
 		}
 	}
+.btns{
+  .reset-btn{
+    background-color: #fff;
+    color: #666666;
+    border: 1px solid #dddddd;
+    border-radius: 2px;
+    font-size: 14px;
+  }
+  .search-btn{
+    font-size: 14px;
+    background: #008CB0;
+    border-radius: 2px;
+  }
+}
 .query-item-prefix {
   height: 100%;
   width: 90px;

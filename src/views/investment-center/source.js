@@ -1,5 +1,5 @@
 //资产服务项目招商列表
-export const columns = [
+export const columns = (sort) => [
     {
         title: '债务人名称',
         dataIndex: 'debtor',
@@ -40,6 +40,7 @@ export const columns = [
         dataIndex: 'deadline',
         key: 'deadline',
         sorter: true,
+        sortOrder: sort || false,
     },
     {
         title: '操作',
@@ -103,6 +104,10 @@ export const queryOptions = [
             {label: '甘肃', value: '62'},
             {label: '青海', value: '63'},
             {label: '江西', value: '36'},
+            {label: '北京市', value: '11'},
+            {label: '天津市', value: '12'},
+            {label: '上海市', value: '31'},
+            {label: '重庆市', value: '50'},
             {label: '内蒙古自治区', value: '15'},
             {label: '广西壮族自治区', value: '45'},
             {label: '西藏自治区', value: '54'},

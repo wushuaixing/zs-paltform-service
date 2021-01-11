@@ -1,7 +1,6 @@
 <template>
   <a-layout style="padding: 76px 0 30px;">
-    <a-spin v-if="loading" class="spin-wrapper" size="large" tip="数据加载中，请稍后..."/>
-    <div class="investment-center-wrapper" v-else>
+    <div class="investment-center-wrapper">
       <div class="header">
         <img :src="img.logo" alt="">
         <span>浙商资产服务项目招商</span>
@@ -11,7 +10,7 @@
           <div class="content">
             <div class="part" v-for="(item,index) in queryOptions" :key="item.code">
               <div class="label">{{ item.label }}</div>
-              <a-radio-group v-model="queryParams[item.code]" @change="getTableList('signUp')" button-style="solid">
+              <a-radio-group v-model="queryParams[item.code]" @change="handleSearch" button-style="solid">
                 <a-radio-button v-for="childItem in (item.isCollapsed?item.list:item.list.slice(0,item.sliceKey))"
                                 :value="childItem.value" :key="childItem.value">
                   {{ childItem.label }}
@@ -28,10 +27,10 @@
         </div>
         <div class="table-wrapper">
           <div class="total-tips">
-            *当前条件下共有 {{ total }} 条正在招商的项目
+            *当前条件下共有 {{ pagination.total }} 条正在招商的项目
           </div>
-          <a-table :columns="columns" :data-source="amcProjectInfo" :row-key="record => record.id"
-                   :pagination="pagination" @change="handleTabChange" >
+          <a-table :columns="column" :data-source="amcProjectInfo" :row-key="record => record.id"
+                   :pagination="pagination" @change="handleTabChange" :loading="loading">
             <template slot="amount" slot-scope="amount">{{ amount|amountTh }}</template>
             <template slot="security" slot-scope="{security}">{{ SECURITY_TYPE[security] }}</template>
             <template slot="collateralType" slot-scope="{amcProjectCollaterals}">
@@ -59,7 +58,8 @@
         </div>
       </div>
       <AttestationOmission v-else :attestation="isAttestationOmission==='qualifie'?'资质认证':'要素认证'"/>
-      <ProjectModal :projectInfo="projectInfo" :sign="'signUp'" ref="signUpModal" @handleSignUp="getTableList('signUp')"/>
+      <ProjectModal :projectInfo="projectInfo" :sign="'signUp'" ref="signUpModal"
+                    @handleSignUp="getTableList"/>
       <MsgInfoModal ref="msgInfoModal" :msgInfo="projectInfo"/>
     </div>
   </a-layout>
@@ -84,18 +84,23 @@ export default {
         logo,
       },
       loading: false,
-      columns,
       SECURITY_TYPE, //担保方式
       SORTER_TYPE, //排序方式
       queryOptions, //搜索条件
       isAttestationOmission: 0, //是否完成资质认证或要素认证
-      total: 0, //总数
       viewModalVisible: false, //查看抵质押物清单弹窗
-      pagination: {},
+      pagination: {
+        current: 1,
+        total: 1,
+        showQuickJumper: true,
+        showLessItems: true,
+        size: 'middle',
+        showTotal: val => `共${val}条信息`,
+      },
       queryParams: { //入参
         page: 1,
         size: 10,
-        sortOrder: 'DESC',
+        sortOrder: '',
         provinceCode: '',
         type: '',
         priceType: '',
@@ -123,23 +128,29 @@ export default {
     }
   },
   methods: {
-    getTableList(sign) {
-      if (sign !== 'signUp') {
-        this.loading = true;
-      }
+    getTableList() {
+      this.loading = true;
       amcProjectListApi(removeObjectNullVal(this.queryParams)).then((res) => {
         if (res.code === 20000) {
           const data = res.data;
-          this.total = data.total;
+          this.pagination.total = data.total;
           this.amcProjectInfo = data.list;
         } else {
           message.warning(res.message);
         }
-      }).catch(err => {
-        console.log(err)
       }).finally(() => this.loading = false);
     },
 
+    //搜索条件切换
+    handleSearch() {
+      this.queryParams = {
+        ...this.queryParams,
+        page: 1,
+        sortOrder: '',
+      };
+      this.pagination.current = 1;
+      this.getTableList();
+    },
     //查看抵押物信息 竞标报名弹窗
     handleAuction(params, sign) {
       this.projectInfo = clearProto(params);
@@ -152,11 +163,13 @@ export default {
 
     //换页 排序
     handleTabChange(pagination, filters, sorter) {
-      const params = {...this.queryParams};
-      params.page = pagination.current;
-      params.sortOrder = SORTER_TYPE[sorter.order];
-      this.queryParams = params;
-      this.getTableList('signUp');
+      this.queryParams = {
+        ...this.queryParams,
+        page: pagination.current,
+        sortOrder: SORTER_TYPE[sorter.order],
+      }
+      this.pagination.current = pagination.current;
+      this.getTableList();
     },
 
     handleTypeColor(val) {
@@ -172,6 +185,13 @@ export default {
     handleCollapse(flag, index) {
       this.queryOptions[index].isCollapsed = flag === 'down';
     }
+  },
+  computed: {
+    column: function () {
+      const {sortOrder} = this.queryParams;
+      const sort = Object.keys(SORTER_TYPE).find(i => SORTER_TYPE[i] === sortOrder);
+      return columns(sort);
+    },
   },
   filters: {
     //地区
@@ -256,6 +276,7 @@ export default {
 
   .table-wrapper {
     padding: 0 24px;
+
     .ant-table-body {
       tr {
         th {
@@ -267,6 +288,7 @@ export default {
         }
       }
     }
+
     .collateral-type {
       span {
         min-width: 64px;

@@ -110,7 +110,7 @@
               </template>
             </div>
           </a-form-model>
-          <a-button type="primary" block @click="handleSubmit" size="large"
+          <a-button type="primary" block @click="handleSubmit" size="large" :loading="loading"
             >登 录</a-button
           >
           <div style="text-align: right; margin-top: 24px">
@@ -148,6 +148,7 @@ export default {
         phoneCode: "",
         pictureCode: "",
       },
+	    loading:false,
       code: {
         text: "获取验证码",
         disabled: false,
@@ -206,7 +207,7 @@ export default {
           if (res.code === 20000) {
             this.imgCode.url = res.data.captcha;
           } else {
-            this.$message.error("图片验证码失败");
+            this.$message.error("获取图片验证码失败");
           }
         })
         .finally(() => {
@@ -214,6 +215,7 @@ export default {
         });
     },
     toLogin() {
+			this.loading = true;
       const phone = this.params.phone;
       api
         .accountStatus({ phone })
@@ -241,7 +243,7 @@ export default {
             this.$router.push("/");
           } else{
             this.params.pictureCode = "";
-            this.toGetImageCode();
+            if(this.imgCode.status) this.toGetImageCode();
             if (res.data && res.data.count >= 5) return this.$message.error(`账号或密码错误,您还可以尝试${10 - res.data.count}次`);
             if (res.code === 30001) return this.$message.error("账号或密码错误");
             if (res.code === 30003) return this.$message.error("验证码错误");
@@ -256,7 +258,11 @@ export default {
             if (res.code === 30009) return this.$message.error("手机号未注册,请先进行注册");
             if (res.code === 30010) return this.$message.error("图片验证码错误");
           }
-        });
+        })
+				.finally(()=>{
+					this.loading = false;
+				})
+			;
     },
     // 点击登录操作
     handleSubmit() {
@@ -292,7 +298,11 @@ export default {
                 }
               }, 1000);
             } else {
-              this.$message.error("验证码发送失败");
+              if(res.code === 30002){
+                this.$message.error("请勿重复发送验证码")
+              }else{
+                this.$message.error("验证码发送失败");
+              }
               this.code.disabled = false;
             }
           });
