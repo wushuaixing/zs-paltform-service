@@ -5,7 +5,7 @@
         <div class="item-title item-format ">待办事项</div>
         <div class="item-content item-format item-thing item-toDo">
           <!-- 待办事项 -->
-            <div>
+            <div class="toDoList">
               <ul class="through">
                 <li  v-for="(item, index) in list" :key="index">
                   <a-badge :status="MATTER_TYPE[item.code].text" />
@@ -38,22 +38,22 @@
               <div id="main"></div>
             </div>
             <div class="schemeProcess">
-              <a-badge color="#E283FF" text="方案待提交" />
+              <a-badge color="#9200FF" text="方案待提交" />
               <!-- <a-button type="link" @click="onTarget(MATTER_TYPE[item.code].path, item.projectId)" >{{echarts.myProjectCaseUnSubmit}}</a-button> -->
-              <router-link to="/project/biding">{{echarts.myProjectCaseUnSubmit}}</router-link>
+              <router-link to="/project/biding" >{{echarts.myProjectCaseUnSubmit}}</router-link>
               <br />
-              <a-badge text="方案已提交" color="#F6CB16"/>
+              <a-badge text="方案已提交" color="#67CE57"/>
               <router-link to="/project/biding">{{echarts.myProjectCaseSubmitted}}</router-link>
               <br />
-              <a-badge text="方案审批中" color="#5ECB4D" />
+              <a-badge text="方案审批中" color="#F7CE22" />
               <router-link to="/project/biding">{{echarts.myProjectsReview}}</router-link>
               <br />
             </div>
             <div class="schemeStatus">
-              <a-badge text="中标" color="#5ECB4D"/>
+              <a-badge text="中标" color="#44D7B6"/>
               <router-link to="/project/biding">{{echarts.myProjectsAimed}}</router-link>
               <br />
-              <a-badge text="失效" color="#F6CB16"/>
+              <a-badge text="失效" color="#01A0FF"/>
               <router-link to="/project/biding">{{echarts.myProjectsInvalid}}</router-link>
               <br />
               <a-badge text="放弃" color="#F5222D"/>
@@ -126,7 +126,7 @@ export default {
         let dateStr = `${value.year()}-${(value.month() + 1).toString().padStart(2, 0)}-${value.date().toString().padStart(2, 0)}`;
         if (dateStr === this.data[i].dateDay) {
           this.data[i].matters.forEach( item => {
-            var obj = { type: "warning", content: item.dateMatters };
+            var obj = { type: "processing", content: item.dateMatters };
             listData.push(obj);
           });
           return listData;
@@ -186,7 +186,7 @@ export default {
             emphasis: {
                 label: {
                     show: true,
-                    fontSize: '14',
+                    fontSize: '12',
                     fontWeight: 'bold'
                 }
             },
@@ -286,7 +286,7 @@ $leftWidth: 450px;
       min-height: 150px;
     }
     &-thing {
-      min-height: 532px;
+      height: 515px;
     }
 
   }
@@ -295,6 +295,11 @@ $leftWidth: 450px;
       padding: 0;
     }
     .through {
+      height: 500px;
+      ul {
+        height: 500px;
+        overflow-y: auto;
+      }
       li {
         list-style: none;
         border-bottom: 1px solid #E9E9E9;
@@ -372,7 +377,7 @@ $leftWidth: 450px;
       font-size: 12px;
       font-family: PingFangSC-Regular, PingFang SC;
       font-weight: 400;
-      color: #999999;
+      color: #999999!important;
       line-height: 17px;
     }
     // 日历头样式
@@ -411,6 +416,7 @@ $leftWidth: 450px;
   }
   .message {
     font-size: 14px;
+    color: #7F7F7F;
     height: 20px;
     line-height: 20px;
   }
@@ -434,5 +440,10 @@ $leftWidth: 450px;
     padding: unset;
     height: 20px;
     line-height: 20px;
+  }
+  // 加滚动条 
+  .toDoList {
+    overflow-y: auto;
+    // overflow: hidden;
   }
 </style>
