@@ -25,19 +25,15 @@
           <a-form-model
             layout="inline"
           >
-            <a-form-model-item>
+            <a-form-model-item class="debtor" label="债务人名称">
               <a-input
                 v-model="params.debtor"
                 placeholder="请输入债务人名称"
                 class="custom-prefix-6"
                 style="width: 500px"
-              >
-                <template slot="prefix">
-                  <div class="query-item-prefix">债务人名称</div>
-                </template>
-              </a-input>
+              />
             </a-form-model-item>
-            <a-form-model-item label="当前进展：" v-if="query.tabStatus === 1">
+            <a-form-model-item class="process-now" label="当前进展" v-if="query.tabStatus === 1">
               <a-select
                 v-model="params.process"
                 placeholder="请选择当前竞标进展"
@@ -403,10 +399,12 @@ export default {
       })
     },
     isCertification(){
-      return this.$store.getters.getInfo.isCertification;
+      // return this.$store.getters.getInfo.isCertification;
+      return 1;
     },
     isConfirmElements(){
-      return this.$store.getters.getInfo.isConfirmElements;
+      // return this.$store.getters.getInfo.isConfirmElements;
+      return 1;
     }
   },
 };
@@ -502,20 +500,7 @@ export default {
 			color: #333333;
 		}
 	}
-.btns{
-  .reset-btn{
-    background-color: #fff;
-    color: #666666;
-    border: 1px solid #dddddd;
-    border-radius: 2px;
-    font-size: 14px;
-  }
-  .search-btn{
-    font-size: 14px;
-    background: #008CB0;
-    border-radius: 2px;
-  }
-}
+
 .query-item-prefix {
   height: 100%;
   width: 90px;
@@ -549,5 +534,28 @@ export default {
    tr:nth-child(2n){
       background: #FAFAFA;
    }
+}
+.biding-main{
+  .ant-form{
+    .debtor{
+      margin-right: 24px;
+    }
+    .btns{
+      float: right;
+      margin-right: 0;
+      .reset-btn{
+        background-color: #fff;
+        color: #666666;
+        border: 1px solid #dddddd;
+        border-radius: 2px;
+        font-size: 14px;
+      }
+      .search-btn{
+        font-size: 14px;
+        background: #008CB0;
+        border-radius: 2px;
+      }
+    }
+  }
 }
 </style>
