@@ -66,25 +66,27 @@ export const removeObjectNullVal = (obj) => {
  */
 export const fileListRule = (str) => {
 	if (!str) return [];
-	if (!Array.isArray(JSON.parse(str))) return [];
-	return JSON.parse(str).map(i => {
-		if(typeof i === 'string'){
-			return {
-				uid: i,
-				hash:i,
-				name :(i.split('_'))[2] || i,
-				status: 'done',
+	if(/^\[.*]$/.test(str)){
+		if (!Array.isArray(JSON.parse(str))) return [];
+		return JSON.parse(str).map(i => {
+			if(typeof i === 'string'){
+				return {
+					uid: i,
+					hash:i,
+					name :(i.split('_'))[2] || i,
+					status: 'done',
+				}
+			}else{
+				const name = i.name || (i.name.split('_'))[2] || i;
+				return {
+					...i,
+					name,
+					status: 'done',
+				}
 			}
-		}else{
-			const name = i.name || (i.name.split('_'))[2] || i;
-			return {
-				...i,
-				name,
-				status: 'done',
-			}
-		}
-
-	})
+		})
+	}
+	return [];
 };
 
 /**
@@ -92,8 +94,8 @@ export const fileListRule = (str) => {
  * @param str
  */
 export const fileListRuleAsync = (str) => {
-	if (!str) return [];
-	if (!Array.isArray(JSON.parse(str))) return [];
+	if (!str) return Promise.resolve([]);
+	if (!Array.isArray(JSON.parse(str))) return Promise.resolve([]);
 	return Promise.all(JSON.parse(str).map(async i => {
 		if(typeof i === 'string'){
 			const _i = {
