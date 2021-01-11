@@ -147,8 +147,7 @@
                   color: #008cb0;
                   text-decoration: underline;
                 "
-                >服务方案模版下载</span
-              >
+                >服务方案模版下载</span>
             </div>
           </a-form-model-item>
         </a-form-model>
@@ -166,7 +165,7 @@ export default {
   nameComment: "查看抵质押物清单弹窗",
   data() {
     return {
-      visible: false,
+      visible: true,
       formItemLayout: {
         labelCol: {
           xs: { span: 24 },

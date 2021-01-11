@@ -168,7 +168,6 @@
                 <span :class="`${item.prefixCls}-icon-dot`" />
               </a-popover>
               <a-step v-for="(item,index) in info.scheduleManagements" :key="index"  :title="item.dateMatters" :description="`${item.dateMonth}个月`" />
-
             </a-steps>
           </div>
           <div class="plan_scheme">
