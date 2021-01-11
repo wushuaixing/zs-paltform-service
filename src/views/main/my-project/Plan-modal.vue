@@ -152,7 +152,6 @@
           >
             <div style="display: flex" v-if="!form.caseFileAddress">
               <a-upload
-                v-decorator="decorator"
                 v-bind="upload.bind"
                 v-on="upload.on"
                 @change="handleUpload"
@@ -162,15 +161,17 @@
               <span style="font-size: 12px; margin-left: 10px">
                 *支持pdf，word格式，请务必按照方案模版进行撰写
               </span>
-              <span
-                style="
-                  font-size: 12px;
-                  margin-left: 10px;
-                  color: #008cb0;
-                  text-decoration: underline;
-                "
-                >服务方案模版下载</span
-              >
+              <a href="https://zsamc-public.zsamc.com/%E4%BB%A3%E7%90%86%E6%96%B9%E6%A1%88%E6%A8%A1%E6%9D%BF.docx">
+                <span
+                  style="
+                    font-size: 12px;
+                    margin-left: 10px;
+                    color: #008cb0;
+                    text-decoration: underline;
+                  "
+                  >服务方案模版下载</span
+                >
+              </a>
             </div>
             <div v-else>
               <a :href="url"
@@ -188,7 +189,7 @@
 
 <script>
 import { getArea} from "@/plugin/tools";
-import Deploy, { getValueFromEvent } from "@/plugin/tools/qiniu-deploy";
+import Deploy from "@/plugin/tools/qiniu-deploy";
 import { submitServicePlan, modifyCase } from "@/plugin/api/my-biding";
 import {getDownLoadToken} from "@/plugin/api/base"
 export default {
@@ -241,13 +242,6 @@ export default {
           },
         ],
       },
-      decorator: [
-        "confidentialityCommitmentLetter",
-        {
-          valuePropName: "fileList",
-          getValueFromEvent,
-        },
-      ],
       upload: {
         bind: {
           ...Deploy.props,
