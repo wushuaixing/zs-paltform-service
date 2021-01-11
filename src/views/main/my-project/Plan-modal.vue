@@ -61,7 +61,7 @@
       </div>
       <div class="plan">
         <div class="title" style="margin-top: 32px">服务方案</div>
-        <div class="title" style="margin-top: 14px">服务方案核心要素</div>
+        <div class="title little" style="margin-top: 14px">服务方案核心要素</div>
         <a-form-model
           :model="form"
           :rules="rules"
@@ -99,7 +99,9 @@
             v-for="(item, index) in form.scheduleManagements"
             :label="index === 0 ? '处置计划' : '    '"
             :key="index"
+            :colon="index===0"
             prop="scheduleManagements"
+            :rules="{required:index===0}"
           >
             <div>
               <span>从签约日期起</span>
@@ -109,7 +111,7 @@
                 :precision="0"
                 :min="1"
                 style="
-                  width: 235px;
+                  width: 220px;
                   height: 32px;
                   margin: 0 8px;
                 "
@@ -119,28 +121,30 @@
                 v-model.trim="item.dateMatters"
                 :maxLength="30"
                 style="
-                  width: 235px;
+                  width: 220px;
                   height: 32px;
                   margin: 0 8px;
                 "
                 placeholder="阶段性目标,如腾房(30字以内)"
                 class="plan-ipt"
               />
+              <a-icon 
+                v-if="index===form.scheduleManagements.length-1" 
+                type="plus-circle"
+                style="margin-right:12px"
+                class="icon"
+                @click="addDomain"
+              />
               <a-icon
                 v-if="form.scheduleManagements.length > 1"
-                class="dynamic-delete-button"
                 type="minus-circle"
+                class="icon"
                 :disabled="form.scheduleManagements.length === 1"
                 @click="removeDomain(item)"
               />
             </div>
           </a-form-model-item>
-          <a-form-model-item v-bind="formItemLayoutWithOutLabel">
-            <a-button type="dashed" style="width: 60%" @click="addDomain">
-              <a-icon type="plus" />
-            </a-button>
-          </a-form-model-item>
-          <div class="title">服务方案完整文档</div>
+          <div class="title little">服务方案完整文档</div>
           <a-form-model-item
             label="服务方案文档"
             prop="caseFileAddress"
@@ -305,7 +309,7 @@ export default {
     },
     handleCancel() {
       this.visible = false;
-      this.$parent.getProjectDetail();
+      if(this.$route.query.id)this.$parent.getProjectDetail();
     },
     handleModify(type) {
       if(!this.form.serviceTime || !this.form.aimBackPrice)return false;
@@ -327,7 +331,7 @@ export default {
           if (res.code === 20000) {
             this.$message.success("方案提交成功");
             this.visible = false;
-            if(this.$route.query){
+            if(this.$route.query.id){
               this.$parent.getProjectDetail();
             }
           } else {
@@ -346,7 +350,7 @@ export default {
               if (res.code === 20000) {
                 _this.$message.success("修改成功");
                 _this.visible = false;
-                if(_this.$route.query){
+                if(_this.$route.query.id){
                   _this.$parent.getProjectDetail();
                 }
               } else {
@@ -448,28 +452,27 @@ export default {
         }
       }
     }
+    .ant-form-item{
+      height: 32px;
+    }
     .ant-modal-footer {
       text-align: center;
-    }
-    .plan-item ~ .plan-item {
-      margin-top: 24px;
-    }
-    .plan-item {
-      .plan-ipt {
-        width: 240px;
-        height: 32px;
-        margin: 0 8px;
-      }
     }
     .title {
       font-size: 16px;
       font-weight: 600;
       color: #333333;
+      &.little{
+        font-size: 14px;
+      }
     }
   }
 }
 .ant-modal-confirm-btns {
   margin-right: 50%;
   transform: translateX(50%);
+}
+.icon{
+  font-size: 16px;
 }
 </style>

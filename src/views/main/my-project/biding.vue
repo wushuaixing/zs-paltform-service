@@ -64,6 +64,7 @@
           </a-tabs>
           <div class="biding-content-table">
             <a-table
+              rowKey="id"
               :columns="columns"
               :customRow="click"
               v-bind="tabConfig"
@@ -89,7 +90,7 @@
                 slot-scope="{ process, closeSubmitDeadline }"
               >
                 <a-avatar
-                  :size="6"
+                  :size="10"
                   :style="{
                     backgroundColor:
                       process === 0
@@ -314,6 +315,7 @@ export default {
       this.params.page = 1;
       this.params.size = 10;
       this.sortOrder = false;
+      this.params.sortOrder = "";
       this.getProjectList();
     },
     // tab状态切换
@@ -517,6 +519,7 @@ export default {
   width: fit-content;
   color: #f5222d;
   border: 1px #f5222d dashed;
+  border-radius: 2px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
