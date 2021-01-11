@@ -5,22 +5,19 @@ const areaSource = {};
 
 data.area.forEach(item=>{
 	areaSource[item.id] = {
-		name:item.name,
-		id:item.id,
-		child:{}
+		n:item.name,
+		c:{}
 	};
 	if(item.children){
 		item.children.forEach(ic=>{
-			areaSource[item.id].child[ic.id] = {
-				name:ic.name,
-				id:ic.id,
-				child:{}
+			areaSource[item.id].c[ic.id] = {
+				n:ic.name,
+				c:{}
 			};
 			if(ic.children){
 				ic.children.forEach(icc=>{
-					areaSource[item.id].child[ic.id].child[icc.id] = {
-						name:icc.name,
-						id:icc.id,
+					areaSource[item.id].c[ic.id].c[icc.id] = {
+						n:icc.name,
 					};
 				});
 			}

@@ -1,7 +1,5 @@
-import areaSource  from '@/assets/js/address';
-
 // 地区-选项
-export const areaOption = areaSource;
+export const areaOption =  global.FIELD_ADDRESS || [];
 
 // 擅长业务类型
 export const orgAdvType = [
