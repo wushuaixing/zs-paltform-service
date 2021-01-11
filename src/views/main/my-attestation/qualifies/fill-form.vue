@@ -51,7 +51,7 @@
           </a-upload>
           <div class="upload-text">
             <div>*请下载保密承诺函模板，签字、用印后扫描或拍照上传；支持jpg、pdf格式</div>
-						<a href="#" style="text-decoration: underline">承诺函模板下载</a>
+						<a href="https://zsamc-public.zsamc.com/%E3%80%8A%E6%B5%99%E6%B1%9F%E7%9C%81%E6%B5%99%E5%95%86%E8%B5%84%E4%BA%A7%E7%AE%A1%E7%90%86%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8%E4%BF%9D%E5%AF%86%E6%89%BF%E8%AF%BA%E4%B9%A6%E3%80%8B.doc" style="text-decoration: underline">承诺函模板下载</a>
           </div>
         </div>
       </a-form-item>
@@ -113,7 +113,7 @@
               <a-icon type="plus" />
             </div>
           </a-upload>
-          <div class="upload-text">证件正面（国徽面）</div>
+          <div class="upload-text">证件反面（国徽面）</div>
         </div>
         <div class="fill-form-upload-wrapper fill-form-upload__remark">
           <div class="upload-text">*支持jpg、pdf格式</div>
@@ -150,7 +150,7 @@
           </a-upload>
           <div class="upload-text">
             <div>*请下载保密承诺函模板，签字、用印后扫描或拍照上传；支持jpg、pdf格式</div>
-            <a href="#" style="text-decoration: underline">承诺函模板下载</a>
+            <a href="https://zsamc-public.zsamc.com/%E3%80%8A%E6%B5%99%E6%B1%9F%E7%9C%81%E6%B5%99%E5%95%86%E8%B5%84%E4%BA%A7%E7%AE%A1%E7%90%86%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8%E4%BF%9D%E5%AF%86%E6%89%BF%E8%AF%BA%E4%B9%A6%E3%80%8B.doc" style="text-decoration: underline">承诺函模板下载</a>
           </div>
         </div>
       </a-form-item>
