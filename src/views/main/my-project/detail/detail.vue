@@ -347,7 +347,7 @@ export default {
 
     .subtitle {
       font-size: 14px;
-      font-weight: 400;
+      font-weight: 00;
       color: #333333;
       line-height: 14px;
     }

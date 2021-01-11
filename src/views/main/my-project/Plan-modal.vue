@@ -384,13 +384,15 @@ export default {
     }
   },
   created() {
-    getDownLoadToken(this.form.caseFileAddress).then(res=>{
-      if(res.code === 20000){
-        this.url = res.data;
-      }else{
-        return false;
-      }
-    })
+    if(this.form.caseFileAddress){
+      getDownLoadToken(this.form.caseFileAddress).then(res=>{
+        if(res.code === 20000){
+          this.url = res.data;
+        }else{
+          return false;
+        }
+      })
+    }
   },
   filters: {
     area: (params) => {
