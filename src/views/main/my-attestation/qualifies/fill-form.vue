@@ -540,14 +540,16 @@ export default {
     // 确认无误并提交
     handleSubmit(e) {
       (e || window.event).preventDefault();
-      return new Promise(resolve => {
+      return new Promise((resolve,reject) => {
 	      this.form.validateFields((err, values) => {
 		      if (!err) {
 			      // console.log('Received values of form: ', values);
 			      const source = this.processData(values);
 			      if(!this.onlyData) this.toUpdateInfo(source);
 			      resolve(source)
-		      }
+		      }else{
+			      reject(err)
+					}
 	      });
 			})
 

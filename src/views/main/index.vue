@@ -8,7 +8,7 @@
         <router-view/>
       </a-layout-content>
     </a-layout>
-		<Element />
+		<Element/>
 	</a-layout>
 </template>
 <script>

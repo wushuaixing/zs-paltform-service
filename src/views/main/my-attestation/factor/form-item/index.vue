@@ -132,6 +132,7 @@
 						}
 					}
 					this.loading = false;
+					return Promise.reject();
 				})
 			},
 			// 移除 - 律所相关信息警告
