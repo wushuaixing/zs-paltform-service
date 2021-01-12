@@ -398,10 +398,12 @@ export default {
       })
     },
     isCertification(){
-      return this.$store.getters.getInfo.isCertification;
+      // return this.$store.getters.getInfo.isCertification;
+      return 1;
     },
     isConfirmElements(){
-      return this.$store.getters.getInfo.isConfirmElements;
+      // return this.$store.getters.getInfo.isConfirmElements;
+      return 1;
     }
   },
 };

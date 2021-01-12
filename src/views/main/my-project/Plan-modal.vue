@@ -32,11 +32,11 @@
         <div class="content">
           <a-row>
             <a-col :span="8">
-              <span>债务人名称：</span><span>{{ projectInfo.debtor }}</span>
+              <span>债务人名称：</span><span>{{ projectInfo.debtor|show_ }}</span>
             </a-col>
             <a-col :span="8">
               <span>债务人注册地：</span
-              ><span>{{ projectInfo.debtorAddress }}</span>
+              ><span>{{ projectInfo.debtorAddress|show_ }}</span>
             </a-col>
             <a-col :span="8">
               <span>当前诉讼状态：</span
@@ -405,6 +405,10 @@ export default {
     area: (params) => {
       return getArea(params.provinceCode, params.cityCode, params.areaCode);
     },
+    show_(val){
+      if(!val)return "-";
+      return val
+    }
   },
 };
 </script>
