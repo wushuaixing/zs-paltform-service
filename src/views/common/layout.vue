@@ -18,14 +18,14 @@
                       :getPopupContainer="e=>e.parentElement" >
             <a-menu slot="overlay" >
               <a-menu-item key="1">
-                <div @click="handleModifyPhone"><a-icon type="user" />修改绑定手机号</div>
+                <div @click="handleModifyPhone"><a-icon class="personal-icon" type="user" />修改绑定手机号</div>
               </a-menu-item>
               <a-menu-item key="2">
-                <div @click="handleSetPwd" v-if="isSetPassword===0"><a-icon type="lock" />设置登录密码</div>
-                <div @click="handleModifyPwd" v-if="isSetPassword===1"><a-icon type="lock" />修改登录密码</div>
+                <div @click="handleSetPwd" v-if="isSetPassword===0"><a-icon class="personal-icon" type="lock" />设置登录密码</div>
+                <div @click="handleModifyPwd" v-if="isSetPassword===1"><a-icon class="personal-icon" type="lock" />修改登录密码</div>
               </a-menu-item>
               <a-menu-item key="3">
-                <div @click="doLogout"><a-icon type="poweroff" />退出登录</div>
+                <div @click="doLogout"><a-icon class="personal-icon" type="poweroff" />退出登录</div>
               </a-menu-item>
             </a-menu>
             <a-button type="link" icon="down" style="color:#fff;">Hi，{{username}}</a-button>
@@ -75,8 +75,8 @@
           title:"是否退出登录?",
           centered:true,
           onOk(){
-            _this.$router.push('/login');
             logout()
+            _this.$router.push('/login');
           }
         })
       }
@@ -114,6 +114,9 @@
 </script>
 
 <style lang="scss">
+.personal-icon{
+  padding-right: 6px;
+}
 .root-node-wrapper{
 
 }

@@ -88,7 +88,7 @@
         <a-row>
           <a-col :span="24">
             <div style="padding-left:10px">
-              <span class="subtitle">保证人清单：</span
+              <span class="subtitle" style="white-space:nowrap">保证人清单：</span
               ><span class="spantext">{{
                 info.amcProjectGuarantors | guarantorsList
               }}</span>
@@ -97,7 +97,7 @@
         </a-row>
         <a-row>
           <a-col :span="24" style="display: flex">
-            <div class="subtitle" style="padding-left:10px">抵押物清单：</div>
+            <div class="subtitle" style="padding-left:10px;white-space:nowrap">抵押物清单：</div>
             <div>
               <p v-for="(i, index) in info.amcProjectCollaterals" :key="index">
                 {{index+1}}. {{i.collateralType|collateralType}}、{{i|area}}、{{i.collateralName}}
@@ -162,19 +162,19 @@
             <div class="subtitle">处置计划：</div>
           </div>
           <div style="margin-top:24px" class="step-container">
-            <a-steps :current="20" >
+            <a-steps :current="20">
               <a-popover slot="progressDot"  slot-scope="item">
                 <template slot="content">
                   <span>{{ item.title }}</span>
                 </template>
                 <span :class="`${item.prefixCls}-icon-dot`" />
+                <!-- <img src="@/assets/img/step-act.png" alt=""> -->
               </a-popover>
               <a-step v-for="(item,index) in info.scheduleManagements" :key="index"  :title="item.dateMatters" :description="info.aimedStatus==='3'?`${item.dateDay}前`:`${item.dateMonth}个月内`" />
-              
             </a-steps>
           </div>
           <div class="plan_scheme">
-            <div class="subtitle" style="padding-left:10px">方案文档：<a>服务方案.doc</a></div>
+            <div class="subtitle" style="padding-left:10px">方案文档：<a :href="url">{{fileName}}</a></div>
             <button class="modify_scheme" @click="goSubmit" v-if="info.aimedStatus === '2' && info.caseFileStatus === '1'">
               修改服务方案
             </button>
@@ -191,6 +191,7 @@
 import  {getArea} from "@/plugin/tools"
 import {queryOptions} from "@/views/investment-center/source"
 import { amcBidDetail } from "@/plugin/api/my-biding";
+import {getDownLoadToken} from "@/plugin/api/base"
 import Breadcrumb from "@/components/bread-crumb";
 import PlanModal from "../Plan-modal.vue";
 
@@ -198,6 +199,8 @@ export default {
   data() {
     return {
       loading:true,
+      url:'',
+      fileName:'',
       navData: [
         { id: 1, title: "我的项目", path: "biding" },
         { id: 2, title: "我的竞标", path: "biding" },
@@ -275,10 +278,19 @@ export default {
     getProjectDetail(){
       let {id,type} = this.$route.query;
       amcBidDetail(id,type).then((res) => {
-        console.log(res);
         if(res.code === 20000){
           this.loading = false;
           this.info = res.data;
+          const length = this.info.amcBidFiles.length;
+          const caseFileAddress = this.info.amcBidFiles[length - 1].caseFileAddress;
+          this.fileName = (caseFileAddress.split('_'))[2];
+          return getDownLoadToken(caseFileAddress).then(res=>{
+            if(res.code === 20000){
+              this.url = res.data;
+            }else{
+              return false;
+            }
+          })
         }else{
           this.$message.error("获取项目详情失败,请刷新页面")
         }
@@ -288,6 +300,7 @@ export default {
   computed: {},
   created() {
     this.getProjectDetail();
+
   },
 };
 </script>
@@ -347,7 +360,7 @@ export default {
 
     .subtitle {
       font-size: 14px;
-      font-weight: 500;
+      font-weight: 00;
       color: #333333;
       line-height: 14px;
     }

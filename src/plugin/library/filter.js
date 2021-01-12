@@ -19,7 +19,7 @@ Vue.filter('evolveType', (val)=>{
 
 Vue.filter('amountTh', (val)=>{
 	if (!val) return '-';
-	return Number(val).toFixed(1);
+	return Number(val).toFixed(2);
 });
 
 Vue.filter('guarantyType', (val)=>{

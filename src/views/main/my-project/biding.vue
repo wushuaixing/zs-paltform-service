@@ -25,19 +25,15 @@
           <a-form-model
             layout="inline"
           >
-            <a-form-model-item>
+            <a-form-model-item class="debtor" label="债务人名称">
               <a-input
                 v-model="params.debtor"
                 placeholder="请输入债务人名称"
                 class="custom-prefix-6"
                 style="width: 500px"
-              >
-                <template slot="prefix">
-                  <div class="query-item-prefix">债务人名称</div>
-                </template>
-              </a-input>
+              />
             </a-form-model-item>
-            <a-form-model-item label="当前进展：" v-if="query.tabStatus === 1">
+            <a-form-model-item class="process-now" label="当前进展" v-if="query.tabStatus === 1">
               <a-select
                 v-model="params.process"
                 placeholder="请选择当前竞标进展"
@@ -68,6 +64,7 @@
           </a-tabs>
           <div class="biding-content-table">
             <a-table
+              rowKey="id"
               :columns="columns"
               :customRow="click"
               v-bind="tabConfig"
@@ -93,7 +90,7 @@
                 slot-scope="{ process, closeSubmitDeadline }"
               >
                 <a-avatar
-                  :size="6"
+                  :size="10"
                   :style="{
                     backgroundColor:
                       process === 0
@@ -252,12 +249,11 @@ export default {
       },
       tabConfig: {
         rowKey:'id',
+        class:'frame-content-table',
         dataSource: [],
         size: "middle",
         pagination: {
-          total: 40,
-          showSizeChanger: true,
-          pageSizeOptions: ["10", "20", "30", "40"],
+          total: 0,
           showQuickJumper: true,
           showTotal: (val) => `共${val}条信息`,
         },
@@ -287,7 +283,6 @@ export default {
     getProjectList() {
       this.http[this.params.aimStatus](this.params).then((res) => {
         if (res.code === 20000) {
-          console.log(res);
           this.tabConfig.pagination.total = res.data.total;
           this.tabConfig.dataSource = res.data.list;
         }else{
@@ -309,6 +304,9 @@ export default {
     },
     // 搜索查询
     handleSubmit() {
+      this.params.page = 1;
+      this.sortOrder = false;
+      this.params.sortOrder = "";
       this.getProjectList();
     },
     //重置
@@ -316,20 +314,20 @@ export default {
       this.params.debtor = '';
       this.params.process = '';
       this.params.page = 1;
-      this.params.size = 10;
       this.sortOrder = false;
+      this.params.sortOrder = "";
       this.getProjectList();
     },
     // tab状态切换
     handleTabChange(val) {
       this.sortOrder = false;
       this.query.tabStatus = val;
+      this.params.page = 1;
       this.getProjectList();
     },
     // 分页,排序
     handleTableChange(pagination, filters, sorter) {
       this.params.page = pagination.current;
-      this.params.size = pagination.pageSize;
       this.params.sortField = sorter.field;
       this.sortOrder = sorter.order;
       this.params.sortOrder = sorter.order
@@ -344,9 +342,7 @@ export default {
       return {
         on: {
           click: () => {
-            changeUnRead(row.id).then((res) => {
-              console.log(res);
-            });
+            changeUnRead(row.id)
           },
         },
       };
@@ -502,20 +498,7 @@ export default {
 			color: #333333;
 		}
 	}
-.btns{
-  .reset-btn{
-    background-color: #fff;
-    color: #666666;
-    border: 1px solid #dddddd;
-    border-radius: 2px;
-    font-size: 14px;
-  }
-  .search-btn{
-    font-size: 14px;
-    background: #008CB0;
-    border-radius: 2px;
-  }
-}
+
 .query-item-prefix {
   height: 100%;
   width: 90px;
@@ -532,22 +515,46 @@ export default {
   width: fit-content;
   color: #f5222d;
   border: 1px #f5222d dashed;
+  border-radius: 2px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.biding-content-table{
-  table{
-    border-bottom: 1px #E8E8E8 solid;
+// .biding-content-table{
+//   table{
+//     border-bottom: 1px #E8E8E8 solid;
+//   }
+//   tr >td,tr >th{
+// 		border-bottom: none;
+//   }
+// 	tbody > tr{
+// 		height: 72px;
+// 	}
+//    tr:nth-child(2n){
+//       background: #FAFAFA;
+//    }
+// }
+.biding-main{
+  .ant-form{
+    .debtor{
+      margin-right: 24px;
+    }
+    .btns{
+      float: right;
+      margin-right: 0;
+      .reset-btn{
+        background-color: #fff;
+        color: #666666;
+        border: 1px solid #dddddd;
+        border-radius: 2px;
+        font-size: 14px;
+      }
+      .search-btn{
+        font-size: 14px;
+        background: #008CB0;
+        border-radius: 2px;
+      }
+    }
   }
-  tr >td,tr >th{
-		border-bottom: none;
-  }
-	tbody > tr{
-		height: 72px;
-	}
-   tr:nth-child(2n){
-      background: #FAFAFA;
-   }
 }
 </style>
