@@ -17,7 +17,7 @@
       <a-cascader v-decorator="field.local.dec" v-bind="field.local.other"/>
     </a-form-item>
     <a-form-item label="公司分部覆盖地区">
-      <el-cascader v-bind="field.involve.other" @change="val=>handleEleCas(val,field.involve.dec[0])"
+      <el-cascader v-bind="field.involve.other" @change="val=>handleEleCas(val,field.involve.dec[0],'company')"
                    @visible-change="val=>this.visible = val"/>
       <a-input v-decorator="field.involve.dec" style="display: none"/>
     </a-form-item>
@@ -52,7 +52,7 @@
       </a-checkbox-group>
     </a-form-item>
     <a-form-item label="擅长业务区域">
-      <el-cascader v-bind="adv.involve.other" @change="val=>handleEleCas(val,adv.involve.dec[0])"
+      <el-cascader v-bind="adv.involve.other" @change="val=>handleEleCas(val,adv.involve.dec[0],'business')"
                    @visible-change="val=>this.visible = val"/>
       <a-input v-decorator="adv.involve.dec" style="display: none"/>
     </a-form-item>
@@ -317,7 +317,7 @@ export default {
           }
         },
         otherResourcesAdvantage: {
-          dec: ['otherResourcesAdvantage', {rules: [{required: true, message: '请选择社会资源优势'}]}],
+          dec: ['otherResourcesAdvantage', {rules: [{required: true, message: '请输入社会资源优势'}]}],
           other: {
             placeholder: '包括但不限于某法院、法官，法官请以“xx法院-xx法官形式输入，多个法院、法官间以中文顿号隔开”',
             ...textarea
@@ -336,7 +336,6 @@ export default {
             ...textarea
           }
         },
-
       },
     }
   },
@@ -377,13 +376,13 @@ export default {
       });
     },
     // ele 地区多选事件触发
-    handleEleCas(val = [], field) {
+    handleEleCas(val = [], field, sign) {
       const {setFieldsValue, setFields} = this.form;
       if (!this.visible && !val.length) {
         setFields({
           [field]: {
             value: undefined,
-            errors: [new Error('主要涉业地区不能为空')]
+            errors: [new Error(sign === 'business' ? '请选择擅长业务区域' : '请选择公司分部覆盖地区')]
           }
         })
       } else {
