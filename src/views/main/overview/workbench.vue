@@ -38,9 +38,9 @@
               <div id="main"></div>
             </div>
             <div class="schemeProcess">
-              <a-badge color="#9200FF" text="方案待提交" />
+              <a-badge color="#9200FF" style="marign-left: 12px" text="方案待提交" />
               <!-- <a-button type="link" @click="onTarget(MATTER_TYPE[item.code].path, item.projectId)" >{{echarts.myProjectCaseUnSubmit}}</a-button> -->
-              <router-link to="/project/biding" >{{echarts.myProjectCaseUnSubmit}}</router-link>
+              <router-link to="/project/biding"  >{{echarts.myProjectCaseUnSubmit}}</router-link>
               <br />
               <a-badge text="方案已提交" color="#67CE57"/>
               <router-link to="/project/biding">{{echarts.myProjectCaseSubmitted}}</router-link>
@@ -110,8 +110,7 @@ export default {
         startDate:""
       },
       // 事项数据
-      data: [
-      ],
+      data: []
     };
   },
   computed: {
@@ -170,7 +169,7 @@ export default {
       if (res.code !== 20000) return this.$message.error('获取图表数据失败');
       this.echarts = res.data;
       let option = {
-      color: ['#E283FF', '#F6CB16','#5ECB4D','#5ECB4D','#F6CB16','#F5222D'],
+      color: ['#E283FF', '#67CE57','#F7CE22','#44D7B6','#01A0FF','#F5222D'],
         tooltip: {
             trigger: 'item',
         },
@@ -194,7 +193,7 @@ export default {
                 show: false
             },
             data: [
-              { value: this.echarts.myProjectCaseUnSubmit, name: '方案待提交'},
+                { value: this.echarts.myProjectCaseUnSubmit, name: '方案待提交'},
               { value: this.echarts.myProjectCaseSubmitted, name: '方案已提交'},
               { value: this.echarts.myProjectsReview, name:'方案审批中'},
               { value: this.echarts.myProjectsAimed, name: '中标'},
@@ -231,7 +230,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-$leftWidth: 460px;
+$leftWidth: 470px;
 .workbench-wrapper {
   // width: 1440px;
   height: 100%;
@@ -312,7 +311,7 @@ $leftWidth: 460px;
     .data-display {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      margin-top: 5px;
       width: 100%;
       height: 200px;
       .ant-badge {
@@ -326,7 +325,9 @@ $leftWidth: 460px;
       border-radius: 50%;
     }
     .schemeProcess,.schemeStatus {
-      width: 30%;
+      overflow: hidden;
+      width: 40%;
+      margin: 10px 0 10px 20px;
       span {
         height: 20px;
         font-size: 14px;
@@ -334,6 +335,9 @@ $leftWidth: 460px;
         font-weight: 400;
         color: #333333;
         line-height: 20px;
+      }
+      /deep/span[data-v-354f9fd6] {
+        padding: 2px 40px 2px 0;
       }
     }
       /deep/.ant-badge-status-dot {
@@ -367,6 +371,7 @@ $leftWidth: 460px;
       text-overflow: ellipsis;
       font-size: 12px;
     }
+   
     .notes-month {
       text-align: center;
       font-size: 28px;
@@ -375,6 +380,7 @@ $leftWidth: 460px;
       font-size: 28px;
     }
     /deep/.ant-badge-status-text {
+      margin-left: 4px;
       height: 17px;
       font-size: 12px;
       font-family: PingFangSC-Regular, PingFang SC;
@@ -382,10 +388,15 @@ $leftWidth: 460px;
       color: #999999!important;
       line-height: 17px;
     }
+    // /deep/.ant-fullcalendar-content {
+    //   // width: 2px;
+    //   background: pink;
+    // }
     // 日历头样式
     /deep/.ant-fullcalendar-header {
       text-align: center;
-      margin-bottom: 5px;
+      // margin-bottom: 5px;
+      margin: 8px 0;
     }
     /deep/.ant-fullcalendar-column-header-inner {
       font-weight: 800;
@@ -399,10 +410,28 @@ $leftWidth: 460px;
     }
     /deep/.ant-fullcalendar-date {
       border-top: 4px solid #e8e8e8;
+      overflow: hidden;
     }
     /deep/.ant-fullcalendar-today .ant-fullcalendar-date {
       border-top: 6px solid #008cb0 !important;
       opacity: 0.8;
+     
+    }
+    // 修改待办事项里面的滚动条样式
+    /deep/.ant-fullcalendar-content {
+      // height: 50px;
+      overflow-y: auto;
+    }
+    /deep/.ant-fullcalendar-content::-webkit-scrollbar {
+      width: 4px;
+      height: 5px;
+      background: #ccc;
+    }
+    /deep/.ant-fullcalendar-content::-webkit-scrollbar-thumb {
+      width: 2px;
+      border-radius: 3px;
+      -webkit-box-align: inherit;
+      background: rgba(47, 3, 88, 0.3);
     }
     /deep/.ant-badge-status-text {
       height: 12px;
@@ -416,10 +445,10 @@ $leftWidth: 460px;
     /deep/.ant-select-selection--single {
       width: 160px;
     }
-    /deep/.ant-fullcalendar-value {
-      padding-top: 26px;
-      padding-right: 14px;
-    }
+    // /deep/.ant-fullcalendar-value {
+    //   padding-top: 26px;
+    //   padding-right: 14px;
+    // }
   }
   // 隐藏月和年选择按钮
   /deep/.ant-radio-group {
