@@ -75,8 +75,8 @@
           title:"是否退出登录?",
           centered:true,
           onOk(){
-            _this.$router.push('/login');
             logout()
+            _this.$router.push('/login');
           }
         })
       }

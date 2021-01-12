@@ -249,12 +249,11 @@ export default {
       },
       tabConfig: {
         rowKey:'id',
+        class:'frame-content-table',
         dataSource: [],
         size: "middle",
         pagination: {
-          total: 40,
-          showSizeChanger: true,
-          pageSizeOptions: ["10", "20", "30", "40"],
+          total: 0,
           showQuickJumper: true,
           showTotal: (val) => `共${val}条信息`,
         },
@@ -305,6 +304,9 @@ export default {
     },
     // 搜索查询
     handleSubmit() {
+      this.params.page = 1;
+      this.sortOrder = false;
+      this.params.sortOrder = "";
       this.getProjectList();
     },
     //重置
@@ -312,7 +314,6 @@ export default {
       this.params.debtor = '';
       this.params.process = '';
       this.params.page = 1;
-      this.params.size = 10;
       this.sortOrder = false;
       this.params.sortOrder = "";
       this.getProjectList();
@@ -321,12 +322,12 @@ export default {
     handleTabChange(val) {
       this.sortOrder = false;
       this.query.tabStatus = val;
+      this.params.page = 1;
       this.getProjectList();
     },
     // 分页,排序
     handleTableChange(pagination, filters, sorter) {
       this.params.page = pagination.current;
-      this.params.size = pagination.pageSize;
       this.params.sortField = sorter.field;
       this.sortOrder = sorter.order;
       this.params.sortOrder = sorter.order
@@ -398,12 +399,10 @@ export default {
       })
     },
     isCertification(){
-      // return this.$store.getters.getInfo.isCertification;
-      return 1;
+      return this.$store.getters.getInfo.isCertification;
     },
     isConfirmElements(){
-      // return this.$store.getters.getInfo.isConfirmElements;
-      return 1;
+      return this.$store.getters.getInfo.isConfirmElements;
     }
   },
 };
@@ -521,20 +520,20 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.biding-content-table{
-  table{
-    border-bottom: 1px #E8E8E8 solid;
-  }
-  tr >td,tr >th{
-		border-bottom: none;
-  }
-	tbody > tr{
-		height: 72px;
-	}
-   tr:nth-child(2n){
-      background: #FAFAFA;
-   }
-}
+// .biding-content-table{
+//   table{
+//     border-bottom: 1px #E8E8E8 solid;
+//   }
+//   tr >td,tr >th{
+// 		border-bottom: none;
+//   }
+// 	tbody > tr{
+// 		height: 72px;
+// 	}
+//    tr:nth-child(2n){
+//       background: #FAFAFA;
+//    }
+// }
 .biding-main{
   .ant-form{
     .debtor{
