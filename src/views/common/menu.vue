@@ -14,8 +14,7 @@
         </span>
         <a-menu-item v-for="cItem in item.child" :key="`${item.id}${cItem.id}`">
           <router-link :to="`${item.path||''}${cItem.path||''}`">
-						<a-badge :dot="noOffice" class="dot-badge" v-if="item.dot">律所信息</a-badge>
-						<template v-else>{{ cItem.title }}</template>
+						<a-badge :dot="getValue(cItem.field)" class="dot-badge">{{ cItem.title }}</a-badge>
 					</router-link>
         </a-menu-item>
       </a-sub-menu>
@@ -64,14 +63,18 @@ export default {
           icon:'solution',
           path:'/attest',
           child:[
-            { id:'1', title:'资质认证', path:'/qualifies',dot:false},
-            { id:'2', title:'要素认证', path:'/factor',dot:false },
+            { id:'1', title:'资质认证', path:'/qualifies',field:'qualify'},
+            { id:'2', title:'要素认证', path:'/factor',field:'factor' },
           ]
         },
       ],
     };
   },
   methods:{
+		getValue(field){
+			if(field) return this.isSubmit[field];
+			return false;
+		},
     getSelectKey(path){
       let defaultKey = '1';
       let childKey = '1';
@@ -94,7 +97,18 @@ export default {
     this.selectedKeys = this.getSelectKey(path);
 
   },
+	computed:{
+		isSubmit(){
+			const { isSubmitCertify, isSubmitElements} = this.$store.getters.getInfo;
+			return {
+				qualify:!isSubmitCertify,
+				factor:isSubmitCertify ? !isSubmitElements : false,
+			}
+		},
+	},
   mounted(){
+	  // const { isSubmitCertify, isSubmitElements} = this.$store.getters.getInfo;
+		// console.log(isSubmitCertify,isSubmitElements);
   },
   watch:{
     $route(to,from){
