@@ -400,7 +400,10 @@ export default {
         });
       });
     },
-    LinkageData(params, val) {
+	  /**
+	   * @return {string}
+	   */
+	  LinkageData(params, val) {
       if (params instanceof Array) {
         return params.some(i => Number(i) === 0) ? val : '';
       } else {
@@ -444,7 +447,13 @@ export default {
       this.adv.involve.other.value = areaAnalysis(source.areasOfGoodCases, false);
       this.$nextTick(() => {
         if (source.hasInvestmentIntention === '1') {
-          const {disabled, min, max} = JSON.parse(source.startAmountOfSubject);
+					let _subject = {};
+					try{
+		        _subject = JSON.parse(source.startAmountOfSubject);
+					}catch (e) {
+						console.log('-');
+	        }
+          const {disabled, min, max} = _subject;
           this.form.setFieldsValue({
             investmentExperience,
             disabled,

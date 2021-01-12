@@ -191,8 +191,13 @@
 			const _areas = val => this.$options.filters['areas'](areaAnalysis(val,false));
 			const _if = i => i === '1';
       const _range = i => {
-        const { disabled,min,max } = JSON.parse(i);
-        return disabled ? '不限' : `${ min }万元 - ${ max }万元`
+				try {
+		      const { disabled,min,max } = JSON.parse(i);
+		      return disabled ? '不限' : `${ min }万元 - ${ max }万元`
+	      }catch(e){
+					console.log('-');
+				}
+	      return '-'
       };
 			const publicField = [
 				{

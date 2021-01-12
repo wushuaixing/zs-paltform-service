@@ -384,8 +384,9 @@ export default {
           }],
           other:{
             placeholder:'请输入身份证号码',
-            maxLength:18,
-            ...baseWidth
+            ...baseWidth,
+	          maxLength:18,
+
           }
         },
         sex:{
@@ -401,7 +402,9 @@ export default {
           }],
           other:{
             placeholder:'请输入执业证号',
-            ...baseWidth
+            ...baseWidth,
+	          maxLength:17,
+
           }
         },
         year:{
@@ -568,6 +571,7 @@ export default {
 							title: '资质认证提交成功',
 							okText:'点击前往"要素认证"',
 							onOk:()=>{
+								this.$store.dispatch("updateQualify");
 								this.$store.dispatch("updateIdentity", this.userType === 'lawyer' ? 1 : 2);
 								this.$router.push('/attest/factor');
 							}
