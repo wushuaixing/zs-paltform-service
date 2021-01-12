@@ -254,6 +254,7 @@ export default {
         size: "middle",
         pagination: {
           total: 0,
+          current:1,
           showQuickJumper: true,
           showTotal: (val) => `共${val}条信息`,
         },
@@ -305,6 +306,7 @@ export default {
     // 搜索查询
     handleSubmit() {
       this.params.page = 1;
+      this.tabConfig.pagination.current = 1;
       this.sortOrder = false;
       this.params.sortOrder = "";
       this.getProjectList();
@@ -314,6 +316,7 @@ export default {
       this.params.debtor = '';
       this.params.process = '';
       this.params.page = 1;
+      this.tabConfig.pagination.current = 1;
       this.sortOrder = false;
       this.params.sortOrder = "";
       this.getProjectList();
@@ -323,11 +326,13 @@ export default {
       this.sortOrder = false;
       this.query.tabStatus = val;
       this.params.page = 1;
+      this.tabConfig.pagination.current = 1;
       this.getProjectList();
     },
     // 分页,排序
     handleTableChange(pagination, filters, sorter) {
       this.params.page = pagination.current;
+      this.tabConfig.pagination.current = pagination.current;
       this.params.sortField = sorter.field;
       this.sortOrder = sorter.order;
       this.params.sortOrder = sorter.order
