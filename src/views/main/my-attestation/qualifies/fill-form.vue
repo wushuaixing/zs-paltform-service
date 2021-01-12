@@ -286,7 +286,7 @@ export default {
 					// label:'邮箱地址',
 					dec:['name', {
 						rules: [
-							{ required: true, message: '机构名称不能为空' },
+							{ required: true, message: '请输入机构名称' },
 							// { min: 4, message: '请输入正确的机构名称'},
 						]},
 					],
@@ -302,7 +302,7 @@ export default {
 					// label:'邮箱地址',
 					dec:['orgSocialCreditCode', {
 						rules: [
-							{ required: true, message: '统一社会信用代码不能为空' },
+							{ required: true, message: '请输入统一社会信用代码' },
 						]},
 					],
 					other:{
@@ -327,7 +327,7 @@ export default {
           dec:['email', {
             rules: [
                 { type: 'email',message: '请输入正确的邮箱地址！'},
-                { required: true, message: '邮箱地址不能为空!' },
+                { required: true, message: '请输入邮箱地址！' },
             ]},
           ],
           other:{
@@ -397,7 +397,7 @@ export default {
         cardNo:{
           label:'执业证号',
           dec:[ 'licenseNumber', {
-            rules: [{ required: true, message: '执业证号不能为空!' }]
+            rules: [{ required: true, message: '请输入执业证号!' }]
           }],
           other:{
             placeholder:'请输入执业证号',
@@ -407,11 +407,11 @@ export default {
         year:{
           label:'执业开始年份',
           dec:[ 'licenseStart',{
-            rules: [{ required: true, message: '执业开始年份不能为空！' },]
+            rules: [{ required: true, message: '请选择执业开始年份！' },]
           }],
           other:{
             allowClear:true,
-            placeholder:'请选择年份',
+            placeholder:'请选择执业开始年份',
             style:{
               width:'152px'
             }
@@ -430,7 +430,7 @@ export default {
           dec:['email', {
             rules: [
               { type: 'email',message: '请输入正确的邮箱地址！' },
-              { required: true, message: '邮箱地址不能为空!' },
+              { required: true, message: '请输入邮箱地址！!' },
             ],
           }],
           other:{
