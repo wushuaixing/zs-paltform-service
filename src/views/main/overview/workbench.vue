@@ -194,7 +194,7 @@ export default {
                 show: false
             },
             data: [
-                { value: this.echarts.myProjectCaseUnSubmit, name: '方案待提交'},
+              { value: this.echarts.myProjectCaseUnSubmit, name: '方案待提交'},
               { value: this.echarts.myProjectCaseSubmitted, name: '方案已提交'},
               { value: this.echarts.myProjectsReview, name:'方案审批中'},
               { value: this.echarts.myProjectsAimed, name: '中标'},
@@ -231,7 +231,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-$leftWidth: 450px;
+$leftWidth: 460px;
 .workbench-wrapper {
   // width: 1440px;
   height: 100%;
@@ -256,6 +256,7 @@ $leftWidth: 450px;
   }
   .item {
     &-format {
+      box-sizing: border-box;
       padding: 10px;
       font-size: 14px;
       line-height: 1;
@@ -283,7 +284,8 @@ $leftWidth: 450px;
       line-height: 16px;
     }
     &-content {
-      min-height: 150px;
+      box-sizing: border-box;
+      min-height: 261px;
     }
     &-thing {
       height: 515px;
@@ -387,6 +389,12 @@ $leftWidth: 450px;
     }
     /deep/.ant-fullcalendar-column-header-inner {
       font-weight: 800;
+      height: 14px;
+      font-size: 14px;
+      font-family: PingFangSC-Medium, PingFang SC;
+      color: #333333;
+      line-height: 14px;
+      margin-bottom: 20px;
       text-align: center;
     }
     /deep/.ant-fullcalendar-date {
@@ -403,6 +411,14 @@ $leftWidth: 450px;
       font-weight: 400;
       color: #666666;
       line-height: 12px;
+    }
+    // 日历输入框
+    /deep/.ant-select-selection--single {
+      width: 160px;
+    }
+    /deep/.ant-fullcalendar-value {
+      padding-top: 26px;
+      padding-right: 14px;
     }
   }
   // 隐藏月和年选择按钮
@@ -446,4 +462,5 @@ $leftWidth: 450px;
     overflow-y: auto;
     // overflow: hidden;
   }
+  
 </style>

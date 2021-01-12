@@ -195,7 +195,10 @@ const formItemLayout = {
   wrapperCol: { span: 18 },
 };
 
-const baseWidth = { style:{width:'442px'}};
+const baseWidth = {
+	maxLength:100,
+	style:{width:'442px'}
+};
 
 const nameOption = [
   { id :1, name:'杭州杭州湾建筑劳务有限公司',creditCode:'91330104747171289M'},
@@ -316,6 +319,7 @@ export default {
             placeholder:'若为合伙企业请明确执行事务合伙人身份',
             autoSize:{ minRows: 4 },
             ...baseWidth,
+	          maxLength:1024,
           }
         },
         email:{
