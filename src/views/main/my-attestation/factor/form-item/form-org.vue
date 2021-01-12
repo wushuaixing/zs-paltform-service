@@ -45,7 +45,7 @@
         <a-row>
           <a-col v-for="item in adv.goodCases.options" :key="item.id" v-bind="item.id!==0?{span:6}:{}">
             <a-checkbox :value="item.value">{{ item.label }}</a-checkbox>
-            <a-input v-if="item.id===0" style="width: 616px" placeholder="多个方向请用中文顿号隔开"
+            <a-input v-if="item.id===0" style="width: 616px" placeholder="多个方向请用中文顿号隔开" :maxLength="100"
                      v-decorator="adv.goodCases.detail"/>
           </a-col>
         </a-row>
