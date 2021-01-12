@@ -73,7 +73,7 @@
     </a-form-item>
 
     <a-form-item label="历史投行项目案例" v-if="getValue(adv.isHasBankExperience.dec[0]) ==='1'">
-			<a-textarea v-decorator="adv.investmentBankProjectCase.dec" v-bind="adv.investmentBankProjectCase.other"/>
+      <a-textarea v-decorator="adv.investmentBankProjectCase.dec" v-bind="adv.investmentBankProjectCase.other"/>
     </a-form-item>
 
     <div class="factor-form-subtitle"><span>投资意向</span></div>
@@ -401,8 +401,17 @@ export default {
         });
       });
     },
+    LinkageData(params, val) {
+      if (params instanceof Array) {
+        return params.some(i => Number(i) === 0) ? val : '';
+      } else {
+        return params === '0' ? val : '';
+      }
+    },
     // 处理当前数据
     processData(source = {}) {
+      // goodCases 擅长业务类型（1：工业，2：商业，3：住宅，4：纯担保类，0：其他）
+      // otherGoodCases 擅长其他业务类型
       const startAmountOfSubject = {
         min: source.disabled ? "" : source.min,
         max: source.disabled ? "" : source.max,
@@ -414,6 +423,7 @@ export default {
         investmentPreferenceType: (source.investmentPreferenceType || []).join(','),
         investmentArea: (source.investmentArea || []).join(','),
         startAmountOfSubject: JSON.stringify(startAmountOfSubject),
+        otherGoodCases: this.LinkageData(source.goodCases, source.otherGoodCases),
       })
     },
 
@@ -435,7 +445,7 @@ export default {
       this.adv.involve.other.value = areaAnalysis(source.areasOfGoodCases, false);
       this.$nextTick(() => {
         if (source.hasInvestmentIntention === '1') {
-          const { disabled,min,max } = JSON.parse(source.startAmountOfSubject);
+          const {disabled, min, max} = JSON.parse(source.startAmountOfSubject);
           this.form.setFieldsValue({
             investmentExperience,
             disabled,

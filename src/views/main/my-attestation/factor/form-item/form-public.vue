@@ -28,27 +28,27 @@
           </a-row>
         </a-checkbox-group>
       </a-form-item>
-			<a-form-item label="历史合作团队" selfUpdate>
-				<a-textarea v-decorator="history.team.dec" v-bind="history.team.other"/>
-			</a-form-item>
+      <a-form-item label="历史合作团队" selfUpdate>
+        <a-textarea v-decorator="history.team.dec" v-bind="history.team.other"/>
+      </a-form-item>
       <a-form-item label="历史清收情况" selfUpdate>
         <a-textarea v-decorator="history.col.dec" v-bind="history.col.other"/>
       </a-form-item>
-		</div>
-		<a-form-item label="是否曾与其他AMC合作" class="form-item-row" :selfUpdate="false">
-			<a-radio-group v-decorator="history.is.dec" v-bind="history.is.other">
-				<a-row>
-					<a-col :span="6">
-						<a-radio value="1">是</a-radio>
-					</a-col>
-					<a-col :span="6">
-						<a-radio value="2">否</a-radio>
-					</a-col>
-				</a-row>
-			</a-radio-group>
-		</a-form-item>
-		<div v-if="getValue(history.is.dec[0]) ==='1'">
-			<a-form-item label="历史合作AMC" class="form-item-row" selfUpdate>
+    </div>
+    <a-form-item label="是否曾与其他AMC合作" class="form-item-row" :selfUpdate="false">
+      <a-radio-group v-decorator="history.is.dec" v-bind="history.is.other">
+        <a-row>
+          <a-col :span="6">
+            <a-radio value="1">是</a-radio>
+          </a-col>
+          <a-col :span="6">
+            <a-radio value="2">否</a-radio>
+          </a-col>
+        </a-row>
+      </a-radio-group>
+    </a-form-item>
+    <div v-if="getValue(history.is.dec[0]) ==='1'">
+      <a-form-item label="历史合作AMC" class="form-item-row" selfUpdate>
         <a-checkbox-group v-decorator="history.type.dec" v-bind="history.type.other">
           <a-row>
             <a-col v-for="item in history.type.options" :key="item.id" v-bind="item.id===0?{span:24}:{span:6}">
@@ -62,7 +62,7 @@
       <a-form-item label="其他AMC合作情况" selfUpdate>
         <a-textarea v-decorator="history.other.dec" v-bind="history.other.other"/>
       </a-form-item>
-		</div>
+    </div>
     <!-- 后续期望合作方向  -->
     <div class="factor-form-subtitle"><span>后续期望合作方向</span></div>
     <a-form-item label="合作意向" class="form-item-row">
@@ -76,15 +76,16 @@
         </a-row>
       </a-checkbox-group>
     </a-form-item>
-		<slot name="lawOffice"></slot>
+    <slot name="lawOffice"></slot>
   </a-form>
 </template>
 
 <script>
 import {baseWidth, textarea, formItemLayout} from "@/views/main/my-attestation/common/style";
 import {cooIntent, typeOfCooperation, hisFour} from "@/views/main/my-attestation/common/source";
-import { buildSource } from "@/plugin/tools";
-const field = ["cooperatedAmc","cooperatedAmcDetail","cooperationIntention","cooperationSituation","isCooperatedWithOtherAmc","isCooperatedWithZheshang","isCooperatedWithZheshangDetail","liquidationSituation","otherCooperationIntention","typeOfCooperationCode","cooperationTeam"];
+import {buildSource} from "@/plugin/tools";
+
+const field = ["cooperatedAmc", "cooperatedAmcDetail", "cooperationIntention", "cooperationSituation", "isCooperatedWithOtherAmc", "isCooperatedWithZheshang", "isCooperatedWithZheshangDetail", "liquidationSituation", "otherCooperationIntention", "typeOfCooperationCode", "cooperationTeam"];
 
 export default {
   name: "FormPublic",
@@ -97,7 +98,7 @@ export default {
           dec: ['isCooperatedWithZheshang', {
             rules: [{required: true, message: '请选择与浙商合作情况'}],
           }],
-          detail:['isCooperatedWithZheshangDetail'],
+          detail: ['isCooperatedWithZheshangDetail'],
           other: {
             ...baseWidth,
           }
@@ -159,10 +160,11 @@ export default {
       assist: {},
     }
   },
-  props:{
+  props: {
     source: {
-      type:Object,
-      default:()=>{}
+      type: Object,
+      default: () => {
+      }
     },
   },
   created() {
@@ -170,61 +172,82 @@ export default {
   },
   mounted() {
     if (Object.keys(this.source || {}).length) {
-      this.resetFormValue(buildSource(this.source,field));
+      this.resetFormValue(buildSource(this.source, field));
     }
   },
-  methods:{
-    getValue(field){
-      if(field) return this.form.getFieldValue(field);
+  methods: {
+    getValue(field) {
+      if (field) return this.form.getFieldValue(field);
     },
-	  handleSubmit(e) {
-		  (e || window.event).preventDefault();
-		  return new Promise((resolve,reject)=>{
-			  this.form.validateFields((err, data) => {
-				  if (!err) resolve(this.processData(data));
-				  else reject(err)
-			  });
-		  });
-	  },
+    handleSubmit(e) {
+      (e || window.event).preventDefault();
+      return new Promise((resolve, reject) => {
+        this.form.validateFields((err, data) => {
+          if (!err) resolve(this.processData(data));
+          else reject(err)
+        });
+      });
+    },
+    LinkageData(params, val) {
+      if (params instanceof Array) {
+        return params.some(i => Number(i) === 0) ? val : '';
+      } else {
+        return params === '0' ? val : '';
+      }
+    },
     // 处理当前数据
-    processData(source = {}){
-      return Object.assign({},source,{
-        cooperatedAmc:(source.cooperatedAmc || []).join(','),
-        cooperationIntention:(source.cooperationIntention || []).join(','),
-        typeOfCooperationCode:(source.cooperationIntention || []).join(','),
+    processData(source = {}) {
+      //isCooperatedWithZheshang 是否与浙商合作过（1：是，2：否，0：其他）
+      //isCooperatedWithZheshangDetail  是否曾与浙商合作的其他补充
+
+      //cooperatedAmc 历史合作AMC（1：东方，2：长城，3：华融，4：信达，0：地方持牌AMC）
+      //cooperatedAmcDetail
+
+      //cooperationIntention 合作意向（1：合作清收，2：保底清收，3：跟投，4：介绍投资人，5：担保类项目，0：其他）
+      //otherCooperationIntention 其它合作意向
+      return Object.assign({}, source, {
+        cooperatedAmc: (source.cooperatedAmc || []).join(','),
+        cooperationIntention: (source.cooperationIntention || []).join(','),
+        typeOfCooperationCode: (source.cooperationIntention || []).join(','),
+        isCooperatedWithZheshangDetail: this.LinkageData(source.isCooperatedWithZheshang, source.isCooperatedWithZheshangDetail),
+        cooperatedAmcDetail: this.LinkageData(source.cooperatedAmc, source.cooperatedAmcDetail),
+        otherCooperationIntention: this.LinkageData(source.cooperationIntention, source.otherCooperationIntention),
       })
     },
     resetFormValue(source) {
-	    const { isCooperatedWithOtherAmc,isCooperatedWithZheshangDetail,isCooperatedWithZheshang,cooperationIntention,
-		    typeOfCooperationCode,
-		    cooperationTeam,
-		    liquidationSituation,
-		    cooperatedAmc,
-		    cooperatedAmcDetail,
-		    cooperationSituation,
-				 } = source;
-	    this.form.setFieldsValue({
-		    isCooperatedWithOtherAmc,
-		    isCooperatedWithZheshangDetail,
-		    isCooperatedWithZheshang,
-		    cooperationIntention: (cooperationIntention || '').split(','),
-	    });
-	    this.$nextTick(()=> {
-				if(isCooperatedWithZheshang === '1'){
-			    this.form.setFieldsValue({
-				    typeOfCooperationCode:(typeOfCooperationCode || '').split(','),
-				    cooperationTeam,
-				    liquidationSituation,
-			    });
-				}
-		    if(isCooperatedWithOtherAmc === '1'){
-			    this.form.setFieldsValue({
-				    cooperatedAmc:(cooperatedAmc || '').split(','),
-				    cooperatedAmcDetail,
-				    cooperationSituation,
-			    });
-		    }
-	    });
+      const {
+        isCooperatedWithOtherAmc, isCooperatedWithZheshangDetail, isCooperatedWithZheshang, cooperationIntention,
+        typeOfCooperationCode,
+        cooperationTeam,
+        liquidationSituation,
+        cooperatedAmc,
+        cooperatedAmcDetail,
+        cooperationSituation,
+        otherCooperationIntention
+      } = source;
+      this.form.setFieldsValue({
+        isCooperatedWithOtherAmc,
+        isCooperatedWithZheshangDetail,
+        isCooperatedWithZheshang,
+        otherCooperationIntention,
+        cooperationIntention: (cooperationIntention || '').split(','),
+      });
+      this.$nextTick(() => {
+        if (isCooperatedWithZheshang === '1') {
+          this.form.setFieldsValue({
+            typeOfCooperationCode: (typeOfCooperationCode || '').split(','),
+            cooperationTeam,
+            liquidationSituation,
+          });
+        }
+        if (isCooperatedWithOtherAmc === '1') {
+          this.form.setFieldsValue({
+            cooperatedAmc: (cooperatedAmc || '').split(','),
+            cooperatedAmcDetail,
+            cooperationSituation,
+          });
+        }
+      });
     },
   },
 }
