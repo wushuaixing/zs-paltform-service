@@ -51,7 +51,7 @@
           </a-upload>
           <div class="upload-text">
             <div>*请下载保密承诺函模板，签字、用印后扫描或拍照上传；支持jpg、pdf格式</div>
-						<a href="#" style="text-decoration: underline">承诺函模板下载</a>
+						<a href="https://zsamc-public.zsamc.com/%E3%80%8A%E6%B5%99%E6%B1%9F%E7%9C%81%E6%B5%99%E5%95%86%E8%B5%84%E4%BA%A7%E7%AE%A1%E7%90%86%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8%E4%BF%9D%E5%AF%86%E6%89%BF%E8%AF%BA%E4%B9%A6%E3%80%8B.doc" style="text-decoration: underline">承诺函模板下载</a>
           </div>
         </div>
       </a-form-item>
@@ -113,7 +113,7 @@
               <a-icon type="plus" />
             </div>
           </a-upload>
-          <div class="upload-text">证件正面（国徽面）</div>
+          <div class="upload-text">证件反面（国徽面）</div>
         </div>
         <div class="fill-form-upload-wrapper fill-form-upload__remark">
           <div class="upload-text">*支持jpg、pdf格式</div>
@@ -150,7 +150,7 @@
           </a-upload>
           <div class="upload-text">
             <div>*请下载保密承诺函模板，签字、用印后扫描或拍照上传；支持jpg、pdf格式</div>
-            <a href="#" style="text-decoration: underline">承诺函模板下载</a>
+            <a href="https://zsamc-public.zsamc.com/%E3%80%8A%E6%B5%99%E6%B1%9F%E7%9C%81%E6%B5%99%E5%95%86%E8%B5%84%E4%BA%A7%E7%AE%A1%E7%90%86%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8%E4%BF%9D%E5%AF%86%E6%89%BF%E8%AF%BA%E4%B9%A6%E3%80%8B.doc" style="text-decoration: underline">承诺函模板下载</a>
           </div>
         </div>
       </a-form-item>
@@ -195,7 +195,10 @@ const formItemLayout = {
   wrapperCol: { span: 18 },
 };
 
-const baseWidth = { style:{width:'442px'}};
+const baseWidth = {
+	maxLength:100,
+	style:{width:'442px'}
+};
 
 const nameOption = [
   { id :1, name:'杭州杭州湾建筑劳务有限公司',creditCode:'91330104747171289M'},
@@ -316,6 +319,7 @@ export default {
             placeholder:'若为合伙企业请明确执行事务合伙人身份',
             autoSize:{ minRows: 4 },
             ...baseWidth,
+	          maxLength:1024,
           }
         },
         email:{
@@ -540,14 +544,16 @@ export default {
     // 确认无误并提交
     handleSubmit(e) {
       (e || window.event).preventDefault();
-      return new Promise(resolve => {
+      return new Promise((resolve,reject) => {
 	      this.form.validateFields((err, values) => {
 		      if (!err) {
 			      // console.log('Received values of form: ', values);
 			      const source = this.processData(values);
 			      if(!this.onlyData) this.toUpdateInfo(source);
 			      resolve(source)
-		      }
+		      }else{
+			      reject(err)
+					}
 	      });
 			})
 

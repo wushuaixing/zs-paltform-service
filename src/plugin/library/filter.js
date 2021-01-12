@@ -1,6 +1,11 @@
 import Vue from 'vue';
 import * as source from '@/views/main/my-attestation/common/source';
-import area from '@/assets/js/area.json';
+import axios from 'axios';
+
+let AREA_JSON = '';
+axios.get('https://zsamc-public.zsamc.com/address.json').then(({status,data})=>{
+	if(status === 200)AREA_JSON = data;
+});
 
 Vue.filter('capitalize', function (value) {
 	if (!value) return '';
@@ -23,7 +28,7 @@ Vue.filter('guarantyType', (val)=>{
 		1:'抵押',
 		2:'担保',
 		3:'抵押+担保'
-	}
+	};
 	return guarantyObj[val];
 });
 
@@ -50,7 +55,7 @@ Vue.filter('multi',(val,remark = '',field)=>{
 	if(!field) return val;
 	if(!val) return val;
 	const _data = source[field] || [];
-	const _label = val.split(',').map(i=>{
+	const _label = (val.toString()).split(',').map(i=>{
 		let result = '';
 		_data.forEach(item=>{ if(item.value.toString() === i) result = item.label; });
 		return result
@@ -62,8 +67,8 @@ Vue.filter('multi',(val,remark = '',field)=>{
 // 地区省市区展示
 const areaArray = val=>{
 	let result = [];
-	if(area[val[0]]) {
-		const i = area[val[0]];
+	if(AREA_JSON[val[0]]) {
+		const i = AREA_JSON[val[0]];
 		result[0] = i.name;
 		if(i.child[val[1]]){
 			const item = i.child[val[1]];
