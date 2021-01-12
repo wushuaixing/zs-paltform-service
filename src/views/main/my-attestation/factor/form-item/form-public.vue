@@ -103,7 +103,7 @@ export default {
           }
         },
         coo: {
-          dec: ['typeOfCooperationCode', {rules: [{required: true, message: '请勾选合作类型'}]}],
+          dec: ['typeOfCooperationCode', {rules: [{required: true, message: '请选择过往合作类型'}]}],
           options: typeOfCooperation,
           other: {
             ...baseWidth,
@@ -111,14 +111,14 @@ export default {
         },
         team: {
           // TODO 历史合作情况
-          dec: ['cooperationTeam', {rules: [{required: true, message: '请填写历史合作团队信息'}]}],
+          dec: ['cooperationTeam', {rules: [{required: true, message: '请输入历史合作团队!'}]}],
           other: {
-            placeholder: '请输入过往合作过的浙商团队，多个团队以中文顿号隔开',
+            placeholder: '请输入历史合作团队，多个团队以中文顿号隔开',
             ...textarea
           }
         },
         col: {
-          dec: ['liquidationSituation', {rules: [{required: true, message: '请填写历史清收情况'}]}],
+          dec: ['liquidationSituation', {rules: [{required: true, message: '请简要描述过往合作项目的清收情况'}]}],
           other: {
             placeholder: '请简要描述过往合作项目的清收情况',
             ...textarea
@@ -131,7 +131,7 @@ export default {
           }
         },
         type: {
-          dec: ['cooperatedAmc', {rules: [{required: true, message: '至少勾选一项历史合作AMC'}]}],
+          dec: ['cooperatedAmc', {rules: [{required: true, message: '请选择历史合作AMC'}]}],
           options: hisFour,
           detail: ['cooperatedAmcDetail'],
           other: {

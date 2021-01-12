@@ -180,7 +180,7 @@ export default {
           }
         },
         involve: {
-          dec: ['branchOfficeAddress', {rules: [{required: true, message: '主要涉业地区不能为空'}]}],
+          dec: ['branchOfficeAddress', {rules: [{required: true, message: '请选择公司分部覆盖地区！'}]}],
           other: {
             clearable: true,
             options: areaOption,
@@ -193,12 +193,12 @@ export default {
               multiple: true,
               checkStrictly: true,
             },
-            placeholder: '请选择主要涉业地区',
+            placeholder: '请选择公司分部覆盖地区',
             ...baseWidth,
           }
         },
         teamNum: {
-          dec: ['numberOfTeams', {rules: [{required: true, message: '清收团队数不能为空'}]}],
+          dec: ['numberOfTeams', {rules: [{required: true, message: '请输入清收团队数'}]}],
           other: {
             placeholder: '请输入清收团队数',
             style: {width: '200px'},
@@ -206,14 +206,14 @@ export default {
           }
         },
         numberOfCompany: {
-          dec: ['numberOfCompany', {rules: [{required: true, message: '公司总人数不能为空'}]}],
+          dec: ['numberOfCompany', {rules: [{required: true, message: '请输入公司总人数'}]}],
           other: {
             placeholder: '请输入公司总人数',
             style: {width: '200px'},
           }
         },
         teamNumTotal: {
-          dec: ['totalTeamSize', {rules: [{required: true, message: '清收团队总数不能为空'}]}],
+          dec: ['totalTeamSize', {rules: [{required: true, message: '请输入清收团队总人数'}]}],
           other: {
             placeholder: '请输入清收团队总人数',
             style: {width: '200px'},
@@ -291,7 +291,7 @@ export default {
       },
       adv: {
         goodCases: {
-          dec: ['goodCases', {rules: [{required: true, message: '擅长业务类型不能为空!'}]}],
+          dec: ['goodCases', {rules: [{required: true, message: '请选择擅长业务类型!'}]}],
           detail: ['otherGoodCases'],
           options: orgAdvType,
           other: {
@@ -299,7 +299,7 @@ export default {
           }
         },
         involve: {
-          dec: ['areasOfGoodCases', {rules: [{required: true, message: '主要涉业地区不能为空'}]}],
+          dec: ['areasOfGoodCases', {rules: [{required: true, message: '请选择擅长业务区域'}]}],
           other: {
             clearable: true,
             options: areaOption,
@@ -312,19 +312,19 @@ export default {
               multiple: true,
               checkStrictly: true,
             },
-            placeholder: '请选择主要涉业地区',
+            placeholder: '请选择擅长业务区域',
             ...baseWidth,
           }
         },
         otherResourcesAdvantage: {
-          dec: ['otherResourcesAdvantage', {rules: [{required: true, message: '主要涉业地区不能为空'}]}],
+          dec: ['otherResourcesAdvantage', {rules: [{required: true, message: '请选择社会资源优势'}]}],
           other: {
             placeholder: '包括但不限于某法院、法官，法官请以“xx法院-xx法官形式输入，多个法院、法官间以中文顿号隔开”',
             ...textarea
           }
         },
         isHasBankExperience: {
-          dec: ['hasInvestmentBankExperience', {rules: [{required: true, message: '请选择有公检法等工作经历情况'}]}],
+          dec: ['hasInvestmentBankExperience', {rules: [{required: true, message: '请选择投行项目经验'}]}],
           other: {
             ...baseWidth,
           }
