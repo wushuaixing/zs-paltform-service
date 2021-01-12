@@ -284,7 +284,6 @@ export default {
     getProjectList() {
       this.http[this.params.aimStatus](this.params).then((res) => {
         if (res.code === 20000) {
-          console.log(res);
           this.tabConfig.pagination.total = res.data.total;
           this.tabConfig.dataSource = res.data.list;
         }else{
@@ -342,9 +341,7 @@ export default {
       return {
         on: {
           click: () => {
-            changeUnRead(row.id).then((res) => {
-              console.log(res);
-            });
+            changeUnRead(row.id)
           },
         },
       };
@@ -401,12 +398,10 @@ export default {
       })
     },
     isCertification(){
-      // return this.$store.getters.getInfo.isCertification;
-      return 1;
+      return this.$store.getters.getInfo.isCertification;
     },
     isConfirmElements(){
-      // return this.$store.getters.getInfo.isConfirmElements;
-      return 1;
+      return this.$store.getters.getInfo.isConfirmElements;
     }
   },
 };

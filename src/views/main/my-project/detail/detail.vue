@@ -174,7 +174,7 @@
             </a-steps>
           </div>
           <div class="plan_scheme">
-            <div class="subtitle" style="padding-left:10px">方案文档：<a>服务方案.doc</a></div>
+            <div class="subtitle" style="padding-left:10px">方案文档：<a :href="url">{{fileName}}</a></div>
             <button class="modify_scheme" @click="goSubmit" v-if="info.aimedStatus === '2' && info.caseFileStatus === '1'">
               修改服务方案
             </button>
@@ -191,6 +191,7 @@
 import  {getArea} from "@/plugin/tools"
 import {queryOptions} from "@/views/investment-center/source"
 import { amcBidDetail } from "@/plugin/api/my-biding";
+import {getDownLoadToken} from "@/plugin/api/base"
 import Breadcrumb from "@/components/bread-crumb";
 import PlanModal from "../Plan-modal.vue";
 
@@ -198,6 +199,8 @@ export default {
   data() {
     return {
       loading:true,
+      url:'',
+      fileName:'',
       navData: [
         { id: 1, title: "我的项目", path: "biding" },
         { id: 2, title: "我的竞标", path: "biding" },
@@ -275,10 +278,19 @@ export default {
     getProjectDetail(){
       let {id,type} = this.$route.query;
       amcBidDetail(id,type).then((res) => {
-        console.log(res);
         if(res.code === 20000){
           this.loading = false;
           this.info = res.data;
+          const length = this.info.amcBidFiles.length;
+          const caseFileAddress = this.info.amcBidFiles[length - 1].caseFileAddress;
+          this.fileName = (caseFileAddress.split('_'))[2];
+          getDownLoadToken(caseFileAddress).then(res=>{
+            if(res.code === 20000){
+              this.url = res.data;
+            }else{
+              return false;
+            }
+          })
         }else{
           this.$message.error("获取项目详情失败,请刷新页面")
         }
@@ -288,6 +300,7 @@ export default {
   computed: {},
   created() {
     this.getProjectDetail();
+
   },
 };
 </script>

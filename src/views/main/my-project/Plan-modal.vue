@@ -175,7 +175,7 @@
             </div>
             <div v-else>
               <a :href="url"
-                >{{form.caseFileAddress}}</a><a-icon style="padding:10px;color:#008CB0"
+                >{{fileName}}</a><a-icon style="padding:10px;color:#008CB0"
                   @click="form.caseFileAddress = ''"
                   type="close"
               />
@@ -199,6 +199,7 @@ export default {
     return {
       visible: false,
       url:'',
+      fileName:'',
       formItemLayout: {
         labelCol: {
           xs: { span: 24 },
@@ -291,7 +292,17 @@ export default {
           this.form.serviceTime = this.projectInfo.serviceTime;
           this.form.scheduleManagements = this.projectInfo.scheduleManagements;
           let length = this.projectInfo.amcBidFiles.length;
-          this.form.caseFileAddress = this.projectInfo.amcBidFiles[length - 1].caseFileAddress
+          this.form.caseFileAddress = this.projectInfo.amcBidFiles[length - 1].caseFileAddress;
+          if(this.form.caseFileAddress){
+            this.fileName = (this.form.caseFileAddress.split('_'))[2];
+            getDownLoadToken(this.form.caseFileAddress).then(res=>{
+              if(res.code === 20000){
+                this.url = res.data;
+              }else{
+                return false;
+              }
+            })
+          }
         }
       },
       deep:true
@@ -321,7 +332,6 @@ export default {
       if (type === "add") {
         this.form.id = this.projectInfo.id;
         submitServicePlan(this.form).then((res) => {
-          console.log(res);
           if (res.code === 20000) {
             this.$message.success("方案提交成功");
             this.visible = false;
@@ -340,7 +350,6 @@ export default {
           content: "请确认修改后的方案核心要素信息与方案文档保持一致！",
           onOk() {
             modifyCase(_this.form).then((res) => {
-              console.log(res);
               if (res.code === 20000) {
                 _this.$message.success("修改成功");
                 _this.visible = false;
@@ -371,7 +380,7 @@ export default {
     },
     handleUpload(info){
       if(info.file.status === "done"){
-        console.log(info.file)
+        this.fileName = (info.file.response.key.split('_'))[2]
         this.form.caseFileAddress = info.file.response.key;
         getDownLoadToken(info.file.response.key).then(res=>{
           if(res.code === 20000){
@@ -384,15 +393,13 @@ export default {
     }
   },
   created() {
-    if(this.form.caseFileAddress){
-      getDownLoadToken(this.form.caseFileAddress).then(res=>{
-        if(res.code === 20000){
-          this.url = res.data;
-        }else{
-          return false;
-        }
-      })
-    }
+    getDownLoadToken(this.form.caseFileAddress).then(res=>{
+      if(res.code === 20000){
+        this.url = res.data;
+      }else{
+        return false;
+      }
+    })
   },
   filters: {
     area: (params) => {
