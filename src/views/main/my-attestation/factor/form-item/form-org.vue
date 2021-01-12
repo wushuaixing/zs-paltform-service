@@ -59,7 +59,7 @@
     <a-form-item label="社会资源优势">
       <a-textarea v-decorator="adv.otherResourcesAdvantage.dec" v-bind="adv.otherResourcesAdvantage.other"/>
     </a-form-item>
-    <a-form-item label="是否有投行项目经验" class="form-item-row">
+    <a-form-item label="是否有投行项目经验" class="form-item-row" :selfUpdate="false">
       <a-radio-group v-decorator="adv.isHasBankExperience.dec" v-bind="adv.isHasBankExperience.other">
         <a-row>
           <a-col :span="6">
@@ -73,7 +73,7 @@
     </a-form-item>
 
     <a-form-item label="历史投行项目案例" v-if="getValue(adv.isHasBankExperience.dec[0]) ==='1'">
-      <a-input v-decorator="adv.investmentBankProjectCase.dec" v-bind="adv.investmentBankProjectCase.other"/>
+			<a-textarea v-decorator="adv.investmentBankProjectCase.dec" v-bind="adv.investmentBankProjectCase.other"/>
     </a-form-item>
 
     <div class="factor-form-subtitle"><span>投资意向</span></div>
@@ -277,7 +277,7 @@ export default {
           }
         },
         investmentBankProjectCase: {
-          dec: ['investmentBankProjectCase'],
+          dec: ['investmentBankProjectCase', {rules: [{required: true, message: '请输入历史投行项目案例'}]}],
           other: {
             placeholder: '请输入历史投行项目案例',
             ...textarea
