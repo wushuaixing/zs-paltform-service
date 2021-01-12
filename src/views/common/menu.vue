@@ -13,7 +13,10 @@
           <a-icon :type="item.icon" v-if="item.icon"/>{{item.title}}
         </span>
         <a-menu-item v-for="cItem in item.child" :key="`${item.id}${cItem.id}`">
-          <router-link :to="`${item.path||''}${cItem.path||''}`">{{ cItem.title }}</router-link>
+          <router-link :to="`${item.path||''}${cItem.path||''}`">
+						<a-badge :dot="noOffice" class="dot-badge" v-if="item.dot">律所信息</a-badge>
+						<template v-else>{{ cItem.title }}</template>
+					</router-link>
         </a-menu-item>
       </a-sub-menu>
     </a-menu>
@@ -61,8 +64,8 @@ export default {
           icon:'solution',
           path:'/attest',
           child:[
-            { id:'1', title:'资质认证', path:'/qualifies' },
-            { id:'2', title:'要素认证', path:'/factor' },
+            { id:'1', title:'资质认证', path:'/qualifies',dot:false},
+            { id:'2', title:'要素认证', path:'/factor',dot:false },
           ]
         },
       ],
