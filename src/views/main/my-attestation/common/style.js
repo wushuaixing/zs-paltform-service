@@ -6,7 +6,7 @@ export const baseWidth = {
 };
 export const textarea = {
 	...baseWidth,
-	autoSize:{ minRows: 4 },
+	autoSize:{ maxRows: 4,minRows: 4, },
 	maxLength:1024,
 };
 
