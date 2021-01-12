@@ -327,7 +327,7 @@ export default {
           dec:['email', {
             rules: [
                 { type: 'email',message: '请输入正确的邮箱地址！'},
-                { required: true, message: '邮箱地址不能为空!' },
+                { required: true, message: '请输入邮箱地址！' },
             ]},
           ],
           other:{
@@ -430,7 +430,7 @@ export default {
           dec:['email', {
             rules: [
               { type: 'email',message: '请输入正确的邮箱地址！' },
-              { required: true, message: '邮箱地址不能为空!' },
+              { required: true, message: '请输入邮箱地址！!' },
             ],
           }],
           other:{
