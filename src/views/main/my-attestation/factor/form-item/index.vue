@@ -38,6 +38,7 @@
 </template>
 
 <script>
+
 	import FormLaw from './form-law';
 	import FormOffice from './form-office';
 	import FormOrg from './form-org';

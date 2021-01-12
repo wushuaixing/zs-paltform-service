@@ -220,7 +220,6 @@ export default {
       api
         .accountStatus({ phone })
         .then((res) => {
-          console.log(res);
           if (res.code === 20000) {
             const { needPicCode } = res.data;
             const { status } = this.imgCode;
@@ -230,6 +229,7 @@ export default {
               } else {
                 this.imgCode.status = true;
                 this.toGetImageCode();
+	              this.loading = false;
               }
             } else {
               return api.login(encryptInfo(this.params));
@@ -237,14 +237,16 @@ export default {
           }
         })
         .then((res) => {
-          console.log(res);
           if (res.code === 20000) {
             this.$store.dispatch("login", res.data);
             this.$router.push("/");
           } else{
-            this.params.pictureCode = "";
+	          this.loading = false;
+	          this.params.pictureCode = "";
             if(this.imgCode.status) this.toGetImageCode();
-            if (res.data && res.data.count >= 5) return this.$message.error(`账号或密码错误,您还可以尝试${10 - res.data.count}次`);
+
+            if (res.data && res.data.count >= 5)
+							return this.$message.error(`账号或密码错误,您还可以尝试${10 - res.data.count}次`);
             if (res.code === 30001) return this.$message.error("账号或密码错误");
             if (res.code === 30003) return this.$message.error("验证码错误");
             if (res.code === 30006) return this.$warning({
@@ -260,7 +262,6 @@ export default {
           }
         })
 				.finally(()=>{
-					this.loading = false;
 				})
 			;
     },
