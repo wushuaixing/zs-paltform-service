@@ -320,7 +320,7 @@ export default {
 		},
 		// 查询当前服务商的机构属性
 		queryQualify(){
-			qualifies.qualify().then(({data = {},code})=>{
+			qualifies.qualify().then(({data = {},code,message})=>{
 				if(code === 20000){
 					const {
 						contact, logId, phone,qualifyCondition, qualify = {},qualifyVO = {},
@@ -341,10 +341,7 @@ export default {
 					};
 					this.spinning = false;
 				} else{
-					this.$error({
-						title: '提示',
-						content: '网络请求异常，请重新请求!',
-					});
+					this.$message.error(message);
 				}
 			}).catch(()=>{
 				this.$error({
