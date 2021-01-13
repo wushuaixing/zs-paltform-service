@@ -52,7 +52,7 @@
             </template>
             <template slot="area" slot-scope="{amcProjectCollaterals}">
               <template v-if="amcProjectCollaterals&&amcProjectCollaterals.length">
-                <p v-for="item in amcProjectCollaterals" :key="item.id">{{ item|area }}</p>
+                <p v-for="(item,index) in uniqueArea(amcProjectCollaterals)" :key="index">{{ item || '-' }}</p>
               </template>
               <span v-else>-</span>
             </template>
@@ -215,6 +215,15 @@ export default {
           parseFloat(window.getComputedStyle(span).width) - result.width;
       span.parentNode.removeChild(span); //删除节点
       return textWidth;
+    },
+    uniqueArea(arr = []) {
+      // const uniqueList = Array.from(new Set(arr.map((val) => {
+      //   return `${val.provinceCode}-${val.cityCode}-${val.areaCode}`;
+      // })));
+      // return uniqueList.map((val) =>
+      //     (val || '').split('-')
+      // );
+      return Array.from(new Set(arr.map((i) => getArea(i.provinceCode, i.cityCode, i.areaCode))));
     }
   },
   computed: {
@@ -225,10 +234,6 @@ export default {
     },
   },
   filters: {
-    //地区
-    area: (params) => {
-      return getArea(params.provinceCode, params.cityCode, params.areaCode);
-    },
     //抵质押物类型
     collateralType: (val) => {
       if (!val) return "-";
@@ -364,8 +369,8 @@ export default {
 
     .orange {
       color: #FA541C;
-      background-color: #FFBB96;
-      border: 1px solid #F2F4F7;
+      background-color: #FFF2E8;
+      border: 1px solid #FFBB96;
     }
 
     .violet {

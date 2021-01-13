@@ -96,7 +96,7 @@
                           v-bind="intention.investmentPreferenceType.other">
           <a-row>
             <a-col v-for="item in intention.investmentPreferenceType.options" :key="item.id"
-                   v-bind="item.id!==0?{span:5}:{}">
+                   v-bind="item.id!==0?{span:6}:{}">
               <a-checkbox :value="item.value">{{ item.label }}</a-checkbox>
             </a-col>
           </a-row>
