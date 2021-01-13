@@ -422,8 +422,9 @@ export default {
         cardNo:{
           label:'执业证号',
           dec:[ 'licenseNumber', {
-            rules: [{ required: true, message: '请输入执业证号!' }]
-          }],
+            rules: [{ required: true, message: '请输入执业证号!' },
+              { pattern: /^(\d{14}|\d{17})$/, message: '请输入正确格式的执业证号' },
+            ]}],
           other:{
             placeholder:'请输入执业证号',
             ...baseWidth,
