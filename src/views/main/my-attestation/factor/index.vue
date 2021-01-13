@@ -266,6 +266,7 @@ export default {
 	  // 提交我的资质信息
 	  handleSubmit(val){
 		  console.log(val);
+		  this.$store.commit("updateElement");
 		  this.$message.success('要素认证提交成功！');
 		  this.queryFactor();
 		  this.handleModalClose();
