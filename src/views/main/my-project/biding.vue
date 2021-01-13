@@ -143,7 +143,6 @@
                 <a-button
                   type="link"
                   size="small"
-                  icon="file-text"
                   @click="handleAuction(item, 'view')"
                   >查看详情</a-button
                 >
@@ -152,7 +151,6 @@
                   <a-button
                     type="link"
                     size="small"
-                    icon="file-text"
                     v-if="item.process === 0"
                     @click="handleAuction(item, 'sub')"
                     >方案报送</a-button
@@ -160,7 +158,6 @@
                   <a-button
                     type="link"
                     size="small"
-                    icon="file-text"
                     v-if="item.process === 1"
                     @click="handleAuction(item, 'edit')"
                     >方案修改</a-button
@@ -169,7 +166,6 @@
                     <a-button
                       type="link"
                       size="small"
-                      icon="file-text"
                       disabled
                       class="common-table-disabled"
                       >方案修改</a-button
@@ -179,7 +175,6 @@
                   <a-button
                     type="link"
                     size="small"
-                    icon="file-text"
                     @click="handleAuction(item, 'aba')"
                     >放弃竞标</a-button
                   >
@@ -404,10 +399,12 @@ export default {
       })
     },
     isCertification(){
-      return this.$store.getters.getInfo.isCertification;
+      // return this.$store.getters.getInfo.isCertification;
+      return 1;
     },
     isConfirmElements(){
-      return this.$store.getters.getInfo.isConfirmElements;
+      // return this.$store.getters.getInfo.isConfirmElements;
+      return 1;
     }
   },
 };
@@ -424,6 +421,7 @@ export default {
 .nothing{
   width: 100%;
   height: 100%;
+  background-color: #fff;
   text-align: center;
   &-pic{
     margin-top: 232px;
