@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    title="浙江混天绫实业有限公司-服务方案"
+    :title="`${projectInfo.debtor}-服务方案${projectInfo.caseFileStatus==='0'?'':'修改'}`"
     v-model="visible"
     :destroyOnClose="true"
     dialogClass="plan-modal"
