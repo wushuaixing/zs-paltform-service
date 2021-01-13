@@ -22,12 +22,12 @@ export const MATTER_TYPE =
     },
     5:{
         name:'【认证修改未通过】 : ',
-        text:'Error',
+        text:'error',
         path: 'attest/qualifies'
     },
     6:{
         name:'【认证修改未通过】 : ',
-        text:'Error',
+        text:'error',
         path: 'attest/factor'
     },
     7:{
