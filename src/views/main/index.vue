@@ -8,10 +8,12 @@
         <router-view/>
       </a-layout-content>
     </a-layout>
-  </a-layout>
+		<Element />
+	</a-layout>
 </template>
 <script>
 import Menu from '../common/menu';
+import Element from './element';
 export default {
   data() {
     return {
@@ -33,7 +35,8 @@ export default {
     }
   },
   components: {
-    Menu
+    Menu,
+	  Element
   },
   computed:{
     layoutStyle:function () {

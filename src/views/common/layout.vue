@@ -21,11 +21,11 @@
                 <div @click="handleModifyPhone"><a-icon type="user" />修改绑定手机号</div>
               </a-menu-item>
               <a-menu-item key="2">
-                <div @click="handleSetPwd" v-if="isSetPassword===0"><a-icon type="user" />设置登录密码</div>
-                <div @click="handleModifyPwd" v-if="isSetPassword===1"><a-icon type="user" />修改登录密码</div>
+                <div @click="handleSetPwd" v-if="isSetPassword===0"><a-icon type="lock" />设置登录密码</div>
+                <div @click="handleModifyPwd" v-if="isSetPassword===1"><a-icon type="lock" />修改登录密码</div>
               </a-menu-item>
               <a-menu-item key="3">
-                <router-link to="/login"><a-icon type="user" />退出登录</router-link>
+                <div @click="doLogout"><a-icon type="poweroff" />退出登录</div>
               </a-menu-item>
             </a-menu>
             <a-button type="link" icon="down" style="color:#fff;">Hi，{{username}}</a-button>
@@ -45,6 +45,7 @@
   import ModifyPhoneModal from "./personal/modify-phone"
   import ModifyPwdModal from "./personal/modify-password"
   import SetPwdModal from "./personal/set-password"
+  import {logout} from "@/plugin/api/login"
   export default {
     data() {
       return {
@@ -67,15 +68,25 @@
       },
       handleSetPwd(){
         this.$refs.setPwd.showModal()
+      },
+      doLogout(){
+        let _this = this
+        this.$confirm({
+          title:"是否退出登录?",
+          centered:true,
+          onOk(){
+            _this.$router.push('/login');
+            logout()
+          }
+        })
       }
     },
     created() {
-      const { pathname } = window.location;
-      if(/center/.test(pathname))this.selectedKey = 'b';
+      const { hash } = window.location;
+      if(/^#\/center/.test(hash))this.selectedKey = 'b';
       if(!this.$store.state.isLogin){
         getInfo().then(res=>{
           this.loading = false;
-          console.log(res.data);
           if(res.code === 20000){
             this.$store.commit('updateInfo', res.data);
           }else{
@@ -138,5 +149,9 @@
 .spin-wrapper{
   width: 100%;
   padding-top: 10vh!important;
+}
+.ant-modal-confirm-btns{
+  margin-right: 50%;
+  transform: translateX(50%);
 }
 </style>

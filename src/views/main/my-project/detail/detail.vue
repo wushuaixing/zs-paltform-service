@@ -1,8 +1,10 @@
 <template>
   <div class="project-detail">
+    <a-spin v-if="loading" class="spin-wrapper" size="large"/>
     <div
       style="background: #ececec; padding: 16px"
       class="project-detail-content"
+      v-else
     >
       <Breadcrumb :source="navData" icon="environment"></Breadcrumb>
       <a-card :bordered="false" style="width: 100%; height: 810px">
@@ -46,7 +48,7 @@
         </div>
         <a-row>
           <a-col :span="8">
-            <div>
+            <div style="padding-left:10px">
               <span class="subtitle">债务人名称：</span
               ><span class="spantext">{{ info.debtor }}</span>
             </div>
@@ -68,7 +70,7 @@
         </a-row>
         <a-row>
           <a-col :span="8">
-            <div>
+            <div style="padding-left:10px">
               <span class="subtitle">债权本金：</span
               ><span class="spantext"
                 >{{ info.debtCaptial | amountTh }}万元</span>
@@ -85,7 +87,7 @@
         </a-row>
         <a-row>
           <a-col :span="24">
-            <div>
+            <div style="padding-left:10px">
               <span class="subtitle">保证人清单：</span
               ><span class="spantext">{{
                 info.amcProjectGuarantors | guarantorsList
@@ -95,7 +97,7 @@
         </a-row>
         <a-row>
           <a-col :span="24" style="display: flex">
-            <div class="subtitle">抵押物清单：</div>
+            <div class="subtitle" style="padding-left:10px">抵押物清单：</div>
             <div>
               <p v-for="(i, index) in info.amcProjectCollaterals" :key="index">
                 {{index+1}}. {{i.collateralType|collateralType}}、{{i|area}}、{{i.collateralName}}
@@ -115,7 +117,7 @@
               <span class="spantext">{{info.aggrementDate }}</span>
             </div>
           </div>
-          <div class="flex-style" v-if="info.aimedStatus != '3'">
+          <div class="flex-style" v-if="info.aimedStatus !== '3'">
             <div
               style="margin-right: 30px"
               v-if="info.caseFileStatus === '1' || info.caseFileStatus === '2'"
@@ -140,23 +142,23 @@
           <p class="text" >您暂未提交服务方案</p>
           <button
             class="submitbtn"
-            @click="goSubmit('add')"
+            @click="goSubmit"
           >
             去提交
           </button>
         </div>
         <div v-else>
           <div class="serviceTime-aimBackPrice-row">
-            <div>
+            <div style="padding-left:10px">
               <span class="subtitle">服务期限：</span>
               <span class="spantext">{{ info.serviceTime }}个月</span>
             </div>
             <div>
               <span class="subtitle">目标回款：</span>
-              <span class="spantext">{{ info.aimBackPrice }}</span>
+              <span class="spantext">{{ info.aimBackPrice }}万元</span>
             </div>
           </div>
-          <div class="plan">
+          <div class="plan" style="padding-left:10px">
             <div class="subtitle">处置计划：</div>
           </div>
           <div style="margin-top:24px" class="step-container">
@@ -167,12 +169,13 @@
                 </template>
                 <span :class="`${item.prefixCls}-icon-dot`" />
               </a-popover>
-              <a-step v-for="(item,index) in info.scheduleManagements" :key="index"  :title="item.dateMatters" :description="`${item.dateMonth}个月`" />
+              <a-step v-for="(item,index) in info.scheduleManagements" :key="index"  :title="item.dateMatters" :description="info.aimedStatus==='3'?`${item.dateDay}前`:`${item.dateMonth}个月内`" />
+              
             </a-steps>
           </div>
           <div class="plan_scheme">
-            <div class="subtitle">方案文档：<a>服务方案.doc</a></div>
-            <button class="modify_scheme" @click="goSubmit('edit')" v-if="info.aimedStatus === '2' && info.caseFileStatus === '1'">
+            <div class="subtitle" style="padding-left:10px">方案文档：<a>服务方案.doc</a></div>
+            <button class="modify_scheme" @click="goSubmit" v-if="info.aimedStatus === '2' && info.caseFileStatus === '1'">
               修改服务方案
             </button>
           </div>
@@ -194,10 +197,11 @@ import PlanModal from "../Plan-modal.vue";
 export default {
   data() {
     return {
+      loading:true,
       navData: [
-        { id: 1, title: "服务商管理", path: "/provider/review" },
-        { id: 2, title: "待审查", path: "/provider/review" },
-        { id: 3, title: "项目详情", path: "/provider/review" },
+        { id: 1, title: "我的项目", path: "biding" },
+        { id: 2, title: "我的竞标", path: "biding" },
+        { id: 3, title: "项目详情", path: "detail" },
       ],
       projectStatus: {
         aimedStatus: {
@@ -214,118 +218,30 @@ export default {
       },
       tipStyle: {},
       info: {
-        abandonDate: "2020-12-29",
-        aggrementDate: "2020-12-29",
-        aimBackPrice: "999.99",
-        aimedStatus: "4",
-        amcBidFiles: [
-          {
-            amcBidId: 0,
-            caseFileAddress: "",
-            gmtCreate: "2020-12-29",
-            gmtDelete: "2020-12-29",
-            gmtModify: "2020-12-29",
-            id: 0,
-            isDelete: "0",
-            serviceContractFileAddress: "",
-          },
-        ],
-        amcProjectCollaterals: [
-          {
-            amcProjectId: 0,
-            areaCode: 330104,
-            cityCode: 3301,
-            collateralName: "抵押物名称",
-            collateralType: 1,
-            gmtCreate: "2020-12-29",
-            gmtDeleted: "2020-12-29",
-            gmtModify: "2020-12-29",
-            id: 0,
-            isDeleted: "0",
-            provinceCode: 33,
-          },
-          {
-            amcProjectId: 0,
-            areaCode: 330104,
-            cityCode: 3301,
-            collateralName: "抵押物名称",
-            collateralType: 1,
-            gmtCreate: "2020-12-29",
-            gmtDeleted: "2020-12-29",
-            gmtModify: "2020-12-29",
-            id: 0,
-            isDeleted: "0",
-            provinceCode: 33,
-          },
-        ],
-        amcProjectGuarantors: [
-          {
-            amcProjectId: 0,
-            gmtCreate: "2020-12-29",
-            gmtDeleted: "2020-12-29",
-            gmtModify: "2020-12-29",
-            guarantorCard: "11111111111111",
-            guarantorName: "马云",
-            guarantorPhone: "10086",
-            id: 0,
-            isDeleted: "0",
-          },
-
-        ],
+        abandonDate: "",
+        aggrementDate: "",
+        aimBackPrice: "",
+        aimedStatus: "",
+        amcBidFiles: [],
+        amcProjectCollaterals: [],
+        amcProjectGuarantors: [],
         caseFileStatus: "",
-        closeSubmitDeadline:'1',
-        debtCaptial: "130.15",
-        debtInterest: "120.2",
-        debtor: "阿里巴巴集团",
-        debtorAddress: "杭州市西湖区",
-        gmtCreate: "2020-12-29",
-        id: 0,
-        isDeleted: "0",
-        isLawsuit: "0",
-        realSubmitDeadline: "2020-12-29",
-        recallDate: "2020-12-29",
-        scheduleManagements: [
-          {
-            amcBidId: 0,
-            amcServiceUserId: 0,
-            dateDay: "2020-12-29",
-            dateMatters: "腾房完毕完毕",
-            dateMonth: 0,
-            gmtCreate: "2020-12-29",
-            gmtDelete: "2020-12-29",
-            gmtModify: "2020-12-29",
-            id: 0,
-            isDelete: "0",
-          },
-          {
-            amcBidId: 0,
-            amcServiceUserId: 0,
-            dateDay: "2020-12-29",
-            dateMatters: "腾房完毕完毕",
-            dateMonth: 0,
-            gmtCreate: "2020-12-29",
-            gmtDelete: "2020-12-29",
-            gmtModify: "2020-12-29",
-            id: 0,
-            isDelete: "0",
-          },
-          {
-            amcBidId: 0,
-            amcServiceUserId: 0,
-            dateDay: "2020-12-29",
-            dateMatters: "腾房完毕",
-            dateMonth: 0,
-            gmtCreate: "2020-12-29",
-            gmtDelete: "2020-12-29",
-            gmtModify: "2020-12-29",
-            id: 0,
-            isDelete: "0",
-          },
-        ],
-        security: "2",
-        serviceCaseUpdateTime: "2020-12-29",
-        serviceTime: "2020-12-29",
-        submitDeadline: "2020-12-29",
+        closeSubmitDeadline:'',
+        debtCaptial: "",
+        debtInterest: "",
+        debtor: "",
+        debtorAddress: "",
+        gmtCreate: "",
+        id: '',
+        isDeleted: "",
+        isLawsuit: "",
+        realSubmitDeadline: "",
+        recallDate: "",
+        scheduleManagements: [],
+        security: "",
+        serviceCaseUpdateTime: "",
+        serviceTime: "",
+        submitDeadline: "",
       },
     };
   },
@@ -346,43 +262,32 @@ export default {
     }
   },
   methods: {
-    goSubmit(type) {
-      if(type === "edit"){
-        var servePlan = { //服务方案
-            serviceTime: "",
-            collectionTarget: "",
-            projectId: "",
-            plans: [],
-            documentAddress: "www.baidu.com",
-          };
-          servePlan.serviceTime = this.info.serviceTime;
-          servePlan.collectionTarget = this.info.aimBackPrice;
-          servePlan.projectId = this.info.id;
-          // servePlan.documentAddress = this.info.amcBidFiles[0].caseFileAddress;
-          this.info.scheduleManagements.forEach(item=>{
-            var plan = {};
-            plan.content = item.dateMatters;
-            plan.months = item.dateMonth;
-            servePlan.plans.push(plan);
-          })
-          window.localStorage.setItem("servePlan",JSON.stringify(servePlan));
-      }
+    goSubmit() {
       this.$refs.planModal.handleOpenModal();
     },
+    //计算方案结束日期
     dateOprate(time,month){
       var date = new Date(time);
       date.toLocaleDateString();
       date.setMonth(date.getMonth() + month);
       return date.toLocaleDateString().replaceAll('/','-');
+    },
+    getProjectDetail(){
+      let {id,type} = this.$route.query;
+      amcBidDetail(id,type).then((res) => {
+        console.log(res);
+        if(res.code === 20000){
+          this.loading = false;
+          this.info = res.data;
+        }else{
+          this.$message.error("获取项目详情失败,请刷新页面")
+        }
+      });
     }
   },
   computed: {},
   created() {
-    var {id,type} = this.$route.query;
-    amcBidDetail(id,type).then((res) => {
-      console.log(res);
-      this.info = res.data;
-    });
+    this.getProjectDetail();
   },
 };
 </script>
@@ -392,7 +297,10 @@ export default {
   padding: 0;
   margin: 0;
 }
-
+.spin-wrapper{
+  width: 100%;
+  padding-top: 10vh!important;
+}
 .project-detail {
   &-content {
     .ant-row {

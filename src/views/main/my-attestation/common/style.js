@@ -5,7 +5,7 @@ export const baseWidth = {
 };
 export const textarea = {
 	...baseWidth,
-	autoSize:{ minRows: 4 }
+	autoSize:{ minRows: 4,maxRows:6 }
 };
 
 export const formItemLayout =  {

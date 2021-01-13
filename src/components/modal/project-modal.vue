@@ -46,11 +46,12 @@
             <p>
               抵押物清单：
             </p>
-            <div>
+            <div v-if="projectInfo.amcProjectCollaterals&&projectInfo.amcProjectCollaterals.length">
               <div v-for="(item,index) in projectInfo.amcProjectCollaterals" :key="index">
                 {{index+1}}. {{item.collateralType|collateralType}}、{{item|area}}、{{item.collateralName}}
               </div>
             </div>
+            <div v-else>-</div>
           </li>
         </ul>
       </div>
@@ -71,6 +72,7 @@ import {message} from "ant-design-vue";
 import {abandonBid} from "@/plugin/api/my-biding";
 import {getArea} from "@/plugin/tools";
 import {queryOptions} from "@/views/investment-center/source"
+
 export default {
   name: "ProjectModal",
   nameComment: '竞标报名/放弃竞标弹窗',
@@ -102,7 +104,7 @@ export default {
         this.$router.push('/project/biding');
       } else {
         if (this.sign === 'signUp') {
-          const id = Number(this.projectInfo.id);
+          const id = this.projectInfo.id;
           signUpApi(id).then((res) => {
             if (res.code === 20000) {
               this.isSignUpSuccess = true;
@@ -114,13 +116,13 @@ export default {
             }
           })
         } else {
-          abandonBid(this.projectInfo.id).then(res=>{
+          abandonBid(this.projectInfo.id).then(res => {
             console.log(res)
-            if(res.code === 20000){
+            if (res.code === 20000) {
               console.log(11111)
               this.visible = false;
               this.$parent.getProjectList();
-            }else{
+            } else {
               this.$message.error("网络错误")
             }
           })
@@ -135,14 +137,15 @@ export default {
   },
   filters: {
     guarantorsList: (arr = []) => {
+      if (!arr.length) return '-';
       return arr.map(i => i.guarantorName).join("、");
     },
-    area:(params) => {
-      return getArea(params.provinceCode,params.cityCode,params.areaCode);
+    area: (params) => {
+      return getArea(params.provinceCode, params.cityCode, params.areaCode);
     },
-    collateralType:(val)=>{
-      if(!val)return"-";
-      return queryOptions[1].list.find(i=>val === i.value).label;
+    collateralType: (val) => {
+      if (!val) return "-";
+      return queryOptions[1].list.find(i => val === i.value).label;
     }
   }
 }

@@ -1,4 +1,4 @@
-export const area = [
+const area = [
 	{
 		"id": 11,
 		"name": "北京市",
@@ -20575,3 +20575,4 @@ export const area = [
 		]
 	}
 ];
+module.exports = { area };

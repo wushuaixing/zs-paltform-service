@@ -5,36 +5,41 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    isCertification:true,
-    isSubmitElements:true,
-    info:{},
-    isLogin:false,
+    isCertification: true,
+    isSubmitElements: true,
+    info: {},
+    isLogin: false,
   },
-  getters:{
-    getInfo:(state)=> state.info,
+  getters: {
+    getInfo: (state) => state.info,
   },
   mutations: {
-    updateLoginStates:(state)=>{
+    updateLoginStates: (state) => {
       state.isLogin = true;
     },
-    updateInfo:(state,infoSource = {})=>{
+    updateInfo: (state, infoSource = {}) => {
       window.localStorage.token = infoSource.token;
-      state.info = Object.assign({},state.info,infoSource)
+      state.info = Object.assign({}, state.info, infoSource)
     },
-    resetInfo:(state)=>{
+    resetInfo: (state) => {
       state.info = {};
       state.isLogin = false;
       window.localStorage.token = '';
-
-    }
+    },
+    updateIdentity: (state, identity) => {
+      state.info = Object.assign({}, state.info, { identity, isSubmitCertify: 1 })
+    },
   },
   actions: {
-    updateInfo:(context,source)=>{
-      context.commit('updateInfo',source)
+    updateInfo: (context, source) => {
+      context.commit('updateInfo', source)
     },
-    login:(context,source)=>{
-      context.commit('updateInfo',source);
+    login: (context, source) => {
+      context.commit('updateInfo', source);
       context.commit('updateLoginStates');
+    },
+    updateIdentity: (context, identity) => {
+      context.commit('updateIdentity', identity)
     },
   },
   modules: {

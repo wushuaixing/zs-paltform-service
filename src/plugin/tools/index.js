@@ -61,37 +61,68 @@ export const removeObjectNullVal = (obj) => {
 };
 
 /**
- * 获取fileList
+ * 获取fileList 解析文件格式
  * @param str
  */
-export const fileListRule = (str)=>{
-	if(!str) return [];
-	if(!Array.isArray(JSON.parse(str))) return [];
-	return JSON.parse(str).map(i=>({
-		...i,
-		status: 'done',
-	}))
+export const fileListRule = (str) => {
+	if (!str) return [];
+	if (!Array.isArray(JSON.parse(str))) return [];
+	return JSON.parse(str).map(i => {
+		if(typeof i === 'string'){
+			return {
+				uid: i,
+				hash:i,
+				name :(i.split('_'))[2] || i,
+				status: 'done',
+			}
+		}else{
+			const name = i.name || (i.name.split('_'))[2] || i;
+			return {
+				...i,
+				name,
+				status: 'done',
+			}
+		}
+
+	})
 };
 
 /**
  * 获取fileList - async
  * @param str
  */
-export const fileListRuleAsync = (str)=>{
-	if(!str) return [];
-	if(!Array.isArray(JSON.parse(str))) return [];
-	return Promise.all(JSON.parse(str).map(async i=>{
+export const fileListRuleAsync = (str) => {
+	if (!str) return [];
+	if (!Array.isArray(JSON.parse(str))) return [];
+	return Promise.all(JSON.parse(str).map(async i => {
+		if(typeof i === 'string'){
+			const _i = {
+				name: i.split('_')[2] || i,
+				uid:i,
+				hash:i
+			};
+			return getDownLoadToken(i).then(res => {
+				if (res.code === 20000) {
+					_i.viewUrl = res.data;
+					if(!/.(pdf|doc[x|])$/.test(i)) _i.url = res.data;
+					_i.status = 'done';
+				}
+				return _i;
+			});
+		}else{
 			if (i.viewUrl) return i;
-			else{
-				return getDownLoadToken(i.hash || i.url).then(res=>{
-					if(res.code === 20000) {
+			else {
+				return getDownLoadToken(i.hash).then(res => {
+					if (res.code === 20000) {
 						i.viewUrl = res.data;
-						i.url = res.data;
+						if(!/.(pdf|doc[x|])$/.test(i.hash)) i.url = res.data;
 						i.status = 'done';
 					}
 					return i;
 				});
 			}
+		}
+
 		// ...i,
 		// status: 'done',
 	}))
@@ -105,6 +136,11 @@ export const fileListRuleAsync = (str)=>{
  * @returns string
  */
 export const getArea = (provinceCode, cityCode, areaCode) => {
+	// TODO {
+	//    1. 参数的有误判断；
+	//    2. 二参数的逻辑实现；
+	//    3. ForEach的循环参数的是否判断；
+	//  }
 	let areaParams = [];
 	area.forEach((province) => {
 		if (parseInt(provinceCode) === province.id) {
@@ -122,4 +158,28 @@ export const getArea = (provinceCode, cityCode, areaCode) => {
 		})
 	});
 	return areaParams.join("");
+};
+
+/**
+ * 省市区结构-反解析
+ * @param str
+ * @param single
+ */
+export const areaAnalysis = (str, single = true) => {
+	if (!str) return [];
+	const _str = (str || '').split(',').filter(i => i);
+	return single ? _str : _str.map(i => i.split('/').filter(i => i));
+};
+
+/**
+ * 构建指定数据的数据对象
+ * @param source
+ * @param field
+ * @returns {{}}
+ */
+export const buildSource = (source, field = []) => {
+	if (!field.length) return {};
+	const _source = {};
+	field.forEach(i => _source[i] = source[i] || null);
+	return _source;
 };

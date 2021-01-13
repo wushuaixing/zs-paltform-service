@@ -9,7 +9,12 @@
   >
     <template slot="footer">
       <a-button key="back" @click="handleCancel"> 取消 </a-button>
-      <a-button key="submit" v-if="!servePlan" type="primary" @click="handleModify('add')">
+      <a-button
+        key="submit"
+        v-if="projectInfo.caseFileStatus==='0'"
+        type="primary"
+        @click="handleModify('add')"
+      >
         确认提交
       </a-button>
       <a-button
@@ -24,27 +29,32 @@
     <div class="plan-modal-wrapper">
       <div class="basic-info">
         <div class="title" style="margin-top: 32px">债权基本信息</div>
-        <div  class="content">
+        <div class="content">
           <a-row>
             <a-col :span="8">
-              <span>债务人名称：</span><span>{{projectInfo.debtor}}</span>
+              <span>债务人名称：</span><span>{{ projectInfo.debtor }}</span>
             </a-col>
             <a-col :span="8">
-              <span>债务人注册地：</span><span>{{projectInfo.debtorAddress}}</span>
+              <span>债务人注册地：</span
+              ><span>{{ projectInfo.debtorAddress }}</span>
             </a-col>
             <a-col :span="8">
-              <span>当前诉讼状态：</span><span>{{projectInfo.isLawsuit|isLawsuitType}}</span>
+              <span>当前诉讼状态：</span
+              ><span>{{ projectInfo.isLawsuit | isLawsuitType }}</span>
             </a-col>
           </a-row>
           <a-row>
             <a-col :span="8">
-              <span>债权本金：</span><span>{{projectInfo.debtCaptial | amountTh}}万元</span>
+              <span>债权本金：</span
+              ><span>{{ projectInfo.debtCaptial | amountTh }}万元</span>
             </a-col>
             <a-col :span="8">
-              <span>债权利息：</span><span>{{projectInfo.debtInterest|amountTh}}万元</span>
+              <span>债权利息：</span
+              ><span>{{ projectInfo.debtInterest | amountTh }}万元</span>
             </a-col>
             <a-col :span="8">
-              <span>担保方式：</span><span>{{projectInfo.security | guarantyType}}</span>
+              <span>担保方式：</span
+              ><span>{{ projectInfo.security | guarantyType }}</span>
             </a-col>
           </a-row>
         </div>
@@ -55,6 +65,7 @@
         <a-form-model
           :model="form"
           :rules="rules"
+          ref="ruleForm"
           :label-col="labelCol"
           :wrapper-col="wrapperCol"
         >
@@ -69,55 +80,57 @@
               :precision="0"
               style="width: 246px"
               :max="120"
+              :min="1"
             />
             <span class="unit">个月</span>
             <span class="tips">*请将服务期限换算成月数填写，请填写正整数</span>
           </a-form-model-item>
-          <a-form-model-item label="回款目标" prop="collectionTarget">
+          <a-form-model-item label="回款目标" prop="aimBackPrice">
             <a-input-number
               placeholder="请输入回款目标"
-              v-model.trim="form.collectionTarget"
+              v-model.trim="form.aimBackPrice"
               :precision="2"
+              :min="0"
               style="width: 246px"
             />
             <span class="unit">万元</span>
           </a-form-model-item>
           <a-form-model-item
-            v-for="(item, index) in form.plans"
+            v-for="(item, index) in form.scheduleManagements"
             :label="index === 0 ? '处置计划' : '    '"
             :key="index"
+            prop="scheduleManagements"
           >
             <div>
               <span>从签约日期起</span>
               <a-input-number
-                v-model.trim="item.months"
+                v-model.trim="item.dateMonth"
                 class="plan-ipt"
                 :precision="0"
+                :min="1"
                 style="
                   width: 235px;
                   height: 32px;
-                  border-radius: 0px;
                   margin: 0 8px;
                 "
               />
               <span>个月内完成</span>
               <a-input
-                v-model.trim="item.content"
+                v-model.trim="item.dateMatters"
                 :maxLength="30"
                 style="
                   width: 235px;
                   height: 32px;
-                  border-radius: 0px;
                   margin: 0 8px;
                 "
                 placeholder="阶段性目标,如腾房(30字以内)"
                 class="plan-ipt"
               />
               <a-icon
-                v-if="form.plans.length > 1"
+                v-if="form.scheduleManagements.length > 1"
                 class="dynamic-delete-button"
                 type="minus-circle"
-                :disabled="form.plans.length === 1"
+                :disabled="form.scheduleManagements.length === 1"
                 @click="removeDomain(item)"
               />
             </div>
@@ -130,11 +143,16 @@
           <div class="title">服务方案完整文档</div>
           <a-form-model-item
             label="服务方案文档"
-            prop="documentAddress"
+            prop="caseFileAddress"
             style="margin-top: 30px"
           >
-            <div style="display: flex">
-              <a-upload v-bind="upload.bind" v-on="upload.on">
+            <div style="display: flex" v-if="!form.caseFileAddress">
+              <a-upload
+                v-decorator="decorator"
+                v-bind="upload.bind"
+                v-on="upload.on"
+                @change="handleUpload"
+              >
                 <a-button> <a-icon type="upload" />上传文件</a-button>
               </a-upload>
               <span style="font-size: 12px; margin-left: 10px">
@@ -149,6 +167,13 @@
                 "
                 >服务方案模版下载</span>
             </div>
+            <div v-else>
+              <a :href="url"
+                >{{form.caseFileAddress}}</a><a-icon style="padding:10px;color:#008CB0"
+                  @click="form.caseFileAddress = ''"
+                  type="close"
+              />
+            </div>
           </a-form-model-item>
         </a-form-model>
       </div>
@@ -157,15 +182,17 @@
 </template>
 
 <script>
-import { getArea } from "@/plugin/tools";
-import Deploy from "@/plugin/tools/qiniu-deploy";
-import {submitServicePlan,modifyCase} from "@/plugin/api/my-biding"
+import { getArea} from "@/plugin/tools";
+import Deploy, { getValueFromEvent } from "@/plugin/tools/qiniu-deploy";
+import { submitServicePlan, modifyCase } from "@/plugin/api/my-biding";
+import {getDownLoadToken} from "@/plugin/api/base"
 export default {
   name: "MsgInfoModal",
   nameComment: "查看抵质押物清单弹窗",
   data() {
     return {
-      visible: true,
+      visible: false,
+      url:'',
       formItemLayout: {
         labelCol: {
           xs: { span: 24 },
@@ -190,24 +217,32 @@ export default {
             trigger: "blur",
           },
         ],
-        collectionTarget: [
+        aimBackPrice: [
           {
             required: true,
             message: "请输入回款目标",
             trigger: "blur",
           },
         ],
-        plans: [
+        scheduleManagements: [
           {
             required: true,
           },
         ],
-        documentAddress: [
+        caseFileAddress: [
           {
             required: true,
+            message: "",
           },
         ],
       },
+      decorator: [
+        "confidentialityCommitmentLetter",
+        {
+          valuePropName: "fileList",
+          getValueFromEvent,
+        },
+      ],
       upload: {
         bind: {
           ...Deploy.props,
@@ -221,24 +256,24 @@ export default {
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       form: {
-        serviceTime: 10,
-        collectionTarget: "",
-        plans: [
+        serviceTime: "",
+        aimBackPrice: "",
+        scheduleManagements: [
           {
-            content: "",
-            months: '',
+            dateMatters: "",
+            dateMonth: "",
           },
           {
-            content: "",
-            months: '',
+            dateMatters: "",
+            dateMonth: "",
           },
           {
-            content: "",
-            months: '',
+            dateMatters: "",
+            dateMonth: "",
           },
         ],
-        projectId: "1343816091497205760",
-        documentAddress: "www.baidu.com",
+        id:"",
+        caseFileAddress	: "",
       },
     };
   },
@@ -248,63 +283,115 @@ export default {
       default: () => {},
     },
   },
+  watch:{
+    projectInfo:{
+      handler:function(){
+        this.form.id = this.projectInfo.id;
+        if(this.projectInfo.caseFileStatus !== '0'){
+          this.form.aimBackPrice = this.projectInfo.aimBackPrice;
+          this.form.serviceTime = this.projectInfo.serviceTime;
+          this.form.scheduleManagements = this.projectInfo.scheduleManagements;
+          let length = this.projectInfo.amcBidFiles.length;
+          this.form.caseFileAddress = this.projectInfo.amcBidFiles[length - 1].caseFileAddress
+        }
+      },
+      deep:true
+    }
+  },
   methods: {
     handleOpenModal() {
       this.visible = true;
     },
     handleCancel() {
       this.visible = false;
+      this.$parent.getProjectDetail();
     },
-    handleModify(type){
-      if(type === 'add'){
-        submitServicePlan(this.form).then(res=>{
+    handleModify(type) {
+      if(!this.form.serviceTime || !this.form.aimBackPrice)return false;
+      for (let i = 0; i < this.form.scheduleManagements.length; i++) {
+        let arr = this.form.scheduleManagements.filter(
+          (item) => item.dateMonth === this.form.scheduleManagements[i].dateMonth
+        );
+        if (arr.length !== 1)
+          return this.$message.error(
+            "您填写了重复的计划时间，同一时间阶段的计划请填写在一个阶段性目标中！"
+          );
+      }
+      if (this.form.caseFileAddress === "")
+        return this.$message.error("请上传服务方案文档");
+      if (type === "add") {
+        this.form.id = this.projectInfo.id;
+        submitServicePlan(this.form).then((res) => {
           console.log(res);
-          if(res.code === 20000){
+          if (res.code === 20000) {
             this.$message.success("方案提交成功");
             this.visible = false;
-          }else{
-            this.$message.error("方案提交失败")
+            if(this.$route.query){
+              this.$parent.getProjectDetail();
+            }
+          } else {
+            this.$message.error("方案提交失败,请检查信息是否填写完整");
           }
-        })
+        });
       }
-      if(type === 'edit'){
-        var _this = this
+      if (type === "edit") {
+        let _this = this;
         this.$confirm({
-          title:'确定要修改已提交的方案吗?',
-          content:'请确认修改后的方案核心要素信息与方案文档保持一致！',
-          onOk(){
-            modifyCase(_this.form).then(res=>{
-              console.log(res)
-              if(res.code === 20000){
+          title: "确定要修改已提交的方案吗?",
+          content: "请确认修改后的方案核心要素信息与方案文档保持一致！",
+          onOk() {
+            modifyCase(_this.form).then((res) => {
+              console.log(res);
+              if (res.code === 20000) {
                 _this.$message.success("修改成功");
                 _this.visible = false;
-              }else{
-                _this.$message.error("修改失败");
+                if(_this.$route.query){
+                  _this.$parent.getProjectDetail();
+                }
+              } else {
+                _this.$message.error("修改失败,请检查信息是否填写完整");
               }
-            })
-          }
-        })
+            });
+          },
+        });
       }
     },
     removeDomain(item) {
-      let index = this.form.plans.indexOf(item);
+      let index = this.form.scheduleManagements.indexOf(item);
       if (index !== -1) {
-        this.form.plans.splice(index, 1);
+        this.form.scheduleManagements.splice(index, 1);
       }
     },
     addDomain() {
-      if(this.form.plans.length === 20) return this.$message.info("处置计划最多只能添加20条");
-      this.form.plans.push({
-        content: '',
-        months: '',
+      if (this.form.scheduleManagements.length === 20)
+        return this.$message.info("处置计划最多只能添加20条");
+      this.form.scheduleManagements.push({
+        dateMatters: "",
+        dateMonth: "",
       });
     },
-  },
-  created(){
-    this.servePlan = JSON.parse(window.localStorage.getItem("servePlan"));
-    if(this.servePlan){
-      this.form = this.servePlan;
+    handleUpload(info){
+      if(info.file.status === "done"){
+        console.log(info.file)
+        this.form.caseFileAddress = info.file.response.key;
+        getDownLoadToken(info.file.response.key).then(res=>{
+          if(res.code === 20000){
+            this.url = res.data;
+          }else{
+            return false;
+          }
+        })
+      }
     }
+  },
+  created() {
+    getDownLoadToken(this.form.caseFileAddress).then(res=>{
+      if(res.code === 20000){
+        this.url = res.data;
+      }else{
+        return false;
+      }
+    })
   },
   filters: {
     area: (params) => {
@@ -320,7 +407,7 @@ export default {
   .plan-modal-wrapper {
     .content {
       margin-left: 20px;
-      .ant-row{
+      .ant-row {
         margin-top: 24px;
       }
     }
@@ -370,7 +457,6 @@ export default {
       .plan-ipt {
         width: 240px;
         height: 32px;
-        border-radius: 0px;
         margin: 0 8px;
       }
     }
@@ -380,5 +466,9 @@ export default {
       color: #333333;
     }
   }
+}
+.ant-modal-confirm-btns {
+  margin-right: 50%;
+  transform: translateX(50%);
 }
 </style>

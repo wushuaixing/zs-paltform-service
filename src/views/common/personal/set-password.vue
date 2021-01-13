@@ -6,6 +6,7 @@
         :centered="true"
         :getContainer="() => $refs.container"
         :maskStyle="{ background: 'rgba(0, 0, 0, 0.5)' }"
+        :maskClosable="false"
         v-model="visible"
         title="设置登录密码"
       >
@@ -87,6 +88,16 @@ export default {
       wrapperCol: { span: 14 },
     };
   },
+  watch:{
+    visible:function(){
+      if(this.visible === false) {
+        this.$refs.ruleForm.resetFields();
+        for(let i = 0;i < this.passwordCheck.length;i ++){
+          this.passwordCheck[i] = false;
+        }
+      }
+    }
+  },
   methods: {
     showModal() {
       this.visible = true;
@@ -149,7 +160,7 @@ export default {
 .save-btn {
   width: 60px;
   height: 32px;
-  background: #cccccc;
+  background: #008CB1;
   border-radius: 2px;
   font-size: 14px;
   font-weight: 400;
