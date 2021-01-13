@@ -6,12 +6,14 @@
 		</a-spin>
 		<div v-if="!spinning">
 			<h3>资质信息确认及完善</h3>
-			<FormQualify :userType="identity === 1 ?'lawyer':'org'" :noAuction="false" ref="QualifyFormRef" onlyData :source="source.qualify"/>
+			<FormQualify :userType="identity === 1 ?'lawyer':'org'" :noAuction="false"
+									 ref="QualifyFormRef" onlyData :source="source.qualify" />
 			<h3>要素信息确认及完善</h3>
 			<div class="info-item_category" id="item_category_office">
 				<span class="title">{{identity === 1 ?'律师信息':'机构信息'}}</span>
 			</div>
-			<FormFactor :isLawyer="identity === 1" noSubmit noPadding ref="FactorFormRef" onlyData :dataSource="source.factor"/>
+			<FormFactor :isLawyer="identity === 1" noSubmit noPadding
+									ref="FactorFormRef" onlyData :dataSource="source.factor" />
 		</div>
 		<div slot="footer" style="text-align: center">
 			<a-button type="primary" :loading="loading" @click="handleSubmit" :disabled="spinning">确认无误并提交</a-button>
@@ -70,8 +72,10 @@
 		methods:{
 			handleSubmit() {
 				const { QualifyFormRef, FactorFormRef } = this.$refs;
-				Promise.all([QualifyFormRef.handleSubmit(),FactorFormRef.handleSubmit()])
+				Promise
+					.all([QualifyFormRef.handleSubmit(),FactorFormRef.handleSubmit()])
 					.then(([qualifyVO,elementVO])=>{
+						console.log('then：',[qualifyVO,elementVO]);
 						const params = {
 							qualifyVO,
 							elementVO: this.identity === 1 ? { lawyerElement: elementVO } : elementVO
@@ -86,10 +90,22 @@
 							}else{
 								this.$message.error('网络请求失败！');
 							}
-					}).finally(()=>{
-						this.loading = false;
-					});
-				});
+						}).finally(()=>{
+							this.loading = false;
+						});
+					})
+					.catch((err)=>{
+						if(err){
+							if(Object.keys(err)){
+								const firstErrorField = err[Object.keys(err)[0]].errors[0].field;
+								if(firstErrorField){
+									document.getElementById(firstErrorField).scrollIntoView(true);
+									const h = document.documentElement.scrollTop;
+									document.documentElement.scrollTo(0,h - 100);
+								}
+							}
+						}
+					})
 			},
 			handleProcess(data) {
 				this.source = {

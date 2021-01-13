@@ -32,11 +32,11 @@
         <div class="content">
           <a-row>
             <a-col :span="8">
-              <span>债务人名称：</span><span>{{ projectInfo.debtor }}</span>
+              <span>债务人名称：</span><span>{{ projectInfo.debtor|show_ }}</span>
             </a-col>
             <a-col :span="8">
               <span>债务人注册地：</span
-              ><span>{{ projectInfo.debtorAddress }}</span>
+              ><span>{{ projectInfo.debtorAddress|show_ }}</span>
             </a-col>
             <a-col :span="8">
               <span>当前诉讼状态：</span
@@ -61,7 +61,7 @@
       </div>
       <div class="plan">
         <div class="title" style="margin-top: 32px">服务方案</div>
-        <div class="title" style="margin-top: 14px">服务方案核心要素</div>
+        <div class="title little" style="margin-top: 14px">服务方案核心要素</div>
         <a-form-model
           :model="form"
           :rules="rules"
@@ -99,7 +99,9 @@
             v-for="(item, index) in form.scheduleManagements"
             :label="index === 0 ? '处置计划' : '    '"
             :key="index"
+            :colon="index===0"
             prop="scheduleManagements"
+            :rules="{required:index===0}"
           >
             <div>
               <span>从签约日期起</span>
@@ -109,7 +111,7 @@
                 :precision="0"
                 :min="1"
                 style="
-                  width: 235px;
+                  width: 220px;
                   height: 32px;
                   margin: 0 8px;
                 "
@@ -119,28 +121,30 @@
                 v-model.trim="item.dateMatters"
                 :maxLength="30"
                 style="
-                  width: 235px;
+                  width: 220px;
                   height: 32px;
                   margin: 0 8px;
                 "
                 placeholder="阶段性目标,如腾房(30字以内)"
                 class="plan-ipt"
               />
+              <a-icon 
+                v-if="index===form.scheduleManagements.length-1" 
+                type="plus-circle"
+                style="margin-right:12px"
+                class="icon"
+                @click="addDomain"
+              />
               <a-icon
                 v-if="form.scheduleManagements.length > 1"
-                class="dynamic-delete-button"
                 type="minus-circle"
+                class="icon"
                 :disabled="form.scheduleManagements.length === 1"
                 @click="removeDomain(item)"
               />
             </div>
           </a-form-model-item>
-          <a-form-model-item v-bind="formItemLayoutWithOutLabel">
-            <a-button type="dashed" style="width: 60%" @click="addDomain">
-              <a-icon type="plus" />
-            </a-button>
-          </a-form-model-item>
-          <div class="title">服务方案完整文档</div>
+          <div class="title little">服务方案完整文档</div>
           <a-form-model-item
             label="服务方案文档"
             prop="caseFileAddress"
@@ -148,7 +152,6 @@
           >
             <div style="display: flex" v-if="!form.caseFileAddress">
               <a-upload
-                v-decorator="decorator"
                 v-bind="upload.bind"
                 v-on="upload.on"
                 @change="handleUpload"
@@ -158,6 +161,7 @@
               <span style="font-size: 12px; margin-left: 10px">
                 *支持pdf，word格式，请务必按照方案模版进行撰写
               </span>
+<<<<<<< HEAD
               <span
                 style="
                   font-size: 12px;
@@ -166,10 +170,23 @@
                   text-decoration: underline;
                 "
                 >服务方案模版下载</span>
+=======
+              <a href="https://zsamc-public.zsamc.com/%E4%BB%A3%E7%90%86%E6%96%B9%E6%A1%88%E6%A8%A1%E6%9D%BF.docx">
+                <span
+                  style="
+                    font-size: 12px;
+                    margin-left: 10px;
+                    color: #008cb0;
+                    text-decoration: underline;
+                  "
+                  >服务方案模版下载</span
+                >
+              </a>
+>>>>>>> d85cc84513afd3b6d05520ec28f684b79eb39d09
             </div>
             <div v-else>
               <a :href="url"
-                >{{form.caseFileAddress}}</a><a-icon style="padding:10px;color:#008CB0"
+                >{{fileName}}</a><a-icon style="padding:10px;color:#008CB0"
                   @click="form.caseFileAddress = ''"
                   type="close"
               />
@@ -183,7 +200,7 @@
 
 <script>
 import { getArea} from "@/plugin/tools";
-import Deploy, { getValueFromEvent } from "@/plugin/tools/qiniu-deploy";
+import Deploy from "@/plugin/tools/qiniu-deploy";
 import { submitServicePlan, modifyCase } from "@/plugin/api/my-biding";
 import {getDownLoadToken} from "@/plugin/api/base"
 export default {
@@ -193,6 +210,7 @@ export default {
     return {
       visible: false,
       url:'',
+      fileName:'',
       formItemLayout: {
         labelCol: {
           xs: { span: 24 },
@@ -236,13 +254,6 @@ export default {
           },
         ],
       },
-      decorator: [
-        "confidentialityCommitmentLetter",
-        {
-          valuePropName: "fileList",
-          getValueFromEvent,
-        },
-      ],
       upload: {
         bind: {
           ...Deploy.props,
@@ -292,7 +303,17 @@ export default {
           this.form.serviceTime = this.projectInfo.serviceTime;
           this.form.scheduleManagements = this.projectInfo.scheduleManagements;
           let length = this.projectInfo.amcBidFiles.length;
-          this.form.caseFileAddress = this.projectInfo.amcBidFiles[length - 1].caseFileAddress
+          this.form.caseFileAddress = this.projectInfo.amcBidFiles[length - 1].caseFileAddress;
+          if(this.form.caseFileAddress){
+            this.fileName = (this.form.caseFileAddress.split('_'))[2];
+            getDownLoadToken(this.form.caseFileAddress).then(res=>{
+              if(res.code === 20000){
+                this.url = res.data;
+              }else{
+                return false;
+              }
+            })
+          }
         }
       },
       deep:true
@@ -304,7 +325,7 @@ export default {
     },
     handleCancel() {
       this.visible = false;
-      this.$parent.getProjectDetail();
+      if(this.$route.query.id)this.$parent.getProjectDetail();
     },
     handleModify(type) {
       if(!this.form.serviceTime || !this.form.aimBackPrice)return false;
@@ -322,11 +343,10 @@ export default {
       if (type === "add") {
         this.form.id = this.projectInfo.id;
         submitServicePlan(this.form).then((res) => {
-          console.log(res);
           if (res.code === 20000) {
             this.$message.success("方案提交成功");
             this.visible = false;
-            if(this.$route.query){
+            if(this.$route.query.id){
               this.$parent.getProjectDetail();
             }
           } else {
@@ -341,11 +361,10 @@ export default {
           content: "请确认修改后的方案核心要素信息与方案文档保持一致！",
           onOk() {
             modifyCase(_this.form).then((res) => {
-              console.log(res);
               if (res.code === 20000) {
                 _this.$message.success("修改成功");
                 _this.visible = false;
-                if(_this.$route.query){
+                if(_this.$route.query.id){
                   _this.$parent.getProjectDetail();
                 }
               } else {
@@ -372,7 +391,7 @@ export default {
     },
     handleUpload(info){
       if(info.file.status === "done"){
-        console.log(info.file)
+        this.fileName = (info.file.response.key.split('_'))[2]
         this.form.caseFileAddress = info.file.response.key;
         getDownLoadToken(info.file.response.key).then(res=>{
           if(res.code === 20000){
@@ -397,6 +416,10 @@ export default {
     area: (params) => {
       return getArea(params.provinceCode, params.cityCode, params.areaCode);
     },
+    show_(val){
+      if(!val)return "-";
+      return val
+    }
   },
 };
 </script>
@@ -447,28 +470,27 @@ export default {
         }
       }
     }
+    .ant-form-item{
+      height: 32px;
+    }
     .ant-modal-footer {
       text-align: center;
-    }
-    .plan-item ~ .plan-item {
-      margin-top: 24px;
-    }
-    .plan-item {
-      .plan-ipt {
-        width: 240px;
-        height: 32px;
-        margin: 0 8px;
-      }
     }
     .title {
       font-size: 16px;
       font-weight: 600;
       color: #333333;
+      &.little{
+        font-size: 14px;
+      }
     }
   }
 }
 .ant-modal-confirm-btns {
   margin-right: 50%;
   transform: translateX(50%);
+}
+.icon{
+  font-size: 16px;
 }
 </style>

@@ -83,7 +83,7 @@
         <a-row>
           <a-col v-for="item in adv.type.options" :key="item.id" v-bind="item.id===0?{span:24}:{span:6}">
             <a-checkbox :value="item.value">{{ item.label }}</a-checkbox>
-            <a-input v-if="item.id===0" style="width: 616px" placeholder="多个方向请用中文顿号隔开"
+            <a-input v-if="item.id===0" style="width: 616px" placeholder="多个方向请用中文顿号隔开" :maxLength="100"
                      v-decorator="adv.type.detail"/>
           </a-col>
         </a-row>
@@ -120,7 +120,7 @@
         <a-row>
           <a-col v-for="item in adv.type1.options" :key="item.id" v-bind="item.id===0?{span:24}:{span:6}">
             <a-checkbox :value="item.value">{{ item.label }}</a-checkbox>
-            <a-input v-if="item.id===0" style="width: 616px" placeholder="多个资源请用中文顿号隔开"
+            <a-input v-if="item.id===0" style="width: 616px" placeholder="多个资源请用中文顿号隔开" :maxLength="100"
                      v-decorator="adv.type1.detail"/>
           </a-col>
         </a-row>
@@ -147,16 +147,16 @@ export default {
       formItemLayout,
       field: {
         college: {
-          dec: ['graduateSchool', {rules: [{required: true, message: '毕业院校不能为空'}]}],
+          dec: ['graduateSchool', {rules: [{required: true, message: '请输入毕业院校'}]}],
           other: {
-            placeholder: '请填写毕业院校',
+            placeholder: '请输入毕业院校',
             ...textarea
           }
         },
         major: {
-          dec: ['major', {rules: [{required: true, message: '专业不能为空'}]}],
+          dec: ['major', {rules: [{required: true, message: '请输入院校所选专业'}]}],
           other: {
-            placeholder: '请填写院校所选专业',
+            placeholder: '请输入院校所选专业',
             ...textarea
           }
         },
@@ -171,7 +171,7 @@ export default {
 					}
         },
         local: {
-          dec: ['area', {rules: [{required: true, message: '所在地区不能为空'}]}],
+          dec: ['area', {rules: [{required: true, message: '请选择所在地区'}]}],
           other: {
             options: areaOption,
             getPopupContainer: e => e.parentElement,
@@ -185,7 +185,7 @@ export default {
           }
         },
         involve: {
-          dec: ['workArea', {rules: [{required: true, message: '主要涉业地区不能为空'}]}],
+          dec: ['workArea', {rules: [{required: true, message: '请选择主要涉业地区'}]}],
           other: {
             clearable: true,
             options: areaOption,
@@ -216,28 +216,28 @@ export default {
           }
         },
         avoSite: {
-          dec: ['workUnitName', {rules: [{required: true, message: '兼职/任职单位名称不能为空'}]}],
+          dec: ['workUnitName', {rules: [{required: true, message: '请输入兼职/任职单位名称'}]}],
           other: {
-            placeholder: '请填写兼职/任职单位名称',
+            placeholder: '请输入兼职/任职单位名称',
             ...baseWidth
           }
         },
         avoPost: {
-          dec: ['workRole', {rules: [{required: true, message: '兼职/任职职务不能为空'}]}],
+          dec: ['workRole', {rules: [{required: true, message: '请输入兼职/任职职务'}]}],
           other: {
-            placeholder: '请填写兼职/任职职务',
+            placeholder: '请输入兼职/任职职务',
             ...baseWidth
           }
         },
         once: {
-          dec: ['formerWorkUnit', {rules: [{required: true, message: '曾就业律所/单位不能为空'}]}],
+          dec: ['formerWorkUnit', {rules: [{required: true, message: '请输入您曾就业的律所或单位名称全称'}]}],
           other: {
             placeholder: '请输入您曾就业的律所或单位名称全称，若曾就业于多家律所或单位，请用中文顿号隔开',
             ...textarea
           }
         },
         workExp: {
-          dec: ['badAssetsWorkExp', {rules: [{required: true, message: '执业经历（不良）不能为空'}]}],
+          dec: ['badAssetsWorkExp', {rules: [{required: true, message: '请输入您以往涉及不良资产业务的执业经历经验'}]}],
           other: {
             placeholder: '请输入您以往涉及不良资产业务的执业经历经验',
             ...textarea
@@ -275,7 +275,7 @@ export default {
           }
         },
         area: {
-          dec: ['areasOfGoodCases', {rules: [{required: true, message: '擅长业务区域不能为空'}]}],
+          dec: ['areasOfGoodCases', {rules: [{required: true, message: '请选择擅长业务区域'}]}],
           other: {
 	          clearable: true,
 	          options: areaOption,
@@ -292,21 +292,21 @@ export default {
           }
         },
         court: {
-          dec: ['competentCourt', {rules: [{required: true, message: '主要代理案件管辖法院不能为空'}]}],
+          dec: ['competentCourt', {rules: [{required: true, message: '请输入主要代理案件管辖法院'}]}],
           other: {
-            placeholder: '请填写主要代理案件管辖法院',
+            placeholder: '请输入主要代理案件管辖法院',
             ...textarea
           }
         },
         court2: {
-          dec: ['familiarCourts', {rules: [{required: true, message: '熟悉法院不能为空'}]}],
+          dec: ['familiarCourts', {rules: [{required: true, message: '请输入熟悉法院'}]}],
           other: {
-            placeholder: '请填写熟悉法院',
+            placeholder: '请输入熟悉法院',
             ...textarea
           }
         },
         adv: {
-          dec: ['otherResourcesAdvantage', {rules: [{required: true, message: '请填写其他社会资源优势'}]}],
+          dec: ['otherResourcesAdvantage', {rules: [{required: true, message: '请输入其他社会资源优势'}]}],
           other: {
             placeholder: '包括但不限于某法院、法官，法官请以“xx法院-xx法官”形式输入，多个法院、法官间以中文顿号隔开',
             ...textarea
@@ -362,7 +362,7 @@ export default {
         setFields({
           [field]: {
             value: undefined,
-            errors: [new Error('地区不能为空')]
+            errors: [new Error('请输入地区')]
           }
         })
       } else {

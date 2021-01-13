@@ -11,7 +11,11 @@ export default new Vuex.Store({
     isLogin: false,
   },
   getters: {
-    getInfo: (state) => state.info,
+	  getInfo: (state) => state.info,
+	  getAttest: (state) => ({
+		  qualify:state.isCertification,
+		  element:state.isSubmitElements,
+	  }),
   },
   mutations: {
     updateLoginStates: (state) => {
@@ -26,6 +30,12 @@ export default new Vuex.Store({
       state.isLogin = false;
       window.localStorage.token = '';
     },
+	  updateQualify: (state) => {
+		  state.info = Object.assign({}, state.info, { isCertification: 1 })
+	  },
+	  updateElement: (state) => {
+		  state.info = Object.assign({}, state.info, { isSubmitElements: 1 })
+	  },
     updateIdentity: (state, identity) => {
       state.info = Object.assign({}, state.info, { identity, isSubmitCertify: 1 })
     },

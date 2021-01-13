@@ -17,7 +17,7 @@
       <a-cascader v-decorator="field.local.dec" v-bind="field.local.other"/>
     </a-form-item>
     <a-form-item label="公司分部覆盖地区">
-      <el-cascader v-bind="field.involve.other" @change="val=>handleEleCas(val,field.involve.dec[0])"
+      <el-cascader v-bind="field.involve.other" @change="val=>handleEleCas(val,field.involve.dec[0],'company')"
                    @visible-change="val=>this.visible = val"/>
       <a-input v-decorator="field.involve.dec" style="display: none"/>
     </a-form-item>
@@ -45,21 +45,21 @@
         <a-row>
           <a-col v-for="item in adv.goodCases.options" :key="item.id" v-bind="item.id!==0?{span:6}:{}">
             <a-checkbox :value="item.value">{{ item.label }}</a-checkbox>
-            <a-input v-if="item.id===0" style="width: 616px" placeholder="多个方向请用中文顿号隔开"
+            <a-input v-if="item.id===0" style="width: 616px" placeholder="多个方向请用中文顿号隔开" :maxLength="100"
                      v-decorator="adv.goodCases.detail"/>
           </a-col>
         </a-row>
       </a-checkbox-group>
     </a-form-item>
     <a-form-item label="擅长业务区域">
-      <el-cascader v-bind="adv.involve.other" @change="val=>handleEleCas(val,adv.involve.dec[0])"
+      <el-cascader v-bind="adv.involve.other" @change="val=>handleEleCas(val,adv.involve.dec[0],'business')"
                    @visible-change="val=>this.visible = val"/>
       <a-input v-decorator="adv.involve.dec" style="display: none"/>
     </a-form-item>
     <a-form-item label="社会资源优势">
       <a-textarea v-decorator="adv.otherResourcesAdvantage.dec" v-bind="adv.otherResourcesAdvantage.other"/>
     </a-form-item>
-    <a-form-item label="是否有投行项目经验" class="form-item-row">
+    <a-form-item label="是否有投行项目经验" class="form-item-row" :selfUpdate="false">
       <a-radio-group v-decorator="adv.isHasBankExperience.dec" v-bind="adv.isHasBankExperience.other">
         <a-row>
           <a-col :span="6">
@@ -73,7 +73,7 @@
     </a-form-item>
 
     <a-form-item label="历史投行项目案例" v-if="getValue(adv.isHasBankExperience.dec[0]) ==='1'">
-      <a-input v-decorator="adv.investmentBankProjectCase.dec" v-bind="adv.investmentBankProjectCase.other"/>
+      <a-textarea v-decorator="adv.investmentBankProjectCase.dec" v-bind="adv.investmentBankProjectCase.other"/>
     </a-form-item>
 
     <div class="factor-form-subtitle"><span>投资意向</span></div>
@@ -96,12 +96,40 @@
                           v-bind="intention.investmentPreferenceType.other">
           <a-row>
             <a-col v-for="item in intention.investmentPreferenceType.options" :key="item.id"
-                   v-bind="item.id!==0?{span:5}:{}">
+                   v-bind="item.id!==0?{span:6}:{}">
               <a-checkbox :value="item.value">{{ item.label }}</a-checkbox>
             </a-col>
           </a-row>
         </a-checkbox-group>
       </a-form-item>
+      <a-row>
+        <a-col :span="13">
+          <a-form-item label="标的金额范围" :label-col="{span:11}" :wrapper-col="{span:13}" :selfUpdate="false">
+            <a-input-number
+                v-decorator="intention.startAmountOfSubject.min(getValue(intention.startAmountOfSubject.disabled[0]))"
+                style="width:200px" :min="0"
+                @change="minChange"
+                :disabled="getValue(intention.startAmountOfSubject.disabled[0])"/>
+            <span style="margin-left:5px">万元</span>
+            <span style="margin-left:15px">~</span>
+          </a-form-item>
+        </a-col>
+        <a-col :span="7">
+          <a-form-item :wrapper-col="{span:24}" :selfUpdate="false">
+            <a-input-number
+                v-decorator="intention.startAmountOfSubject.max(getValue(intention.startAmountOfSubject.disabled[0]),getValue(intention.startAmountOfSubject.min()[0]))"
+                style="width:200px" :min="0"
+                :disabled="getValue(intention.startAmountOfSubject.disabled[0])"/>
+            <span style="margin-left:5px">万元</span>
+          </a-form-item>
+        </a-col>
+        <a-col :span="3">
+          <a-form-item :selfUpdate="false">
+            <a-checkbox v-decorator="intention.startAmountOfSubject.disabled" @change="checkedChange">不限
+            </a-checkbox>
+          </a-form-item>
+        </a-col>
+      </a-row>
       <a-form-item label="投资区域">
         <a-cascader v-decorator="intention.investmentArea.dec" v-bind="intention.investmentArea.other"/>
       </a-form-item>
@@ -113,10 +141,11 @@
 </template>
 
 <script>
-import { baseWidth, textarea } from "@/views/main/my-attestation/common/style";
-import { areaOption, expOption, hisCoo, orgAdvType } from "@/views/main/my-attestation/common/source";
-import { buildSource, areaAnalysis } from "@/plugin/tools";
-const field = ["areasOfGoodCases","branchOfficeAddress","goodCases","hasInvestmentBankExperience","hasInvestmentIntention","headOfficeAddress","investmentArea","investmentBankProjectCase","investmentExperience","investmentPreferenceType","numberOfCompany","numberOfTeams","organizationInformation","organizationalStructureInformation","otherGoodCases","otherMasterSubject","otherResourcesAdvantage","totalTeamSize","workingTime"];
+import {baseWidth, textarea} from "@/views/main/my-attestation/common/style";
+import {areaOption, expOption, hisCoo, orgAdvType} from "@/views/main/my-attestation/common/source";
+import {buildSource, areaAnalysis} from "@/plugin/tools";
+
+const field = ["areasOfGoodCases", "branchOfficeAddress", "goodCases", "hasInvestmentBankExperience", "hasInvestmentIntention", "headOfficeAddress", "investmentArea", "investmentBankProjectCase", "investmentExperience", "investmentPreferenceType", "numberOfCompany", "numberOfTeams", "organizationInformation", "organizationalStructureInformation", "otherGoodCases", "otherMasterSubject", "otherResourcesAdvantage", "totalTeamSize", "workingTime", "startAmountOfSubject"];
 
 export default {
   name: 'FormOrg',
@@ -151,12 +180,12 @@ export default {
           }
         },
         involve: {
-          dec: ['branchOfficeAddress', {rules: [{required: true, message: '主要涉业地区不能为空'}]}],
+          dec: ['branchOfficeAddress', {rules: [{required: true, message: '请选择公司分部覆盖地区！'}]}],
           other: {
             clearable: true,
             options: areaOption,
             size: "small",
-						value:[],
+            value: [],
             // collapseTags:true,
             props: {
               value: 'id',
@@ -164,12 +193,12 @@ export default {
               multiple: true,
               checkStrictly: true,
             },
-            placeholder: '请选择主要涉业地区',
+            placeholder: '请选择公司分部覆盖地区',
             ...baseWidth,
           }
         },
         teamNum: {
-          dec: ['numberOfTeams', {rules: [{required: true, message: '清收团队数不能为空'}]}],
+          dec: ['numberOfTeams', {rules: [{required: true, message: '请输入清收团队数'}]}],
           other: {
             placeholder: '请输入清收团队数',
             style: {width: '200px'},
@@ -177,14 +206,14 @@ export default {
           }
         },
         numberOfCompany: {
-          dec: ['numberOfCompany', {rules: [{required: true, message: '公司总人数不能为空'}]}],
+          dec: ['numberOfCompany', {rules: [{required: true, message: '请输入公司总人数'}]}],
           other: {
             placeholder: '请输入公司总人数',
             style: {width: '200px'},
           }
         },
         teamNumTotal: {
-          dec: ['totalTeamSize', {rules: [{required: true, message: '清收团队总数不能为空'}]}],
+          dec: ['totalTeamSize', {rules: [{required: true, message: '请输入清收团队总人数'}]}],
           other: {
             placeholder: '请输入清收团队总人数',
             style: {width: '200px'},
@@ -235,10 +264,34 @@ export default {
             ...textarea
           }
         },
+        startAmountOfSubject: {
+          min: (disabled) => ['min', {
+            rules: [{
+              required: !disabled,
+              message: '请选择标的金额范围最小值'
+            }]
+          }],
+          max: (disabled, min) => ['max', {
+            validateFirst: true,
+            rules: [{
+              required: !disabled,
+              message: '请选择标的金额范围最大值'
+            }, {
+              type: 'number',
+              transform: i => Number(i),
+              min: disabled ? false : min ? min : 0,
+              message: '不得小于标的金额范围最小值'
+            }]
+          }],
+          disabled: ['disabled', {valuePropName: 'checked'}],
+          other: {
+            ...baseWidth,
+          },
+        }
       },
       adv: {
         goodCases: {
-          dec: ['goodCases', {rules: [{required: true, message: '擅长业务类型不能为空!'}]}],
+          dec: ['goodCases', {rules: [{required: true, message: '请选择擅长业务类型!'}]}],
           detail: ['otherGoodCases'],
           options: orgAdvType,
           other: {
@@ -246,12 +299,12 @@ export default {
           }
         },
         involve: {
-          dec: ['areasOfGoodCases', {rules: [{required: true, message: '主要涉业地区不能为空'}]}],
+          dec: ['areasOfGoodCases', {rules: [{required: true, message: '请选择擅长业务区域'}]}],
           other: {
             clearable: true,
             options: areaOption,
             size: "small",
-						value:[],
+            value: [],
             // collapseTags:true,
             props: {
               value: 'id',
@@ -259,31 +312,30 @@ export default {
               multiple: true,
               checkStrictly: true,
             },
-            placeholder: '请选择主要涉业地区',
+            placeholder: '请选择擅长业务区域',
             ...baseWidth,
           }
         },
         otherResourcesAdvantage: {
-          dec: ['otherResourcesAdvantage', {rules: [{required: true, message: '主要涉业地区不能为空'}]}],
+          dec: ['otherResourcesAdvantage', {rules: [{required: true, message: '请输入社会资源优势'}]}],
           other: {
             placeholder: '包括但不限于某法院、法官，法官请以“xx法院-xx法官形式输入，多个法院、法官间以中文顿号隔开”',
             ...textarea
           }
         },
         isHasBankExperience: {
-          dec: ['hasInvestmentBankExperience', {rules: [{required: true, message: '请选择有公检法等工作经历情况'}]}],
+          dec: ['hasInvestmentBankExperience', {rules: [{required: true, message: '请选择投行项目经验'}]}],
           other: {
             ...baseWidth,
           }
         },
         investmentBankProjectCase: {
-          dec: ['investmentBankProjectCase'],
+          dec: ['investmentBankProjectCase', {rules: [{required: true, message: '请输入历史投行项目案例'}]}],
           other: {
             placeholder: '请输入历史投行项目案例',
             ...textarea
           }
         },
-
       },
     }
   },
@@ -303,22 +355,34 @@ export default {
   },
   mounted() {
     if (Object.keys(this.source || {}).length) {
-      this.resetFormValue(buildSource(this.source,field));
+      this.resetFormValue(buildSource(this.source, field));
     }
   },
   methods: {
     getValue(params) {
       if (params) return this.form.getFieldValue(params);
     },
-
+    //标的金额范围改变
+    minChange() {
+      const max = this.getValue(this.intention.startAmountOfSubject.max()[0]);
+      max > 0 && this.$nextTick(() => {
+        this.form.validateFields(['max'], {force: true, firstFields: ['max']},);
+      });
+    },
+    //标的金额范围 不限 复选框 改变
+    checkedChange() {
+      this.$nextTick(() => {
+        this.form.validateFields(['max', 'min'], {force: true, firstFields: ['max']});
+      });
+    },
     // ele 地区多选事件触发
-    handleEleCas(val = [], field) {
+    handleEleCas(val = [], field, sign) {
       const {setFieldsValue, setFields} = this.form;
       if (!this.visible && !val.length) {
         setFields({
           [field]: {
             value: undefined,
-            errors: [new Error('主要涉业地区不能为空')]
+            errors: [new Error(sign === 'business' ? '请选择擅长业务区域' : '请选择公司分部覆盖地区')]
           }
         })
       } else {
@@ -327,49 +391,84 @@ export default {
         setFieldsValue({[field]: str});
       }
     },
-	  handleSubmit(e) {
-		  (e || window.event).preventDefault();
-		  return new Promise((resolve,reject)=>{
-			  this.form.validateFields((err, data) => {
-				  if (!err)  resolve(this.processData(data));
-				  else reject(err)
-			  });
-		  });
-	  },
+    handleSubmit(e) {
+      (e || window.event).preventDefault();
+      return new Promise((resolve, reject) => {
+        this.form.validateFields((err, data) => {
+          if (!err) resolve(this.processData(data));
+          else reject(err)
+        });
+      });
+    },
+	  /**
+	   * @return {string}
+	   */
+	  LinkageData(params, val) {
+      if (params instanceof Array) {
+        return params.some(i => Number(i) === 0) ? val : '';
+      } else {
+        return params === '0' ? val : '';
+      }
+    },
     // 处理当前数据
     processData(source = {}) {
+      // goodCases 擅长业务类型（1：工业，2：商业，3：住宅，4：纯担保类，0：其他）
+      // otherGoodCases 擅长其他业务类型
+      const startAmountOfSubject = {
+        min: source.disabled ? "" : source.min,
+        max: source.disabled ? "" : source.max,
+        disabled: source.disabled,
+      };
       return Object.assign({}, source, {
         goodCases: (source.goodCases || []).join(','),
         headOfficeAddress: (source.headOfficeAddress || []).join(','),
         investmentPreferenceType: (source.investmentPreferenceType || []).join(','),
         investmentArea: (source.investmentArea || []).join(','),
+        startAmountOfSubject: JSON.stringify(startAmountOfSubject),
+        otherGoodCases: this.LinkageData(source.goodCases, source.otherGoodCases),
       })
     },
 
     resetFormValue(source) {
-	    const { investmentPreferenceType,investmentArea,investmentExperience,investmentBankProjectCase,..._source } = source;
-			const fieldValues = {
+      const {
+        investmentPreferenceType,
+        investmentArea,
+        investmentExperience,
+        investmentBankProjectCase,
+        ..._source
+      } = source;
+      const fieldValues = {
         ..._source,
         goodCases: (source.goodCases || '').split(',').map(i => Number(i)),
         headOfficeAddress: (source.headOfficeAddress || '').split(',').map(i => Number(i)),
       };
       this.form.setFieldsValue({...fieldValues});
-	    this.field.involve.other.value = areaAnalysis(source.branchOfficeAddress,false);
-	    this.adv.involve.other.value = areaAnalysis(source.areasOfGoodCases,false);
-	    this.$nextTick(()=>{
-		    if(source.hasInvestmentIntention === '1') {
-			    this.form.setFieldsValue({
-				    investmentExperience,
-				    investmentArea: (investmentArea || '').split(',').map(i => Number(i)).filter(i=>i),
-				    investmentPreferenceType: (investmentPreferenceType || '').split(',').map(i => Number(i)),
-			    });
-		    }
-		    if(source.hasInvestmentBankExperience === '1') {
-			    this.form.setFieldsValue({
-				    investmentBankProjectCase,
-			    });
-		    }
-	    })
+      this.field.involve.other.value = areaAnalysis(source.branchOfficeAddress, false);
+      this.adv.involve.other.value = areaAnalysis(source.areasOfGoodCases, false);
+      this.$nextTick(() => {
+        if (source.hasInvestmentIntention === '1') {
+					let _subject = {};
+					try{
+		        _subject = JSON.parse(source.startAmountOfSubject);
+					}catch (e) {
+						console.log('-');
+	        }
+          const {disabled, min, max} = _subject;
+          this.form.setFieldsValue({
+            investmentExperience,
+            disabled,
+            min,
+            max,
+            investmentArea: (investmentArea || '').split(',').map(i => Number(i)).filter(i => i),
+            investmentPreferenceType: (investmentPreferenceType || '').split(',').map(i => Number(i)),
+          });
+        }
+        if (source.hasInvestmentBankExperience === '1') {
+          this.form.setFieldsValue({
+            investmentBankProjectCase,
+          });
+        }
+      })
     },
   },
 }

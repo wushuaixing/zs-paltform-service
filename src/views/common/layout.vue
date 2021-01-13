@@ -4,7 +4,7 @@
       <a-layout-header class="header-wrapper" :style="{ position: 'fixed', zIndex: 99, width: '100%' }">
         <a-icon class="header-icon" type="codepen"/>
         <span class="header-title">浙商资产服务商招募管理系统</span>
-        <a-menu theme="dark" mode="horizontal" :default-selected-keys="[selectedKey]"
+        <a-menu theme="dark" mode="horizontal" :default-selected-keys="['a']" :selectedKeys="selectedKey"
                 :style="{ lineHeight: '64px',display:'inline-block',verticalAlign: 'top',height:'64px' }">
           <a-menu-item key="a">
             <router-link to="/">我的</router-link>
@@ -18,14 +18,14 @@
                       :getPopupContainer="e=>e.parentElement" >
             <a-menu slot="overlay" >
               <a-menu-item key="1">
-                <div @click="handleModifyPhone"><a-icon type="user" />修改绑定手机号</div>
+                <div @click="handleModifyPhone"><a-icon class="personal-icon" type="user" />修改绑定手机号</div>
               </a-menu-item>
               <a-menu-item key="2">
-                <div @click="handleSetPwd" v-if="isSetPassword===0"><a-icon type="lock" />设置登录密码</div>
-                <div @click="handleModifyPwd" v-if="isSetPassword===1"><a-icon type="lock" />修改登录密码</div>
+                <div @click="handleSetPwd" v-if="isSetPassword===0"><a-icon class="personal-icon" type="lock" />设置登录密码</div>
+                <div @click="handleModifyPwd" v-if="isSetPassword===1"><a-icon class="personal-icon" type="lock" />修改登录密码</div>
               </a-menu-item>
               <a-menu-item key="3">
-                <div @click="doLogout"><a-icon type="poweroff" />退出登录</div>
+                <div @click="doLogout"><a-icon class="personal-icon" type="poweroff" />退出登录</div>
               </a-menu-item>
             </a-menu>
             <a-button type="link" icon="down" style="color:#fff;">Hi，{{username}}</a-button>
@@ -50,7 +50,7 @@
     data() {
       return {
         loading:true,
-        selectedKey:'a',
+        selectedKey:['a'],
         info:{},
       };
     },
@@ -75,15 +75,16 @@
           title:"是否退出登录?",
           centered:true,
           onOk(){
-            _this.$router.push('/login');
             logout()
+            _this.$router.push('/login');
           }
         })
       }
     },
     created() {
-      const { hash } = window.location;
-      if(/^#\/center/.test(hash))this.selectedKey = 'b';
+	    if(!window.localStorage.token) return this.$router.push('/login');
+	    const { hash } = window.location;
+      if(/^#\/center/.test(hash))this.selectedKey = ['b'];
       if(!this.$store.state.isLogin){
         getInfo().then(res=>{
           this.loading = false;
@@ -108,11 +109,25 @@
       isSetPassword(){
         return this.$store.getters.getInfo.isSetPassword;
       }
+    },
+    watch:{
+      $route(to,from){
+        if(to.path !== from.path){
+          if(/\/center/.test(to.path)){
+            this.selectedKey = ['b'];
+          } else {
+            this.selectedKey = ['a'];
+          }
+        }
+      }
     }
   };
 </script>
 
 <style lang="scss">
+.personal-icon{
+  padding-right: 6px;
+}
 .root-node-wrapper{
 
 }

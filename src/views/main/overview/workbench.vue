@@ -5,7 +5,7 @@
         <div class="item-title item-format ">待办事项</div>
         <div class="item-content item-format item-thing item-toDo">
           <!-- 待办事项 -->
-            <div>
+            <div class="toDoList">
               <ul class="through">
                 <li  v-for="(item, index) in list" :key="index">
                   <a-badge :status="MATTER_TYPE[item.code].text" />
@@ -38,25 +38,26 @@
               <div id="main"></div>
             </div>
             <div class="schemeProcess">
-              <a-badge color="#c23531" text="方案待提交" />
-              <span>{{echarts.myProjectCaseUnSubmit}}</span>
+              <a-badge color="#9200FF" style="marign-left: 12px" text="方案待提交" />
+              <!-- <a-button type="link" @click="onTarget(MATTER_TYPE[item.code].path, item.projectId)" >{{echarts.myProjectCaseUnSubmit}}</a-button> -->
+              <router-link to="/project/biding"  >{{echarts.myProjectCaseUnSubmit}}</router-link>
               <br />
-              <a-badge text="方案已提交" color="#2f4554"/>
-              <span>{{echarts.myProjectCaseSubmitted}}</span>
+              <a-badge text="方案已提交" color="#67CE57"/>
+              <router-link to="/project/biding">{{echarts.myProjectCaseSubmitted}}</router-link>
               <br />
-              <a-badge text="方案审批中" color="#61a0a8" />
-              <span>{{echarts.myProjectsReview}}</span>
+              <a-badge text="方案审批中" color="#F7CE22" />
+              <router-link to="/project/biding">{{echarts.myProjectsReview}}</router-link>
               <br />
             </div>
             <div class="schemeStatus">
-              <a-badge text="中标" color="#d48265"/>
-              <span>{{echarts.myProjectsAimed}}</span>
+              <a-badge text="中标" color="#44D7B6"/>
+              <router-link to="/project/biding">{{echarts.myProjectsAimed}}</router-link>
               <br />
-              <a-badge text="失效" color="#91c7ae"/>
-              <span>{{echarts.myProjectsInvalid}}</span>
+              <a-badge text="失效" color="#01A0FF"/>
+              <router-link to="/project/biding">{{echarts.myProjectsInvalid}}</router-link>
               <br />
-              <a-badge text="放弃" color="#749f83"/>
-              <span>{{echarts.myProjectAbandon}}</span>
+              <a-badge text="放弃" color="#F5222D"/>
+              <router-link to="/project/biding">{{echarts.myProjectAbandon}}</router-link>
             </div>
           </div>
         </div>
@@ -109,8 +110,7 @@ export default {
         startDate:""
       },
       // 事项数据
-      data: [
-      ],
+      data: []
     };
   },
   computed: {
@@ -125,7 +125,7 @@ export default {
         let dateStr = `${value.year()}-${(value.month() + 1).toString().padStart(2, 0)}-${value.date().toString().padStart(2, 0)}`;
         if (dateStr === this.data[i].dateDay) {
           this.data[i].matters.forEach( item => {
-            var obj = { type: "warning", content: item.dateMatters };
+            var obj = { type: "processing", content: item.dateMatters };
             listData.push(obj);
           });
           return listData;
@@ -169,14 +169,14 @@ export default {
       if (res.code !== 20000) return this.$message.error('获取图表数据失败');
       this.echarts = res.data;
       let option = {
-      // color: ['red', 'blue','green','skyblue','pink'],
+      color: ['#E283FF', '#67CE57','#F7CE22','#44D7B6','#01A0FF','#F5222D'],
         tooltip: {
             trigger: 'item',
         },
         series: [
           {
             type: 'pie',
-            radius: ['50%', '70%'],
+            radius: ['40%', '70%'],
             // avoidLabelOverlap: false,
             label: {
                 show: false,
@@ -185,7 +185,7 @@ export default {
             emphasis: {
                 label: {
                     show: true,
-                    fontSize: '16',
+                    fontSize: '12',
                     fontWeight: 'bold'
                 }
             },
@@ -230,7 +230,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-$leftWidth: 450px;
+$leftWidth: 470px;
 .workbench-wrapper {
   // width: 1440px;
   height: 100%;
@@ -255,6 +255,7 @@ $leftWidth: 450px;
   }
   .item {
     &-format {
+      box-sizing: border-box;
       padding: 10px;
       font-size: 14px;
       line-height: 1;
@@ -282,10 +283,11 @@ $leftWidth: 450px;
       line-height: 16px;
     }
     &-content {
-      min-height: 150px;
+      box-sizing: border-box;
+      min-height: 261px;
     }
     &-thing {
-      min-height: 532px;
+      height: 515px;
     }
 
   }
@@ -294,6 +296,11 @@ $leftWidth: 450px;
       padding: 0;
     }
     .through {
+      height: 500px;
+      ul {
+        height: 500px;
+        overflow-y: auto;
+      }
       li {
         list-style: none;
         border-bottom: 1px solid #E9E9E9;
@@ -304,7 +311,7 @@ $leftWidth: 450px;
     .data-display {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      margin-top: 5px;
       width: 100%;
       height: 200px;
       .ant-badge {
@@ -318,7 +325,9 @@ $leftWidth: 450px;
       border-radius: 50%;
     }
     .schemeProcess,.schemeStatus {
-      width: 30%;
+      overflow: hidden;
+      width: 40%;
+      margin: 10px 0 10px 20px;
       span {
         height: 20px;
         font-size: 14px;
@@ -327,7 +336,14 @@ $leftWidth: 450px;
         color: #333333;
         line-height: 20px;
       }
+      /deep/span[data-v-354f9fd6] {
+        padding: 2px 40px 2px 0;
+      }
     }
+      /deep/.ant-badge-status-dot {
+        width: 8px;
+        height: 8px;
+      }
     .total {
       padding: 0 14px;
       margin-top: 10px;
@@ -355,6 +371,7 @@ $leftWidth: 450px;
       text-overflow: ellipsis;
       font-size: 12px;
     }
+   
     .notes-month {
       text-align: center;
       font-size: 28px;
@@ -363,28 +380,58 @@ $leftWidth: 450px;
       font-size: 28px;
     }
     /deep/.ant-badge-status-text {
+      margin-left: 4px;
       height: 17px;
       font-size: 12px;
       font-family: PingFangSC-Regular, PingFang SC;
       font-weight: 400;
-      color: #999999;
+      color: #999999!important;
       line-height: 17px;
     }
+    // /deep/.ant-fullcalendar-content {
+    //   // width: 2px;
+    //   background: pink;
+    // }
     // 日历头样式
     /deep/.ant-fullcalendar-header {
       text-align: center;
-      margin-bottom: 5px;
+      // margin-bottom: 5px;
+      margin: 8px 0;
     }
     /deep/.ant-fullcalendar-column-header-inner {
       font-weight: 800;
+      height: 14px;
+      font-size: 14px;
+      font-family: PingFangSC-Medium, PingFang SC;
+      color: #333333;
+      line-height: 14px;
+      margin-bottom: 20px;
       text-align: center;
     }
     /deep/.ant-fullcalendar-date {
       border-top: 4px solid #e8e8e8;
+      overflow: hidden;
     }
     /deep/.ant-fullcalendar-today .ant-fullcalendar-date {
       border-top: 6px solid #008cb0 !important;
       opacity: 0.8;
+     
+    }
+    // 修改待办事项里面的滚动条样式
+    /deep/.ant-fullcalendar-content {
+      // height: 50px;
+      overflow-y: auto;
+    }
+    /deep/.ant-fullcalendar-content::-webkit-scrollbar {
+      width: 4px;
+      height: 5px;
+      background: #ccc;
+    }
+    /deep/.ant-fullcalendar-content::-webkit-scrollbar-thumb {
+      width: 2px;
+      border-radius: 3px;
+      -webkit-box-align: inherit;
+      background: rgba(47, 3, 88, 0.3);
     }
     /deep/.ant-badge-status-text {
       height: 12px;
@@ -394,6 +441,14 @@ $leftWidth: 450px;
       color: #666666;
       line-height: 12px;
     }
+    // 日历输入框
+    /deep/.ant-select-selection--single {
+      width: 160px;
+    }
+    // /deep/.ant-fullcalendar-value {
+    //   padding-top: 26px;
+    //   padding-right: 14px;
+    // }
   }
   // 隐藏月和年选择按钮
   /deep/.ant-radio-group {
@@ -406,6 +461,7 @@ $leftWidth: 450px;
   }
   .message {
     font-size: 14px;
+    color: #7F7F7F;
     height: 20px;
     line-height: 20px;
   }
@@ -430,4 +486,10 @@ $leftWidth: 450px;
     height: 20px;
     line-height: 20px;
   }
+  // 加滚动条 
+  .toDoList {
+    overflow-y: auto;
+    // overflow: hidden;
+  }
+  
 </style>

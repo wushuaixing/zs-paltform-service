@@ -38,6 +38,7 @@ export default {
 		width: 8px;
 		height: 8px;
 		right: -3px!important;
+		box-shadow: none;
 	}
 </style>
 

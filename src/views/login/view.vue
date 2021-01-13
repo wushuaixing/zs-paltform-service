@@ -120,6 +120,9 @@
           </div>
         </div>
       </div>
+			<div class="register-record">
+				浙公网安备 33010202000630号  Copyright © 2014 浙江省浙商资产管理有限公司版权所有 浙ICP备14030345号-1
+			</div>
     </div>
   </div>
 </template>
@@ -220,7 +223,6 @@ export default {
       api
         .accountStatus({ phone })
         .then((res) => {
-          console.log(res);
           if (res.code === 20000) {
             const { needPicCode } = res.data;
             const { status } = this.imgCode;
@@ -230,6 +232,7 @@ export default {
               } else {
                 this.imgCode.status = true;
                 this.toGetImageCode();
+	              this.loading = false;
               }
             } else {
               return api.login(encryptInfo(this.params));
@@ -237,14 +240,16 @@ export default {
           }
         })
         .then((res) => {
-          console.log(res);
           if (res.code === 20000) {
             this.$store.dispatch("login", res.data);
             this.$router.push("/");
           } else{
-            this.params.pictureCode = "";
+	          this.loading = false;
+	          this.params.pictureCode = "";
             if(this.imgCode.status) this.toGetImageCode();
-            if (res.data && res.data.count >= 5) return this.$message.error(`账号或密码错误,您还可以尝试${10 - res.data.count}次`);
+
+            if (res.data && res.data.count >= 5)
+							return this.$message.error(`账号或密码错误,您还可以尝试${10 - res.data.count}次`);
             if (res.code === 30001) return this.$message.error("账号或密码错误");
             if (res.code === 30003) return this.$message.error("验证码错误");
             if (res.code === 30006) return this.$warning({
@@ -260,7 +265,6 @@ export default {
           }
         })
 				.finally(()=>{
-					this.loading = false;
 				})
 			;
     },
@@ -329,6 +333,7 @@ export default {
         no-repeat;
       margin: auto;
       padding-top: 40px;
+			position: relative;
     }
     &-content {
       width: 1306px;
@@ -338,6 +343,13 @@ export default {
       justify-content: space-between;
     }
   }
+	.register-record{
+		position: absolute;
+		bottom: -40px;
+		width: 100%;
+		text-align: center;
+		font-size: 12px;
+	}
   .video-wrapper {
     position: relative;
     //width: 879px; 视频左右两侧会留白

@@ -51,7 +51,7 @@
           </a-upload>
           <div class="upload-text">
             <div>*请下载保密承诺函模板，签字、用印后扫描或拍照上传；支持jpg、pdf格式</div>
-						<a href="#" style="text-decoration: underline">承诺函模板下载</a>
+						<a href="https://zsamc-public.zsamc.com/%E3%80%8A%E6%B5%99%E6%B1%9F%E7%9C%81%E6%B5%99%E5%95%86%E8%B5%84%E4%BA%A7%E7%AE%A1%E7%90%86%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8%E4%BF%9D%E5%AF%86%E6%89%BF%E8%AF%BA%E4%B9%A6%E3%80%8B.doc" style="text-decoration: underline">承诺函模板下载</a>
           </div>
         </div>
       </a-form-item>
@@ -62,7 +62,7 @@
 						<a-upload v-decorator="material.dec" v-bind="{...upload.bind, listType:'text'}" v-on="upload.on">
 							<template v-if="!getValue(material.dec[0],1)">
 								<a-button icon="upload">点击上传</a-button>
-								<span class="text-remark" style="font-size: 12px;margin-left: 10px;vertical-align: bottom;">
+								<span class="text-remark" style="font-size: 12px;margin-left: 10px;">
 									<span>*支持jpg、pdf格式</span>
 								</span>
 							</template>
@@ -113,7 +113,7 @@
               <a-icon type="plus" />
             </div>
           </a-upload>
-          <div class="upload-text">证件正面（国徽面）</div>
+          <div class="upload-text">证件反面（国徽面）</div>
         </div>
         <div class="fill-form-upload-wrapper fill-form-upload__remark">
           <div class="upload-text">*支持jpg、pdf格式</div>
@@ -150,7 +150,7 @@
           </a-upload>
           <div class="upload-text">
             <div>*请下载保密承诺函模板，签字、用印后扫描或拍照上传；支持jpg、pdf格式</div>
-            <a href="#" style="text-decoration: underline">承诺函模板下载</a>
+            <a href="https://zsamc-public.zsamc.com/%E3%80%8A%E6%B5%99%E6%B1%9F%E7%9C%81%E6%B5%99%E5%95%86%E8%B5%84%E4%BA%A7%E7%AE%A1%E7%90%86%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8%E4%BF%9D%E5%AF%86%E6%89%BF%E8%AF%BA%E4%B9%A6%E3%80%8B.doc" style="text-decoration: underline">承诺函模板下载</a>
           </div>
         </div>
       </a-form-item>
@@ -162,7 +162,7 @@
 						<a-upload v-decorator="material.dec" v-bind="{...upload.bind, listType:'text'}" v-on="upload.on">
 							<template v-if="!getValue(material.dec[0],1)">
 								<a-button icon="upload">点击上传</a-button>
-								<span class="text-remark" style="font-size: 12px;margin-left: 10px;vertical-align: bottom;">
+								<span class="text-remark" style="font-size: 12px;margin-left: 10px;">
 									<span>*支持jpg、pdf格式</span>
 								</span>
 							</template>
@@ -195,7 +195,10 @@ const formItemLayout = {
   wrapperCol: { span: 18 },
 };
 
-const baseWidth = { style:{width:'442px'}};
+const baseWidth = {
+	maxLength:100,
+	style:{width:'442px'}
+};
 
 const nameOption = [
   { id :1, name:'杭州杭州湾建筑劳务有限公司',creditCode:'91330104747171289M'},
@@ -255,6 +258,28 @@ export default {
         callback();
       }
     };
+    const CardB = (rule, value, callback) => {
+      const cardA = this.getValue(this.law.card.decA[0], 1);
+      const cardB = (value || []).length;
+      if(!cardA){
+        callback();
+      }
+      if (!cardB) {
+        callback(new Error('请上传身份证'));
+      }
+      callback();
+    };
+    const CardA = (rule, value, callback) => {
+      const cardB = this.getValue(this.law.card.decB[0], 1);
+      const cardA = (value || []).length;
+      if(!cardB){
+        callback();
+      }
+      if (!cardA) {
+        callback(new Error('请上传身份证'));
+      }
+      callback();
+    };
     return {
       formItemLayout,
       nameOption,
@@ -283,7 +308,7 @@ export default {
 					// label:'邮箱地址',
 					dec:['name', {
 						rules: [
-							{ required: true, message: '机构名称不能为空' },
+							{ required: true, message: '请输入机构名称' },
 							// { min: 4, message: '请输入正确的机构名称'},
 						]},
 					],
@@ -291,6 +316,7 @@ export default {
 						autoComplete:'off',
 						placeholder:'请输入机构名称',
 						...baseWidth,
+						maxLength:40,
 					}
         },
         code:{
@@ -299,7 +325,7 @@ export default {
 					// label:'邮箱地址',
 					dec:['orgSocialCreditCode', {
 						rules: [
-							{ required: true, message: '统一社会信用代码不能为空' },
+							{ required: true, message: '请输入统一社会信用代码' },
 						]},
 					],
 					other:{
@@ -316,6 +342,7 @@ export default {
             placeholder:'若为合伙企业请明确执行事务合伙人身份',
             autoSize:{ minRows: 4 },
             ...baseWidth,
+	          maxLength:1024,
           }
         },
         email:{
@@ -323,7 +350,7 @@ export default {
           dec:['email', {
             rules: [
                 { type: 'email',message: '请输入正确的邮箱地址！'},
-                { required: true, message: '邮箱地址不能为空!' },
+                { required: true, message: '请输入邮箱地址！' },
             ]},
           ],
           other:{
@@ -369,7 +396,8 @@ export default {
             style:{
               display:'none',
               width:'442px'
-            }
+            },
+	          maxLength:40,
           }
         },
         idNumber:{
@@ -380,8 +408,9 @@ export default {
           }],
           other:{
             placeholder:'请输入身份证号码',
-            maxLength:18,
-            ...baseWidth
+            ...baseWidth,
+	          maxLength:18,
+
           }
         },
         sex:{
@@ -393,21 +422,23 @@ export default {
         cardNo:{
           label:'执业证号',
           dec:[ 'licenseNumber', {
-            rules: [{ required: true, message: '执业证号不能为空!' }]
+            rules: [{ required: true, message: '请输入执业证号!' }]
           }],
           other:{
             placeholder:'请输入执业证号',
-            ...baseWidth
+            ...baseWidth,
+	          maxLength:17,
+
           }
         },
         year:{
           label:'执业开始年份',
           dec:[ 'licenseStart',{
-            rules: [{ required: true, message: '执业开始年份不能为空！' },]
+            rules: [{ required: true, message: '请选择执业开始年份！' },]
           }],
           other:{
             allowClear:true,
-            placeholder:'请选择年份',
+            placeholder:'请选择执业开始年份',
             style:{
               width:'152px'
             }
@@ -426,7 +457,7 @@ export default {
           dec:['email', {
             rules: [
               { type: 'email',message: '请输入正确的邮箱地址！' },
-              { required: true, message: '邮箱地址不能为空!' },
+              { required: true, message: '请输入邮箱地址！!' },
             ],
           }],
           other:{
@@ -452,12 +483,15 @@ export default {
             valuePropName: 'fileList',
             getValueFromEvent,
             rules: [
-              { required: true, message: '请上传身份证照片!' },
+              { required: true, validator: CardA },
             ]
           }],
           decB:[ 'backOfCard', {
             valuePropName: 'fileList',
             getValueFromEvent,
+            rules: [
+              { required: true, validator: CardB },
+            ]
           }],
         },
         cert:{
@@ -540,14 +574,16 @@ export default {
     // 确认无误并提交
     handleSubmit(e) {
       (e || window.event).preventDefault();
-      return new Promise(resolve => {
+      return new Promise((resolve,reject) => {
 	      this.form.validateFields((err, values) => {
 		      if (!err) {
 			      // console.log('Received values of form: ', values);
 			      const source = this.processData(values);
 			      if(!this.onlyData) this.toUpdateInfo(source);
 			      resolve(source)
-		      }
+		      }else{
+			      reject(err)
+					}
 	      });
 			})
 
@@ -556,8 +592,9 @@ export default {
     toUpdateInfo(_source){
       const addApi = this.userType === 'lawyer' ? qualifies.lawyerAdd : qualifies.orgAdd;
       addApi(_source).then(res=>{
-        if(res.code === 20000 ){
-					if(this.isFirst){
+	      if(res.code === 20000 ){
+		      this.$store.commit("updateQualify");
+		      if(this.isFirst){
 						this.$success({
 							title: '资质认证提交成功',
 							okText:'点击前往"要素认证"',
@@ -673,6 +710,10 @@ export default {
             transition: all 0.3s;
           }
         }
+				/*.ant-upload-list-picture-card .ant-upload-list-item-thumbnail img{*/
+					/*object-fit: contain;*/
+					/*-o-object-fit: contain;*/
+				/*}*/
         .ant-upload-list-picture-card-container{
           width: 184px;
           .ant-upload-list-item{

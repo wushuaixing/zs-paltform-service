@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title>浙商资产服务商招募管理系统</title>
-  </head>
+		<script src='https://zsamc-public.zsamc.com/address.js'></script>
+	</head>
   <body>
     <noscript>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
@@ -17,9 +18,15 @@
         <input type="password" />
       </label>
     </div>
-    <div id="app"></div>
-    <!-- built files will be auto injected -->
+    <div id="app">
+			<p style="padding: 20vh 30%;text-align: center">
+				loading...
+			</p>
+		</div>
+		<!-- built files will be auto injected -->
   </body>
+	<script type='text/javascript' src='https://ykf-webchat.7moor.com/javascripts/7moorInit.js?accessId=612aad50-726d-11ea-bb9c-2fc013f95d18&autoShow=true&language=ZHCN' async='async'>
+	</script>
 	<!--<script type='text/javascript' src='https://ykf-webchat.7moor.com/javascripts/7moorInit.js?accessId=612aad50-726d-11ea-bb9c-2fc013f95d18&autoShow=true&language=ZHCN' async='async'>-->
 	<!--</script>-->
 </html>
