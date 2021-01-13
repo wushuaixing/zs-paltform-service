@@ -23,26 +23,26 @@
             </div>
             <div style="margin-right: 30px" v-if="info.aimedStatus === '2'">
               <span class="subtitle">报名日期：</span>
-              <span class="spantext">{{ info.gmtCreate }}</span>
+              <span class="spantext">{{ info.gmtCreate |show_}}</span>
             </div>
             <div v-if="info.aimedStatus === '2' ">
               <span class="subtitle">方案提交截止日期：</span>
-              <span class="spantext">{{ info.submitDeadline }}</span>
+              <span class="spantext">{{ info.submitDeadline|show_ }}</span>
             </div>
             <!--项目已中标 -->
             <div v-if="info.aimedStatus === '3'">
               <span class="subtitle">合同签订日期：</span>
-              <span class="spantext">{{ info.aggrementDate }}</span>
+              <span class="spantext">{{ info.aggrementDate|show_ }}</span>
             </div>
             <!-- 已放弃-->
             <div v-if="info.aimedStatus === '1'">
               <span class="subtitle">放弃日期：</span>
-              <span class="spantext">{{ info.abandonDate }}</span>
+              <span class="spantext">{{ info.abandonDate|show_ }}</span>
             </div>
             <!-- 已失效日期-->
             <div v-if="info.aimedStatus === '4'">
               <span class="subtitle">失效日期：</span>
-              <span class="spantext">{{ info.realSubmitDeadline }}</span>
+              <span class="spantext">{{ info.realSubmitDeadline|show_ }}</span>
             </div>
           </div>
         </div>
@@ -50,7 +50,7 @@
           <a-col :span="8">
             <div style="padding-left:10px">
               <span class="subtitle">债务人名称：</span
-              ><span class="spantext">{{ info.debtor }}</span>
+              ><span class="spantext">{{ info.debtor|show_ }}</span>
             </div>
           </a-col>
           <a-col :span="8">
@@ -114,7 +114,7 @@
             </div>
             <div>
               <span class="subtitle">方案开始日期：</span>
-              <span class="spantext">{{info.aggrementDate }}</span>
+              <span class="spantext">{{info.aggrementDate|show_ }}</span>
             </div>
           </div>
           <div class="flex-style" v-if="info.aimedStatus !== '3'">
@@ -123,7 +123,7 @@
               v-if="info.caseFileStatus === '1' || info.caseFileStatus === '2'"
             >
               <span class="subtitle">方案最后更新日期：</span
-              ><span class="spantext">{{ info.serviceCaseUpdateTime }}</span>
+              ><span class="spantext">{{ info.serviceCaseUpdateTime|show_ }}</span>
             </div>
           </div>
         </div>
@@ -151,11 +151,11 @@
           <div class="serviceTime-aimBackPrice-row">
             <div style="padding-left:10px">
               <span class="subtitle">服务期限：</span>
-              <span class="spantext">{{ info.serviceTime }}个月</span>
+              <span class="spantext">{{ info.serviceTime|show_ }}个月</span>
             </div>
             <div>
               <span class="subtitle">目标回款：</span>
-              <span class="spantext">{{ info.aimBackPrice }}万元</span>
+              <span class="spantext">{{ info.aimBackPrice|show_ }}万元</span>
             </div>
           </div>
           <div class="plan" style="padding-left:10px">
@@ -254,6 +254,7 @@ export default {
   },
   filters: {
     guarantorsList: (arr = []) => {
+      if(arr.length === 0) return '-';
       return arr.map((i) => i.guarantorName).join("、");
     },
     area:(params) => {

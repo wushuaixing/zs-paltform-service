@@ -120,9 +120,10 @@ Vue.filter('isLawsuitType', (val)=>{
 	return val === '0' ? '未诉讼' : '诉讼'
  });
 
-
-
-
+Vue.filter('show_', (val)=>{
+	if(!val)return "-";
+	return val
+});
 
 
 export default Vue
