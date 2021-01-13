@@ -258,6 +258,17 @@ export default {
         callback();
       }
     };
+    const Card = (rule, value, callback) => {
+      const cardA = this.getValue(this.law.card.decA[0], 1);
+      const cardB = (value || []).length;
+      if(!cardA){
+        callback();
+      }
+      if (!cardB) {
+        callback(new Error('请输入身份证'));
+      }
+      callback();
+    };
     return {
       formItemLayout,
       nameOption,
@@ -465,6 +476,9 @@ export default {
           decB:[ 'backOfCard', {
             valuePropName: 'fileList',
             getValueFromEvent,
+            rules: [
+              { required: true, validator: Card },
+            ]
           }],
         },
         cert:{
