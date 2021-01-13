@@ -590,13 +590,13 @@ export default {
     toUpdateInfo(_source){
       const addApi = this.userType === 'lawyer' ? qualifies.lawyerAdd : qualifies.orgAdd;
       addApi(_source).then(res=>{
-        if(res.code === 20000 ){
-					if(this.isFirst){
+	      if(res.code === 20000 ){
+		      this.$store.commit("updateQualify");
+		      if(this.isFirst){
 						this.$success({
 							title: '资质认证提交成功',
 							okText:'点击前往"要素认证"',
 							onOk:()=>{
-								this.$store.dispatch("updateQualify");
 								this.$store.dispatch("updateIdentity", this.userType === 'lawyer' ? 1 : 2);
 								this.$router.push('/attest/factor');
 							}

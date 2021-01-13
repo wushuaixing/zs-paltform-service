@@ -216,6 +216,7 @@ export default {
       const _this = this;
       this.$confirm({
         title: '确定返回服务商身份选择吗？',
+	      icon:'exclamation-circle',
         content: '返回后，将清空当前填写的所有内容。',
         onOk() {
           _this.nextStep = false;
