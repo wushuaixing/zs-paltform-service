@@ -44,7 +44,7 @@ export default {
           icon:'appstore',
           path:'/overview',
           child:[
-            { id:'1', title:'工作台', path:'/' }
+            { id:'1', title:'工作台', path:'' }
           ]
         },
         {

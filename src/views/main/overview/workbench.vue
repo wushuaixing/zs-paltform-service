@@ -11,7 +11,8 @@
                   <a-badge :status="MATTER_TYPE[item.code].text" />
                   <span class="thing">{{ MATTER_TYPE[item.code].name}}</span>
                   <span class="message">{{item.message}}</span>
-                   <a-button type="link" @click="onTarget(MATTER_TYPE[item.code].path, item.projectId)" >立即前往</a-button>
+                   <a-button type="link" @click="onTarget(MATTER_TYPE[item.code].path, item)" >立即前往</a-button>
+                   <!-- <router-link :to="MATTER_TYPE[item.code].path">立即前往</router-link> -->
                 </li>
               </ul>
             </div>
@@ -86,7 +87,7 @@
 <script>
 /*eslint-disable*/
 import { getEcharts } from "@/plugin/api/echarts";
-import { getCalendar, getTODoList } from "@/plugin/api/calendar";
+import { getCalendar, getTODoList, removeToDolist} from "@/plugin/api/calendar";
 import { MATTER_TYPE } from "./toDoList";
 import echarts from "echarts";
 export default {
@@ -165,7 +166,6 @@ export default {
     async initECharts () {
       let myChart = echarts.init(document.getElementById("main"));
       const res = await getEcharts();
-      console.log(res);
       if (res.code !== 20000) return this.$message.error('获取图表数据失败');
       this.echarts = res.data;
       let option = {
@@ -206,8 +206,15 @@ export default {
     myChart.setOption(option);
     },
     // 根据详情路由跳转
-    onTarget (path,id) {
-      this.$router.push({path,query:id})
+    onTarget (path,item) {
+      this.$router.push({path,query:item.projectId})
+      console.log(item);
+      if (item.code === 8 || item.code === 7) {
+        removeToDolist({code:item.code}).then((res)=>{
+          if(res.code!==20000) return 
+          this.getList()
+        })
+      }
     }
   },
   created () {
@@ -216,15 +223,6 @@ export default {
   },
   mounted() {
     this.initECharts()
-  },
-  watch: {
-    $route(to){
-      if(to.path === '/overview') {
-        this.getCalendarData()
-        this.getList()
-        // this.initECharts()
-      }
-    }
   }
 }
 </script>
