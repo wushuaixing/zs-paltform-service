@@ -219,7 +219,7 @@ export default {
   },
   watch: {
     $route(to){
-      if(to.path === 'overview') {
+      if(to.path === '/overview') {
         this.getCalendarData()
         this.getList()
         // this.initECharts()
