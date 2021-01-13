@@ -184,8 +184,10 @@ export default {
 
           li {
             display: flex;
-            width: 25%;
-
+            width: 20%;
+            &:first-child{
+              width: 40%;
+            }
             &:nth-child(n+5) {
               width: 100%;
             }

@@ -8,7 +8,7 @@
       <div v-if="isAttestationOmission === 'success'">
         <div class="query-wrapper">
           <div class="content">
-            <div class="part" v-for="(item,index) in queryOptions" :key="item.code">
+            <div v-for="(item,index) in queryOptions" :key="item.code" :class="`${item.code} part`">
               <div class="label">{{ item.label }}</div>
               <a-radio-group v-model="queryParams[item.code]" @change="handleSearch" button-style="solid">
                 <a-radio-button v-for="childItem in (item.isCollapsed?item.list:item.list.slice(0,item.sliceKey))"
@@ -31,6 +31,16 @@
           </div>
           <a-table :columns="column" :data-source="amcProjectInfo" :row-key="record => record.id"
                    :pagination="pagination" @change="handleTabChange" :loading="loading">
+            <template slot="debtor" slot-scope="debtor">
+              <a-tooltip>
+                <template slot="title" v-if="textSize(debtor)>180">
+                  {{ debtor }}
+                </template>
+                <div class="debtor-name">
+                  {{ debtor || '-' }}
+                </div>
+              </a-tooltip>
+            </template>
             <template slot="amount" slot-scope="amount">{{ amount|amountTh }}</template>
             <template slot="security" slot-scope="{security}">{{ SECURITY_TYPE[security] }}</template>
             <template slot="collateralType" slot-scope="{amcProjectCollaterals}">
@@ -184,6 +194,27 @@ export default {
      */
     handleCollapse(flag, index) {
       this.queryOptions[index].isCollapsed = flag === 'down';
+    },
+    textSize(text) {
+      let span = document.createElement("span");
+      let result = {};
+      result.width = span.offsetWidth;
+      result.height = span.offsetHeight;
+      span.style.visibility = "hidden";
+      span.style.fontSize = 14;
+      span.style.fontFamily =
+          'Avenir, Helvetica,Arial SC,sans-serif';
+      span.style.display = "inline-block";
+      document.body.appendChild(span);
+      if (typeof span.textContent !== "undefined") {
+        span.textContent = text;
+      } else {
+        span.innerText = text;
+      }
+      let textWidth =
+          parseFloat(window.getComputedStyle(span).width) - result.width;
+      span.parentNode.removeChild(span); //删除节点
+      return textWidth;
     }
   },
   computed: {
@@ -238,7 +269,7 @@ export default {
 
     .part {
       display: flex;
-      padding: 12px 24px 4px 16px;
+      padding: 12px 24px 0 16px;
       border-bottom: 1px solid #E9E9E9;
 
       &:last-child {
@@ -247,6 +278,7 @@ export default {
 
       .label {
         min-width: 116px;
+        color: #333;
       }
 
       .collapse {
@@ -256,17 +288,45 @@ export default {
         color: #666;
         cursor: pointer;
       }
+
+      .ant-radio-button-wrapper {
+        border: none;
+        box-shadow: none;
+        height: 24px;
+        line-height: 24px;
+        border-radius: 2px;
+        transition: none;
+        margin-bottom: 12px;
+        font-size: 14px;
+        padding: 0;
+        text-align: center;
+      }
     }
 
-    .ant-radio-button-wrapper {
-      border: none;
-      box-shadow: none;
-      height: 24px;
-      line-height: 24px;
-      border-radius: 2px;
-      transition: none;
-      margin: 0 16px 8px 0;
-      min-width: 60px;
+    .provinceCode {
+      .ant-radio-button-wrapper {
+        width: 88px;
+        margin-right: 4px;
+
+        &:first-child {
+          height: 24px;
+        }
+      }
+    }
+
+    .type {
+      .ant-radio-button-wrapper {
+        width: 88px;
+        margin-right: 16px;
+      }
+    }
+
+    .priceType {
+      .ant-radio-button-wrapper {
+        width: auto;
+        min-width: 88px;
+        margin-right: 30px;
+      }
     }
 
     .ant-radio-button-wrapper::before {
@@ -291,7 +351,6 @@ export default {
 
     .collateral-type {
       span {
-        min-width: 64px;
         padding: 0 8px;
         height: 20px;
         line-height: 20px;
@@ -299,7 +358,7 @@ export default {
         display: inline-block;
         text-align: center;
         border-radius: 2px;
-        margin-right: 3px;
+        margin: 0 8px 4px 0;
       }
     }
 
@@ -332,6 +391,13 @@ export default {
       padding-bottom: 16px;
       line-height: 14px;
       color: #8C8C8C;
+    }
+
+    .debtor-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 180px;
     }
 
     p {
