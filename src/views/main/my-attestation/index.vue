@@ -276,10 +276,11 @@ export default {
 		}
     &_list{
       margin:22px 0;
+      padding-right: 50px;
       display: flex;
       line-height: 25px;
       &-title{
-        width: 33.3%;
+        width: 25%;
         font-size: 14px;
         color: $text-title;
         text-align: right;
