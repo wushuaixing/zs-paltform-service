@@ -15,7 +15,7 @@
 				<span class="date" v-else>提交日期：{{ dataSource.createTime }}</span>
 			</div>
 			<div v-for="(item,index) in lawyerField" :key="index">
-				<div class="info-item_subtitle">{{item.title}}</div>
+				<div  class="info-item_subtitle ">{{item.title}}</div>
 				<div v-for="(i,_index) in item.children" :key="'lawyer'+_index">
 					<div class="info-item_list" v-if="toShow(i)">
 						<div class="info-item_list-title">{{i.label}}</div>
@@ -393,5 +393,9 @@
 				}
 			}
 		}
+	}
+	.info-item_subtitle{
+		color: #333333;
+		font-weight: bold;
 	}
 </style>

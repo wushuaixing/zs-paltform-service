@@ -161,6 +161,16 @@
               <span style="font-size: 12px; margin-left: 10px">
                 *支持pdf，word格式，请务必按照方案模版进行撰写
               </span>
+<<<<<<< HEAD
+              <span
+                style="
+                  font-size: 12px;
+                  margin-left: 10px;
+                  color: #008cb0;
+                  text-decoration: underline;
+                "
+                >服务方案模版下载</span>
+=======
               <a href="https://zsamc-public.zsamc.com/%E4%BB%A3%E7%90%86%E6%96%B9%E6%A1%88%E6%A8%A1%E6%9D%BF.docx">
                 <span
                   style="
@@ -172,6 +182,7 @@
                   >服务方案模版下载</span
                 >
               </a>
+>>>>>>> d85cc84513afd3b6d05520ec28f684b79eb39d09
             </div>
             <div v-else>
               <a :href="url"
