@@ -4,7 +4,7 @@
 			<div class="info-item_date" v-if="noDate">提交日期：
 				<span>{{dataSource.createTime}}</span>
 			</div>
-			<div class="info-item_title" v-if="statusNeed">我的资质认证信息</div>
+			<div class="info-item_title">我的资质认证信息</div>
 			<div class="info-item_list">
 				<div class="info-item_list-title">律师名称</div>
 				<div class="info-item_list-content">{{dataSource.lawyerName||'-'}}</div>
@@ -70,7 +70,7 @@
 			<div class="info-item_date" v-if="noDate">提交日期：
 				<span>{{dataSource.createTime}}</span>
 			</div>
-			<div class="info-item_title" v-if="statusNeed">我的资质认证信息</div>
+			<div class="info-item_title">我的资质认证信息</div>
 			<div class="info-item_list">
 				<div class="info-item_list-title">机构名称</div>
 				<div class="info-item_list-content">{{dataSource.name||'-'}}</div>

@@ -56,11 +56,11 @@
             <div class="status-title-identity">
               <span>我的服务商身份：</span>
               <template v-if="identity === 1">
-                <img :src="icon.law" alt="" style="height: 32px;vertical-align: top;">
+                <img :src="icon.law" alt="" style="height: 32px;vertical-align: top;margin-top: -2px">
                 <span style="margin-left: 10px">律师</span>
               </template>
               <template v-else>
-                <img :src="icon.org" alt="" style="height: 32px;vertical-align: top;">
+                <img :src="icon.org" alt="" style="height: 32px;vertical-align: top;margin-top: -2px">
                 <span style="margin-left: 10px">机构</span>
               </template>
             </div>

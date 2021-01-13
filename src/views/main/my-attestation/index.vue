@@ -150,10 +150,11 @@ export default {
         padding: 7px 0;
         &_title{
           border-left: 4px solid $common-base-active;
-          padding-left: 6px;
+          padding-left: 10px;
           font-size: 16px;
-          height: 25px;
-          line-height: 25px;
+					font-weight: bold;
+          height: 22px;
+          line-height: 22px;
         }
         &_list{
           margin:22px 0;
@@ -173,7 +174,8 @@ export default {
             flex: 1;
             color: $text-content;
             .remark{
-              display: block;
+              display: inline-block;
+							margin-left: 20px;
               font-size: 12px;
               color: $text-remark;
             }
