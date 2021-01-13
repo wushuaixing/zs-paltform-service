@@ -62,7 +62,7 @@
 						<a-upload v-decorator="material.dec" v-bind="{...upload.bind, listType:'text'}" v-on="upload.on">
 							<template v-if="!getValue(material.dec[0],1)">
 								<a-button icon="upload">点击上传</a-button>
-								<span class="text-remark" style="font-size: 12px;margin-left: 10px;vertical-align: bottom;">
+								<span class="text-remark" style="font-size: 12px;margin-left: 10px;">
 									<span>*支持jpg、pdf格式</span>
 								</span>
 							</template>
@@ -162,7 +162,7 @@
 						<a-upload v-decorator="material.dec" v-bind="{...upload.bind, listType:'text'}" v-on="upload.on">
 							<template v-if="!getValue(material.dec[0],1)">
 								<a-button icon="upload">点击上传</a-button>
-								<span class="text-remark" style="font-size: 12px;margin-left: 10px;vertical-align: bottom;">
+								<span class="text-remark" style="font-size: 12px;margin-left: 10px;">
 									<span>*支持jpg、pdf格式</span>
 								</span>
 							</template>
@@ -265,7 +265,7 @@ export default {
         callback();
       }
       if (!cardB) {
-        callback(new Error('请输入身份证'));
+        callback(new Error('请上传身份证'));
       }
       callback();
     };
@@ -276,7 +276,7 @@ export default {
         callback();
       }
       if (!cardA) {
-        callback(new Error('请输入身份证'));
+        callback(new Error('请上传身份证'));
       }
       callback();
     };
@@ -316,6 +316,7 @@ export default {
 						autoComplete:'off',
 						placeholder:'请输入机构名称',
 						...baseWidth,
+						maxLength:40,
 					}
         },
         code:{
@@ -395,7 +396,8 @@ export default {
             style:{
               display:'none',
               width:'442px'
-            }
+            },
+	          maxLength:40,
           }
         },
         idNumber:{
@@ -708,6 +710,10 @@ export default {
             transition: all 0.3s;
           }
         }
+				/*.ant-upload-list-picture-card .ant-upload-list-item-thumbnail img{*/
+					/*object-fit: contain;*/
+					/*-o-object-fit: contain;*/
+				/*}*/
         .ant-upload-list-picture-card-container{
           width: 184px;
           .ant-upload-list-item{

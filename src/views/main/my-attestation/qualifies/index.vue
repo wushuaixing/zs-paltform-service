@@ -141,10 +141,10 @@
         </div>
         <div style="text-align: center" v-if="modalStep===1">
           <a-space>
-            <a-button key="submit" type="primary" @click="handleEditInfo">确认修改并提交</a-button>
+						<a-button key="back" @click="handleModalClose">关闭</a-button>
             <a-button key="back" @click="modalStep=0" v-if="onlyEdit">取消</a-button>
-            <a-button key="back" @click="handleModalClose" style="margin-left: 30px">关闭</a-button>
-          </a-space>
+						<a-button key="submit" type="primary" @click="handleEditInfo">确认修改并提交</a-button>
+					</a-space>
         </div>
       </template>
     </a-modal>
