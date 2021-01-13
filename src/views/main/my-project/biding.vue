@@ -98,7 +98,6 @@
                         : process === 1
                         ? '#52C41A'
                         : '#FAAD14',
-                    marginRight: '5px',
                   }"
                 />
                 {{ process | evolveType }}<br />
@@ -342,7 +341,13 @@ export default {
       return {
         on: {
           click: () => {
-            changeUnRead(row.id)
+            changeUnRead(row.id).then(res=>{
+              if(res.code === 20000){
+                row.isRead = 1;
+              }else{
+                return false;
+              }
+            })
           },
         },
       };
@@ -399,12 +404,10 @@ export default {
       })
     },
     isCertification(){
-      // return this.$store.getters.getInfo.isCertification;
-      return 1;
+      return this.$store.getters.getInfo.isCertification;
     },
     isConfirmElements(){
-      // return this.$store.getters.getInfo.isConfirmElements;
-      return 1;
+      return this.$store.getters.getInfo.isConfirmElements;
     }
   },
 };
@@ -420,8 +423,6 @@ export default {
 }
 .nothing{
   width: 100%;
-  height: 100%;
-  background-color: #fff;
   text-align: center;
   &-pic{
     margin-top: 232px;
@@ -437,9 +438,7 @@ export default {
   }
 }
 .biding-wrapper {
-  &-content {
-    background-color: #ffffff;
-  }
+  background-color: #fff;
   .biding-query {
     padding: 20px 20px 5px 20px;
   }

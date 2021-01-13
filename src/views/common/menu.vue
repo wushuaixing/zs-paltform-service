@@ -102,7 +102,7 @@ export default {
 			const { isSubmitCertify, isSubmitElements} = this.$store.getters.getInfo;
 			return {
 				qualify:!isSubmitCertify,
-				factor:isSubmitCertify ? !isSubmitElements : false,
+        factor:isSubmitCertify ? !isSubmitElements : false,
 			}
 		},
 	},

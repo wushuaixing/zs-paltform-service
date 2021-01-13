@@ -25,14 +25,14 @@ export const columns = ({ type = 1, sortOrder }) => {
 		guaranty: {
 			title: '担保方式',
 			key: 'security',
+			// customHeaderCell: () => ({
+			// 	style: { paddingLeft: '50px' }
+			// }),
 			scopedSlots: { customRender: 'security' }
 		},
 		auction: {
 			title: '操作',
 			scopedSlots: { customRender: 'auction' },
-			customHeaderCell: () => ({
-				style: { paddingLeft: '16px' }
-			}),
 			key: 'auction',
 		},
 	};
