@@ -62,7 +62,7 @@
               </template>
             </a-tab-pane>
           </a-tabs>
-          <div class="biding-content-table">
+          <div class="frame-content">
             <a-table
               rowKey="id"
               :columns="columns"

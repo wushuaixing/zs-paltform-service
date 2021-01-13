@@ -5,6 +5,7 @@ export const columns = ({ type = 1, sortOrder }) => {
 			{
 				title: '债务人名称',
 				key: 'debtor',
+				ellipsis:true,
 				scopedSlots: { customRender: 'debtor' },
 			},
 			{
@@ -12,26 +13,25 @@ export const columns = ({ type = 1, sortOrder }) => {
 				dataIndex: 'debtCaptial',
 				key: 'debtCaptial',
 				scopedSlots: { customRender: 'amount' },
-				align: 'right',
 			},
 			{
 				title: '债权利息（万元）',
 				dataIndex: 'debtInterest',
 				key: 'debtInterest',
 				scopedSlots: { customRender: 'amount' },
-				align: 'right',
 			}
 		],
 		guaranty: {
 			title: '担保方式',
 			key: 'security',
-			// customHeaderCell: () => ({
-			// 	style: { paddingLeft: '50px' }
-			// }),
 			scopedSlots: { customRender: 'security' }
 		},
 		auction: {
 			title: '操作',
+			// customCell: () => ({
+			// 	style: { paddingLeft:'16px' }
+			// }),
+			width:'15%',
 			scopedSlots: { customRender: 'auction' },
 			key: 'auction',
 		},
@@ -82,7 +82,6 @@ export const columns = ({ type = 1, sortOrder }) => {
 				dataIndex: 'aimBackPrice',
 				key: 'aimBackPrice',
 				scopedSlots: { customRender: 'amount' },
-				align: 'right',
 			},
 			{
 				title: '本阶段计划',
