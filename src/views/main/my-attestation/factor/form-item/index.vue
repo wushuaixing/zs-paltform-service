@@ -142,7 +142,7 @@
 					title: '警告',
 					content: '确认退出律所信息添加吗',
 					okText: '确定',
-					okType: 'danger',
+					icon:'exclamation-circle',
 					cancelText: '取消',
 					onOk:()=> this.visible = false ,
 				});
