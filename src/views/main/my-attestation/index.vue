@@ -166,7 +166,7 @@ export default {
             text-align: right;
             padding-right: 10px;
             &:after{
-              content:'：'
+              content:'\ff1a'
             }
           }
           &-content{

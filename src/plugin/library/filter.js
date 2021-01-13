@@ -28,7 +28,7 @@ Vue.filter('guarantyType', (val)=>{
 		1:'抵押',
 		2:'担保',
 		3:'抵押+担保'
-	}
+	};
 	return guarantyObj[val];
 });
 
@@ -55,7 +55,7 @@ Vue.filter('multi',(val,remark = '',field)=>{
 	if(!field) return val;
 	if(!val) return val;
 	const _data = source[field] || [];
-	const _label = val.split(',').map(i=>{
+	const _label = (val.toString()).split(',').map(i=>{
 		let result = '';
 		_data.forEach(item=>{ if(item.value.toString() === i) result = item.label; });
 		return result

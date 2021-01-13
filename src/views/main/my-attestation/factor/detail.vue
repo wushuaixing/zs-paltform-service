@@ -190,6 +190,15 @@
 			const _area = val => this.$options.filters['area'](areaAnalysis(val));
 			const _areas = val => this.$options.filters['areas'](areaAnalysis(val,false));
 			const _if = i => i === '1';
+      const _range = i => {
+				try {
+		      const { disabled,min,max } = JSON.parse(i);
+		      return disabled ? '不限' : `${ min }万元 - ${ max }万元`
+	      }catch(e){
+					console.log('-');
+				}
+	      return '-'
+      };
 			const publicField = [
 				{
 					title:"历史合作情况",
@@ -293,7 +302,7 @@
 						{ label:"是否有投资意向", field:"hasInvestmentIntention" ,f:_is,},
 						{ label:"投资偏好类型", field:"investmentPreferenceType",
 							m:_if, about:'hasInvestmentIntention', f:_multi, origin:"hisCoo"},
-						{ label:"标的金额范围", field:"startAmountOfSubject",m:_if, about:'hasInvestmentIntention' },
+						{ label:"标的金额范围", field:"startAmountOfSubject",m:_if, about:'hasInvestmentIntention',f:_range},
 						{ label:"投资区域", field:"investmentArea",m:_if, about:'hasInvestmentIntention',f:_area },
 						{ label:"以往投资经历", field:"investmentExperience",m:_if, about:'hasInvestmentIntention' },
 					]

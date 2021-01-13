@@ -82,7 +82,8 @@
       }
     },
     created() {
-      const { hash } = window.location;
+	    if(!window.localStorage.token) return this.$router.push('/login');
+	    const { hash } = window.location;
       if(/^#\/center/.test(hash))this.selectedKey = 'b';
       if(!this.$store.state.isLogin){
         getInfo().then(res=>{

@@ -93,28 +93,28 @@ export default {
 	    formItemLayout,
       firms: {
         name: {
-          dec: ['lawOfficeName', {rules: [{required: true, message: '律所名称不能为空'}]}],
+          dec: ['lawOfficeName', {rules: [{required: true, message: '请输入律所名称'}]}],
           other: {
-            placeholder: '请填写律所名称',
+            placeholder: '请输入律所名称',
             ...textarea
           }
         },
         code: {
-          dec: ['code', {rules: [{required: true, message: '统一社会信用代码不能为空'}]}],
+          dec: ['code', {rules: [{required: true, message: '请输入统一社会信用代码'}]}],
           other: {
             placeholder: '请输入统一社会信用代码',
             ...textarea
           }
         },
         add: {
-          dec: ['lawOfficeAddress', {rules: [{required: true, message: '律所地址不能为空'}]}],
+          dec: ['lawOfficeAddress', {rules: [{required: true, message: '请输入律所地址'}]}],
           other: {
-            placeholder: '请填写律所地址',
+            placeholder: '请输入律所地址',
             ...textarea
           }
         },
         involve: {
-          dec: ['officeWorkAddress', {rules: [{required: true, message: '展业地域不能为空'}]}],
+          dec: ['officeWorkAddress', {rules: [{required: true, message: '请选择展业地域'}]}],
 					on:{
 						change:val=>this.handleEleCas(val,'officeWorkAddress'),
 						visibleChange:this.visibleChange
@@ -161,7 +161,7 @@ export default {
           }
         },
         part: {
-          dec: ['otherOfficeWorkAddress', {rules: [{required: true, message: '分所展业地域不能为空'}]}],
+          dec: ['otherOfficeWorkAddress', {rules: [{required: true, message: '请选择分所展业地域'}]}],
 	        on:{
 		        change:val=>this.handleEleCas(val,'otherOfficeWorkAddress'),
 		        visibleChange:this.visibleChange
@@ -183,14 +183,14 @@ export default {
           }
         },
         partInfo: {
-          dec: ['otherOfficeStaffInfo', {rules: [{required: true, message: '请填写分所人员情况'}]}],
+          dec: ['otherOfficeStaffInfo', {rules: [{required: true, message: '请简述分所人员情况'}]}],
           other: {
             placeholder: '请简述分所人员情况',
             ...textarea
           }
         },
         num: {
-          dec: ['totalTeamSize', {rules: [{required: true, message: '律所清收团队人数不能为空'}]}],
+          dec: ['totalTeamSize', {rules: [{required: true, message: '请输入清收团队人数'}]}],
           other: {
             placeholder: '请输入清收团队人数',
             style: {width: '200px'},
@@ -207,21 +207,21 @@ export default {
           }
         },
         con: {
-          dec: ['lawOfficeInformation', {rules: [{required: true, message: '请填写律所简介'}]}],
+          dec: ['lawOfficeInformation', {rules: [{required: true, message: '请输入律所简介'}]}],
           other: {
             placeholder: '律所性质，核心成员背景，以及是否有催收公司、典当行等',
             ...textarea
           }
         },
         con1: {
-          dec: ['lawOfficeQualify', {rules: [{required: true, message: '请填写律所资质'}]}],
+          dec: ['lawOfficeQualify', {rules: [{required: true, message: '请简述律所资质'}]}],
           other: {
             placeholder: '请简述律所资质',
             ...textarea
           }
         },
         con2: {
-          dec: ['lawOfficeQualifyPerformance', {rules: [{required: true, message: '请填写律所业绩介绍'}]}],
+          dec: ['lawOfficeQualifyPerformance', {rules: [{required: true, message: '请简述执业所以往业绩'}]}],
           other: {
             placeholder: '请简述执业所以往业绩',
             ...textarea
