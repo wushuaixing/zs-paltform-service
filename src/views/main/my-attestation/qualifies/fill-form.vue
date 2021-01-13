@@ -62,7 +62,7 @@
 						<a-upload v-decorator="material.dec" v-bind="{...upload.bind, listType:'text'}" v-on="upload.on">
 							<template v-if="!getValue(material.dec[0],1)">
 								<a-button icon="upload">点击上传</a-button>
-								<span class="text-remark" style="font-size: 12px;margin-left: 10px;vertical-align: bottom;">
+								<span class="text-remark" style="font-size: 12px;margin-left: 10px;">
 									<span>*支持jpg、pdf格式</span>
 								</span>
 							</template>
@@ -162,7 +162,7 @@
 						<a-upload v-decorator="material.dec" v-bind="{...upload.bind, listType:'text'}" v-on="upload.on">
 							<template v-if="!getValue(material.dec[0],1)">
 								<a-button icon="upload">点击上传</a-button>
-								<span class="text-remark" style="font-size: 12px;margin-left: 10px;vertical-align: bottom;">
+								<span class="text-remark" style="font-size: 12px;margin-left: 10px;">
 									<span>*支持jpg、pdf格式</span>
 								</span>
 							</template>
@@ -258,6 +258,28 @@ export default {
         callback();
       }
     };
+    const CardB = (rule, value, callback) => {
+      const cardA = this.getValue(this.law.card.decA[0], 1);
+      const cardB = (value || []).length;
+      if(!cardA){
+        callback();
+      }
+      if (!cardB) {
+        callback(new Error('请上传身份证'));
+      }
+      callback();
+    };
+    const CardA = (rule, value, callback) => {
+      const cardB = this.getValue(this.law.card.decB[0], 1);
+      const cardA = (value || []).length;
+      if(!cardB){
+        callback();
+      }
+      if (!cardA) {
+        callback(new Error('请上传身份证'));
+      }
+      callback();
+    };
     return {
       formItemLayout,
       nameOption,
@@ -294,6 +316,7 @@ export default {
 						autoComplete:'off',
 						placeholder:'请输入机构名称',
 						...baseWidth,
+						maxLength:40,
 					}
         },
         code:{
@@ -373,7 +396,8 @@ export default {
             style:{
               display:'none',
               width:'442px'
-            }
+            },
+	          maxLength:40,
           }
         },
         idNumber:{
@@ -459,12 +483,15 @@ export default {
             valuePropName: 'fileList',
             getValueFromEvent,
             rules: [
-              { required: true, message: '请上传身份证照片!' },
+              { required: true, validator: CardA },
             ]
           }],
           decB:[ 'backOfCard', {
             valuePropName: 'fileList',
             getValueFromEvent,
+            rules: [
+              { required: true, validator: CardB },
+            ]
           }],
         },
         cert:{
@@ -565,13 +592,13 @@ export default {
     toUpdateInfo(_source){
       const addApi = this.userType === 'lawyer' ? qualifies.lawyerAdd : qualifies.orgAdd;
       addApi(_source).then(res=>{
-        if(res.code === 20000 ){
-					if(this.isFirst){
+	      if(res.code === 20000 ){
+		      this.$store.commit("updateQualify");
+		      if(this.isFirst){
 						this.$success({
 							title: '资质认证提交成功',
 							okText:'点击前往"要素认证"',
 							onOk:()=>{
-								this.$store.dispatch("updateQualify");
 								this.$store.dispatch("updateIdentity", this.userType === 'lawyer' ? 1 : 2);
 								this.$router.push('/attest/factor');
 							}
@@ -683,6 +710,10 @@ export default {
             transition: all 0.3s;
           }
         }
+				/*.ant-upload-list-picture-card .ant-upload-list-item-thumbnail img{*/
+					/*object-fit: contain;*/
+					/*-o-object-fit: contain;*/
+				/*}*/
         .ant-upload-list-picture-card-container{
           width: 184px;
           .ant-upload-list-item{

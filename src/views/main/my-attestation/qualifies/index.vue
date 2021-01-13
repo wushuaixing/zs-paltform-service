@@ -56,16 +56,16 @@
             <div class="status-title-identity">
               <span>我的服务商身份：</span>
               <template v-if="identity === 1">
-                <img :src="icon.law" alt="" style="height: 32px;vertical-align: top;">
+                <img :src="icon.law" alt="" style="height: 32px;vertical-align: top;margin-top: -2px">
                 <span style="margin-left: 10px">律师</span>
               </template>
               <template v-else>
-                <img :src="icon.org" alt="" style="height: 32px;vertical-align: top;">
+                <img :src="icon.org" alt="" style="height: 32px;vertical-align: top;margin-top: -2px">
                 <span style="margin-left: 10px">机构</span>
               </template>
             </div>
             <ul class="status-title-attribute">
-              <li>当前资质认证状态：<b :class="info.class">{{info.desc}}</b></li>
+              <li>当前资质认证状态：<font :class="info.class">{{info.desc}}</font></li>
               <li v-if="statusInfo.qualifyModifyDate">
                 资质信息更新日期：{{statusInfo.qualifyModifyDate}}
               </li>
@@ -134,17 +134,16 @@
       <template slot="footer">
         <div style="text-align: center" v-if="modalStep===0">
           <a-space>
-            <a-button key="submit" type="primary" @click="modalStep = 1">修改并重新提交</a-button>
             <a-button key="back" @click="handleModalClose">关闭</a-button>
-            <a-button style="margin-left: 30px;visibility: hidden">关闭</a-button>
-          </a-space>
+						<a-button key="submit" type="primary" @click="modalStep = 1">修改并重新提交</a-button>
+					</a-space>
         </div>
         <div style="text-align: center" v-if="modalStep===1">
           <a-space>
-            <a-button key="submit" type="primary" @click="handleEditInfo">确认修改并提交</a-button>
+						<a-button key="back" @click="handleModalClose">关闭</a-button>
             <a-button key="back" @click="modalStep=0" v-if="onlyEdit">取消</a-button>
-            <a-button key="back" @click="handleModalClose" style="margin-left: 30px">关闭</a-button>
-          </a-space>
+						<a-button key="submit" type="primary" @click="handleEditInfo">确认修改并提交</a-button>
+					</a-space>
         </div>
       </template>
     </a-modal>
@@ -216,6 +215,7 @@ export default {
       const _this = this;
       this.$confirm({
         title: '确定返回服务商身份选择吗？',
+	      icon:'exclamation-circle',
         content: '返回后，将清空当前填写的所有内容。',
         onOk() {
           _this.nextStep = false;
@@ -319,7 +319,7 @@ export default {
 		},
 		// 查询当前服务商的机构属性
 		queryQualify(){
-			qualifies.qualify().then(({data = {},code})=>{
+			qualifies.qualify().then(({data = {},code,message})=>{
 				if(code === 20000){
 					const {
 						contact, logId, phone,qualifyCondition, qualify = {},qualifyVO = {},
@@ -340,10 +340,7 @@ export default {
 					};
 					this.spinning = false;
 				} else{
-					this.$error({
-						title: '提示',
-						content: '网络请求异常，请重新请求!',
-					});
+					this.$message.error(message);
 				}
 			}).catch(()=>{
 				this.$error({
