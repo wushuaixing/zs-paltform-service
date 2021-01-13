@@ -134,10 +134,9 @@
       <template slot="footer">
         <div style="text-align: center" v-if="modalStep===0">
           <a-space>
-            <a-button key="submit" type="primary" @click="modalStep = 1">修改并重新提交</a-button>
             <a-button key="back" @click="handleModalClose">关闭</a-button>
-            <a-button style="margin-left: 30px;visibility: hidden">关闭</a-button>
-          </a-space>
+						<a-button key="submit" type="primary" @click="modalStep = 1">修改并重新提交</a-button>
+					</a-space>
         </div>
         <div style="text-align: center" v-if="modalStep===1">
           <a-space>
