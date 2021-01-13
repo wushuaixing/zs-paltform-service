@@ -4,7 +4,7 @@
       <a-layout-header class="header-wrapper" :style="{ position: 'fixed', zIndex: 99, width: '100%' }">
         <a-icon class="header-icon" type="codepen"/>
         <span class="header-title">浙商资产服务商招募管理系统</span>
-        <a-menu theme="dark" mode="horizontal" :default-selected-keys="[selectedKey]"
+        <a-menu theme="dark" mode="horizontal" :default-selected-keys="['a']" :selectedKeys="selectedKey"
                 :style="{ lineHeight: '64px',display:'inline-block',verticalAlign: 'top',height:'64px' }">
           <a-menu-item key="a">
             <router-link to="/">我的</router-link>
@@ -50,7 +50,7 @@
     data() {
       return {
         loading:true,
-        selectedKey:'a',
+        selectedKey:['a'],
         info:{},
       };
     },
@@ -84,7 +84,7 @@
     created() {
 	    if(!window.localStorage.token) return this.$router.push('/login');
 	    const { hash } = window.location;
-      if(/^#\/center/.test(hash))this.selectedKey = 'b';
+      if(/^#\/center/.test(hash))this.selectedKey = ['b'];
       if(!this.$store.state.isLogin){
         getInfo().then(res=>{
           this.loading = false;
@@ -108,6 +108,17 @@
       },
       isSetPassword(){
         return this.$store.getters.getInfo.isSetPassword;
+      }
+    },
+    watch:{
+      $route(to,from){
+        if(to.path !== from.path){
+          if(/\/center/.test(to.path)){
+            this.selectedKey = ['b'];
+          } else {
+            this.selectedKey = ['a'];
+          }
+        }
       }
     }
   };
