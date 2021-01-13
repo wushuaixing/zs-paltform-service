@@ -258,6 +258,28 @@ export default {
         callback();
       }
     };
+    const CardB = (rule, value, callback) => {
+      const cardA = this.getValue(this.law.card.decA[0], 1);
+      const cardB = (value || []).length;
+      if(!cardA){
+        callback();
+      }
+      if (!cardB) {
+        callback(new Error('请输入身份证'));
+      }
+      callback();
+    };
+    const CardA = (rule, value, callback) => {
+      const cardB = this.getValue(this.law.card.decB[0], 1);
+      const cardA = (value || []).length;
+      if(!cardB){
+        callback();
+      }
+      if (!cardA) {
+        callback(new Error('请输入身份证'));
+      }
+      callback();
+    };
     return {
       formItemLayout,
       nameOption,
@@ -459,12 +481,15 @@ export default {
             valuePropName: 'fileList',
             getValueFromEvent,
             rules: [
-              { required: true, message: '请上传身份证照片!' },
+              { required: true, validator: CardA },
             ]
           }],
           decB:[ 'backOfCard', {
             valuePropName: 'fileList',
             getValueFromEvent,
+            rules: [
+              { required: true, validator: CardB },
+            ]
           }],
         },
         cert:{
