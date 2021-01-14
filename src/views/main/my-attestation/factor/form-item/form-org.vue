@@ -155,6 +155,12 @@ export default {
   data() {
     const Min = (rule, value, callback) => {
       const disabled = this.getValue(this.intention.startAmountOfSubject.disabled[0]);
+      const Max = this.getValue(this.intention.startAmountOfSubject.max[0]);
+      if(Max){
+        this.$nextTick(() => {
+          this.form.validateFields(['max'], {force: true});
+        });
+      }
       if (disabled) {
         callback();
       }
@@ -374,7 +380,7 @@ export default {
     //标的金额范围 不限 复选框 改变
     checkedChange() {
       this.$nextTick(() => {
-        this.form.validateFields(['max', 'min'], {force: true, firstFields: ['max']});
+        // this.form.validateFields(['max', 'min'], {force: true, firstFields: ['max']});
         this.form.validateFields(['max', 'min'], {force: true});
       });
     },
