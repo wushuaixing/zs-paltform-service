@@ -127,7 +127,10 @@
 				</a-form-item>
 			</a-form-item>
       <a-form-item label="投资区域">
-        <a-cascader v-decorator="intention.investmentArea.dec" v-bind="intention.investmentArea.other"/>
+<!--        <a-cascader v-decorator="intention.investmentArea.dec" v-bind="intention.investmentArea.other"/>-->
+        <el-cascader v-bind="intention.investmentArea.other" @change="val=>handleEleCas(val,intention.investmentArea.dec[0],'investmentArea')"
+                     @visible-change="val=>this.visible = val"/>
+        <a-input v-decorator="intention.investmentArea.dec" style="display: none"/>
       </a-form-item>
       <a-form-item label="以往投资经历">
         <a-textarea v-decorator="intention.investmentExperience.dec" v-bind="intention.investmentExperience.other"/>
@@ -275,11 +278,20 @@ export default {
           }
         },
         investmentArea: {
-          dec: ['investmentArea', {rules: [{required: true, message: '请选择投资区域!'}]}],
+          dec: ['investmentArea', {rules: [{required: true, message: '请选择投资区域'}]}],
           other: {
+            clearable: true,
             options: areaOption,
+            size: "small",
+            value: [],
+            // collapseTags:true,
+            props: {
+              value: 'id',
+              label: 'name',
+              multiple: true,
+              checkStrictly: true,
+            },
             placeholder: '请选择投资区域',
-            fieldNames: {label: 'name', value: 'id', children: 'children'},
             ...baseWidth,
           }
         },
@@ -381,11 +393,16 @@ export default {
     // ele 地区多选事件触发
     handleEleCas(val = [], field, sign) {
       const {setFieldsValue, setFields} = this.form;
+      const rule = {
+        business:'请选择擅长业务区域',
+        investmentArea:'请选择投资区域',
+        company:'请选择公司分部覆盖地区',
+      };
       if (!this.visible && !val.length) {
         setFields({
           [field]: {
             value: undefined,
-            errors: [new Error(sign === 'business' ? '请选择擅长业务区域' : '请选择公司分部覆盖地区')]
+            errors: [new Error(rule[sign])]
           }
         })
       } else {
@@ -426,7 +443,6 @@ export default {
         goodCases: (source.goodCases || []).join(','),
         headOfficeAddress: (source.headOfficeAddress || []).join(','),
         investmentPreferenceType: (source.investmentPreferenceType || []).join(','),
-        investmentArea: (source.investmentArea || []).join(','),
         startAmountOfSubject: JSON.stringify(startAmountOfSubject),
         otherGoodCases: this.LinkageData(source.goodCases, source.otherGoodCases),
       })
@@ -435,10 +451,10 @@ export default {
     resetFormValue(source) {
       const {
         investmentPreferenceType,
-        investmentArea,
         investmentExperience,
         investmentBankProjectCase,
         startAmountOfSubject,
+        investmentArea,
         ..._source
       } = source;
       const fieldValues = {
@@ -463,9 +479,9 @@ export default {
             disabled,
             min,
             max,
-            investmentArea: (investmentArea || '').split(',').map(i => Number(i)).filter(i => i),
             investmentPreferenceType: (investmentPreferenceType || '').split(',').map(i => Number(i)),
           });
+          this.intention.investmentArea.other.value = areaAnalysis(investmentArea, false);
         }
         if (source.hasInvestmentBankExperience === '1') {
           this.form.setFieldsValue({
