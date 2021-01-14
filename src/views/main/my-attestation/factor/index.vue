@@ -41,7 +41,7 @@
           </div>
           <div class="status-content" v-if="info.halfStatus">
             <div>您已有半年未更新要素认证信息，若要素认证信息发生变化，请及时进行更新！</div>
-						<a-button type="primary">立即更新</a-button>
+						<a-button type="primary"  @click="handleEdit">立即更新</a-button>
 						<a-button @click="handleDrop">放弃修改</a-button>
           </div>
         </div>
@@ -301,7 +301,7 @@ export default {
 	    // remindBaseTime
 			let halfStatus = false;
 			if(remindBaseTime){
-				halfStatus = Date.parse(new Date('2021-07-14')) < Date.parse(new Date())
+				halfStatus = Date.parse(new Date(remindBaseTime)) < Date.parse(new Date())
 			}
 	    return {
         ...factorStatus[elementAuditStatus],
