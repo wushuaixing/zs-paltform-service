@@ -1,11 +1,17 @@
 <template>
+<div class="workbench">
+<a-spin :spinning="spinning" class="spin-wrapper" tip="Loading......" />
   <div class="workbench-wrapper">
     <div class="workbench-item workbench-left">
       <div class="item-wrapper item-border">
         <div class="item-title item-format ">待办事项</div>
         <div class="item-content item-format item-thing item-toDo">
           <!-- 待办事项 -->
-            <div class="toDoList">
+            <div class="emptyState" v-if="list.length===0">
+              <img src="../../../assets/img/toDoList.png" alt="一张空待办事项的图片" class="emptyImg">
+              <div>暂无待办事项</div>
+            </div>
+            <div class="toDoList" v-else>
               <ul class="through">
                 <li  v-for="(item, index) in list" :key="index">
                   <a-badge :status="MATTER_TYPE[item.code].text" />
@@ -20,21 +26,21 @@
       </div>
       <div class="item-wrapper">
         <div class="item-project item-format">竞标项目进度概览</div>
-        <!-- 未添加项目 -->
         <!-- <div class="empty" v-if="echarts.myProjectsNum ===0 && echarts.myProjectCaseUnSubmit===0 && echarts.myProjectsReview ===0 && echarts.myProjectsAimed===0 &&echarts.myProjectsInvalid===0 &&echarts.myProjectAbandon ===0" >
           <a-empty description>
             <slot name="description">您还没有已开始的项目，去<router-link to="/center">服务商项目招商中心</router-link>添加第一个项目</slot>
           </a-empty>
         </div> -->
-         <div class="empty" v-show="!isShowEcharts">
-          <a-empty description>
-            <slot name="description">您还没有已开始的项目，去<router-link to="/center">服务商项目招商中心</router-link>添加第一个项目</slot>
-          </a-empty>
+        <!-- 未添加项目 -->
+        <div class="empty" v-show="!isShowEcharts">
+          <img src="../../../assets/img/empty.png" alt="一张空状态图片" class="emptyImg">
+          <div>您还没有已开始的项目</div>
+          <div>去<router-link to="/center">服务商项目招商中心</router-link>添加第一个项目</div>
         </div>
+        <!-- 项目echarts显示 -->
         <div class="item-content item-format"  v-show="isShowEcharts">
           <div class="total">我的项目总数：{{echarts.myProjectsNum}}</div>
           <div class="data-display">
-            <!-- 饼图显示 -->
             <div class="chart">
               <div id="main"></div>
             </div>
@@ -82,6 +88,7 @@
       </div>
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -97,6 +104,7 @@ export default {
   },
   data() {
     return {
+      spinning:true,
       // 后台图表的数据
       echarts: {},
       // 需要渲染的事项数据
@@ -143,7 +151,8 @@ export default {
         'endDate': this.schedule.startDate
 			}).then((res) => {
 				if (res.code !== 20000) return this.$message.error("获取日历事项失败");
-				this.data = res.data
+        this.data = res.data
+        this.spinning = false
 			})
     },
     // 获取日历事项
@@ -155,12 +164,14 @@ export default {
       const res = await getCalendar({startDate,endDate})
       if (res.code !== 20000) return this.$message.error("获取日历事项失败");
       this.data = res.data
+      this.spinning = false
     },
     // 待办事项
     async getList() {
       const res = await getTODoList();
       if (res.code !== 20000) return
         this.list = res.data
+        this.spinning = false
     },
     //echarts饼图
     async initECharts () {
@@ -168,8 +179,9 @@ export default {
       const res = await getEcharts();
       if (res.code !== 20000) return this.$message.error('获取图表数据失败');
       this.echarts = res.data;
+      this.spinning = false
       let option = {
-      color: ['#E283FF', '#67CE57','#F7CE22','#44D7B6','#01A0FF','#F5222D'],
+      color: ['#9200FF', '#67CE57','#F7CE22','#44D7B6','#01A0FF','#F5222D'],
         tooltip: {
             trigger: 'item',
         },
@@ -282,7 +294,7 @@ $leftWidth: 470px;
     }
     &-content {
       box-sizing: border-box;
-      min-height: 261px;
+      min-height: 273px;
     }
     &-thing {
       height: 515px;
@@ -302,8 +314,11 @@ $leftWidth: 470px;
       li {
         list-style: none;
         border-bottom: 1px solid #E9E9E9;
-        margin-left: 20px;
+        margin-left: 16px;
         padding: 10px 0;
+      }
+      /deep/.ant-btn-link {
+        color: #1094B5;
       }
     }
     .data-display {
@@ -352,9 +367,22 @@ $leftWidth: 470px;
       color: #333333;
       line-height: 16px;
     }
-    .empty {
+    .empty{
+      color: #7F7F7F;
       margin-top: 50px;
       text-align: center;
+      .emptyImg {
+        margin-bottom: 24px;
+      }
+    }
+    .emptyState {
+      color: #7F7F7F;
+      margin-top: 150px;
+      text-align: center;
+      font-size: 14px;
+      .emptyImg {
+        margin-bottom: 24px;
+      }
     }
     // 日历样式
     .events {
@@ -386,10 +414,6 @@ $leftWidth: 470px;
       color: #999999!important;
       line-height: 17px;
     }
-    // /deep/.ant-fullcalendar-content {
-    //   // width: 2px;
-    //   background: pink;
-    // }
     // 日历头样式
     /deep/.ant-fullcalendar-header {
       text-align: center;
