@@ -427,6 +427,8 @@ export default {
 }
 .nothing{
   width: 100%;
+  min-height: 808px;
+  background-color: #fff;
   text-align: center;
   &-pic{
     margin-top: 232px;
@@ -442,6 +444,7 @@ export default {
   }
 }
 .biding-wrapper {
+  min-height: 808px;
   background-color: #fff;
   .biding-query {
     padding: 20px 20px 5px 20px;
