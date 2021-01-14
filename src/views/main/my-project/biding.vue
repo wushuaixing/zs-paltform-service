@@ -505,6 +505,9 @@ export default {
 			font-weight: bold;
 			color: #333333;
 		}
+    .ant-table-placeholder{
+      border-bottom: none;
+    }
 	}
 
 .query-item-prefix {
