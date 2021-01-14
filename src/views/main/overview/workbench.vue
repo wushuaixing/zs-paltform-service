@@ -1,11 +1,17 @@
 <template>
+<div class="workbench">
+<a-spin :spinning="spinning" class="spin-wrapper" tip="Loading......" />
   <div class="workbench-wrapper">
     <div class="workbench-item workbench-left">
       <div class="item-wrapper item-border">
         <div class="item-title item-format ">待办事项</div>
         <div class="item-content item-format item-thing item-toDo">
           <!-- 待办事项 -->
-            <div class="toDoList">
+            <div class="emptyState" v-if="list.length===0">
+              <img src="../../../assets/img/toDoList.png" alt="一张空待办事项的图片" class="emptyImg">
+              <div>暂无待办事项</div>
+            </div>
+            <div class="toDoList" v-else>
               <ul class="through">
                 <li  v-for="(item, index) in list" :key="index">
                   <a-badge :status="MATTER_TYPE[item.code].text" />
@@ -82,6 +88,7 @@
       </div>
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -97,6 +104,7 @@ export default {
   },
   data() {
     return {
+      spinning:true,
       // 后台图表的数据
       echarts: {},
       // 需要渲染的事项数据
@@ -143,7 +151,8 @@ export default {
         'endDate': this.schedule.startDate
 			}).then((res) => {
 				if (res.code !== 20000) return this.$message.error("获取日历事项失败");
-				this.data = res.data
+        this.data = res.data
+        this.spinning = false
 			})
     },
     // 获取日历事项
@@ -155,12 +164,14 @@ export default {
       const res = await getCalendar({startDate,endDate})
       if (res.code !== 20000) return this.$message.error("获取日历事项失败");
       this.data = res.data
+      this.spinning = false
     },
     // 待办事项
     async getList() {
       const res = await getTODoList();
       if (res.code !== 20000) return
         this.list = res.data
+        this.spinning = false
     },
     //echarts饼图
     async initECharts () {
@@ -168,6 +179,7 @@ export default {
       const res = await getEcharts();
       if (res.code !== 20000) return this.$message.error('获取图表数据失败');
       this.echarts = res.data;
+      this.spinning = false
       let option = {
       color: ['#E283FF', '#67CE57','#F7CE22','#44D7B6','#01A0FF','#F5222D'],
         tooltip: {
@@ -355,10 +367,19 @@ $leftWidth: 470px;
       color: #333333;
       line-height: 16px;
     }
-    .empty {
+    .empty{
       color: #7F7F7F;
       margin-top: 50px;
       text-align: center;
+      .emptyImg {
+        margin-bottom: 24px;
+      }
+    }
+    .emptyState {
+      color: #7F7F7F;
+      margin-top: 150px;
+      text-align: center;
+      font-size: 14px;
       .emptyImg {
         margin-bottom: 24px;
       }
@@ -393,10 +414,6 @@ $leftWidth: 470px;
       color: #999999!important;
       line-height: 17px;
     }
-    // /deep/.ant-fullcalendar-content {
-    //   // width: 2px;
-    //   background: pink;
-    // }
     // 日历头样式
     /deep/.ant-fullcalendar-header {
       text-align: center;
