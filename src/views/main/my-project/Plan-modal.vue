@@ -128,8 +128,8 @@
                 placeholder="阶段性目标,如腾房(30字以内)"
                 class="plan-ipt"
               />
-              <a-icon 
-                v-if="index===form.scheduleManagements.length-1" 
+              <a-icon
+                v-if="index===form.scheduleManagements.length-1"
                 type="plus-circle"
                 style="margin-right:12px"
                 class="icon"
@@ -286,8 +286,29 @@ export default {
   watch:{
     projectInfo:{
       handler:function(){
-        this.form.id = this.projectInfo.id;
-        if(this.projectInfo.caseFileStatus !== '0'){
+        if(this.projectInfo.caseFileStatus === '0'){
+          this.form = {
+            serviceTime: "",
+            aimBackPrice: "",
+            scheduleManagements: [
+              {
+                dateMatters: "",
+                dateMonth: "",
+              },
+              {
+                dateMatters: "",
+                dateMonth: "",
+              },
+              {
+                dateMatters: "",
+                dateMonth: "",
+              },
+            ],
+            id:this.projectInfo.id,
+            caseFileAddress	: "",
+          }
+        }else{
+          this.form.id = this.projectInfo.id;
           this.form.aimBackPrice = this.projectInfo.aimBackPrice;
           this.form.serviceTime = this.projectInfo.serviceTime;
           this.form.scheduleManagements = this.projectInfo.scheduleManagements;
@@ -317,7 +338,7 @@ export default {
       if(this.$route.query.id)this.$parent.getProjectDetail();
     },
     handleModify(type) {
-      if(!this.form.serviceTime || !this.form.aimBackPrice)return false;
+      if(!this.form.serviceTime || !this.form.aimBackPrice)return this.$message.error("请填写必填信息");
       for (let i = 0; i < this.form.scheduleManagements.length; i++) {
         let arr = this.form.scheduleManagements.filter(
           (item) => item.dateMonth === this.form.scheduleManagements[i].dateMonth
@@ -337,6 +358,8 @@ export default {
             this.visible = false;
             if(this.$route.query.id){
               this.$parent.getProjectDetail();
+            }else{
+              this.$parent.getProjectList();
             }
           } else {
             this.$message.error("方案提交失败,请检查信息是否填写完整");
@@ -405,10 +428,6 @@ export default {
     area: (params) => {
       return getArea(params.provinceCode, params.cityCode, params.areaCode);
     },
-    show_(val){
-      if(!val)return "-";
-      return val
-    }
   },
 };
 </script>

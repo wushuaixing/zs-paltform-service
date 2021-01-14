@@ -98,7 +98,6 @@
                         : process === 1
                         ? '#52C41A'
                         : '#FAAD14',
-                    marginRight: '5px',
                   }"
                 />
                 {{ process | evolveType }}<br />
@@ -143,7 +142,6 @@
                 <a-button
                   type="link"
                   size="small"
-                  icon="file-text"
                   @click="handleAuction(item, 'view')"
                   >查看详情</a-button
                 >
@@ -152,7 +150,6 @@
                   <a-button
                     type="link"
                     size="small"
-                    icon="file-text"
                     v-if="item.process === 0"
                     @click="handleAuction(item, 'sub')"
                     >方案报送</a-button
@@ -160,7 +157,6 @@
                   <a-button
                     type="link"
                     size="small"
-                    icon="file-text"
                     v-if="item.process === 1"
                     @click="handleAuction(item, 'edit')"
                     >方案修改</a-button
@@ -169,7 +165,6 @@
                     <a-button
                       type="link"
                       size="small"
-                      icon="file-text"
                       disabled
                       class="common-table-disabled"
                       >方案修改</a-button
@@ -179,7 +174,6 @@
                   <a-button
                     type="link"
                     size="small"
-                    icon="file-text"
                     @click="handleAuction(item, 'aba')"
                     >放弃竞标</a-button
                   >
@@ -254,6 +248,7 @@ export default {
         size: "middle",
         pagination: {
           total: 0,
+          current:1,
           showQuickJumper: true,
           showTotal: (val) => `共${val}条信息`,
         },
@@ -305,6 +300,7 @@ export default {
     // 搜索查询
     handleSubmit() {
       this.params.page = 1;
+      this.tabConfig.pagination.current = 1;
       this.sortOrder = false;
       this.params.sortOrder = "";
       this.getProjectList();
@@ -314,6 +310,7 @@ export default {
       this.params.debtor = '';
       this.params.process = '';
       this.params.page = 1;
+      this.tabConfig.pagination.current = 1;
       this.sortOrder = false;
       this.params.sortOrder = "";
       this.getProjectList();
@@ -323,11 +320,13 @@ export default {
       this.sortOrder = false;
       this.query.tabStatus = val;
       this.params.page = 1;
+      this.tabConfig.pagination.current = 1;
       this.getProjectList();
     },
     // 分页,排序
     handleTableChange(pagination, filters, sorter) {
       this.params.page = pagination.current;
+      this.tabConfig.pagination.current = pagination.current;
       this.params.sortField = sorter.field;
       this.sortOrder = sorter.order;
       this.params.sortOrder = sorter.order
@@ -342,7 +341,13 @@ export default {
       return {
         on: {
           click: () => {
-            changeUnRead(row.id)
+            changeUnRead(row.id).then(res=>{
+              if(res.code === 20000){
+                row.isRead = 1;
+              }else{
+                return false;
+              }
+            })
           },
         },
       };
@@ -418,7 +423,6 @@ export default {
 }
 .nothing{
   width: 100%;
-  height: 100%;
   text-align: center;
   &-pic{
     margin-top: 232px;
@@ -434,9 +438,7 @@ export default {
   }
 }
 .biding-wrapper {
-  &-content {
-    background-color: #ffffff;
-  }
+  background-color: #fff;
   .biding-query {
     padding: 20px 20px 5px 20px;
   }

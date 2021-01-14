@@ -27,7 +27,7 @@
 							<span style="margin-left: 10px">{{mine.text}}</span>
             </div>
             <ul class="status-title-attribute">
-              <li>当前要素认证状态：<b :class="info.class">{{info.desc}}</b></li>
+              <li>当前要素认证状态：<font :class="info.class">{{info.desc}}</font></li>
               <li v-if="statusInfo.elementModifyDate">要素信息更新日期：{{statusInfo.elementModifyDate}}</li>
             </ul>
           </div>
