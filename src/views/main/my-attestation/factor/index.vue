@@ -34,16 +34,18 @@
         </div>
         <!-- 要素认证提醒 -->
         <div class="qualifies-item qualifies-status" v-if="status(245) || info.halfStatus">
-          <div class="status-content" v-if="status(245)">
-            <div>{{info.text}}</div>
-						<a-button @click="getFactorLog" type="primary" :loading="loading">{{info.btn}}</a-button>
-						<a-button v-if="status(5)" @click="handleDrop">放弃修改</a-button>
-          </div>
           <div class="status-content" v-if="info.halfStatus">
             <div>您已有半年未更新要素认证信息，若要素认证信息发生变化，请及时进行更新！</div>
 						<a-button type="primary"  @click="handleEdit">立即更新</a-button>
-						<a-button @click="handleDrop">放弃修改</a-button>
+						<a-button @click="handleDelayUpdate">确认无变化，暂不更新</a-button>
           </div>
+					<template v-else>
+						<div class="status-content" v-if="status(245)">
+							<div>{{info.text}}</div>
+							<a-button @click="getFactorLog" type="primary" :loading="loading">{{info.btn}}</a-button>
+							<a-button v-if="status(5)" @click="handleDrop">放弃修改</a-button>
+						</div>
+					</template>
         </div>
         <!-- 要素认证状态 -->
         <div class="qualifies-info" v-if="status(1)">
@@ -75,9 +77,9 @@
 			</div>
     </template>
 		<a-modal v-model="modalVisible" :title="modalTitle" :maskClosable="false" :width="1000" class="factor-modal-wrapper" :keyboard="false">
-			<DetailInfo :source="dataSourceLog" :is-lawyer="identity === 1" v-if="modalStep===0"/>
+			<DetailInfo :source="dataSourceLog" :is-lawyer="identity === 1" v-if="modalStep===0" />
 			<FormItem :isLawyer="identity === 1" v-if="modalStep===1" noSubmit :onlyUpdateOffice="!!dataSourceLog.lawOffice"
-								:dataSource="dataSourceLog" @toTellRes="handleSubmit" ref="fillFromRef"/>
+								:dataSource="dataSourceLog" @toTellRes="handleSubmit" ref="fillFromRef" />
 			<template slot="footer">
 				<div style="text-align: center" v-if="modalStep === 0">
 					<a-space>
@@ -96,7 +98,7 @@
 			</template>
 		</a-modal>
 		<a-modal v-model="modalVisibleOffice" title="律所信息认证" :maskClosable="false" :width="1000">
-			<FormItemOffice ref="OfficeFormRef"/>
+			<FormItemOffice ref="OfficeFormRef" />
 			<template slot="footer">
 				<div style="text-align: center" >
 					<a-button key="submit" type="primary" :loading="auctionLoading" @click="toAddOffice">
@@ -288,6 +290,16 @@ export default {
 		  factor.dropModify().then(res=>{
 			  if(res.code === 20000){
 				  this.$message.success('当前认证修改申请，已放弃');
+				  this.queryFactor();
+			  }else{
+				  this.$message.error('操作失败，请稍后操作！');
+			  }
+		  })
+	  },
+	  handleDelayUpdate(){
+		  factor.delayUpdate().then(res=>{
+			  if(res.code === 20000){
+				  this.$message.success('推迟更新成功！');
 				  this.queryFactor();
 			  }else{
 				  this.$message.error('操作失败，请稍后操作！');

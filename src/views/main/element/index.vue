@@ -5,11 +5,11 @@
 			<div style="height: 30vh" v-if="spinning"></div>
 		</a-spin>
 		<div v-if="!spinning">
-			<div class="text-dangerous" style="margin-bottom: 10px">*请您确认已有信息无误并完善缺失的必填信息</div>
-			<h3>资质信息确认及完善</h3>
+			<div class="text-error" style="margin-bottom: 10px">*请您确认已有信息无误并完善缺失的必填信息</div>
+			<div class="text-h3">资质信息确认及完善</div>
 			<FormQualify :userType="identity === 1 ?'lawyer':'org'" :noAuction="false"
 									 ref="QualifyFormRef" onlyData :source="source.qualify" />
-			<h3>要素信息确认及完善</h3>
+			<div class="text-h3">要素信息确认及完善</div>
 			<div class="info-item_category" id="item_category_office">
 				<span class="title">{{identity === 1 ?'律师信息':'机构信息'}}</span>
 			</div>
@@ -146,6 +146,10 @@
 					margin-left: 10px;
 				}
 			}
+		}
+		.text-h3{
+			font-size: 14px;
+			font-weight: bold;
 		}
 		.info-item_category{
 			height: 50px;

@@ -21,7 +21,7 @@
       <a-cascader v-decorator="field.local.dec" v-bind="field.local.other"/>
     </a-form-item>
     <a-form-item label="主要涉业地区">
-      <el-cascader v-bind="field.involve.other" @change="val=>handleEleCas(val,field.involve.dec[0])"
+      <el-cascader v-bind="field.involve.other" @change="val=>handleEleCas(val,field.involve.dec[0],field.involve.other.placeholder)"
                    @visible-change="val=>this.visible = val"/>
       <a-input v-decorator="field.involve.dec" style="display: none"/>
     </a-form-item>
@@ -102,7 +102,7 @@
       </div>
     </a-form-item>
     <a-form-item label="擅长业务区域">
-			<el-cascader v-bind="adv.area.other" @change="val=>handleEleCas(val,adv.area.dec[0])"
+			<el-cascader v-bind="adv.area.other" @change="val=>handleEleCas(val,adv.area.dec[0],adv.area.other.placeholder)"
 									 @visible-change="val=>this.visible = val"/>
 			<a-input v-decorator="adv.area.dec" style="display: none"/>
     </a-form-item>
@@ -356,13 +356,13 @@ export default {
       if (field) return this.form.getFieldValue(field);
     },
     // ele 地区多选事件触发
-    handleEleCas(val = [], field) {
+    handleEleCas(val = [], field,placeholder) {
       const {setFieldsValue, setFields} = this.form;
       if (!this.visible && !val.length) {
         setFields({
           [field]: {
             value: undefined,
-            errors: [new Error('请输入地区')]
+            errors: [new Error(placeholder || '请选择地区')]
           }
         })
       } else {
@@ -391,7 +391,10 @@ export default {
       //   // }
       // });
     },
-    LinkageData(params, val) {
+	  /**
+	   * @return {string}
+	   */
+	  LinkageData(params, val) {
       if (params instanceof Array) {
         return params.some(i => Number(i) === 0) ? val : '';
       } else {
