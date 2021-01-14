@@ -206,7 +206,7 @@
 						{ label:"是否曾与浙商合作", field:"isCooperatedWithZheshang",
 							f:_multi, other:'isCooperatedWithZheshangDetail',origin:"isOther" },
 						{ label:"过往合作类型", field:"typeOfCooperationCode", m:_if, about:'isCooperatedWithZheshang',
-							f:_multi, other:'cooperatedAmcDetail', origin:"typeOfCooperation"},
+							f:_multi, origin:"typeOfCooperation"},
 						{ label:"历史合作团队", field:"cooperationTeam", m:_if, about:'isCooperatedWithZheshang' },
 						{ label:"历史清收情况", field:"liquidationSituation", m:_if, about:'isCooperatedWithZheshang' },
 						{ label:"是否曾与其他AMC合作", field:"isCooperatedWithOtherAmc", f:_is, },
