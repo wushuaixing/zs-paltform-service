@@ -2,7 +2,7 @@
   <div class="qualifies-omission-wrapper">
     <div class="content">
       <img src="@/assets/img/no-finished.png" alt="">
-      <p>您尚未完成{{ attestation }}，请先完成{{ attestation }}！</p>
+      <p>您尚未完成{{ attestation }}，{{ attestation === '要素认证' ? '完成认证后即可查看招商项目！' : '请先完成资质认证' }}</p>
       <a-button @click="goAttestationPage(attestation)">
         立即前往{{ attestation }}
       </a-button>
@@ -30,27 +30,30 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  .qualifies-omission-wrapper{
-    height: 100%;
-    background: #fff;
-    .content{
-      text-align: center;
-      position: absolute;
-      left:50%;
-      top:50%;
-      transform: translate(-50%, -50%);
-        p{
-          color: #666666;
-          font-weight: 500;
-          line-height: 20px;
-          margin: 12px 0 24px;
-        }
-      .ant-btn{
-        width:144px;
-        background-color:#008CB0;
-        color: #fff;
-        border-radius: 2px;
-      }
+.qualifies-omission-wrapper {
+  height: 100%;
+  background: #fff;
+
+  .content {
+    text-align: center;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    p {
+      color: #666666;
+      font-weight: 500;
+      line-height: 20px;
+      margin: 12px 0 24px;
+    }
+
+    .ant-btn {
+      width: 144px;
+      background-color: #008CB0;
+      color: #fff;
+      border-radius: 2px;
     }
   }
+}
 </style>
