@@ -385,6 +385,8 @@ export default {
                 _this.visible = false;
                 if(_this.$route.query.id){
                   _this.$parent.getProjectDetail();
+                }else{
+                  _this.$parent.getProjectList();
                 }
               } else {
                 _this.$message.error("修改失败,请检查信息是否填写完整");
