@@ -71,11 +71,10 @@
               @change="handleTableChange"
 							class="frame-content-table"
             >
-              <template slot="debtor" slot-scope="{ debtor, isRead }">
+              <template slot="debtor" slot-scope="{debtor,isRead}">
                 <a-avatar
-                  v-if="!isRead && isRead !== undefined"
                   :size="8"
-                  style="background-color: #f5222d; margin-right: 5px"
+                  :style="{backgroundColor:(!isRead&&isRead!==undefined)?'#f5222d':'transparent', marginRight:'5px'}"
                 />
                 <a-tooltip :title="debtor" placement="topLeft">
                   <span>{{ debtor }}</span>
