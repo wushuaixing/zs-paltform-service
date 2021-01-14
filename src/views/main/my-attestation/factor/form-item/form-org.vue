@@ -102,7 +102,32 @@
           </a-row>
         </a-checkbox-group>
       </a-form-item>
-      <a-row>
+
+			<a-form-item label="标的金额范围" :selfUpdate="false" required :style="{ marginBottom: 0 }">
+				<a-form-item :selfUpdate="false" :style="{ display: 'inline-block' }">
+					<a-input-number
+						v-decorator="intention.startAmountOfSubject.min"
+						style="width:200px" :min="0"
+						:precision="0.1"
+						:disabled="getValue(intention.startAmountOfSubject.disabled[0])"/>
+					<span style="margin-left:5px">万元</span>
+					<span style="margin-left:15px">~</span>
+				</a-form-item>
+				<a-form-item :selfUpdate="false" :style="{ display: 'inline-block',margin:'0 10px' }">
+					<a-input-number
+						v-decorator="intention.startAmountOfSubject.max"
+						style="width:200px" :min="0"
+						:precision="0.1"
+						:disabled="getValue(intention.startAmountOfSubject.disabled[0])"/>
+					<span style="margin-left:5px">万元</span>
+				</a-form-item>
+				<a-form-item :selfUpdate="false" :style="{ display: 'inline-block' }">
+					<a-checkbox v-decorator="intention.startAmountOfSubject.disabled" @change="checkedChange">不限
+					</a-checkbox>
+				</a-form-item>
+			</a-form-item>
+
+			<a-row>
         <a-col :span="13">
           <a-form-item label="标的金额范围" :label-col="{span:11}" :wrapper-col="{span:13}" :selfUpdate="false">
             <a-input-number
