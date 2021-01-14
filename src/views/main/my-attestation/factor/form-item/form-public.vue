@@ -208,7 +208,7 @@ export default {
       return Object.assign({}, source, {
         cooperatedAmc: (source.cooperatedAmc || []).join(','),
         cooperationIntention: (source.cooperationIntention || []).join(','),
-        typeOfCooperationCode: (source.cooperationIntention || []).join(','),
+        typeOfCooperationCode: (source.typeOfCooperationCode || []).join(','),
         isCooperatedWithZheshangDetail: this.LinkageData(source.isCooperatedWithZheshang, source.isCooperatedWithZheshangDetail),
         cooperatedAmcDetail: this.LinkageData(source.cooperatedAmc, source.cooperatedAmcDetail),
         otherCooperationIntention: this.LinkageData(source.cooperationIntention, source.otherCooperationIntention),
