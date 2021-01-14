@@ -120,7 +120,7 @@
           <div class="info-image-status">
             <img src="../../../../assets/img/no_data.png" alt="">
             <p class="image-status-remark">您要提交的资质认证信息正在审核中 ，请您耐心等待</p>
-            <a-button @click="checkQualifies" type="primary" :loading="visibleLoading">查看我提交的资质认证</a-button>
+            <a-button @click="checkQualifies" type="primary" :loading="visibleLoading">查看我提交的要素认证</a-button>
           </div>
         </div>
       </template>
