@@ -28,7 +28,7 @@ export const columns = (sort) => [
         title: '担保方式',
         key: 'security',
         scopedSlots: {customRender: 'security'},
-        width:88,
+        width:108,
     },
     {
         title: '抵质押物类型',

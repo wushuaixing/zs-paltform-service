@@ -7,11 +7,11 @@
       :maskClosable="false"
   >
     <template slot="footer">
-      <a-button key="submit" type="primary" @click="handleModify(sign)">
-        {{ !isSignUpSuccess ? sign === 'fail' ? '确认放弃' : '确认报名' : '前往查看竞标项目' }}
-      </a-button>
       <a-button key="back" @click="handleCancel">
         {{ isSignUpSuccess ? '继续浏览招商项目' : '取消' }}
+      </a-button>
+      <a-button key="submit" type="primary" @click="handleModify(sign)">
+        {{ !isSignUpSuccess ? sign === 'fail' ? '确认放弃' : '确认报名' : '前往查看竞标项目' }}
       </a-button>
     </template>
     <div class="fail-modal-wrapper" v-if="!isSignUpSuccess">
@@ -158,7 +158,11 @@ export default {
   .ant-modal-content {
     width: 100%;
   }
-
+  .ant-modal-header{
+    .ant-modal-title{
+      font-weight: bolder;
+    }
+  }
   .ant-modal-body {
     padding: 0 24px 24px !important;
 

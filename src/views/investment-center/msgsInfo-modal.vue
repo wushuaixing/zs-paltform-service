@@ -60,7 +60,7 @@ export default {
   },
   filters: {
     guarantorsList: (arr = []) => {
-      if(!arr.length) return '-';
+      if (!arr.length) return '-';
       return arr.map(i => i.guarantorName).join("、");
     },
     area: (params) => {
@@ -82,6 +82,12 @@ export default {
   .ant-modal-content {
     width: 100%;
 
+    .ant-modal-header {
+      .ant-modal-title {
+        font-weight: bolder;
+      }
+    }
+
     .ant-modal-body {
       padding: 0 24px 27px !important;
 
@@ -98,6 +104,9 @@ export default {
         p {
           padding-left: 17px;
           margin: 0;
+        }
+        .ant-empty-description{
+          padding: 0;
         }
       }
     }
