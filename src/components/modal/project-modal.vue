@@ -48,7 +48,7 @@
             </p>
             <div v-if="projectInfo.amcProjectCollaterals&&projectInfo.amcProjectCollaterals.length">
               <div v-for="(item,index) in projectInfo.amcProjectCollaterals" :key="index">
-                {{index+1}}. {{item.collateralType|collateralType}}、{{item|area}}、{{item.collateralName}}
+                {{index+1}}. {{item.collateralType|collateralType}}、{{item|areaText}}、{{item.collateralName}}
               </div>
             </div>
             <div v-else>-</div>
@@ -140,7 +140,7 @@ export default {
       if (!arr.length) return '-';
       return arr.map(i => i.guarantorName).join("、");
     },
-    area: (params) => {
+    areaText: (params) => {
       return getArea(params.provinceCode, params.cityCode, params.areaCode);
     },
     collateralType: (val) => {

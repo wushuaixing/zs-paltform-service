@@ -7,7 +7,7 @@
       v-else
     >
       <Breadcrumb :source="navData" icon="environment"></Breadcrumb>
-      <a-card :bordered="false" style="width: 100%; height: 810px">
+      <a-card :bordered="false" style="width: 100%; min-height: 810px">
         <div class="head flex-style">
           <div class="ctitle">项目基本信息</div>
           <div class="right flex-style">
@@ -100,7 +100,7 @@
             <div class="subtitle" style="padding-left:10px;white-space:nowrap">抵押物清单：</div>
             <div>
               <p v-for="(i, index) in info.amcProjectCollaterals" :key="index">
-                {{index+1}}. {{i.collateralType|collateralType}}、{{i|area}}、{{i.collateralName}}
+                {{index+1}}. {{i.collateralType|collateralType}}、{{i|areaText}}、{{i.collateralName}}
               </p>
             </div>
           </a-col>
@@ -257,7 +257,7 @@ export default {
       if(arr.length === 0) return '-';
       return arr.map((i) => i.guarantorName).join("、");
     },
-    area:(params) => {
+    areaText:(params) => {
       return getArea(params.provinceCode,params.cityCode,params.areaCode);
     },
     collateralType:(val)=>{
