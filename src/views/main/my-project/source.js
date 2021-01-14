@@ -6,6 +6,9 @@ export const columns = ({ type = 1, sortOrder }) => {
 				title: '债务人名称',
 				key: 'debtor',
 				ellipsis:true,
+				customHeaderCell: () => ({
+					style: { paddingLeft:'20px' }
+				}),
 				scopedSlots: { customRender: 'debtor' },
 			},
 			{
@@ -28,9 +31,6 @@ export const columns = ({ type = 1, sortOrder }) => {
 		},
 		auction: {
 			title: '操作',
-			// customCell: () => ({
-			// 	style: { paddingLeft:'16px' }
-			// }),
 			width:'15%',
 			scopedSlots: { customRender: 'auction' },
 			key: 'auction',

@@ -109,6 +109,7 @@
                 v-model.trim="item.dateMonth"
                 class="plan-ipt"
                 :precision="0"
+                :max="120"
                 :min="1"
                 style="
                   width: 220px;
@@ -343,6 +344,8 @@ export default {
     },
     handleModify(type) {
       if(!this.form.serviceTime || !this.form.aimBackPrice)return this.$message.error("请填写必填信息");
+      const tempItem = this.form.scheduleManagements.find(item=>item.dateMonth === "" || item.dateMatters === "");
+      if(tempItem)return this.$message.error("处置计划不能为空");
       for (let i = 0; i < this.form.scheduleManagements.length; i++) {
         let arr = this.form.scheduleManagements.filter(
           (item) => item.dateMonth === this.form.scheduleManagements[i].dateMonth
@@ -382,6 +385,8 @@ export default {
                 _this.visible = false;
                 if(_this.$route.query.id){
                   _this.$parent.getProjectDetail();
+                }else{
+                  _this.$parent.getProjectList();
                 }
               } else {
                 _this.$message.error("修改失败,请检查信息是否填写完整");

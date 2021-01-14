@@ -154,7 +154,9 @@ export default {
 <style lang="scss">
 .fail-modal {
   width: 1000px !important;
-
+  .ant-modal-title{
+    font-weight: 600;
+  }
   .ant-modal-content {
     width: 100%;
   }

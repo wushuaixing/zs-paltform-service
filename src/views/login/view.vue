@@ -47,6 +47,7 @@
                   placeholder="请输入短信验证码"
                   v-bind="styleProps"
                   :maxLength="6"
+                  autoComplete="new-password"
                   @pressEnter="handleSubmit"
                 >
                   <a-icon slot="prefix" type="lock" style="color: #bfbfbf" />
@@ -68,6 +69,7 @@
                     v-bind="styleProps"
                     @pressEnter="handleSubmit"
                     placeholder="请输入登录密码"
+                    autoComplete="new-password"
                   >
                     <a-icon slot="prefix" type="lock" style="color: #bfbfbf" />
                   </a-input>
