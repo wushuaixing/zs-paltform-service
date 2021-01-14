@@ -43,3 +43,12 @@
     color: rgba(0, 140, 176, 0.73)
   }
 }
+
+.has-error {
+  .el-input__inner{
+    border-color: #f5222d
+  }
+  .el-input__icon{
+    color: #f5222d;
+  }
+}
