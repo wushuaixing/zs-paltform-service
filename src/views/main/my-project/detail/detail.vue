@@ -435,7 +435,29 @@ export default {
 </style>
 <style lang="scss" >
 .step-container{
-  // overflow: scroll;
+  .ant-steps{
+    margin: 0 auto;
+    padding: 5px 0 24px;
+    width: 90%;
+    overflow-x: scroll;
+    .ant-steps-item{
+      margin: 0 auto;
+    }
+    &::-webkit-scrollbar {
+      // width: 6px;
+      height: 8px;
+      background: transparent;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: transparent;
+      border-radius: 8px;
+    }
+    
+    &:hover::-webkit-scrollbar-thumb {
+      background: #e8e8e8;
+    }
+  }
   .ant-steps-item-title{
     width: 70px;
     color: #333333;
