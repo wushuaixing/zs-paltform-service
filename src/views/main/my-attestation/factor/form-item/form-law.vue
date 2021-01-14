@@ -94,7 +94,7 @@
         <a-upload v-decorator="adv.case.dec" v-bind="upload.bind" v-on="upload.on">
 					<div v-if="!(getValue(adv.case.dec[0])||[]).length">
 						<a-button icon="upload">点击上传</a-button>
-						<span class="text-remark" style="font-size: 12px;margin-left: 10px;vertical-align: bottom;">
+						<span class="text-remark" style="font-size: 12px;margin-left: 10px;">
 						*支持pdf、word格式
 					</span>
 					</div>
