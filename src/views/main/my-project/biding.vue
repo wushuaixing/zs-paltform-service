@@ -77,7 +77,7 @@
                   :size="8"
                   style="background-color: #f5222d; margin-right: 5px"
                 />
-                <a-tooltip :title="debtor">
+                <a-tooltip :title="debtor" placement="topLeft">
                   <span>{{ debtor }}</span>
                 </a-tooltip>
               </template>
