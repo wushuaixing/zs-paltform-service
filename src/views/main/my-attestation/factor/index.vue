@@ -309,12 +309,12 @@ export default {
   },
   computed:{
     info() {
-      const { reasonOfNotPass, elementAuditStatus,remindBaseTime} = this.statusInfo;
+      const { reasonOfNotPass, elementAuditStatus } = this.statusInfo;
 	    // remindBaseTime
 			let halfStatus = false;
-			if(remindBaseTime){
-				halfStatus = Date.parse(new Date(remindBaseTime)) < Date.parse(new Date())
-			}
+			// if(remindBaseTime){
+			// 	halfStatus = Date.parse(new Date(remindBaseTime)) < Date.parse(new Date())
+			// }
 	    return {
         ...factorStatus[elementAuditStatus],
         text:(factorStatus[elementAuditStatus] || {}).text + (reasonOfNotPass || ''),
