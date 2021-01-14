@@ -391,7 +391,13 @@ export default {
       //   // }
       // });
     },
-
+    LinkageData(params, val) {
+      if (params instanceof Array) {
+        return params.some(i => Number(i) === 0) ? val : '';
+      } else {
+        return params === '0' ? val : '';
+      }
+    },
     // 处理当前数据
     processData(source = {}) {
       return Object.assign({}, source, {
@@ -399,6 +405,8 @@ export default {
         otherResources: (source.otherResources || []).join(','),
         area: (source.area || []).join(','),
 	      goodCases: (source.goodCases || []).join(','),
+        otherGoodCases: this.LinkageData(source.goodCases, source.otherGoodCases),
+        otherResourcesDetail: this.LinkageData(source.otherResources, source.otherGoodCases),
       })
     },
     async resetFormValue(source) {
