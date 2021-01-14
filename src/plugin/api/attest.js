@@ -59,7 +59,7 @@ const factor = {
 	dropModify:()=>request.put('/service/amcElement/dropModify'),
 
 	// 推迟更新日期
-	delayUpdate:()=>request.put('/service/amcElement/dropModify'),
+	delayUpdate:()=>request.put('/service/amcElement/delayUpdate'),
 
 };
 
