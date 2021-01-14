@@ -133,6 +133,14 @@
 
 <style lang="scss">
 	.element-modal-wrapper{
+    .ant-modal-content{
+      .ant-modal-header{
+        .ant-modal-title{
+            font-size: 18px;
+            font-weight: bolder;
+        }
+      }
+    }
 		.factor-form-classTitle{
 			display: flex;
 			justify-content: space-between;
