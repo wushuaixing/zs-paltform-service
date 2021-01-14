@@ -444,6 +444,7 @@ export default {
         investmentArea,
         investmentExperience,
         investmentBankProjectCase,
+        startAmountOfSubject,
         ..._source
       } = source;
       const fieldValues = {
@@ -458,7 +459,7 @@ export default {
         if (source.hasInvestmentIntention === '1') {
           let _subject = {};
           try {
-            _subject = JSON.parse(source.startAmountOfSubject);
+            _subject = JSON.parse(startAmountOfSubject);
           } catch (e) {
             console.log('-');
           }
