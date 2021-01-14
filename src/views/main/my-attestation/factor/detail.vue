@@ -4,7 +4,7 @@
 		<!--律师详情展示-->
 		<div class="info-item" data-label="我的要素认证信息-律师" v-if="isLawyer">
 			<div class="info-item_auction" v-if="isEdit">
-				<a-button @click="scrollIntoView('item_category_lawyer')">律师信息</a-button>
+				<a-button @click="scrollIntoView()">律师信息</a-button>
 				<a-button @click="scrollIntoView('item_category_office')">
 					<a-badge :dot="noOffice" class="dot-badge">律所信息</a-badge>
 				</a-button>
@@ -326,7 +326,12 @@
 			},
 			//锚点跳转
 			scrollIntoView(ele) {
-				document.getElementById(ele).scrollIntoView(true);
+				if(ele){
+					document.getElementById(ele).scrollIntoView(true);
+					const h = document.documentElement.scrollTop;
+					document.documentElement.scrollTo(0,h - 150);
+				}
+				document.activeElement.blur();
 			},
 			//点击添加律所的信息
 			toAddOfficeInfo() {
