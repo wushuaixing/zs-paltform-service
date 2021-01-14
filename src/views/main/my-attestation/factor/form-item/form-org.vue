@@ -214,7 +214,6 @@ export default {
             clearable: true,
             options: areaOption,
             size: "small",
-            value: [],
             // collapseTags:true,
             props: {
               value: 'id',
@@ -283,7 +282,6 @@ export default {
             clearable: true,
             options: areaOption,
             size: "small",
-            value: [],
             // collapseTags:true,
             props: {
               value: 'id',
@@ -326,7 +324,6 @@ export default {
             clearable: true,
             options: areaOption,
             size: "small",
-            value: [],
             // collapseTags:true,
             props: {
               value: 'id',
