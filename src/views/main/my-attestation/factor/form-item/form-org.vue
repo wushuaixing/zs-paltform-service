@@ -476,6 +476,7 @@ export default {
             disabled,
             min,
             max,
+            investmentArea,
             investmentPreferenceType: (investmentPreferenceType || '').split(',').map(i => Number(i)),
           });
           this.intention.investmentArea.other.value = areaAnalysis(investmentArea, false);
