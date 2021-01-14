@@ -52,16 +52,18 @@ Vue.filter('unit', (val,unit = '')=>{
 
 // 多项选择:展示 (val:值,field:数据字段,remark ="":其他字段)
 Vue.filter('multi',(val,remark = '',field)=>{
-	if(!field) return val;
-	if(!val) return val;
-	const _data = source[field] || [];
-	const _label = (val.toString()).split(',').map(i=>{
-		let result = '';
-		_data.forEach(item=>{ if(item.value.toString() === i) result = item.label; });
-		return result
-	});
-	_label.push(remark);
-	return _label.filter(i=>i).join('、');
+    if(!field) return val;
+    if(!val) return val;
+    const _remark = remark ? `（${remark}）` : '';
+    const _data = source[field] || [];
+    const _label = val.split(',').map(i=>{
+        let result = '';
+        _data.forEach(item=>{ if(item.value.toString() === i) {
+            result =  i.toString() === '0' ? item.label + _remark : item.label
+        } });
+        return result
+    });
+    return _label.filter(i=>i).join('、')
 });
 
 // 地区省市区展示

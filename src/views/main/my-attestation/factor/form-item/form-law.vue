@@ -406,7 +406,7 @@ export default {
         area: (source.area || []).join(','),
 	      goodCases: (source.goodCases || []).join(','),
         otherGoodCases: this.LinkageData(source.goodCases, source.otherGoodCases),
-        otherResourcesDetail: this.LinkageData(source.otherResources, source.otherGoodCases),
+        otherResourcesDetail: this.LinkageData(source.otherResources, source.otherResourcesDetail),
       })
     },
     async resetFormValue(source) {
