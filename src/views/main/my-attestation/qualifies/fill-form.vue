@@ -38,7 +38,7 @@
             </div>
           </a-upload>
           <div class="upload-text">
-            <div>*支持jpg、pdf格式</div>
+            <div>*支持图片、pdf格式</div>
           </div>
         </div>
       </a-form-item>
@@ -50,7 +50,7 @@
             </div>
           </a-upload>
           <div class="upload-text">
-            <div>*请下载保密承诺函模板，签字、用印后扫描或拍照上传；支持jpg、pdf格式</div>
+            <div>*请下载保密承诺函模板，签字、用印后扫描或拍照上传；支持图片、pdf格式</div>
 						<a href="https://zsamc-public.zsamc.com/%E3%80%8A%E6%B5%99%E6%B1%9F%E7%9C%81%E6%B5%99%E5%95%86%E8%B5%84%E4%BA%A7%E7%AE%A1%E7%90%86%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8%E4%BF%9D%E5%AF%86%E6%89%BF%E8%AF%BA%E4%B9%A6%E3%80%8B.doc" style="text-decoration: underline">承诺函模板下载</a>
           </div>
         </div>
@@ -63,7 +63,7 @@
 							<template v-if="!getValue(material.dec[0],1)">
 								<a-button icon="upload">点击上传</a-button>
 								<span class="text-remark" style="font-size: 12px;margin-left: 10px;">
-									<span>*支持jpg、pdf格式</span>
+									<span>*支持图片、pdf格式</span>
 								</span>
 							</template>
 						</a-upload>
@@ -116,7 +116,7 @@
           <div class="upload-text">证件反面（国徽面）</div>
         </div>
         <div class="fill-form-upload-wrapper fill-form-upload__remark">
-          <div class="upload-text">*支持jpg、pdf格式</div>
+          <div class="upload-text">*支持图片、pdf格式</div>
         </div>
       </a-form-item>
       <a-form-item class="fill-form-upload__card" :wrapperCol="{span:24}" :selfUpdate="false">
@@ -137,7 +137,7 @@
             </div>
           </a-upload>
           <div class="upload-text">
-            <div>*支持jpg、pdf格式</div>
+            <div>*支持图片、pdf格式</div>
           </div>
         </div>
       </a-form-item>
@@ -149,7 +149,7 @@
             </div>
           </a-upload>
           <div class="upload-text">
-            <div>*请下载保密承诺函模板，签字、用印后扫描或拍照上传；支持jpg、pdf格式</div>
+            <div>*请下载保密承诺函模板，签字、用印后扫描或拍照上传；支持图片、pdf格式</div>
             <a href="https://zsamc-public.zsamc.com/%E3%80%8A%E6%B5%99%E6%B1%9F%E7%9C%81%E6%B5%99%E5%95%86%E8%B5%84%E4%BA%A7%E7%AE%A1%E7%90%86%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8%E4%BF%9D%E5%AF%86%E6%89%BF%E8%AF%BA%E4%B9%A6%E3%80%8B.doc" style="text-decoration: underline">承诺函模板下载</a>
           </div>
         </div>
@@ -163,7 +163,7 @@
 							<template v-if="!getValue(material.dec[0],1)">
 								<a-button icon="upload">点击上传</a-button>
 								<span class="text-remark" style="font-size: 12px;margin-left: 10px;">
-									<span>*支持jpg、pdf格式</span>
+									<span>*支持图片、pdf格式</span>
 								</span>
 							</template>
 						</a-upload>

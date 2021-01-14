@@ -324,6 +324,7 @@ export default {
       this.params.page = 1;
       this.tabConfig.pagination.current = 1;
       this.getProjectList();
+      this.getUnreadInfo();
     },
     // 分页,排序
     handleTableChange(pagination, filters, sorter) {
@@ -346,6 +347,7 @@ export default {
             changeUnRead(row.id).then(res=>{
               if(res.code === 20000){
                 row.isRead = 1;
+                this.getUnreadInfo()
               }else{
                 return false;
               }
@@ -377,13 +379,13 @@ export default {
       //方案报送/方案修改
       if (type === "sub" || type === "edit") {
         amcBidDetail(item.id, this.params.aimStatus).then((res) => {
-        if (res.code === 20000) {
-          this.projectInfo = clearProto(res.data);
-          this.$refs.planModal.handleOpenModal()
-        }else{
-          return this.$message.error("获取项目详情失败!...")
-        }
-      });
+          if (res.code === 20000) {
+            this.projectInfo = clearProto(res.data);
+            this.$refs.planModal.handleOpenModal()
+          }else{
+            return this.$message.error("获取项目详情失败!...")
+          }
+        });
       }
     },
     //计算方案结束日期
@@ -425,6 +427,8 @@ export default {
 }
 .nothing{
   width: 100%;
+  min-height: 808px;
+  background-color: #fff;
   text-align: center;
   &-pic{
     margin-top: 232px;
@@ -440,6 +444,7 @@ export default {
   }
 }
 .biding-wrapper {
+  min-height: 808px;
   background-color: #fff;
   .biding-query {
     padding: 20px 20px 5px 20px;

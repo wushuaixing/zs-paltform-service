@@ -97,7 +97,7 @@
         </a-row>
         <a-row>
           <a-col :span="24" style="display: flex">
-            <div class="subtitle" style="padding-left:10px;white-space:nowrap">抵押物清单：</div>
+            <div class="subtitle" style="padding-left:10px;white-space:nowrap">抵质押物清单：</div>
             <div>
               <p v-for="(i, index) in info.amcProjectCollaterals" :key="index">
                 {{index+1}}. {{i.collateralType|collateralType}}、{{i|areaText}}、{{i.collateralName}}
@@ -435,7 +435,26 @@ export default {
 </style>
 <style lang="scss" >
 .step-container{
-  // overflow: scroll;
+  .ant-steps{
+    margin: 0 auto;
+    padding: 5px 0 24px;
+    width: 90%;
+    overflow-x: scroll;
+    .ant-steps-item{
+      margin: 0 auto;
+    }
+    &::-webkit-scrollbar {
+      height: 8px;
+      background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: transparent;
+      border-radius: 8px;
+    }
+    &:hover::-webkit-scrollbar-thumb {
+      background: #e8e8e8;
+    }
+  }
   .ant-steps-item-title{
     width: 70px;
     color: #333333;

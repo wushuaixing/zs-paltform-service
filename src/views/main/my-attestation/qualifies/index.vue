@@ -64,7 +64,7 @@
                 <span style="margin-left: 10px">机构</span>
               </template>
             </div>
-            <ul class="status-title-attribute">
+            <ul class="status-title-attribute" v-if="status(123456) && isSubmitElements">
               <li>当前资质认证状态：<font :class="info.class">{{info.desc}}</font></li>
               <li v-if="statusInfo.qualifyModifyDate">
                 资质信息更新日期：{{statusInfo.qualifyModifyDate}}
@@ -73,9 +73,11 @@
           </div>
         </div>
         <!-- 资质认证状态 -->
-        <div class="qualifies-item qualifies-status" v-if="status(245)">
+        <div class="qualifies-item qualifies-status" v-if="status(245) || (status(1) && !isSubmitElements )">
           <div class="status-content">
             <div>{{info.text}}</div>
+						<a-button type="primary" v-if="status(1)" @click="()=>this.$router.push('/attest/factor')">
+							立即前往要素认证</a-button>
             <a-button type="primary" v-if="status(2)" @click="checkQualifies" :loading="visibleLoading">
 							编辑并重新提交</a-button>
             <a-button type="primary" v-if="status(4)" @click="checkQualifies" :loading="visibleLoading">
@@ -120,7 +122,7 @@
           <div class="info-image-status">
             <img src="../../../../assets/img/no_data.png" alt="">
             <p class="image-status-remark">您要提交的资质认证信息正在审核中 ，请您耐心等待</p>
-            <a-button @click="checkQualifies" type="primary" :loading="visibleLoading">查看我提交的资质认证</a-button>
+            <a-button @click="checkQualifies" type="primary" :loading="visibleLoading">查看我提交的要素认证</a-button>
           </div>
         </div>
       </template>
@@ -361,6 +363,9 @@ export default {
     modalTitle(){
       return this.modalStep === 0 ? "我提交的认证信息" : "我提交的认证信息-编辑";
     },
+		isSubmitElements(){
+			return this.$store.getters.getInfo.isSubmitElements
+		},
   },
   mounted() {
     // const { identity, isSubmitCertify } = this.$store.getters.getInfo;
