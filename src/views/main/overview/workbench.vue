@@ -20,21 +20,21 @@
       </div>
       <div class="item-wrapper">
         <div class="item-project item-format">竞标项目进度概览</div>
-        <!-- 未添加项目 -->
         <!-- <div class="empty" v-if="echarts.myProjectsNum ===0 && echarts.myProjectCaseUnSubmit===0 && echarts.myProjectsReview ===0 && echarts.myProjectsAimed===0 &&echarts.myProjectsInvalid===0 &&echarts.myProjectAbandon ===0" >
           <a-empty description>
             <slot name="description">您还没有已开始的项目，去<router-link to="/center">服务商项目招商中心</router-link>添加第一个项目</slot>
           </a-empty>
         </div> -->
-         <div class="empty" v-show="!isShowEcharts">
-          <a-empty description>
-            <slot name="description">您还没有已开始的项目，去<router-link to="/center">服务商项目招商中心</router-link>添加第一个项目</slot>
-          </a-empty>
+        <!-- 未添加项目 -->
+        <div class="empty" v-show="!isShowEcharts">
+          <img src="../../../assets/img/empty.png" alt="一张空状态图片" class="emptyImg">
+          <div>您还没有已开始的项目</div>
+          <div>去<router-link to="/center">服务商项目招商中心</router-link>添加第一个项目</div>
         </div>
+        <!-- 项目echarts显示 -->
         <div class="item-content item-format"  v-show="isShowEcharts">
           <div class="total">我的项目总数：{{echarts.myProjectsNum}}</div>
           <div class="data-display">
-            <!-- 饼图显示 -->
             <div class="chart">
               <div id="main"></div>
             </div>
@@ -282,7 +282,7 @@ $leftWidth: 470px;
     }
     &-content {
       box-sizing: border-box;
-      min-height: 261px;
+      min-height: 273px;
     }
     &-thing {
       height: 515px;
@@ -302,8 +302,11 @@ $leftWidth: 470px;
       li {
         list-style: none;
         border-bottom: 1px solid #E9E9E9;
-        margin-left: 20px;
+        margin-left: 16px;
         padding: 10px 0;
+      }
+      /deep/.ant-btn-link {
+        color: #1094B5;
       }
     }
     .data-display {
@@ -353,8 +356,12 @@ $leftWidth: 470px;
       line-height: 16px;
     }
     .empty {
+      color: #7F7F7F;
       margin-top: 50px;
       text-align: center;
+      .emptyImg {
+        margin-bottom: 24px;
+      }
     }
     // 日历样式
     .events {
