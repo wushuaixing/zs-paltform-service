@@ -36,7 +36,6 @@
                   v-model="params.phone"
                   placeholder="请输入您的手机号码"
                   v-bind="styleProps"
-                  autoComplete="new-password"
                   :maxLength="11"
                 >
                   <a-icon slot="prefix" type="user" style="color: #bfbfbf" />
