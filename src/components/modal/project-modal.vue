@@ -17,7 +17,7 @@
     <div class="fail-modal-wrapper" v-if="!isSignUpSuccess">
       <div class="header">
         <a-icon type="exclamation-circle" :style="{color:'orange',marginRight:'5px'}"/>
-        <span v-if="sign==='fail'">确认要放弃以下项目的服务 竞标吗？放弃后，对该项目的竞标不可恢复!</span>
+        <span v-if="sign==='fail'">确认要放弃以下项目的服务竞标吗？放弃后，对该项目的竞标不可恢复!</span>
         <span v-else>确认要对以下项目进行服务报名吗？报名后，项目信息将会进入您的竞标项目管理列表，您需要完成债权尽调并提交服务方案。</span>
       </div>
       <div class="content">
@@ -48,7 +48,7 @@
             </p>
             <div v-if="projectInfo.amcProjectCollaterals&&projectInfo.amcProjectCollaterals.length">
               <div v-for="(item,index) in projectInfo.amcProjectCollaterals" :key="index">
-                {{index+1}}. {{item.collateralType|collateralType}}、{{item|area}}、{{item.collateralName}}
+                {{index+1}}. {{item.collateralType|collateralType}}、{{item|areaText}}、{{item.collateralName}}
               </div>
             </div>
             <div v-else>-</div>
@@ -140,7 +140,7 @@ export default {
       if (!arr.length) return '-';
       return arr.map(i => i.guarantorName).join("、");
     },
-    area: (params) => {
+    areaText: (params) => {
       return getArea(params.provinceCode, params.cityCode, params.areaCode);
     },
     collateralType: (val) => {

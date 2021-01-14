@@ -1,7 +1,7 @@
 import {getDownLoadToken, getUploadToken} from "@/plugin/api/base";
 import {message} from "ant-design-vue";
 
-const action = 'http://up.qiniup.com/';
+const action = 'https://up.qiniup.com/';
 
 let uploadToken = '';
 
@@ -11,7 +11,12 @@ let uploadToken = '';
  * @returns {*|Promise<void>|PromiseLike<T>|Promise<T>}
  */
 const beforeUpload = (e) => {
-	// console.log('beforeUpload');
+	// console.log('beforeUpload',e.size);
+	const isLimit16M = (e || {}).size / 1024 / 1024 <= 16;
+	if(!isLimit16M) {
+		message.error('文件大小不能超过16M!');
+		return Promise.reject();
+	}
 	return getUploadToken().then(res=>{
 		if(res.code === 20000) {
 			uploadToken = res.data;

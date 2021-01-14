@@ -297,12 +297,16 @@ export default {
   },
   computed:{
     info() {
-      const { reasonOfNotPass, elementAuditStatus} = this.statusInfo;
+      const { reasonOfNotPass, elementAuditStatus,remindBaseTime} = this.statusInfo;
 	    // remindBaseTime
-      return {
+			let halfStatus = false;
+			if(remindBaseTime){
+				halfStatus = Date.parse(new Date('2021-07-14')) < Date.parse(new Date())
+			}
+	    return {
         ...factorStatus[elementAuditStatus],
         text:(factorStatus[elementAuditStatus] || {}).text + (reasonOfNotPass || ''),
-        halfStatus: false,
+        halfStatus,
       };
     },
 	  mine(){

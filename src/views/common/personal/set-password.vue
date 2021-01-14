@@ -71,6 +71,7 @@ export default {
           {
             required: true,
             trigger: "change",
+            message: "• 请输入密码",
           },
         ],
         confirmPwd: [
@@ -107,6 +108,7 @@ export default {
       this.visible = true;
     },
     check() {
+      if(this.form.newPassword === "")this.$refs.ruleForm.clearValidate();
       this.helpMsg = true;
       //长度6-20位校验
       const lengthCheck = (value) => {
