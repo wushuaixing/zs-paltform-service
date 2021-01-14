@@ -108,7 +108,7 @@
 					<a-input-number
 						v-decorator="intention.startAmountOfSubject.min"
 						style="width:200px" :min="0"
-						:precision="0.1"
+						:precision="0"
 						:disabled="getValue(intention.startAmountOfSubject.disabled[0])"/>
 					<span style="margin-left:5px">万元</span>
 					<span style="margin-left:15px">~</span>
@@ -117,7 +117,7 @@
 					<a-input-number
 						v-decorator="intention.startAmountOfSubject.max"
 						style="width:200px" :min="0"
-						:precision="0.1"
+						:precision="0"
 						:disabled="getValue(intention.startAmountOfSubject.disabled[0])"/>
 					<span style="margin-left:5px">万元</span>
 				</a-form-item>
