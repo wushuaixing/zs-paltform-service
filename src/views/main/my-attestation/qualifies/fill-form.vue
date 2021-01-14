@@ -197,7 +197,7 @@ const formItemLayout = {
 
 const baseWidth = {
 	maxLength:100,
-	style:{width:'442px'}
+	style:{width:'678px'}
 };
 
 const nameOption = [
@@ -450,7 +450,9 @@ export default {
           dec:[ 'lawOffice'],
           other:{
             placeholder:'请输入挂靠律所',
-            ...baseWidth,
+            style:{
+              width:'450px'
+            }
           }
         },
         email:{
