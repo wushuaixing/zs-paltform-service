@@ -41,7 +41,7 @@
           </div>
           <div class="status-content" v-if="info.halfStatus">
             <div>您已有半年未更新要素认证信息，若要素认证信息发生变化，请及时进行更新！</div>
-						<a-button type="primary">立即更新</a-button>
+						<a-button type="primary"  @click="handleEdit">立即更新</a-button>
 						<a-button @click="handleDrop">放弃修改</a-button>
           </div>
         </div>
@@ -81,16 +81,16 @@
 			<template slot="footer">
 				<div style="text-align: center" v-if="modalStep === 0">
 					<a-space>
-						<a-button key="submit" type="primary" @click="modalStep = 1">修改并重新提交</a-button>
 						<a-button key="back" @click="handleModalClose">关闭</a-button>
-						<a-button style="margin-left: 30px;visibility: hidden">关闭</a-button>
+						<a-button key="submit" type="primary" @click="modalStep = 1">修改并重新提交</a-button>
 					</a-space>
 				</div>
 				<div style="text-align: center" v-if="modalStep === 1">
 					<a-space>
-						<a-button key="submit" type="primary" @click="handleEditInfo">确认修改并提交</a-button>
+						<a-button key="back" @click="handleModalClose">关闭</a-button>
 						<a-button key="back" @click="modalStep=0" v-show="onlyEdit">取消</a-button>
-						<a-button key="back" @click="handleModalClose" style="margin-left: 30px">关闭</a-button>
+						<a-button key="submit" type="primary" @click="handleEditInfo">确认修改并提交</a-button>
+
 					</a-space>
 				</div>
 			</template>
@@ -301,7 +301,7 @@ export default {
 	    // remindBaseTime
 			let halfStatus = false;
 			if(remindBaseTime){
-				halfStatus = Date.parse(new Date('2021-07-14')) < Date.parse(new Date())
+				halfStatus = Date.parse(new Date(remindBaseTime)) < Date.parse(new Date())
 			}
 	    return {
         ...factorStatus[elementAuditStatus],
