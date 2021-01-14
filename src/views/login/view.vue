@@ -414,6 +414,9 @@ export default {
   button {
     border-radius: 2px !important;
   }
+  .ant-btn-link{
+    padding: 0;
+  }
 }
 .register-content{
   .login-wrapper{
