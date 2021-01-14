@@ -106,10 +106,9 @@
         <a-col :span="13">
           <a-form-item label="标的金额范围" :label-col="{span:11}" :wrapper-col="{span:13}" :selfUpdate="false">
             <a-input-number
-                v-decorator="intention.startAmountOfSubject.min(getValue(intention.startAmountOfSubject.disabled[0]))"
+                v-decorator="intention.startAmountOfSubject.min"
                 style="width:200px" :min="0"
                 :precision="0.1"
-                @change="minChange"
                 :disabled="getValue(intention.startAmountOfSubject.disabled[0])"/>
             <span style="margin-left:5px">万元</span>
             <span style="margin-left:15px">~</span>
@@ -118,7 +117,7 @@
         <a-col :span="7">
           <a-form-item :wrapper-col="{span:24}" :selfUpdate="false">
             <a-input-number
-                v-decorator="intention.startAmountOfSubject.max(getValue(intention.startAmountOfSubject.disabled[0]),getValue(intention.startAmountOfSubject.min()[0]))"
+                v-decorator="intention.startAmountOfSubject.max"
                 style="width:200px" :min="0"
                 :precision="0.1"
                 :disabled="getValue(intention.startAmountOfSubject.disabled[0])"/>
@@ -154,6 +153,36 @@ export default {
   nameComment: '要素信息表单-机构基本信息',
 
   data() {
+    const Min = (rule, value, callback) => {
+      const disabled = this.getValue(this.intention.startAmountOfSubject.disabled[0]);
+      const Max = this.getValue(this.intention.startAmountOfSubject.max[0]);
+      if(Max){
+        this.$nextTick(() => {
+          this.form.validateFields(['max'], {force: true});
+        });
+      }
+      if (disabled) {
+        callback();
+      }
+      if (!value) {
+        callback(new Error('请输入标的金额最小范围'));
+      }
+      callback();
+    };
+    const Max = (rule, value, callback) => {
+      const disabled = this.getValue(this.intention.startAmountOfSubject.disabled[0]);
+      const min = this.getValue(this.intention.startAmountOfSubject.min[0]);
+      if (disabled) {
+        callback();
+      }
+      if (!value) {
+        callback(new Error('请输入标的金额最大范围'));
+      }
+      if (value < min) {
+        callback(new Error('不得小于标的金额最小范围'));
+      }
+      callback();
+    };
     return {
       formItemLayout: {
         labelCol: {span: 6},
@@ -267,24 +296,8 @@ export default {
           }
         },
         startAmountOfSubject: {
-          min: (disabled) => ['min', {
-            rules: [{
-              required: !disabled,
-              message: '请选择标的金额范围最小值'
-            }]
-          }],
-          max: (disabled, min) => ['max', {
-            validateFirst: true,
-            rules: [{
-              required: !disabled,
-              message: '请选择标的金额范围最大值'
-            }, {
-              type: 'number',
-              transform: i => Number(i),
-              min: disabled ? false : min ? min : 0,
-              message: '不得小于标的金额范围最小值'
-            }]
-          }],
+          min: ['min', {rules: [{required: true, validator: Min}]}],
+          max: ['max', {rules: [{required: true, validator: Max}]}],
           disabled: ['disabled', {valuePropName: 'checked'}],
           other: {
             ...baseWidth,
@@ -364,17 +377,11 @@ export default {
     getValue(params) {
       if (params) return this.form.getFieldValue(params);
     },
-    //标的金额范围改变
-    minChange() {
-      const max = this.getValue(this.intention.startAmountOfSubject.max()[0]);
-      max > 0 && this.$nextTick(() => {
-        this.form.validateFields(['max'], {force: true, firstFields: ['max']},);
-      });
-    },
     //标的金额范围 不限 复选框 改变
     checkedChange() {
       this.$nextTick(() => {
-        this.form.validateFields(['max', 'min'], {force: true, firstFields: ['max']});
+        // this.form.validateFields(['max', 'min'], {force: true, firstFields: ['max']});
+        this.form.validateFields(['max', 'min'], {force: true});
       });
     },
     // ele 地区多选事件触发
@@ -402,10 +409,10 @@ export default {
         });
       });
     },
-	  /**
-	   * @return {string}
-	   */
-	  LinkageData(params, val) {
+    /**
+     * @return {string}
+     */
+    LinkageData(params, val) {
       if (params instanceof Array) {
         return params.some(i => Number(i) === 0) ? val : '';
       } else {
@@ -437,6 +444,7 @@ export default {
         investmentArea,
         investmentExperience,
         investmentBankProjectCase,
+        startAmountOfSubject,
         ..._source
       } = source;
       const fieldValues = {
@@ -449,12 +457,12 @@ export default {
       this.adv.involve.other.value = areaAnalysis(source.areasOfGoodCases, false);
       this.$nextTick(() => {
         if (source.hasInvestmentIntention === '1') {
-					let _subject = {};
-					try{
-		        _subject = JSON.parse(source.startAmountOfSubject);
-					}catch (e) {
-						console.log('-');
-	        }
+          let _subject = {};
+          try {
+            _subject = JSON.parse(startAmountOfSubject);
+          } catch (e) {
+            console.log('-');
+          }
           const {disabled, min, max} = _subject;
           this.form.setFieldsValue({
             investmentExperience,
