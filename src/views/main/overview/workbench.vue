@@ -181,7 +181,7 @@ export default {
       this.echarts = res.data;
       this.spinning = false
       let option = {
-      color: ['#E283FF', '#67CE57','#F7CE22','#44D7B6','#01A0FF','#F5222D'],
+      color: ['#9200FF', '#67CE57','#F7CE22','#44D7B6','#01A0FF','#F5222D'],
         tooltip: {
             trigger: 'item',
         },
