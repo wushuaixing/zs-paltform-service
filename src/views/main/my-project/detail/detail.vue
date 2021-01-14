@@ -127,7 +127,7 @@
             </div>
           </div>
         </div>
-        <div v-if="info.caseFileStatus === '0' && info.closeSubmitDeadline === '1'" class="tips">
+        <div v-if="info.caseFileStatus === '0' && info.closeSubmitDeadline === 1" class="tips">
           方案提交即将截止
         </div>
         <!-- 未中标黄色图标-->
@@ -168,7 +168,6 @@
                   <span>{{ item.title }}</span>
                 </template>
                 <span :class="`${item.prefixCls}-icon-dot`" />
-                <!-- <img src="@/assets/img/step-act.png" alt=""> -->
               </a-popover>
               <a-step v-for="(item,index) in info.scheduleManagements" :key="index"  :title="item.dateMatters" :description="info.aimedStatus==='3'?`${item.dateDay}前`:`${item.dateMonth}个月内`" />
             </a-steps>
@@ -282,16 +281,18 @@ export default {
         if(res.code === 20000){
           this.loading = false;
           this.info = res.data;
-          const length = this.info.amcBidFiles.length;
-          const caseFileAddress = this.info.amcBidFiles[length - 1].caseFileAddress;
-          this.fileName = (caseFileAddress.split('_'))[2];
-          return getDownLoadToken(caseFileAddress).then(res=>{
-            if(res.code === 20000){
-              this.url = res.data;
-            }else{
-              return false;
-            }
-          })
+          if(this.info.amcBidFiles.length !== 0){
+            const length = this.info.amcBidFiles.length;
+            const caseFileAddress = this.info.amcBidFiles[length - 1].caseFileAddress;
+            this.fileName = (caseFileAddress.split('_'))[2];
+            return getDownLoadToken(caseFileAddress).then(res=>{
+              if(res.code === 20000){
+                this.url = res.data;
+              }else{
+                return false;
+              }
+            })
+          }
         }else{
           this.$message.error("获取项目详情失败,请刷新页面")
         }
@@ -434,6 +435,7 @@ export default {
 </style>
 <style lang="scss" >
 .step-container{
+  // overflow: scroll;
   .ant-steps-item-title{
     width: 70px;
     color: #333333;

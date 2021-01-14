@@ -77,7 +77,9 @@
                   :size="8"
                   style="background-color: #f5222d; margin-right: 5px"
                 />
-                <span>{{ debtor }}</span>
+                <a-tooltip :title="debtor">
+                  <span>{{ debtor }}</span>
+                </a-tooltip>
               </template>
               <template slot="amount" slot-scope="amount">{{
                 amount | amountTh
@@ -90,7 +92,7 @@
                 slot-scope="{ process, closeSubmitDeadline }"
               >
                 <a-avatar
-                  :size="10"
+                  :size="8"
                   :style="{
                     backgroundColor:
                       process === 0
