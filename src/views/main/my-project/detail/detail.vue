@@ -7,7 +7,7 @@
       v-else
     >
       <Breadcrumb :source="navData" icon="environment"></Breadcrumb>
-      <a-card :bordered="false" style="width: 100%; height: 810px">
+      <a-card :bordered="false" style="width: 100%; min-height: 810px">
         <div class="head flex-style">
           <div class="ctitle">项目基本信息</div>
           <div class="right flex-style">
@@ -100,7 +100,7 @@
             <div class="subtitle" style="padding-left:10px;white-space:nowrap">抵押物清单：</div>
             <div>
               <p v-for="(i, index) in info.amcProjectCollaterals" :key="index">
-                {{index+1}}. {{i.collateralType|collateralType}}、{{i|area}}、{{i.collateralName}}
+                {{index+1}}. {{i.collateralType|collateralType}}、{{i|areaText}}、{{i.collateralName}}
               </p>
             </div>
           </a-col>
@@ -127,7 +127,7 @@
             </div>
           </div>
         </div>
-        <div v-if="info.caseFileStatus === '0' && info.closeSubmitDeadline === '1'" class="tips">
+        <div v-if="info.caseFileStatus === '0' && info.closeSubmitDeadline === 1" class="tips">
           方案提交即将截止
         </div>
         <!-- 未中标黄色图标-->
@@ -168,7 +168,6 @@
                   <span>{{ item.title }}</span>
                 </template>
                 <span :class="`${item.prefixCls}-icon-dot`" />
-                <!-- <img src="@/assets/img/step-act.png" alt=""> -->
               </a-popover>
               <a-step v-for="(item,index) in info.scheduleManagements" :key="index"  :title="item.dateMatters" :description="info.aimedStatus==='3'?`${item.dateDay}前`:`${item.dateMonth}个月内`" />
             </a-steps>
@@ -257,7 +256,7 @@ export default {
       if(arr.length === 0) return '-';
       return arr.map((i) => i.guarantorName).join("、");
     },
-    area:(params) => {
+    areaText:(params) => {
       return getArea(params.provinceCode,params.cityCode,params.areaCode);
     },
     collateralType:(val)=>{
@@ -282,16 +281,18 @@ export default {
         if(res.code === 20000){
           this.loading = false;
           this.info = res.data;
-          const length = this.info.amcBidFiles.length;
-          const caseFileAddress = this.info.amcBidFiles[length - 1].caseFileAddress;
-          this.fileName = (caseFileAddress.split('_'))[2];
-          return getDownLoadToken(caseFileAddress).then(res=>{
-            if(res.code === 20000){
-              this.url = res.data;
-            }else{
-              return false;
-            }
-          })
+          if(this.info.amcBidFiles.length !== 0){
+            const length = this.info.amcBidFiles.length;
+            const caseFileAddress = this.info.amcBidFiles[length - 1].caseFileAddress;
+            this.fileName = (caseFileAddress.split('_'))[2];
+            return getDownLoadToken(caseFileAddress).then(res=>{
+              if(res.code === 20000){
+                this.url = res.data;
+              }else{
+                return false;
+              }
+            })
+          }
         }else{
           this.$message.error("获取项目详情失败,请刷新页面")
         }
@@ -434,6 +435,7 @@ export default {
 </style>
 <style lang="scss" >
 .step-container{
+  // overflow: scroll;
   .ant-steps-item-title{
     width: 70px;
     color: #333333;

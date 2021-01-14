@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    title="浙江混天绫实业有限公司-服务方案"
+    :title="`${projectInfo.debtor}-服务方案${projectInfo.caseFileStatus==='0'?'':'修改'}`"
     v-model="visible"
     :destroyOnClose="true"
     dialogClass="plan-modal"
@@ -154,6 +154,8 @@
               <a-upload
                 v-bind="upload.bind"
                 v-on="upload.on"
+                :before-upload="beforeUpload"
+                :showUploadList="false"
                 @change="handleUpload"
               >
                 <a-button> <a-icon type="upload" />上传文件</a-button>
@@ -191,7 +193,7 @@
 import { getArea} from "@/plugin/tools";
 import Deploy from "@/plugin/tools/qiniu-deploy";
 import { submitServicePlan, modifyCase } from "@/plugin/api/my-biding";
-import {getDownLoadToken} from "@/plugin/api/base"
+import {getDownLoadToken,getUploadToken} from "@/plugin/api/base"
 export default {
   name: "MsgInfoModal",
   nameComment: "查看抵质押物清单弹窗",
@@ -200,6 +202,7 @@ export default {
       visible: false,
       url:'',
       fileName:'',
+      uploadToken:'',
       formItemLayout: {
         labelCol: {
           xs: { span: 24 },
@@ -245,7 +248,8 @@ export default {
       },
       upload: {
         bind: {
-          ...Deploy.props,
+          data:()=>({ token:this.uploadToken }),
+          action:Deploy.props.action,
           accept: "application/pdf,.doc,.docx,application/msword",
           class: "upload-wrapper",
         },
@@ -401,7 +405,24 @@ export default {
         dateMonth: "",
       });
     },
+    beforeUpload(file){
+      const fileType =  /\.(doc|docx|pdf)$/.test(file.name);
+      if(!fileType){
+        this.$message.error("请上传word/pdf文件");
+        return false;
+      }else{
+        return getUploadToken().then(res=>{
+          if(res.code === 20000){
+            this.uploadToken = res.data;
+            return true
+          }else{
+            return this.$message.error("获取上传凭证失败!")
+          }
+        })
+      }
+    },
     handleUpload(info){
+      console.log(info)
       if(info.file.status === "done"){
         this.fileName = (info.file.response.key.split('_'))[2]
         this.form.caseFileAddress = info.file.response.key;
