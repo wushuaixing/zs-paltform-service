@@ -444,16 +444,13 @@ export default {
       margin: 0 auto;
     }
     &::-webkit-scrollbar {
-      // width: 6px;
       height: 8px;
       background: transparent;
     }
-    
     &::-webkit-scrollbar-thumb {
       background: transparent;
       border-radius: 8px;
     }
-    
     &:hover::-webkit-scrollbar-thumb {
       background: #e8e8e8;
     }
