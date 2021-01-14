@@ -126,36 +126,6 @@
 					</a-checkbox>
 				</a-form-item>
 			</a-form-item>
-
-			<a-row>
-        <a-col :span="13">
-          <a-form-item label="标的金额范围" :label-col="{span:11}" :wrapper-col="{span:13}" :selfUpdate="false">
-            <a-input-number
-                v-decorator="intention.startAmountOfSubject.min"
-                style="width:200px" :min="0"
-                :precision="0.1"
-                :disabled="getValue(intention.startAmountOfSubject.disabled[0])"/>
-            <span style="margin-left:5px">万元</span>
-            <span style="margin-left:15px">~</span>
-          </a-form-item>
-        </a-col>
-        <a-col :span="7">
-          <a-form-item :wrapper-col="{span:24}" :selfUpdate="false">
-            <a-input-number
-                v-decorator="intention.startAmountOfSubject.max"
-                style="width:200px" :min="0"
-                :precision="0.1"
-                :disabled="getValue(intention.startAmountOfSubject.disabled[0])"/>
-            <span style="margin-left:5px">万元</span>
-          </a-form-item>
-        </a-col>
-        <a-col :span="3">
-          <a-form-item :selfUpdate="false">
-            <a-checkbox v-decorator="intention.startAmountOfSubject.disabled" @change="checkedChange">不限
-            </a-checkbox>
-          </a-form-item>
-        </a-col>
-      </a-row>
       <a-form-item label="投资区域">
         <a-cascader v-decorator="intention.investmentArea.dec" v-bind="intention.investmentArea.other"/>
       </a-form-item>
@@ -405,7 +375,6 @@ export default {
     //标的金额范围 不限 复选框 改变
     checkedChange() {
       this.$nextTick(() => {
-        // this.form.validateFields(['max', 'min'], {force: true, firstFields: ['max']});
         this.form.validateFields(['max', 'min'], {force: true});
       });
     },
@@ -488,7 +457,7 @@ export default {
           } catch (e) {
             console.log('-');
           }
-          const {disabled, min, max} = _subject;
+          const { disabled, min, max } = _subject || {};
           this.form.setFieldsValue({
             investmentExperience,
             disabled,
