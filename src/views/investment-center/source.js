@@ -21,7 +21,8 @@ export const columns = (sort) => [
         dataIndex: 'debtInterest',
         key: 'debtInterest',
         scopedSlots: {customRender: 'amount'},
-        width:120,
+        width:130,
+        className:'debtCaptial',
         align: 'right',
     },
     {
@@ -48,7 +49,7 @@ export const columns = (sort) => [
         key: 'deadline',
         sorter: true,
         sortOrder: sort || false,
-        width:125,
+        width:130,
     },
     {
         title: '操作',

@@ -352,6 +352,9 @@ export default {
           padding: 15px 8px;
         }
       }
+      .debtCaptial{
+        padding-right:20px !important;
+      }
     }
 
     .collateral-type {
