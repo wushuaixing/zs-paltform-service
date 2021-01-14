@@ -42,7 +42,7 @@
               </a-tooltip>
             </template>
             <template slot="amount" slot-scope="amount">{{ amount|amountTh }}</template>
-            <template slot="security" slot-scope="{security}">{{ SECURITY_TYPE[security] }}</template>
+            <template slot="security" slot-scope="{security}">{{ SECURITY_TYPE[security] || '' }}</template>
             <template slot="collateralType" slot-scope="{amcProjectCollaterals}">
               <div v-if="amcProjectCollaterals&&amcProjectCollaterals.length" class="collateral-type">
                  <span v-for="item in amcProjectCollaterals" :key="item.id"

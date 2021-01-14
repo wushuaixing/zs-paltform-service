@@ -49,6 +49,7 @@ export const columns = (sort) => [
         key: 'deadline',
         sorter: true,
         sortOrder: sort || false,
+        customRender: val => val || '-',
         width:130,
     },
     {
