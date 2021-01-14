@@ -348,7 +348,7 @@ export default {
 		bottom: -40px;
 		width: 100%;
 		text-align: center;
-		font-size: 12px;
+		font-size: 14px;
 	}
   .video-wrapper {
     position: relative;
