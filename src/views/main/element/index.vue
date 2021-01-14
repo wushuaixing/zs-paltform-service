@@ -5,6 +5,7 @@
 			<div style="height: 30vh" v-if="spinning"></div>
 		</a-spin>
 		<div v-if="!spinning">
+			<div class="text-dangerous" style="margin-bottom: 10px">*请您确认已有信息无误并完善缺失的必填信息</div>
 			<h3>资质信息确认及完善</h3>
 			<FormQualify :userType="identity === 1 ?'lawyer':'org'" :noAuction="false"
 									 ref="QualifyFormRef" onlyData :source="source.qualify" />
