@@ -462,8 +462,12 @@ export default {
         headOfficeAddress: (source.headOfficeAddress || '').split(',').map(i => Number(i)),
       };
       this.form.setFieldsValue({...fieldValues});
-      this.field.involve.other.value = areaAnalysis(source.branchOfficeAddress, false);
-      this.adv.involve.other.value = areaAnalysis(source.areasOfGoodCases, false);
+	    if(source.branchOfficeAddress){
+		    this.field.involve.other.value = areaAnalysis(source.branchOfficeAddress, false);
+	    }
+	    if(source.areasOfGoodCases){
+		    this.adv.involve.other.value = areaAnalysis(source.areasOfGoodCases, false);
+	    }
       this.$nextTick(() => {
         if (source.hasInvestmentIntention === '1') {
           let _subject = {};
@@ -481,7 +485,10 @@ export default {
             investmentArea,
             investmentPreferenceType: (investmentPreferenceType || '').split(',').map(i => Number(i)),
           });
-          this.intention.investmentArea.other.value = areaAnalysis(investmentArea, false);
+
+	        if(investmentArea){
+		        this.intention.investmentArea.other.value = areaAnalysis(investmentArea, false);
+	        }
         }
         if (source.hasInvestmentBankExperience === '1') {
           this.form.setFieldsValue({

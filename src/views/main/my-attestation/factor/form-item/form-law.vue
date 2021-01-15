@@ -424,8 +424,12 @@ export default {
 	    delete fieldValues.workUnitName;
 	    delete fieldValues.workRole;
       this.form.setFieldsValue({...fieldValues});
-	    this.field.involve.other.value = areaAnalysis(source.workArea,false);
-	    this.adv.area.other.value = areaAnalysis(areasOfGoodCases,false);
+	    if(source.workArea){
+		    this.field.involve.other.value = areaAnalysis(source.workArea,false);
+	    }
+	    if(areasOfGoodCases){
+		    this.adv.area.other.value = areaAnalysis(areasOfGoodCases,false);
+	    }
       this.$nextTick(()=>{
 				if(source.isWorkOther === '1') {
 					this.form.setFieldsValue({workUnitName,workRole});

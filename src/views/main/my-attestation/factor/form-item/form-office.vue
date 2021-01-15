@@ -290,7 +290,7 @@ export default {
       };
       // TODO 展业地区:相关方法
       this.form.setFieldsValue({...fieldValues});
-	    this.firms.involve.other.value = areaAnalysis(source.officeWorkAddress,false);
+	    source.officeWorkAddress ? this.firms.involve.other.value = areaAnalysis(source.officeWorkAddress,false) : '';
 
 	    this.$nextTick(()=>{
 		    if(source.hasOtherOffice === '1') {
@@ -298,7 +298,9 @@ export default {
 						otherOfficeStaffInfo,
 				    otherOfficeWorkAddress
 			    });
-			    this.firms.part.other.value = areaAnalysis(otherOfficeWorkAddress,false);
+			    if(otherOfficeWorkAddress){
+				    this.firms.part.other.value = areaAnalysis(otherOfficeWorkAddress,false);
+			    }
 		    }
 	    })
     },
