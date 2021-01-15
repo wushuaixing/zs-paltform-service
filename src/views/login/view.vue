@@ -329,7 +329,7 @@ export default {
     &-container {
       width: 100%;
       height: 560px;
-      background: #1a1939 url("../../assets/img/background.jpg") center
+      background: #1a1939 url("https://zsamc-public.zsamc.com/image/background.jpg") center
         no-repeat;
       margin: auto;
       padding-top: 40px;
