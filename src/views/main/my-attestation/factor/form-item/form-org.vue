@@ -230,7 +230,7 @@ export default {
           other: {
             placeholder: '请输入清收团队数',
             style: {width: '200px'},
-            addonAfter: "个"
+            precision:0,
           }
         },
         numberOfCompany: {
@@ -238,6 +238,7 @@ export default {
           other: {
             placeholder: '请输入公司总人数',
             style: {width: '200px'},
+            precision:0,
           }
         },
         teamNumTotal: {
@@ -245,6 +246,7 @@ export default {
           other: {
             placeholder: '请输入清收团队总人数',
             style: {width: '200px'},
+            precision:0,
           }
         },
         framework: {

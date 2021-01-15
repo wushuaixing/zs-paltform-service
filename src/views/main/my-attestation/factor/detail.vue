@@ -52,7 +52,7 @@
 			</div>
 			<template v-else>
 				<div v-for="(i,_index) in officeField" :key="'office'+_index">
-					<div class="info-item_list" v-if="toShow(i)">
+					<div class="info-item_list" v-if="toShow(i,officeData)">
 						<div class="info-item_list-title">{{i.label}}</div>
 						<div class="info-item_list-content">{{toProcess(i,officeData)||'-'}}</div>
 					</div>
@@ -279,8 +279,8 @@
 				{ label:"律所类型", field:"lawOfficeType",f:_multi, origin:"lawType"},
 				{ label:"律所是否经营3年以上", field:"isWorkForThreeYear",f:_is},
 				{ label:"是否存在分所", field:"hasOtherOffice",f:_is},
-				{ label:"分所展业地域", field:"otherOfficeWorkAddress",f:_areas},
-				{ label:"分所的人员情况", field:"otherOfficeStaffInfo"},
+				{ label:"分所展业地域", field:"otherOfficeWorkAddress",m:_if, about:'hasOtherOffice',f:_areas},
+				{ label:"分所的人员情况", field:"otherOfficeStaffInfo",m:_if, about:'hasOtherOffice',},
 				{ label:"律所请收团对人数", field:"totalTeamSize",f:_unit, unit:'人'},
 				{ label:"本人在律所但任职务", field:"roleInLawOffice",f:_multi, origin:"lawDuty"},
 				{ label:"律所简介", field:"lawOfficeInformation"},

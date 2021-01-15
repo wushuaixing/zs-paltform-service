@@ -42,7 +42,7 @@
 						<a-radio value="1">是</a-radio>
 					</a-col>
 					<a-col :span="6">
-						<a-radio value="2">否</a-radio>
+						<a-radio value="0">否</a-radio>
 					</a-col>
 				</a-row>
 			</a-radio-group>
@@ -55,7 +55,8 @@
 			<a-textarea v-decorator="firms.partInfo.dec" v-bind="firms.partInfo.other"/>
 		</a-form-item>
 		<a-form-item label="律所清收团队人数">
-			<a-input v-decorator="firms.num.dec" v-bind="firms.num.other"/>
+			<a-input-number v-decorator="firms.num.dec" v-bind="firms.num.other"/>
+      <span :style="{marginLeft:'5px'}">个</span>
 		</a-form-item>
 		<a-form-item label="本人在律所担任职务" class="form-item-row">
 			<a-radio-group v-decorator="firms.duty.dec" v-bind="firms.duty.other">
@@ -194,7 +195,7 @@ export default {
           other: {
             placeholder: '请输入清收团队人数',
             style: {width: '200px'},
-            addonAfter: "个"
+            precision:0,
           }
         },
         duty: {
