@@ -119,7 +119,15 @@ Vue.filter('typeCooperation',(val)=>{
 	return val === 1 ? '配置收购' : val === 2  ? '资产包收购' : val === 3 ? '债券清收' : '其他';
 });
 Vue.filter('isLawsuitType', (val)=>{
-	return val === '0' ? '未诉讼' : '诉讼'
+	if(!val)return '-';
+	let isLawsuitObj = {
+		1:'未诉',
+		2:'已诉未判决',
+		3:'已判决未执行',
+		4:'已执行',
+		5:'破产'
+	} 
+	return isLawsuitObj[val]
  });
 
 Vue.filter('show_', (val)=>{

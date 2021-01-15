@@ -62,7 +62,7 @@
             </div>
           </a-col>
           <a-col :span="8">
-            <div style="text-align: right; margin-right: 60px">
+            <div>
               <span class="subtitle">担保方式：</span
               ><span class="spantext">{{ info.security | guarantyType }}</span>
             </div>
@@ -99,13 +99,13 @@
           <a-col :span="24" style="display: flex">
             <div class="subtitle" style="padding-left:10px;white-space:nowrap">抵质押物清单：</div>
             <div>
-              <p v-for="(i, index) in info.amcProjectCollaterals" :key="index">
-                {{index+1}}. {{i.collateralType|collateralType}}、{{i|areaText}}、{{i.collateralName}}
+              <p v-for="(i, index) in info.amcProjectCollaterals" :key="index" style="margin-bottom:16px">
+                {{index+1}}. {{i.collateralType|collateralType}}，{{i|areaText}}，{{i.collateralName}}
               </p>
             </div>
           </a-col>
         </a-row>
-        <div class="flex-style" style="margin-top: 24px">
+        <div class="flex-style" style="margin-top: 16px">
           <div class="ctitle">我提交的服务方案</div>
           <div class="flex-style" v-if="info.aimedStatus === '3'">
             <div style="margin-right: 30px">
@@ -357,14 +357,12 @@ export default {
       font-size: 18px;
       font-weight: 600;
       color: #262626;
-      line-height: 20px;
     }
 
     .subtitle {
       font-size: 14px;
-      font-weight: 00;
+      font-weight: 400;
       color: #333333;
-      line-height: 14px;
     }
 
     .spantest {
