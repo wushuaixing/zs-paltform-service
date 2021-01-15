@@ -10,7 +10,7 @@
       <a-button key="back" @click="handleCancel">
         {{ isSignUpSuccess ? '继续浏览招商项目' : '取消' }}
       </a-button>
-      <a-button key="submit" type="primary" @click="handleModify(sign)">
+      <a-button key="submit" type="primary" @click="handleModify(sign)" :loading="btnLoading">
         {{ !isSignUpSuccess ? sign === 'fail' ? '确认放弃' : '确认报名' : '前往查看竞标项目' }}
       </a-button>
     </template>
@@ -80,6 +80,7 @@ export default {
     return {
       visible: false,
       isSignUpSuccess: false,
+      btnLoading:false,
       SECURITY_TYPE,
     }
   },
@@ -106,6 +107,7 @@ export default {
         if (this.sign === 'signUp') {
           const id = this.projectInfo.id;
           signUpApi(id).then((res) => {
+            this.btnLoading = true;
             if (res.code === 20000) {
               this.isSignUpSuccess = true;
               this.$emit('handleSignUp');
@@ -114,7 +116,7 @@ export default {
                 this.visible = false;
               })
             }
-          })
+          }).finally(()=>this.btnLoading = false)
         } else {
           abandonBid(this.projectInfo.id).then(res => {
             console.log(res)
