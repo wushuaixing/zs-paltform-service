@@ -423,7 +423,7 @@ export default {
           label:'执业证号',
           dec:[ 'licenseNumber', {
             rules: [{ required: true, message: '请输入执业证号!' },
-              { pattern: /^(\d{14}|\d{17})$/, message: '请输入正确格式的执业证号' },
+              { pattern: /^([0-9a-zA-Z]{14}|[0-9a-zA-Z]{17})$/, message: '请输入正确格式的执业证号' },
             ]}],
           other:{
             placeholder:'请输入执业证号',
