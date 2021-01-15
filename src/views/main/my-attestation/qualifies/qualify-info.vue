@@ -15,7 +15,7 @@
 			</div>
 			<div class="info-item_list">
 				<div class="info-item_list-title">性别</div>
-				<div class="info-item_list-content">{{dataSource.sex === "0" ?'男':'女'}}</div>
+				<div class="info-item_list-content">{{dataSource.sex | sex}}</div>
 			</div>
 			<div class="info-item_list">
 				<div class="info-item_list-title">执业证号</div>
