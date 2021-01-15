@@ -544,6 +544,7 @@ export default {
     .classTitle_subtitle{
       font-size: 16px;
       line-height: 32px;
+      font-weight: bolder;
       span{
         margin-left: 10px;
       }
