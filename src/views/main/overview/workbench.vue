@@ -35,7 +35,7 @@
         <div class="empty" v-show="!isShowEcharts">
           <img src="../../../assets/img/empty.png" alt="一张空状态图片" class="emptyImg">
           <div>您还没有已开始的项目</div>
-          <div>去<router-link to="/center">服务商项目招商中心</router-link>添加第一个项目</div>
+          <div>去<router-link to="/center">服务项目招商中心</router-link>添加第一个项目</div>
         </div>
         <!-- 项目echarts显示 -->
         <div class="item-content item-format"  v-show="isShowEcharts">
