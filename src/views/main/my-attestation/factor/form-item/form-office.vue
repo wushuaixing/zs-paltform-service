@@ -42,7 +42,7 @@
 						<a-radio value="1">是</a-radio>
 					</a-col>
 					<a-col :span="6">
-						<a-radio value="2">否</a-radio>
+						<a-radio value="0">否</a-radio>
 					</a-col>
 				</a-row>
 			</a-radio-group>
