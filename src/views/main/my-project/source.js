@@ -32,6 +32,9 @@ export const columns = ({ type = 1, sortOrder }) => {
 		auction: {
 			title: '操作',
 			width:'15%',
+			customHeaderCell: () => ({
+				style: { paddingLeft:'16px' }
+			}),
 			scopedSlots: { customRender: 'auction' },
 			key: 'auction',
 		},

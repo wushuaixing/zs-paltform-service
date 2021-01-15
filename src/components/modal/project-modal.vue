@@ -44,11 +44,11 @@
           </li>
           <li>
             <p>
-              抵押物清单：
+              抵质押物清单：
             </p>
-            <div v-if="projectInfo.amcProjectCollaterals&&projectInfo.amcProjectCollaterals.length">
-              <div v-for="(item,index) in projectInfo.amcProjectCollaterals" :key="index">
-                {{index+1}}. {{item.collateralType|collateralType}}、{{item|areaText}}、{{item.collateralName}}
+            <div v-if="projectInfo.amcProjectCollaterals&&projectInfo.amcProjectCollaterals.length!==0">
+              <div v-for="(item,index) in projectInfo.amcProjectCollaterals" :key="index" style="margin-bottom:16px">
+                {{index+1}}. {{item.collateralType|collateralType}}，{{item|areaText}}，{{item.collateralName}}
               </div>
             </div>
             <div v-else>-</div>

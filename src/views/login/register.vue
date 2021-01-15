@@ -73,10 +73,7 @@
             src="../../assets/image/success.png"
             alt=""
           />
-          <div class="success-prompt">您已成功注册成为浙商资产服务商！</div>
-          <div class="verify-prompt">
-            为了更精准地给您推送优质项目，请您尽快进行服务商要素认证
-          </div>
+          <div class="success-prompt">您已成功注册，为更精准的给您推送优质项目，请您尽快进行服务商资质及要素认证，成为浙商资产服务商！</div>
           <div class="login-attestation" @click="goLogin">完成注册并前往登录</div>
         </div>
       </div>
@@ -264,25 +261,23 @@ export default {
             border-radius: 50%;
           }
           .success-prompt {
-            width: 224px;
-            height: 20px;
-            font-size: 14px;
+            width: 288px;
+            font-size: 16px;
             font-weight: 400;
-            color: #595959;
-            line-height: 20px;
+            color: #333333;
             margin: 0 auto;
             margin-top: 24px;
           }
-          .verify-prompt {
-            width: 294px;
-            height: 40px;
-            font-size: 14px;
-            font-weight: 400;
-            color: #595959;
-            line-height: 20px;
-            margin: 0 auto;
-            margin-top: 8px;
-          }
+          // .verify-prompt {
+          //   width: 294px;
+          //   height: 40px;
+          //   font-size: 14px;
+          //   font-weight: 400;
+          //   color: #595959;
+          //   line-height: 20px;
+          //   margin: 0 auto;
+          //   margin-top: 8px;
+          // }
           .login-attestation {
             margin: 0 auto;
             margin-top: 34px;
