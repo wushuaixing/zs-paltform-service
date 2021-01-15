@@ -117,7 +117,7 @@ export default {
         involve: {
           dec: ['officeWorkAddress', {rules: [{required: true, message: '请选择展业地域'}]}],
 					on:{
-						change:val=>this.handleEleCas(val,'officeWorkAddress'),
+						change:val=>this.handleEleCas(val,'officeWorkAddress','请选择展业地域'),
 						visibleChange:this.visibleChange
 					},
           other: {
@@ -163,21 +163,22 @@ export default {
         part: {
           dec: ['otherOfficeWorkAddress', {rules: [{required: true, message: '请选择分所展业地域'}]}],
 	        on:{
-		        change:val=>this.handleEleCas(val,'otherOfficeWorkAddress'),
+		        change:val=>this.handleEleCas(val,'otherOfficeWorkAddress','请选择分所展业地域'),
 		        visibleChange:this.visibleChange
 	        },
           other: {
             clearable: true,
             options: areaOption,
             size: "small",
-            // collapseTags:true,
+	          value:[],
+	          // collapseTags:true,
             props: {
               value: 'id',
               label: 'name',
               multiple: true,
               checkStrictly: true,
             },
-            placeholder: '请选择展业地域',
+            placeholder: '请选择分所展业地域',
             ...baseWidth,
           }
         },
@@ -251,13 +252,13 @@ export default {
       this.visible = val;
     },
     // ele 地区多选事件触发
-    handleEleCas(val = [], field) {
+    handleEleCas(val = [], field,err) {
       const {setFieldsValue, setFields} = this.form;
       if (!this.visible && !val.length) {
         setFields({
           [field]: {
             value: undefined,
-            errors: [new Error('主要涉业地区不能为空')]
+            errors: [new Error(err || '请选择地域')]
           }
         })
       } else {
