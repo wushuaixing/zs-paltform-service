@@ -188,7 +188,10 @@ export default {
         });
       });
     },
-    LinkageData(params, val) {
+	  /**
+	   * @return {string}
+	   */
+	  LinkageData(params, val) {
       if (params instanceof Array) {
         return params.some(i => Number(i) === 0) ? val : '';
       } else {
@@ -226,11 +229,11 @@ export default {
         otherCooperationIntention
       } = source;
       this.form.setFieldsValue({
-        isCooperatedWithOtherAmc,
+        isCooperatedWithOtherAmc: isCooperatedWithOtherAmc || undefined,
         isCooperatedWithZheshangDetail,
-        isCooperatedWithZheshang,
+        isCooperatedWithZheshang:isCooperatedWithZheshang || undefined,
         otherCooperationIntention,
-        cooperationIntention: (cooperationIntention || '').split(','),
+        cooperationIntention: cooperationIntention ? (cooperationIntention || '').split(',') : undefined,
       });
       this.$nextTick(() => {
         if (isCooperatedWithZheshang === '1') {

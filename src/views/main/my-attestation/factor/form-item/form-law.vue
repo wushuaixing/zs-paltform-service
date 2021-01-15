@@ -135,7 +135,7 @@ import {
   areaOption, expOption, lawAdvList, lawAdvType
 } from "@/views/main/my-attestation/common/source";
 import Deploy, {getFileList, getValueFromEvent} from '@/plugin/tools/qiniu-deploy';
-import { fileListRuleAsync, buildSource, areaAnalysis } from "@/plugin/tools";
+import { fileListRuleAsync, buildSource, areaAnalysis} from "@/plugin/tools";
 const field = ["area","areasOfGoodCases","badAssetsWorkExp","competentCourt","familiarCourts","formerWorkUnit","graduateSchool","isInStorage","isWorkOfPublicSecurityOrgans","isWorkOther","major","notBadAssetsWorkExp","otherGoodCases","otherResources","otherResourcesAdvantage","workArea","workRole","workUnitName","workingTime","goodCases","otherResourcesDetail","classicCase"];
 
 export default {
@@ -418,8 +418,9 @@ export default {
         ...source,
 	      classicCase: await fileListRuleAsync(classicCase),
         goodCases: (source.goodCases || '').split(',').map(i => Number(i)),
-        area: (source.area || '').split(',').map(i => Number(i)),
+        area: source.area ? (source.area || '').split(',').map(i => Number(i)) : undefined,
         otherResources: (source.otherResources || '').split(','),
+	      isWorkOfPublicSecurityOrgans:source.isWorkOfPublicSecurityOrgans || null,
       };
 	    delete fieldValues.workUnitName;
 	    delete fieldValues.workRole;

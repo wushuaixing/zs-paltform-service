@@ -286,7 +286,7 @@ export default {
       const fieldValues = {
         ..._source,
         // officeWorkAddress: source.officeWorkAddress,//展业地区待处理
-        // otherOfficeWorkAddress: source.otherOfficeWorkAddress,//分布展业地区待处理
+        // otherOfficeWorkAddress: source.otherOfficeWorkAddr当前是否存在其他兼职ess,//分布展业地区待处理
       };
       // TODO 展业地区:相关方法
       this.form.setFieldsValue({...fieldValues});
@@ -295,8 +295,8 @@ export default {
 	    this.$nextTick(()=>{
 		    if(source.hasOtherOffice === '1') {
 			    this.form.setFieldsValue({
-						otherOfficeStaffInfo,
-				    otherOfficeWorkAddress
+						otherOfficeStaffInfo:otherOfficeStaffInfo || undefined,
+				    otherOfficeWorkAddress:otherOfficeStaffInfo || undefined,
 			    });
 			    if(otherOfficeWorkAddress){
 				    this.firms.part.other.value = areaAnalysis(otherOfficeWorkAddress,false);

@@ -261,11 +261,11 @@ export default {
     const CardB = (rule, value, callback) => {
       const cardA = this.getValue(this.law.card.decA[0], 1);
       const cardB = (value || []).length;
+	    if (!cardB) {
+		    callback(new Error('请上传身份证'));
+	    }
       if(!cardA){
         callback();
-      }
-      if (!cardB) {
-        callback(new Error('请上传身份证'));
       }
       callback();
     };
@@ -275,9 +275,9 @@ export default {
       if(!cardB){
         callback();
       }
-      if (!cardA) {
-        callback(new Error('请上传身份证'));
-      }
+	    if (!cardA) {
+		    callback(new Error('请上传身份证'));
+	    }
       callback();
     };
     return {
@@ -441,7 +441,7 @@ export default {
             allowClear:true,
             placeholder:'请选择执业开始年份',
             style:{
-              width:'152px'
+              width:'175px'
             }
           }
         },
@@ -641,8 +641,9 @@ export default {
 			} = source;
 			const fieldValues = this.userType === 'lawyer' ? {
 				..._source,
-				backOfCard: await fileListRuleAsync(bc),
-				frontOfCard:await fileListRuleAsync(fc),
+				licenseStart:source.licenseStart || undefined,
+				backOfCard: bc ? await fileListRuleAsync(bc) : undefined,
+				frontOfCard:fc ? await fileListRuleAsync(fc) : undefined,
 				confidentialityCommitmentLetter:await fileListRuleAsync(cc),
 				qualificationCertificate:await fileListRuleAsync(qc),
 			} : {
