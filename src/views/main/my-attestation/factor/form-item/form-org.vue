@@ -107,7 +107,7 @@
 				<a-form-item :selfUpdate="false" :style="{ display: 'inline-block' }">
 					<a-input-number
 						v-decorator="intention.startAmountOfSubject.min"
-						style="width:200px" :min="0"
+						style="width:200px" :min="0" :max="999999"
 						:precision="0"
 						:disabled="getValue(intention.startAmountOfSubject.disabled[0])"/>
 					<span style="margin-left:5px">万元</span>
@@ -116,7 +116,7 @@
 				<a-form-item :selfUpdate="false" :style="{ display: 'inline-block',margin:'0 10px' }">
 					<a-input-number
 						v-decorator="intention.startAmountOfSubject.max"
-						style="width:200px" :min="0"
+						style="width:200px" :min="0" :max="999999"
 						:precision="0"
 						:disabled="getValue(intention.startAmountOfSubject.disabled[0])"/>
 					<span style="margin-left:5px">万元</span>
@@ -230,7 +230,9 @@ export default {
           other: {
             placeholder: '请输入清收团队数',
             style: {width: '200px'},
-            precision:0,
+						min:0,
+	          max:999999,
+	          precision:0,
           }
         },
         numberOfCompany: {
@@ -239,6 +241,8 @@ export default {
             placeholder: '请输入公司总人数',
             style: {width: '200px'},
             precision:0,
+	          min:0,
+	          max:999999,
           }
         },
         teamNumTotal: {
@@ -247,6 +251,8 @@ export default {
             placeholder: '请输入清收团队总人数',
             style: {width: '200px'},
             precision:0,
+	          min:0,
+	          max:999999,
           }
         },
         framework: {

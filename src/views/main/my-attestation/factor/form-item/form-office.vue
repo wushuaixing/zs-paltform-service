@@ -47,15 +47,15 @@
 				</a-row>
 			</a-radio-group>
 		</a-form-item>
-		<a-form-item label="分所展业地域" v-if="hasOtherOffice()">
+		<a-form-item label="分所展业地域" v-if="hasOtherOffice()" :selfUpdate="false">
 			<el-cascader v-bind="firms.part.other" v-on="firms.part.on"/>
 			<a-input v-decorator="firms.part.dec" style="display: none"/>
 		</a-form-item>
-		<a-form-item label="分所人员情况"  v-if="hasOtherOffice()">
+		<a-form-item label="分所人员情况"  v-if="hasOtherOffice()" :selfUpdate="false">
 			<a-textarea v-decorator="firms.partInfo.dec" v-bind="firms.partInfo.other"/>
 		</a-form-item>
 		<a-form-item label="律所清收团队人数">
-			<a-input-number v-decorator="firms.num.dec" v-bind="firms.num.other"/>
+			<a-input-number v-decorator="firms.num.dec" v-bind="firms.num.other" :min="0" :max="999999"/>
       <span :style="{marginLeft:'5px'}">个</span>
 		</a-form-item>
 		<a-form-item label="本人在律所担任职务" class="form-item-row">
@@ -170,7 +170,7 @@ export default {
             clearable: true,
             options: areaOption,
             size: "small",
-	          value:[],
+	          // value:[],
 	          // collapseTags:true,
             props: {
               value: 'id',
@@ -292,7 +292,6 @@ export default {
       // TODO 展业地区:相关方法
       this.form.setFieldsValue({...fieldValues});
 	    source.officeWorkAddress ? this.firms.involve.other.value = areaAnalysis(source.officeWorkAddress,false) : '';
-
 	    this.$nextTick(()=>{
 		    if(source.hasOtherOffice === '1') {
 			    this.form.setFieldsValue({
@@ -300,7 +299,7 @@ export default {
 				    otherOfficeWorkAddress:otherOfficeStaffInfo || undefined,
 			    });
 			    if(otherOfficeWorkAddress){
-				    this.firms.part.other.value = areaAnalysis(otherOfficeWorkAddress,false);
+						this.firms.part.other.value = areaAnalysis(otherOfficeWorkAddress,false);
 			    }
 		    }
 	    })
