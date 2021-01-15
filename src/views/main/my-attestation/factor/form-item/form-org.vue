@@ -465,7 +465,7 @@ export default {
       const fieldValues = {
         ..._source,
         goodCases: (source.goodCases || '').split(',').map(i => Number(i)),
-        headOfficeAddress: (source.headOfficeAddress || '').split(',').map(i => Number(i)),
+        headOfficeAddress: source.headOfficeAddress ? source.headOfficeAddress.split(',').map(i => Number(i)) : undefined,
       };
       this.form.setFieldsValue({...fieldValues});
 	    if(source.branchOfficeAddress){
