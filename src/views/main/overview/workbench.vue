@@ -371,6 +371,7 @@ $leftWidth: 470px;
       color: #7F7F7F;
       margin-top: 50px;
       text-align: center;
+      min-height: 220px;
       .emptyImg {
         margin-bottom: 24px;
       }
