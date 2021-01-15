@@ -46,7 +46,7 @@
             <p>
               抵质押物清单：
             </p>
-            <div v-if="projectInfo.amcProjectCollaterals&&projectInfo.amcProjectCollaterals.length">
+            <div v-if="projectInfo.amcProjectCollaterals&&projectInfo.amcProjectCollaterals.length!==0">
               <div v-for="(item,index) in projectInfo.amcProjectCollaterals" :key="index" style="margin-bottom:16px">
                 {{index+1}}. {{item.collateralType|collateralType}}，{{item|areaText}}，{{item.collateralName}}
               </div>

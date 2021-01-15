@@ -98,11 +98,12 @@
         <a-row>
           <a-col :span="24" style="display: flex">
             <div class="subtitle" style="padding-left:10px;white-space:nowrap">抵质押物清单：</div>
-            <div>
+            <div v-if="info.amcProjectCollaterals.length!==0">
               <p v-for="(i, index) in info.amcProjectCollaterals" :key="index" style="margin-bottom:16px">
                 {{index+1}}. {{i.collateralType|collateralType}}，{{i|areaText}}，{{i.collateralName}}
               </p>
             </div>
+            <div v-else>-</div>
           </a-col>
         </a-row>
         <div class="flex-style" style="margin-top: 16px">
