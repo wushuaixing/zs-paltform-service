@@ -18,46 +18,49 @@
 			</div>
       <!-- 要素相关审核 展示 -->
       <template v-if="identity && !status(0)">
-        <!-- 要素认证信息 -->
-        <div class="qualifies-item qualifies-status">
-          <div class="item-title status-title">
-            <div class="status-title-identity">
-              <span>我的服务商身份：</span>
-							<img :src="mine.icon" alt="" style="height: 32px;vertical-align: top;">
-							<span style="margin-left: 10px">{{mine.text}}</span>
-            </div>
-            <ul class="status-title-attribute">
-              <li>当前要素认证状态：<font :class="info.class">{{info.desc}}</font></li>
-              <li v-if="statusInfo.elementModifyDate">要素信息更新日期：{{statusInfo.elementModifyDate}}</li>
-            </ul>
-          </div>
-        </div>
-        <!-- 要素认证提醒 -->
-        <div class="qualifies-item qualifies-status" v-if="status(245) || info.halfStatus">
-          <div class="status-content" v-if="info.halfStatus">
-            <div>您已有半年未更新要素认证信息，若要素认证信息发生变化，请及时进行更新！</div>
-						<a-button type="primary"  @click="handleEdit">立即更新</a-button>
-						<a-button @click="handleDelayUpdate">确认无变化，暂不更新</a-button>
-          </div>
-					<template v-else>
-						<div class="status-content" v-if="status(245)">
-							<div>{{info.text}}</div>
-							<a-button @click="getFactorLog" type="primary" :loading="loading">{{info.btn}}</a-button>
-							<a-button v-if="status(5)" @click="handleDrop">放弃修改</a-button>
+				<a-affix :offset-top="64">
+					<!-- 要素认证信息 -->
+					<div class="qualifies-item qualifies-status">
+						<div class="item-title status-title">
+							<div class="status-title-identity">
+								<span>我的服务商身份：</span>
+								<img :src="mine.icon" alt="" style="height: 32px;vertical-align: top;">
+								<span style="margin-left: 10px">{{mine.text}}</span>
+							</div>
+							<ul class="status-title-attribute">
+								<li>当前要素认证状态：<font :class="info.class">{{info.desc}}</font></li>
+								<li v-if="statusInfo.elementModifyDate">要素信息更新日期：{{statusInfo.elementModifyDate}}</li>
+							</ul>
 						</div>
-					</template>
-        </div>
-        <!-- 要素认证状态 -->
-        <div class="qualifies-info" v-if="status(1)">
-          <div class="info-image-status">
-            <img src="../../../../assets/img/no_data.png" alt="">
-            <p class="image-status-remark">您要提交的要素认证信息正在审核中 ，请您耐心等待</p>
-            <a-button @click="getFactorLog" type="primary" :loading="visibleLoading">查看我提交的要素认证</a-button>
-          </div>
-        </div>
-        <!-- 要素信息展示 -->
+					</div>
+					<!-- 要素认证提醒 -->
+					<div class="qualifies-item qualifies-status" v-if="status(245) || info.halfStatus">
+						<div class="status-content" v-if="info.halfStatus">
+							<div>您已有半年未更新要素认证信息，若要素认证信息发生变化，请及时进行更新！</div>
+							<a-button type="primary"  @click="handleEdit">立即更新</a-button>
+							<a-button @click="handleDelayUpdate">确认无变化，暂不更新</a-button>
+						</div>
+						<template v-else>
+							<div class="status-content" v-if="status(245)">
+								<div>{{info.text}}</div>
+								<a-button @click="getFactorLog" type="primary" :loading="loading">{{info.btn}}</a-button>
+								<a-button v-if="status(5)" @click="handleDrop">放弃修改</a-button>
+							</div>
+						</template>
+					</div>
+					<!-- 要素认证状态 -->
+					<div class="qualifies-info" v-if="status(1)">
+						<div class="info-image-status">
+							<img src="../../../../assets/img/no_data.png" alt="">
+							<p class="image-status-remark">您要提交的要素认证信息正在审核中 ，请您耐心等待</p>
+							<a-button @click="getFactorLog" type="primary" :loading="visibleLoading">查看我提交的要素认证</a-button>
+						</div>
+					</div>
+				</a-affix>
+
+				<!-- 要素信息展示 -->
         <DetailInfo v-if="status(3456)" :is-lawyer="identity === 1" :source="dataSource"
-										isEdit @editInfo="handleEdit" @addOffice="handleAddOffice"/>
+										isEdit @editInfo="handleEdit" @addOffice="handleAddOffice" :fixed="status(1245)?235:124"/>
 				<div class="qualifies-info" v-if="status(9)">
 					<div class="info-image-status">
 						<img src="../../../../assets/img/no-finished.png" alt="" style="width: 400px;">

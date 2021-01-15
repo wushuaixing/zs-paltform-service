@@ -71,6 +71,7 @@ export default {
   }
   .qualifies{
     &-item{
+			background-color: #ffffff;
       .item-title{
         padding: 14px 32px;
         border-bottom: 1px solid $border-base;

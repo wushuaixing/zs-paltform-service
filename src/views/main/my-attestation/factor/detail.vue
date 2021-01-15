@@ -3,12 +3,24 @@
 		<slot name="title"/>
 		<!--律师详情展示-->
 		<div class="info-item" data-label="我的要素认证信息-律师" v-if="isLawyer">
-			<div class="info-item_auction" v-if="isEdit">
-				<a-button @click="scrollIntoView()">律师信息</a-button>
-				<a-button @click="scrollIntoView('item_category_office')">
-					<a-badge :dot="noOffice" class="dot-badge">律所信息</a-badge>
-				</a-button>
-			</div>
+			<template v-if="fixed">
+				<a-affix :offset-top="fixed">
+					<div class="info-item_auction" v-if="isEdit">
+						<a-button @click="scrollIntoView()">律师信息</a-button>
+						<a-button @click="scrollIntoView('item_category_office',noOffice?0:150)">
+							<a-badge :dot="noOffice" class="dot-badge">律所信息</a-badge>
+						</a-button>
+					</div>
+				</a-affix>
+			</template>
+			<template v-else>
+				<div class="info-item_auction" v-if="isEdit">
+					<a-button @click="scrollIntoView()">律师信息</a-button>
+					<a-button @click="scrollIntoView('item_category_office')">
+						<a-badge :dot="noOffice" class="dot-badge">律所信息</a-badge>
+					</a-button>
+				</div>
+			</template>
 			<div class="info-item_category" id="item_category_lawyer" data-lable="律师信息">
 				<span class="title">律师信息</span>
 				<a-button type="link" icon="edit" v-if="isEdit" @click="editElementInfo">编辑我的要素信息</a-button>
@@ -164,6 +176,10 @@
 		},
 		props: {
 			source: {},
+			fixed: {
+				type: Number,
+				default: 0,
+			},
 			isLawyer: {
 				type: Boolean,
 				default: true,
@@ -325,11 +341,13 @@
 				return item.m && item.about ? item.m(_source[item.about]) : true;
 			},
 			//锚点跳转
-			scrollIntoView(ele) {
+			scrollIntoView(ele,diff = 0) {
 				if(ele){
 					document.getElementById(ele).scrollIntoView(true);
 					const h = document.documentElement.scrollTop;
-					document.documentElement.scrollTo(0,h - 150);
+					document.documentElement.scrollTo(0,h - diff);
+				}else{
+					document.documentElement.scrollTo(0,0);
 				}
 				document.activeElement.blur();
 			},
@@ -368,7 +386,8 @@
 		.info-item {
 			padding: 24px;
 			&_auction{
-				padding: 4px 0;
+				background-color: #fff;
+				padding: 4px 0 8px 0;
 				button{
 					width: 100px;
 					margin-right: 15px;
