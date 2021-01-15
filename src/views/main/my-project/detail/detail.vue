@@ -147,6 +147,10 @@
             去提交
           </button>
         </div>
+        <div class="submit-plan"  v-else-if="info.aimedStatus !== '2' && info.caseFileStatus == '0'">
+          <img src="@/assets/img/tempty.png" alt="" />
+          <p class="text" >您暂未提交服务方案</p>
+        </div>
         <div v-else>
           <div class="serviceTime-aimBackPrice-row">
             <div style="padding-left:10px">
