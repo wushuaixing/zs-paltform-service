@@ -147,7 +147,7 @@ export const queryOptions = [
             {label: '光地(住宅)', value: 8, color: 'orange'},
             {label: '在建工程', value: 9, color: 'orange'},
             {label: '机器设备', value: 10, color: 'blue'},
-            {label: '生产设备', value: 11, color: 'blue'},
+            {label: '生产用设备', value: 11, color: 'blue'},
             {label: '运输设备', value: 12, color: 'blue'},
             {label: '林权', value: 13, color: 'cyan'},
             {label: '海域使用权', value: 14, color: 'cyan'},
