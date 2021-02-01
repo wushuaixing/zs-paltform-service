@@ -142,7 +142,7 @@ export default {
         other: {
           dec: ['cooperationSituation'],
           other: {
-            placeholder: '请简要描述与其他AMC公司合作的情况',
+            placeholder: '请简要描述与其他AMC合作的情况（包括但不限于合作次数、合作业务类型、业务合作地区、项目成果等等）',
             ...textarea
           }
         },
