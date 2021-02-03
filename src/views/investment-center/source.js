@@ -1,5 +1,5 @@
 //资产服务项目招商列表
-export const columns = (sort) => [
+export const columns = [
     {
         title: '债务人名称',
         dataIndex: 'debtor',
@@ -47,8 +47,6 @@ export const columns = (sort) => [
         title: '报名截止日期',
         dataIndex: 'deadline',
         key: 'deadline',
-        sorter: true,
-        sortOrder: sort || false,
         customRender: val => val || '-',
         width:130,
     },

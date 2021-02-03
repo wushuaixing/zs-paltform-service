@@ -29,7 +29,7 @@
           <div class="total-tips">
             *当前条件下共有 {{ pagination.total }} 条正在招商的项目
           </div>
-          <a-table :columns="column" :data-source="amcProjectInfo" :row-key="record => record.id"
+          <a-table :columns="columns" :data-source="amcProjectInfo" :row-key="record => record.id"
                    :pagination="pagination" @change="handleTabChange" :loading="loading">
             <template slot="debtor" slot-scope="debtor">
               <a-tooltip>
@@ -93,6 +93,7 @@ export default {
       img: {
         logo,
       },
+      columns,
       loading: false,
       SECURITY_TYPE, //担保方式
       SORTER_TYPE, //排序方式
@@ -110,7 +111,6 @@ export default {
       queryParams: { //入参
         page: 1,
         size: 10,
-        sortOrder: '',
         provinceCode: '',
         type: '',
         priceType: '',
@@ -156,7 +156,6 @@ export default {
       this.queryParams = {
         ...this.queryParams,
         page: 1,
-        sortOrder: '',
       };
       this.pagination.current = 1;
       this.getTableList();
@@ -172,11 +171,10 @@ export default {
     },
 
     //换页 排序
-    handleTabChange(pagination, filters, sorter) {
+    handleTabChange(pagination) {
       this.queryParams = {
         ...this.queryParams,
         page: pagination.current,
-        sortOrder: SORTER_TYPE[sorter.order],
       }
       this.pagination.current = pagination.current;
       this.getTableList();
@@ -217,21 +215,8 @@ export default {
       return textWidth;
     },
     uniqueArea(arr = []) {
-      // const uniqueList = Array.from(new Set(arr.map((val) => {
-      //   return `${val.provinceCode}-${val.cityCode}-${val.areaCode}`;
-      // })));
-      // return uniqueList.map((val) =>
-      //     (val || '').split('-')
-      // );
       return Array.from(new Set(arr.map((i) => getArea(i.provinceCode, i.cityCode, i.areaCode))));
     }
-  },
-  computed: {
-    column: function () {
-      const {sortOrder} = this.queryParams;
-      const sort = Object.keys(SORTER_TYPE).find(i => SORTER_TYPE[i] === sortOrder);
-      return columns(sort);
-    },
   },
   filters: {
     //抵质押物类型
