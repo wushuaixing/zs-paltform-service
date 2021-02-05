@@ -13,7 +13,7 @@ export const columns = [
         key: 'debtCaptial',
         scopedSlots: {customRender: 'amount'},
         align: 'right',
-        width:120,
+        width:115,
         customRender: text => text ? text : '-'
     },
     {
@@ -21,7 +21,7 @@ export const columns = [
         dataIndex: 'debtInterest',
         key: 'debtInterest',
         scopedSlots: {customRender: 'amount'},
-        width:130,
+        width:125,
         className:'debtCaptial',
         align: 'right',
     },
@@ -29,7 +29,7 @@ export const columns = [
         title: '担保方式',
         key: 'security',
         scopedSlots: {customRender: 'security'},
-        width:108,
+        width:100,
     },
     {
         title: '抵质押物类型',
@@ -48,13 +48,13 @@ export const columns = [
         dataIndex: 'deadline',
         key: 'deadline',
         customRender: val => val || '-',
-        width:130,
+        width:110,
     },
     {
         title: '操作',
         scopedSlots: {customRender: 'auction'},
         key: 'auction',
-        width:220,
+        width:216,
     },
 ];
 
@@ -64,7 +64,7 @@ export const msgInfoColumns = [
         title: '序号',
         dataIndex: 'number',
         key: 'number',
-        width:92,
+        width:90,
         customRender: (text, record, index) => index + 1
     },
     {
@@ -77,7 +77,7 @@ export const msgInfoColumns = [
         title: '抵押物名称',
         key: 'collateralName',
         dataIndex: 'collateralName',
-        width:580,
+        width:480,
     },
     {
         title: '抵押物所在地',
