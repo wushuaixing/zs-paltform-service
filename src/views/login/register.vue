@@ -73,7 +73,7 @@
             src="../../assets/image/success.png"
             alt=""
           />
-          <div class="success-prompt">您已成功注册，为更精准的给您推送优质项目，请您尽快进行服务商资质及要素认证，成为浙商资产服务商！</div>
+          <div class="success-prompt">您已成功注册，为更精准地给您推送优质项目，请您尽快进行服务商资质及要素认证，成为浙商资产服务商！</div>
           <div class="login-attestation" @click="goLogin">完成注册并前往登录</div>
         </div>
       </div>
