@@ -1,118 +1,127 @@
 
-// table 的表格头
-const basCol = {
-	normal:[
-		{
-			title: '债务人名称',
-			key: 'debtor',
-			scopedSlots: { customRender: 'debtor' },
+export const columns = ({ type = 1, sortOrder }) => {
+	const basCol = {
+		normal: [
+			{
+				title: '债务人名称',
+				key: 'debtor',
+				ellipsis:true,
+				customHeaderCell: () => ({
+					style: { paddingLeft:'20px' }
+				}),
+				scopedSlots: { customRender: 'debtor' },
+			},
+			{
+				title: '债权本金（万元）',
+				dataIndex: 'debtCaptial',
+				key: 'debtCaptial',
+				scopedSlots: { customRender: 'amount' },
+			},
+			{
+				title: '债权利息（万元）',
+				dataIndex: 'debtInterest',
+				key: 'debtInterest',
+				scopedSlots: { customRender: 'amount' },
+			}
+		],
+		guaranty: {
+			title: '担保方式',
+			key: 'security',
+			scopedSlots: { customRender: 'security' }
 		},
-		{
-			title: '债权本金（万元）',
-			dataIndex: 'money1',
-			key: 'money1',
-			scopedSlots: { customRender: 'amount' },
-			align:'right',
+		auction: {
+			title: '操作',
+			width:'15%',
+			customHeaderCell: () => ({
+				style: { paddingLeft:'16px' }
+			}),
+			scopedSlots: { customRender: 'auction' },
+			key: 'auction',
 		},
-		{
-			title: '债权利息（万元）',
-			dataIndex: 'money2',
-			key: 'money2',
-			scopedSlots: { customRender: 'amount' },
-			align:'right',
-		}
-	],
-	guaranty:{
-		title: '担保方式',
-		dataIndex: 'guaranty',
-		key: 'gua',
-	},
-	auction:{
-		title: '操作',
-		scopedSlots: { customRender: 'auction' },
-		customHeaderCell:()=>({
-			style:{ paddingLeft:'16px'}
-		}),
-		key: 'auction',
-	},
-};
-export const columns = {
-	'ing':[
-		...basCol.normal,
-		basCol.guaranty,
-		{
-			title:'对接团队及联系方式',
-			key: 'contactWay',
-			scopedSlots: { customRender: 'contactWay' },
-		},
-		{
-			title: '当前进展',
-			scopedSlots: { customRender: 'advance' },
-			key: 'advance',
-		},
-		{
-			title: '更新日期',
-			sorter: true,
-			dataIndex: 'updateTime',
-			key: 'updateTime',
-			scopedSlots: { customRender: 'datetime' },
-		},
-		basCol.auction,
-	],
-	'ed':[
-		...basCol.normal,
-		{
-			title:'合同签订日期',
-			dataIndex: 'signDate',
-			key: 'signDate',
-			sorter: true,
-			scopedSlots: { customRender: 'datetime' },
-		},
-		{
-			title:'服务期限',
-			key: 'deadline',
-			scopedSlots: { customRender: 'deadline' },
-		},
-		{
-			title: '目标回款金额（万元）',
-			dataIndex: 'money3',
-			key: 'money3',
-		},
-		{
-			title: '本阶段计划',
-			dataIndex: 'plan',
-			key: 'plan',
-		},
-		basCol.auction,
-	],
-	'aba':[
-		...basCol.normal,
-		basCol.guaranty,
-		{
-			title:'放弃日期',
-			dataIndex: 'abaDate',
-			key: 'abaDate',
-			sorter: true,
-			scopedSlots: { customRender: 'datetime' },
-		},
-		basCol.auction,
-	],
-	'fail':[
-		...basCol.normal,
-		basCol.guaranty,
-		{
-			title:'失效日期',
-			dataIndex: 'failDate',
-			key: 'failDate',
-			sorter: true,
-			scopedSlots: { customRender: 'datetime' },
-		},
-		basCol.auction
-	]
-};
-export const colType = {
-	1:'ing',
-	2:'ed',
-	3:'aba',
-	4:'fail',
+	};
+	if (type === 1) {
+		return [
+			...basCol.normal,
+			basCol.guaranty,
+			{
+				title: '对接团队及联系方式',
+				key: 'businessTeam',
+				scopedSlots: { customRender: 'businessTeam' },
+			},
+			{
+				title: '当前进展',
+				scopedSlots: { customRender: 'process' },
+				key: 'process',
+			},
+			{
+				title: '更新日期',
+				sorter: true,
+				sortOrder: sortOrder || false,
+				dataIndex: 'gmtModify',
+				key: 'gmtModify',
+				scopedSlots: { customRender: 'datetime' },
+			},
+			basCol.auction,
+		]
+	}
+	if (type === 2) {
+		return [
+			...basCol.normal,
+			{
+				title: '合同签订日期',
+				dataIndex: 'aggrementDate',
+				key: 'aggrementDate',
+				sorter: true,
+				sortOrder: sortOrder || false,
+				scopedSlots: { customRender: 'datetime' },
+			},
+			{
+				title: '服务期限',
+				key: 'serviceTime',
+				scopedSlots: { customRender: 'serviceTime' },
+			},
+			{
+				title: '目标回款金额（万元）',
+				dataIndex: 'aimBackPrice',
+				key: 'aimBackPrice',
+				scopedSlots: { customRender: 'amount' },
+			},
+			{
+				title: '本阶段计划',
+				key: 'dateMatters',
+				scopedSlots: { customRender: 'plan' },
+			},
+			basCol.auction,
+		]
+	}
+	if (type === 3) {
+		return [
+			...basCol.normal,
+			basCol.guaranty,
+			{
+				title: '放弃日期',
+				dataIndex: 'abandonDate',
+				key: 'abandonDate',
+				sorter: true,
+				sortOrder: sortOrder || false,
+				scopedSlots: { customRender: 'datetime' },
+			},
+			basCol.auction,
+		]
+	}
+	if (type === 4) {
+		return [
+			...basCol.normal,
+			basCol.guaranty,
+			{
+				title: '失效日期',
+				dataIndex: 'invalidDate',
+				key: 'invalidDate',
+				sorter: true,
+				sortOrder: sortOrder || false,
+				scopedSlots: { customRender: 'datetime' },
+			},
+			basCol.auction
+		]
+	}
 }

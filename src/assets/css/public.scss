@@ -1,0 +1,61 @@
+.text-remark{
+  color: $text-remark;
+}
+.text-error{
+  color: $common-error;
+}
+.text-success{
+ color: $common-success;
+}
+.text-warning{
+  color: $common-warning;
+}
+.text-dangerous{
+  color: $common-dangerous;
+}
+.common-text-subtitle{
+  border-left: 4px solid $common-base;
+  padding-left: 8px;
+  height: 22px;
+  line-height: 22px;
+  font-weight: bold;
+  font-size: 16px;
+  margin: 10px 0;
+}
+.ant-modal-header{
+  .ant-modal-title{
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+  }
+}
+
+.upload-list-custom{
+
+}
+
+.ant-upload-list-item:hover{
+  .ant-upload-list-item-info{
+    background: none;
+    > span{
+      cursor: pointer;
+      border-bottom: 1px solid #008CB0;
+      color: #008CB0;
+    }
+  }
+}
+
+.ant-upload-list-item .ant-upload-list-item-info > span {
+  .ant-upload-list-item-name{
+    color: rgba(0, 140, 176, 0.73)
+  }
+}
+
+.has-error {
+  .el-input__inner{
+    border-color: #f5222d
+  }
+  .el-input__icon{
+    color: #f5222d;
+  }
+}

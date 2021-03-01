@@ -1,14 +1,16 @@
 export const baseWidth = {
 	style:{
-		width:'677px'
-	}
-}
+		width:'678px',
+	},
+	maxLength:100,
+};
 export const textarea = {
 	...baseWidth,
-	autoSize:{ minRows: 4 }
-}
+	autoSize:{ maxRows: 4,minRows: 4, },
+	maxLength:1024,
+};
 
 export const formItemLayout =  {
-	labelCol: { span: 5 },
-	wrapperCol: { span: 19 },
+	labelCol: { span: 6 },
+	wrapperCol: { span: 18 },
 };

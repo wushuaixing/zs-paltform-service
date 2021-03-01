@@ -4,8 +4,9 @@ import Antd, { Form, message } from 'ant-design-vue';
 import router from './router'
 import store from './plugin/store'
 import { install, filter } from "./plugin/library";
-import 'ant-design-vue/dist/antd.css';
+import 'ant-design-vue/dist/antd.less';
 import 'element-ui/lib/theme-chalk/index.css';
+import './assets/css/public.scss';
 import './version';
 import './plugin/element';
 

@@ -1,8 +1,11 @@
 import axios from 'axios';
+import router from '../../router';
+
+const ENV = process.env.NODE_ENV;
 
 /* =========  常规请求   ========= */
 const request = axios.create({
-	baseURL:'/proxy-api',
+	baseURL:ENV === 'development' ? '/proxy-api' : '/api',
 	timeout: 1000 * 30,
 	withCredentials: true,
 	credentials: 'include',
@@ -15,9 +18,8 @@ const request = axios.create({
 /* 请求拦截前的处理 */
 const requestMethods = {
 	onFulfilled: (config) => {
-		config.headers = Object.assign({},config.headers,{
-			token:'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMTEyMjIiLCJzdWIiOiIxNzYzMDgyOTkwMiIsImlzcyI6ImFkbWluIiwiaWF0IjoxNjA4MDkwNjIxLCJleHAiOjE2MDgxNzcwMjF9.e0i8SWnTg_vO5XrjFJ-ec6CYzkqbJTqG9s4lEXpukD4'
-		})
+		const token = window.localStorage.token !== undefined ? window.localStorage.token : null;
+		config.headers = Object.assign({},config.headers,token ? {token} : {});
 		return config;
 		// 在请求发出之前做拦截工作
 		// // 这块需要做一些用户验证的工作，需要带上用户凭证
@@ -67,8 +69,9 @@ const responseMethods = {
 			window.location.reload();
 			return response;
 		}
-		if (res.code === 403) {
+		if (res.code === 70001) {
 			// navigate('/');
+			router.push('/login');
 			// window.location.reload();
 			return response;
 		}
@@ -105,7 +108,11 @@ const responseMethods = {
 		// }
 		return response.data;
 	},
-	onRejected: () => {
+	onRejected: (error) => {
+		console.log(error.response.status);
+		if(error.response.status === 403) {
+			router.push('/login')
+		}
 		// const notShow = (error.config.params || {}).event === 'loop';
 		// // 如果没有token直接返回到登陆界面
 		// if (cookies.get('token') === undefined) {
